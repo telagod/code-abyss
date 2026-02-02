@@ -1,0 +1,86 @@
+---
+name: verify-module
+description: 模块完整性校验。扫描目录结构、检测缺失文档、验证代码与文档同步。
+user-invocable: true
+disable-model-invocation: false
+allowed-tools: Bash, Read, Glob
+argument-hint: <模块路径>
+---
+
+# 模块完整性校验
+
+## 核心原则
+
+```
+模块 = 代码 + 文档 + 测试
+缺一不可，缺一不交付
+```
+
+## 自动扫描
+
+运行扫描脚本（跨平台）：
+
+```bash
+# 获取脚本路径（自动适配系统）
+python -c "from pathlib import Path; print(Path.home() / '.claude/skills/verify-module/scripts/module_scanner.py')"
+
+# 运行扫描
+python "$(python -c "from pathlib import Path; print(Path.home() / '.claude/skills/verify-module/scripts/module_scanner.py')")" .
+```
+
+简化运行（在 skill 目录下）：
+
+```bash
+python scripts/module_scanner.py <模块路径>
+python scripts/module_scanner.py <模块路径> -v      # 详细模式
+python scripts/module_scanner.py <模块路径> --json  # JSON 输出
+```
+
+## 校验标准
+
+一个完整的模块必须包含：
+
+```
+module/
+├── README.md      # 必须 - 模块是什么、为什么存在
+├── DESIGN.md      # 必须 - 设计决策、权衡取舍
+├── src/           # 代码实现
+└── tests/         # 测试用例（如适用）
+```
+
+## 校验清单
+
+### README.md 必须包含
+
+- [ ] **模块名称与定位** — 一句话说明是什么
+- [ ] **存在理由** — 为什么需要这个模块
+- [ ] **核心职责** — 做什么、不做什么
+- [ ] **依赖关系** — 依赖谁、被谁依赖
+- [ ] **快速使用** — 最简示例
+
+### DESIGN.md 必须包含
+
+- [ ] **设计目标** — 要解决什么问题
+- [ ] **方案选择** — 考虑过哪些方案、为何选当前方案
+- [ ] **关键决策** — 重要的技术决策及理由
+- [ ] **已知限制** — 当前方案的局限性
+- [ ] **变更历史** — 重大变更记录
+
+## 校验流程
+
+```
+1. 运行 module_scanner.py 自动扫描
+2. 检查文件结构是否完整
+3. 检查 README.md 各项是否齐全
+4. 检查 DESIGN.md 各项是否齐全
+5. 检查代码与文档描述是否一致
+6. 输出校验报告
+```
+
+## 快速修复
+
+如果缺少文档，可使用文档生成器（gen-docs skill）。
+
+---
+
+**无文档不成模块，无解释不成交付。**

@@ -1,68 +1,82 @@
 #!/usr/bin/env python3
 """
-Claude Sage Skills 统一入口
-用法: python run_skill.py <skill_name> [args...]
+Skills 运行入口
+跨平台统一调用各 skill 脚本
+
+用法:
+    python run_skill.py <skill_name> [args...]
+
+示例:
+    python run_skill.py verify-module ./my-project -v
+    python run_skill.py verify-security ./src --json
+    python run_skill.py verify-change --mode staged
+    python run_skill.py verify-quality ./src
+    python run_skill.py gen-docs ./new-module --force
 """
 
 import sys
-import importlib.util
+import subprocess
 from pathlib import Path
 
 
-SKILLS = {
-    "verify-security": "verify_security",
-    "verify-module": "verify_module",
-    "verify-change": "verify_change",
-    "verify-quality": "verify_quality",
-    "gen-docs": "gen_docs",
-}
+def get_skills_dir() -> Path:
+    """获取 skills 目录路径（跨平台）"""
+    return Path.home() / ".claude" / "skills"
 
 
-def load_skill(skill_name: str):
-    """动态加载 skill 模块"""
-    if skill_name not in SKILLS:
-        print(f"[✗] 未知 skill: {skill_name}")
-        print(f"[i] 可用 skills: {', '.join(SKILLS.keys())}")
+def get_script_path(skill_name: str) -> Path:
+    """获取 skill 脚本路径"""
+    skills_dir = get_skills_dir()
+
+    script_map = {
+        "verify-module": "module_scanner.py",
+        "verify-security": "security_scanner.py",
+        "verify-change": "change_analyzer.py",
+        "verify-quality": "quality_checker.py",
+        "gen-docs": "doc_generator.py",
+    }
+
+    if skill_name not in script_map:
+        available = ", ".join(script_map.keys())
+        print(f"错误: 未知的 skill '{skill_name}'")
+        print(f"可用的 skills: {available}")
         sys.exit(1)
 
-    module_name = SKILLS[skill_name]
-    skill_path = Path(__file__).parent / f"{module_name}.py"
+    script_name = script_map[skill_name]
+    script_path = skills_dir / skill_name / "scripts" / script_name
 
-    if not skill_path.exists():
-        print(f"[✗] Skill 文件不存在: {skill_path}")
+    if not script_path.exists():
+        print(f"错误: 脚本不存在 {script_path}")
         sys.exit(1)
 
-    spec = importlib.util.spec_from_file_location(module_name, skill_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    return module
+    return script_path
 
 
 def main():
     if len(sys.argv) < 2:
-        print("⚙️ Claude Sage Skills Runner")
-        print("")
-        print("用法: python run_skill.py <skill_name> [args...]")
-        print("")
-        print("可用 Skills:")
-        for name, module in SKILLS.items():
-            print(f"  {name:20} -> {module}.py")
-        print("")
-        print("示例:")
-        print("  python run_skill.py verify-module ./my-project")
-        print("  python run_skill.py verify-security ./src --json")
-        sys.exit(0)
+        print(__doc__)
+        sys.exit(1)
 
     skill_name = sys.argv[1]
-    skill_args = sys.argv[2:]
 
-    module = load_skill(skill_name)
+    if skill_name in ["-h", "--help"]:
+        print(__doc__)
+        sys.exit(0)
 
-    if hasattr(module, "main"):
-        sys.exit(module.main(skill_args))
-    else:
-        print(f"[✗] Skill {skill_name} 缺少 main 函数")
+    script_path = get_script_path(skill_name)
+    args = sys.argv[2:]
+
+    # 使用 sys.executable 确保使用当前 Python 解释器
+    cmd = [sys.executable, str(script_path)] + args
+
+    try:
+        result = subprocess.run(cmd)
+        sys.exit(result.returncode)
+    except KeyboardInterrupt:
+        print("\n已取消")
+        sys.exit(130)
+    except Exception as e:
+        print(f"执行错误: {e}")
         sys.exit(1)
 
 

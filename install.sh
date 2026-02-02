@@ -20,11 +20,23 @@ CLAUDE_DIR="$HOME/.claude"
 BACKUP_DIR="$CLAUDE_DIR/backup"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 
+# Skills 列表
+SKILLS=("verify-security" "verify-module" "verify-change" "verify-quality" "gen-docs")
+
+# 脚本名称映射
+declare -A SCRIPT_NAMES=(
+    ["verify-security"]="security_scanner.py"
+    ["verify-module"]="module_scanner.py"
+    ["verify-change"]="change_analyzer.py"
+    ["verify-quality"]="quality_checker.py"
+    ["gen-docs"]="doc_generator.py"
+)
+
 print_banner() {
     echo -e "${CYAN}"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo "       机械神教·铸造贤者 安装程序"
-    echo "       Claude Sage Installer v1.0.0"
+    echo "       Claude Sage Installer v1.1.0"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo -e "${NC}"
 }
@@ -55,6 +67,8 @@ check_dependencies() {
 
     if ! command -v python3 &> /dev/null && ! command -v python &> /dev/null; then
         log_warn "未检测到 Python，skills 功能可能受限"
+    else
+        log_success "Python 已安装"
     fi
 
     log_success "依赖检查通过"
@@ -106,36 +120,27 @@ install_skills() {
     # 创建 skills 目录
     mkdir -p "$SKILLS_DIR"
 
-    # Python 脚本文件
-    local py_scripts=(
-        "run_skill.py"
-        "verify_security.py"
-        "verify_module.py"
-        "verify_change.py"
-        "verify_quality.py"
-        "gen_docs.py"
-    )
+    # 下载 run_skill.py 入口
+    download_file "$REPO_URL/skills/run_skill.py" "$SKILLS_DIR/run_skill.py"
+    chmod +x "$SKILLS_DIR/run_skill.py"
+    log_success "run_skill.py 入口脚本"
 
-    # Skill 描述文件 (.md) - Claude Code 需要这些文件来识别 skills
-    local skill_mds=(
-        "verify-security.md"
-        "verify-module.md"
-        "verify-change.md"
-        "verify-quality.md"
-        "gen-docs.md"
-    )
+    # 安装每个 skill
+    for skill in "${SKILLS[@]}"; do
+        log_info "  安装 $skill..."
 
-    log_info "  下载 Python 脚本..."
-    for script in "${py_scripts[@]}"; do
-        download_file "$REPO_URL/skills/$script" "$SKILLS_DIR/$script"
-        chmod +x "$SKILLS_DIR/$script"
-        log_success "    $script"
-    done
+        # 创建 skill 目录结构
+        mkdir -p "$SKILLS_DIR/$skill/scripts"
 
-    log_info "  下载 Skill 描述文件..."
-    for md in "${skill_mds[@]}"; do
-        download_file "$REPO_URL/skills/$md" "$SKILLS_DIR/$md"
-        log_success "    $md"
+        # 下载 SKILL.md
+        download_file "$REPO_URL/skills/$skill/SKILL.md" "$SKILLS_DIR/$skill/SKILL.md"
+
+        # 下载脚本
+        local script_name="${SCRIPT_NAMES[$skill]}"
+        download_file "$REPO_URL/skills/$skill/scripts/$script_name" "$SKILLS_DIR/$skill/scripts/$script_name"
+        chmod +x "$SKILLS_DIR/$skill/scripts/$script_name"
+
+        log_success "    $skill ✓"
     done
 
     log_success "Skills 安装完成"
@@ -154,15 +159,7 @@ verify_installation() {
         log_success "CLAUDE.md ✓"
     fi
 
-    # 检查 skills 目录
-    if [ ! -d "$SKILLS_DIR" ]; then
-        log_error "skills 目录未找到"
-        ((errors++))
-    else
-        log_success "skills 目录 ✓"
-    fi
-
-    # 检查 Python 入口
+    # 检查 run_skill.py
     if [ ! -f "$SKILLS_DIR/run_skill.py" ]; then
         log_error "run_skill.py 未找到"
         ((errors++))
@@ -170,18 +167,21 @@ verify_installation() {
         log_success "run_skill.py ✓"
     fi
 
-    # 检查 skill 描述文件
+    # 检查每个 skill
     local skill_count=0
-    for md in verify-security.md verify-module.md verify-change.md verify-quality.md gen-docs.md; do
-        if [ -f "$SKILLS_DIR/$md" ]; then
+    for skill in "${SKILLS[@]}"; do
+        local script_name="${SCRIPT_NAMES[$skill]}"
+        if [ -f "$SKILLS_DIR/$skill/SKILL.md" ] && [ -f "$SKILLS_DIR/$skill/scripts/$script_name" ]; then
             ((skill_count++))
+        else
+            log_warn "$skill 不完整"
         fi
     done
 
-    if [ $skill_count -eq 5 ]; then
-        log_success "Skill 描述文件 ($skill_count/5) ✓"
+    if [ $skill_count -eq ${#SKILLS[@]} ]; then
+        log_success "Skills ($skill_count/${#SKILLS[@]}) ✓"
     else
-        log_warn "Skill 描述文件不完整 ($skill_count/5)"
+        log_warn "Skills 不完整 ($skill_count/${#SKILLS[@]})"
     fi
 
     if [ $errors -eq 0 ]; then
@@ -199,9 +199,18 @@ print_success() {
     echo -e "${GREEN}  ✓ 安装完成！${NC}"
     echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo "  已安装文件:"
-    echo "    配置文件: $CLAUDE_DIR/CLAUDE.md"
-    echo "    Skills:   $SKILLS_DIR/"
+    echo "  已安装文件结构:"
+    echo "    $CLAUDE_DIR/"
+    echo "    ├── CLAUDE.md"
+    echo "    └── skills/"
+    echo "        ├── run_skill.py"
+    echo "        ├── verify-security/"
+    echo "        │   ├── SKILL.md"
+    echo "        │   └── scripts/security_scanner.py"
+    echo "        ├── verify-module/"
+    echo "        ├── verify-change/"
+    echo "        ├── verify-quality/"
+    echo "        └── gen-docs/"
     echo ""
     echo "  已安装的 Skills:"
     echo "    /verify-security  - 安全校验"

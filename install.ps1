@@ -11,11 +11,23 @@ $ClaudeDir = "$env:USERPROFILE\.claude"
 $BackupDir = "$ClaudeDir\backup"
 $SkillsDir = "$ClaudeDir\skills"
 
+# Skills 列表
+$Skills = @("verify-security", "verify-module", "verify-change", "verify-quality", "gen-docs")
+
+# 脚本名称映射
+$ScriptNames = @{
+    "verify-security" = "security_scanner.py"
+    "verify-module"   = "module_scanner.py"
+    "verify-change"   = "change_analyzer.py"
+    "verify-quality"  = "quality_checker.py"
+    "gen-docs"        = "doc_generator.py"
+}
+
 function Write-Banner {
     Write-Host ""
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host "       机械神教·铸造贤者 安装程序" -ForegroundColor Cyan
-    Write-Host "       Claude Sage Installer v1.0.0" -ForegroundColor Cyan
+    Write-Host "       Claude Sage Installer v1.1.0" -ForegroundColor Cyan
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -108,37 +120,36 @@ function Install-Skills {
         New-Item -ItemType Directory -Path $SkillsDir -Force | Out-Null
     }
 
-    # Python 脚本文件
-    $pyScripts = @(
-        "run_skill.py",
-        "verify_security.py",
-        "verify_module.py",
-        "verify_change.py",
-        "verify_quality.py",
-        "gen_docs.py"
-    )
+    # 下载 run_skill.py 入口
+    $runSkillUrl = "$RepoUrl/skills/run_skill.py"
+    Invoke-WebRequest -Uri $runSkillUrl -OutFile "$SkillsDir\run_skill.py" -UseBasicParsing
+    Write-Success "run_skill.py 入口脚本"
 
-    # Skill 描述文件 (.md) - Claude Code 需要这些文件来识别 skills
-    $skillMds = @(
-        "verify-security.md",
-        "verify-module.md",
-        "verify-change.md",
-        "verify-quality.md",
-        "gen-docs.md"
-    )
+    # 安装每个 skill
+    foreach ($skill in $Skills) {
+        Write-Info "  安装 $skill..."
 
-    Write-Info "  下载 Python 脚本..."
-    foreach ($script in $pyScripts) {
-        $scriptUrl = "$RepoUrl/skills/$script"
-        Invoke-WebRequest -Uri $scriptUrl -OutFile "$SkillsDir\$script" -UseBasicParsing
-        Write-Success "    $script"
-    }
+        # 创建 skill 目录结构
+        $skillDir = "$SkillsDir\$skill"
+        $scriptsDir = "$skillDir\scripts"
 
-    Write-Info "  下载 Skill 描述文件..."
-    foreach ($md in $skillMds) {
-        $mdUrl = "$RepoUrl/skills/$md"
-        Invoke-WebRequest -Uri $mdUrl -OutFile "$SkillsDir\$md" -UseBasicParsing
-        Write-Success "    $md"
+        if (-not (Test-Path $skillDir)) {
+            New-Item -ItemType Directory -Path $skillDir -Force | Out-Null
+        }
+        if (-not (Test-Path $scriptsDir)) {
+            New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        }
+
+        # 下载 SKILL.md
+        $skillMdUrl = "$RepoUrl/skills/$skill/SKILL.md"
+        Invoke-WebRequest -Uri $skillMdUrl -OutFile "$skillDir\SKILL.md" -UseBasicParsing
+
+        # 下载脚本
+        $scriptName = $ScriptNames[$skill]
+        $scriptUrl = "$RepoUrl/skills/$skill/scripts/$scriptName"
+        Invoke-WebRequest -Uri $scriptUrl -OutFile "$scriptsDir\$scriptName" -UseBasicParsing
+
+        Write-Success "    $skill ✓"
     }
 
     Write-Success "Skills 安装完成"
@@ -158,16 +169,7 @@ function Test-Installation {
         Write-Success "CLAUDE.md ✓"
     }
 
-    # 检查 skills 目录
-    if (-not (Test-Path $SkillsDir)) {
-        Write-Error "skills 目录未找到"
-        $errors++
-    }
-    else {
-        Write-Success "skills 目录 ✓"
-    }
-
-    # 检查 Python 入口
+    # 检查 run_skill.py
     if (-not (Test-Path "$SkillsDir\run_skill.py")) {
         Write-Error "run_skill.py 未找到"
         $errors++
@@ -176,20 +178,26 @@ function Test-Installation {
         Write-Success "run_skill.py ✓"
     }
 
-    # 检查 skill 描述文件
+    # 检查每个 skill
     $skillCount = 0
-    $skillMds = @("verify-security.md", "verify-module.md", "verify-change.md", "verify-quality.md", "gen-docs.md")
-    foreach ($md in $skillMds) {
-        if (Test-Path "$SkillsDir\$md") {
+    foreach ($skill in $Skills) {
+        $scriptName = $ScriptNames[$skill]
+        $skillMdPath = "$SkillsDir\$skill\SKILL.md"
+        $scriptPath = "$SkillsDir\$skill\scripts\$scriptName"
+
+        if ((Test-Path $skillMdPath) -and (Test-Path $scriptPath)) {
             $skillCount++
+        }
+        else {
+            Write-Warning "$skill 不完整"
         }
     }
 
-    if ($skillCount -eq 5) {
-        Write-Success "Skill 描述文件 ($skillCount/5) ✓"
+    if ($skillCount -eq $Skills.Count) {
+        Write-Success "Skills ($skillCount/$($Skills.Count)) ✓"
     }
     else {
-        Write-Warning "Skill 描述文件不完整 ($skillCount/5)"
+        Write-Warning "Skills 不完整 ($skillCount/$($Skills.Count))"
     }
 
     if ($errors -eq 0) {
@@ -208,9 +216,18 @@ function Write-SuccessBanner {
     Write-Host "  ✓ 安装完成！" -ForegroundColor Green
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Green
     Write-Host ""
-    Write-Host "  已安装文件:"
-    Write-Host "    配置文件: $ClaudeDir\CLAUDE.md"
-    Write-Host "    Skills:   $SkillsDir\"
+    Write-Host "  已安装文件结构:"
+    Write-Host "    $ClaudeDir\"
+    Write-Host "    ├── CLAUDE.md"
+    Write-Host "    └── skills\"
+    Write-Host "        ├── run_skill.py"
+    Write-Host "        ├── verify-security\"
+    Write-Host "        │   ├── SKILL.md"
+    Write-Host "        │   └── scripts\security_scanner.py"
+    Write-Host "        ├── verify-module\"
+    Write-Host "        ├── verify-change\"
+    Write-Host "        ├── verify-quality\"
+    Write-Host "        └── gen-docs\"
     Write-Host ""
     Write-Host "  已安装的 Skills:"
     Write-Host "    /verify-security  - 安全校验"
