@@ -29,6 +29,15 @@ $ScriptNames = @{
 # 输出风格
 $OutputStyleName = "mechanicus-sage"
 
+function Download-File {
+    param(
+        [string]$Url,
+        [string]$Destination
+    )
+    $webClient = New-Object System.Net.WebClient
+    $webClient.DownloadFile($Url, $Destination)
+}
+
 function Write-Banner {
     Write-Host ""
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
@@ -163,7 +172,7 @@ function Install-Config {
     # 下载 CLAUDE.md
     $configUrl = "$RepoUrl/config/CLAUDE.md"
     $claudeMdPath = Join-Path $ClaudeDir "CLAUDE.md"
-    Invoke-WebRequest -Uri $configUrl -OutFile $claudeMdPath -UseBasicParsing
+    Download-File -Url $configUrl -Destination $claudeMdPath
     Write-Success "CLAUDE.md 已安装"
 }
 
@@ -178,7 +187,7 @@ function Install-OutputStyle {
     # 下载输出风格文件
     $styleUrl = "$RepoUrl/output-styles/$OutputStyleName.md"
     $styleFile = Join-Path $OutputStylesDir "$OutputStyleName.md"
-    Invoke-WebRequest -Uri $styleUrl -OutFile $styleFile -UseBasicParsing
+    Download-File -Url $styleUrl -Destination $styleFile
     Write-Success "输出风格 $OutputStyleName.md 已安装"
 }
 
@@ -218,7 +227,7 @@ function Install-Skills {
     # 下载 run_skill.py 入口
     $runSkillUrl = "$RepoUrl/skills/run_skill.py"
     $runSkillPath = Join-Path $SkillsDir "run_skill.py"
-    Invoke-WebRequest -Uri $runSkillUrl -OutFile $runSkillPath -UseBasicParsing
+    Download-File -Url $runSkillUrl -Destination $runSkillPath
     Write-Success "run_skill.py 入口脚本"
 
     # 安装每个 skill
@@ -239,13 +248,13 @@ function Install-Skills {
         # 下载 SKILL.md
         $skillMdUrl = "$RepoUrl/skills/$skill/SKILL.md"
         $skillMdPath = Join-Path $skillDir "SKILL.md"
-        Invoke-WebRequest -Uri $skillMdUrl -OutFile $skillMdPath -UseBasicParsing
+        Download-File -Url $skillMdUrl -Destination $skillMdPath
 
         # 下载脚本
         $scriptName = $ScriptNames.Item($skill)
         $scriptUrl = "$RepoUrl/skills/$skill/scripts/$scriptName"
         $scriptPath = Join-Path $scriptsDir $scriptName
-        Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath -UseBasicParsing
+        Download-File -Url $scriptUrl -Destination $scriptPath
 
         Write-Success "    $skill ✓"
     }
@@ -258,7 +267,7 @@ function Install-Uninstaller {
 
     $uninstallUrl = "$RepoUrl/uninstall.ps1"
     $uninstallPath = Join-Path $ClaudeDir ".sage-uninstall.ps1"
-    Invoke-WebRequest -Uri $uninstallUrl -OutFile $uninstallPath -UseBasicParsing
+    Download-File -Url $uninstallUrl -Destination $uninstallPath
     Write-Success "卸载脚本已安装"
 }
 
