@@ -18,16 +18,21 @@ NC='\033[0m'
 CLAUDE_DIR="$HOME/.claude"
 BACKUP_DIR="$CLAUDE_DIR/.sage-backup"
 SKILLS_DIR="$CLAUDE_DIR/skills"
+OUTPUT_STYLES_DIR="$CLAUDE_DIR/output-styles"
+SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 MANIFEST_FILE="$BACKUP_DIR/manifest.txt"
 
 # Skills 列表
 SKILLS=("verify-security" "verify-module" "verify-change" "verify-quality" "gen-docs")
 
+# 输出风格
+OUTPUT_STYLE_NAME="mechanicus-sage"
+
 print_banner() {
     echo -e "${CYAN}"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo "       机械神教·铸造贤者 卸载程序"
-    echo "       Claude Sage Uninstaller v1.2.0"
+    echo "       Claude Sage Uninstaller v1.3.0"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo -e "${NC}"
 }
@@ -55,6 +60,18 @@ remove_installed_files() {
     if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
         rm -f "$CLAUDE_DIR/CLAUDE.md"
         log_success "  移除 CLAUDE.md"
+    fi
+
+    # 移除输出风格文件
+    if [ -f "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md" ]; then
+        rm -f "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md"
+        log_success "  移除 output-styles/$OUTPUT_STYLE_NAME.md"
+    fi
+
+    # 如果 output-styles 目录为空，删除它
+    if [ -d "$OUTPUT_STYLES_DIR" ] && [ -z "$(ls -A $OUTPUT_STYLES_DIR 2>/dev/null)" ]; then
+        rmdir "$OUTPUT_STYLES_DIR"
+        log_success "  移除空的 output-styles/ 目录"
     fi
 
     # 移除 run_skill.py
@@ -94,6 +111,21 @@ restore_backup() {
     if [ -f "$BACKUP_DIR/CLAUDE.md" ]; then
         cp "$BACKUP_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
         log_success "  恢复 CLAUDE.md"
+        ((restored++))
+    fi
+
+    # 恢复 settings.json
+    if [ -f "$BACKUP_DIR/settings.json" ]; then
+        cp "$BACKUP_DIR/settings.json" "$SETTINGS_FILE"
+        log_success "  恢复 settings.json"
+        ((restored++))
+    fi
+
+    # 恢复输出风格文件
+    if [ -f "$BACKUP_DIR/output-styles/$OUTPUT_STYLE_NAME.md" ]; then
+        mkdir -p "$OUTPUT_STYLES_DIR"
+        cp "$BACKUP_DIR/output-styles/$OUTPUT_STYLE_NAME.md" "$OUTPUT_STYLES_DIR/"
+        log_success "  恢复 output-styles/$OUTPUT_STYLE_NAME.md"
         ((restored++))
     fi
 

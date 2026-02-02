@@ -9,16 +9,21 @@ $ErrorActionPreference = "Stop"
 $ClaudeDir = "$env:USERPROFILE\.claude"
 $BackupDir = "$ClaudeDir\.sage-backup"
 $SkillsDir = "$ClaudeDir\skills"
+$OutputStylesDir = "$ClaudeDir\output-styles"
+$SettingsFile = "$ClaudeDir\settings.json"
 $ManifestFile = "$BackupDir\manifest.txt"
 
 # Skills 列表
 $Skills = @("verify-security", "verify-module", "verify-change", "verify-quality", "gen-docs")
 
+# 输出风格
+$OutputStyleName = "mechanicus-sage"
+
 function Write-Banner {
     Write-Host ""
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host "       机械神教·铸造贤者 卸载程序" -ForegroundColor Cyan
-    Write-Host "       Claude Sage Uninstaller v1.2.0" -ForegroundColor Cyan
+    Write-Host "       Claude Sage Uninstaller v1.3.0" -ForegroundColor Cyan
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -64,6 +69,18 @@ function Remove-InstalledFiles {
         Write-Success "  移除 CLAUDE.md"
     }
 
+    # 移除输出风格文件
+    if (Test-Path "$OutputStylesDir\$OutputStyleName.md") {
+        Remove-Item -Force "$OutputStylesDir\$OutputStyleName.md"
+        Write-Success "  移除 output-styles\$OutputStyleName.md"
+    }
+
+    # 如果 output-styles 目录为空，删除它
+    if ((Test-Path $OutputStylesDir) -and ((Get-ChildItem $OutputStylesDir -ErrorAction SilentlyContinue | Measure-Object).Count -eq 0)) {
+        Remove-Item -Force $OutputStylesDir
+        Write-Success "  移除空的 output-styles\ 目录"
+    }
+
     # 移除 run_skill.py
     if (Test-Path "$SkillsDir\run_skill.py") {
         Remove-Item -Force "$SkillsDir\run_skill.py"
@@ -101,6 +118,23 @@ function Restore-Backup {
     if (Test-Path "$BackupDir\CLAUDE.md") {
         Copy-Item "$BackupDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md"
         Write-Success "  恢复 CLAUDE.md"
+        $restored++
+    }
+
+    # 恢复 settings.json
+    if (Test-Path "$BackupDir\settings.json") {
+        Copy-Item "$BackupDir\settings.json" $SettingsFile
+        Write-Success "  恢复 settings.json"
+        $restored++
+    }
+
+    # 恢复输出风格文件
+    if (Test-Path "$BackupDir\output-styles\$OutputStyleName.md") {
+        if (-not (Test-Path $OutputStylesDir)) {
+            New-Item -ItemType Directory -Path $OutputStylesDir -Force | Out-Null
+        }
+        Copy-Item "$BackupDir\output-styles\$OutputStyleName.md" $OutputStylesDir
+        Write-Success "  恢复 output-styles\$OutputStyleName.md"
         $restored++
     }
 

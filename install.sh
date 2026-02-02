@@ -19,6 +19,8 @@ REPO_URL="https://raw.githubusercontent.com/telagod/claude-sage/main"
 CLAUDE_DIR="$HOME/.claude"
 BACKUP_DIR="$CLAUDE_DIR/.sage-backup"
 SKILLS_DIR="$CLAUDE_DIR/skills"
+OUTPUT_STYLES_DIR="$CLAUDE_DIR/output-styles"
+SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 MANIFEST_FILE="$BACKUP_DIR/manifest.txt"
 
 # Skills 列表
@@ -33,11 +35,14 @@ declare -A SCRIPT_NAMES=(
     ["gen-docs"]="doc_generator.py"
 )
 
+# 输出风格
+OUTPUT_STYLE_NAME="mechanicus-sage"
+
 print_banner() {
     echo -e "${CYAN}"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo "       机械神教·铸造贤者 安装程序"
-    echo "       Claude Sage Installer v1.2.0"
+    echo "       Claude Sage Installer v1.3.0"
     echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
     echo -e "${NC}"
 }
@@ -102,6 +107,21 @@ backup_existing() {
         log_success "  备份 CLAUDE.md"
     fi
 
+    # 备份 settings.json（记录原始 outputStyle）
+    if [ -f "$SETTINGS_FILE" ]; then
+        cp "$SETTINGS_FILE" "$BACKUP_DIR/settings.json"
+        echo "settings.json" >> "$MANIFEST_FILE"
+        log_success "  备份 settings.json"
+    fi
+
+    # 备份 output-styles 中的同名文件
+    if [ -f "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md" ]; then
+        mkdir -p "$BACKUP_DIR/output-styles"
+        cp "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md" "$BACKUP_DIR/output-styles/"
+        echo "output-styles/$OUTPUT_STYLE_NAME.md" >> "$MANIFEST_FILE"
+        log_success "  备份 output-styles/$OUTPUT_STYLE_NAME.md"
+    fi
+
     # 备份 skills 目录中受影响的文件
     if [ -d "$SKILLS_DIR" ]; then
         # 备份 run_skill.py
@@ -141,6 +161,55 @@ install_config() {
     # 下载 CLAUDE.md 到 ~/.claude/
     download_file "$REPO_URL/config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
     log_success "CLAUDE.md 已安装"
+}
+
+install_output_style() {
+    log_info "安装输出风格..."
+
+    # 创建 output-styles 目录
+    mkdir -p "$OUTPUT_STYLES_DIR"
+
+    # 下载输出风格文件
+    download_file "$REPO_URL/output-styles/$OUTPUT_STYLE_NAME.md" "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md"
+    log_success "输出风格 $OUTPUT_STYLE_NAME.md 已安装"
+}
+
+configure_output_style() {
+    log_info "配置默认输出风格..."
+
+    if [ -f "$SETTINGS_FILE" ]; then
+        # settings.json 存在，更新 outputStyle
+        if command -v python3 &> /dev/null; then
+            python3 -c "
+import json
+with open('$SETTINGS_FILE', 'r') as f:
+    settings = json.load(f)
+settings['outputStyle'] = '$OUTPUT_STYLE_NAME'
+with open('$SETTINGS_FILE', 'w') as f:
+    json.dump(settings, f, indent=2, ensure_ascii=False)
+"
+            log_success "已设置 outputStyle 为 $OUTPUT_STYLE_NAME"
+        elif command -v python &> /dev/null; then
+            python -c "
+import json
+with open('$SETTINGS_FILE', 'r') as f:
+    settings = json.load(f)
+settings['outputStyle'] = '$OUTPUT_STYLE_NAME'
+with open('$SETTINGS_FILE', 'w') as f:
+    json.dump(settings, f, indent=2, ensure_ascii=False)
+"
+            log_success "已设置 outputStyle 为 $OUTPUT_STYLE_NAME"
+        else
+            log_warn "无法自动配置 outputStyle（需要 Python）"
+            log_info "请手动在 settings.json 中添加: \"outputStyle\": \"$OUTPUT_STYLE_NAME\""
+        fi
+    else
+        # settings.json 不存在，创建基础配置
+        echo "{
+  \"outputStyle\": \"$OUTPUT_STYLE_NAME\"
+}" > "$SETTINGS_FILE"
+        log_success "已创建 settings.json 并设置 outputStyle"
+    fi
 }
 
 install_skills() {
@@ -196,6 +265,23 @@ verify_installation() {
         log_success "CLAUDE.md ✓"
     fi
 
+    # 检查输出风格
+    if [ ! -f "$OUTPUT_STYLES_DIR/$OUTPUT_STYLE_NAME.md" ]; then
+        log_error "输出风格文件未找到"
+        ((errors++))
+    else
+        log_success "output-styles/$OUTPUT_STYLE_NAME.md ✓"
+    fi
+
+    # 检查 settings.json 中的 outputStyle
+    if [ -f "$SETTINGS_FILE" ]; then
+        if grep -q "\"outputStyle\".*\"$OUTPUT_STYLE_NAME\"" "$SETTINGS_FILE"; then
+            log_success "settings.json outputStyle ✓"
+        else
+            log_warn "settings.json outputStyle 未正确配置"
+        fi
+    fi
+
     # 检查 run_skill.py
     if [ ! -f "$SKILLS_DIR/run_skill.py" ]; then
         log_error "run_skill.py 未找到"
@@ -239,8 +325,11 @@ print_success() {
     echo "  已安装文件结构:"
     echo "    $CLAUDE_DIR/"
     echo "    ├── CLAUDE.md"
-    echo "    ├── .sage-backup/          # 备份目录"
-    echo "    ├── .sage-uninstall.sh     # 卸载脚本"
+    echo "    ├── settings.json            # outputStyle 已配置"
+    echo "    ├── output-styles/"
+    echo "    │   └── $OUTPUT_STYLE_NAME.md"
+    echo "    ├── .sage-backup/            # 备份目录"
+    echo "    ├── .sage-uninstall.sh       # 卸载脚本"
     echo "    └── skills/"
     echo "        ├── run_skill.py"
     echo "        ├── verify-security/"
@@ -256,6 +345,8 @@ print_success() {
     echo "    /verify-quality   - 代码质量检查"
     echo "    /gen-docs         - 文档生成器"
     echo ""
+    echo "  输出风格: $OUTPUT_STYLE_NAME (已设为默认)"
+    echo ""
     echo "  卸载命令:"
     echo "    ~/.claude/.sage-uninstall.sh"
     echo ""
@@ -270,6 +361,8 @@ main() {
     check_dependencies
     backup_existing
     install_config
+    install_output_style
+    configure_output_style
     install_skills
     install_uninstaller
     verify_installation

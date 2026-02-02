@@ -10,6 +10,8 @@ $RepoUrl = "https://raw.githubusercontent.com/telagod/claude-sage/main"
 $ClaudeDir = "$env:USERPROFILE\.claude"
 $BackupDir = "$ClaudeDir\.sage-backup"
 $SkillsDir = "$ClaudeDir\skills"
+$OutputStylesDir = "$ClaudeDir\output-styles"
+$SettingsFile = "$ClaudeDir\settings.json"
 $ManifestFile = "$BackupDir\manifest.txt"
 
 # Skills 列表
@@ -24,11 +26,14 @@ $ScriptNames = @{
     "gen-docs"        = "doc_generator.py"
 }
 
+# 输出风格
+$OutputStyleName = "mechanicus-sage"
+
 function Write-Banner {
     Write-Host ""
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host "       机械神教·铸造贤者 安装程序" -ForegroundColor Cyan
-    Write-Host "       Claude Sage Installer v1.2.0" -ForegroundColor Cyan
+    Write-Host "       Claude Sage Installer v1.3.0" -ForegroundColor Cyan
     Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -91,6 +96,24 @@ function Backup-Existing {
         Write-Success "  备份 CLAUDE.md"
     }
 
+    # 备份 settings.json
+    if (Test-Path $SettingsFile) {
+        Copy-Item $SettingsFile "$BackupDir\settings.json"
+        "settings.json" | Add-Content -Path $ManifestFile
+        Write-Success "  备份 settings.json"
+    }
+
+    # 备份输出风格文件
+    if (Test-Path "$OutputStylesDir\$OutputStyleName.md") {
+        $backupStyleDir = "$BackupDir\output-styles"
+        if (-not (Test-Path $backupStyleDir)) {
+            New-Item -ItemType Directory -Path $backupStyleDir -Force | Out-Null
+        }
+        Copy-Item "$OutputStylesDir\$OutputStyleName.md" $backupStyleDir
+        "output-styles\$OutputStyleName.md" | Add-Content -Path $ManifestFile
+        Write-Success "  备份 output-styles\$OutputStyleName.md"
+    }
+
     # 备份 skills 目录中受影响的文件
     if (Test-Path $SkillsDir) {
         # 备份 run_skill.py
@@ -138,6 +161,45 @@ function Install-Config {
     $configUrl = "$RepoUrl/config/CLAUDE.md"
     Invoke-WebRequest -Uri $configUrl -OutFile "$ClaudeDir\CLAUDE.md" -UseBasicParsing
     Write-Success "CLAUDE.md 已安装"
+}
+
+function Install-OutputStyle {
+    Write-Info "安装输出风格..."
+
+    # 创建 output-styles 目录
+    if (-not (Test-Path $OutputStylesDir)) {
+        New-Item -ItemType Directory -Path $OutputStylesDir -Force | Out-Null
+    }
+
+    # 下载输出风格文件
+    $styleUrl = "$RepoUrl/output-styles/$OutputStyleName.md"
+    Invoke-WebRequest -Uri $styleUrl -OutFile "$OutputStylesDir\$OutputStyleName.md" -UseBasicParsing
+    Write-Success "输出风格 $OutputStyleName.md 已安装"
+}
+
+function Set-OutputStyle {
+    Write-Info "配置默认输出风格..."
+
+    if (Test-Path $SettingsFile) {
+        # settings.json 存在，更新 outputStyle
+        try {
+            $settings = Get-Content $SettingsFile -Raw | ConvertFrom-Json
+            $settings | Add-Member -NotePropertyName "outputStyle" -NotePropertyValue $OutputStyleName -Force
+            $settings | ConvertTo-Json -Depth 10 | Set-Content $SettingsFile -Encoding UTF8
+            Write-Success "已设置 outputStyle 为 $OutputStyleName"
+        }
+        catch {
+            Write-Warning "无法自动配置 outputStyle"
+            Write-Info "请手动在 settings.json 中添加: `"outputStyle`": `"$OutputStyleName`""
+        }
+    }
+    else {
+        # settings.json 不存在，创建基础配置
+        @{
+            outputStyle = $OutputStyleName
+        } | ConvertTo-Json | Set-Content $SettingsFile -Encoding UTF8
+        Write-Success "已创建 settings.json 并设置 outputStyle"
+    }
 }
 
 function Install-Skills {
@@ -205,6 +267,26 @@ function Test-Installation {
         Write-Success "CLAUDE.md ✓"
     }
 
+    # 检查输出风格
+    if (-not (Test-Path "$OutputStylesDir\$OutputStyleName.md")) {
+        Write-Error "输出风格文件未找到"
+        $errors++
+    }
+    else {
+        Write-Success "output-styles\$OutputStyleName.md ✓"
+    }
+
+    # 检查 settings.json 中的 outputStyle
+    if (Test-Path $SettingsFile) {
+        $content = Get-Content $SettingsFile -Raw
+        if ($content -match "`"outputStyle`".*`"$OutputStyleName`"") {
+            Write-Success "settings.json outputStyle ✓"
+        }
+        else {
+            Write-Warning "settings.json outputStyle 未正确配置"
+        }
+    }
+
     # 检查 run_skill.py
     if (-not (Test-Path "$SkillsDir\run_skill.py")) {
         Write-Error "run_skill.py 未找到"
@@ -255,8 +337,11 @@ function Write-SuccessBanner {
     Write-Host "  已安装文件结构:"
     Write-Host "    $ClaudeDir\"
     Write-Host "    ├── CLAUDE.md"
-    Write-Host "    ├── .sage-backup\          # 备份目录"
-    Write-Host "    ├── .sage-uninstall.ps1    # 卸载脚本"
+    Write-Host "    ├── settings.json            # outputStyle 已配置"
+    Write-Host "    ├── output-styles\"
+    Write-Host "    │   └── $OutputStyleName.md"
+    Write-Host "    ├── .sage-backup\            # 备份目录"
+    Write-Host "    ├── .sage-uninstall.ps1      # 卸载脚本"
     Write-Host "    └── skills\"
     Write-Host "        ├── run_skill.py"
     Write-Host "        ├── verify-security\"
@@ -272,6 +357,8 @@ function Write-SuccessBanner {
     Write-Host "    /verify-quality   - 代码质量检查"
     Write-Host "    /gen-docs         - 文档生成器"
     Write-Host ""
+    Write-Host "  输出风格: $OutputStyleName (已设为默认)"
+    Write-Host ""
     Write-Host "  卸载命令:"
     Write-Host "    & `"$ClaudeDir\.sage-uninstall.ps1`""
     Write-Host ""
@@ -286,6 +373,8 @@ Write-Banner
 Test-Dependencies
 Backup-Existing
 Install-Config
+Install-OutputStyle
+Set-OutputStyle
 Install-Skills
 Install-Uninstaller
 if (Test-Installation) {
