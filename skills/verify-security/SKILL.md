@@ -1,6 +1,6 @@
 ---
 name: verify-security
-description: 安全校验。自动扫描代码安全漏洞，检测危险模式，确保安全决策有文档记录。
+description: 安全校验。自动扫描代码安全漏洞，检测危险模式，确保安全决策有文档记录。当用户提到安全扫描、漏洞检测、安全审计、代码安全、OWASP、注入检测、敏感信息泄露时使用。在新建模块、安全相关变更、攻防任务、重构完成时自动触发。
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash, Read, Grep

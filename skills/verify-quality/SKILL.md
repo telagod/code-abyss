@@ -1,6 +1,6 @@
 ---
 name: verify-quality
-description: 代码质量检查。检测复杂度、重复代码、命名规范、函数长度等质量指标。
+description: 代码质量检查。检测复杂度、重复代码、命名规范、函数长度等质量指标。当用户提到代码质量、复杂度检查、代码异味、重构建议、lint检查、代码规范时使用。在复杂模块、重构完成时自动触发。
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash, Read, Glob

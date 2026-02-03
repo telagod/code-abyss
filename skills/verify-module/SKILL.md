@@ -1,6 +1,6 @@
 ---
 name: verify-module
-description: 模块完整性校验。扫描目录结构、检测缺失文档、验证代码与文档同步。
+description: 模块完整性校验。扫描目录结构、检测缺失文档、验证代码与文档同步。当用户提到模块校验、文档检查、结构完整性、README检查、DESIGN检查时使用。在新建模块完成时自动触发。
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash, Read, Glob
