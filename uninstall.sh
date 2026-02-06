@@ -32,7 +32,7 @@ ENABLE_OUTPUT_STYLE="false"
 SKILLS=("verify-security" "verify-module" "verify-change" "verify-quality" "gen-docs")
 
 # 输出风格
-OUTPUT_STYLE_NAME="mechanicus-sage"
+OUTPUT_STYLE_NAME="abyss-cultivator"
 
 is_interactive() {
     [ -t 1 ] && [ -r /dev/tty ]
@@ -128,10 +128,10 @@ init_target_vars() {
 
 print_banner() {
     echo -e "${CYAN}"
-    echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
-    echo "       机械神教·铸造贤者 卸载程序"
+    echo "☠️ ═══════════════════════════════════════════════════════════════ ☠️"
+    echo "       邪修红尘仙·宿命深渊 卸载程序"
     echo "       Claude Sage Uninstaller v${VERSION}"
-    echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
+    echo "☠️ ═══════════════════════════════════════════════════════════════ ☠️"
     echo -e "${NC}"
 }
 
@@ -285,7 +285,7 @@ print_success() {
     echo "  如需重新安装:"
     echo "    curl -fsSL https://raw.githubusercontent.com/telagod/claude-sage/main/install.sh | bash"
     echo ""
-    echo -e "${CYAN}  「机魂已净，愿万机神庇佑。」${NC}"
+    echo -e "${CYAN}  「道基已净，愿来世再渡此劫。」${NC}"
     echo ""
 }
 

@@ -38,7 +38,7 @@ $ScriptNames = @{
 }
 
 # 输出风格
-$OutputStyleName = "mechanicus-sage"
+$OutputStyleName = "abyss-cultivator"
 
 function Parse-Arguments {
     if ($env:SAGE_TARGET) {
@@ -192,10 +192,10 @@ function Download-File {
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
-    Write-Host "       机械神教·铸造贤者 安装程序" -ForegroundColor Cyan
+    Write-Host "☠️ ═══════════════════════════════════════════════════════════════ ☠️" -ForegroundColor Cyan
+    Write-Host "       邪修红尘仙·宿命深渊 安装程序" -ForegroundColor Cyan
     Write-Host "       Claude Sage Installer v$Version" -ForegroundColor Cyan
-    Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
+    Write-Host "☠️ ═══════════════════════════════════════════════════════════════ ☠️" -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -538,13 +538,13 @@ function Write-SuccessBanner {
     Write-Host "    & `"$($script:BaseDir)\.sage-uninstall.ps1`""
     Write-Host ""
     if ($script:Target -eq "claude") {
-        Write-Host "  现在启动 Claude Code，即可体验「机械神教·铸造贤者」风格"
+        Write-Host "  现在启动 Claude Code，即可体验「邪修红尘仙·宿命深渊」风格"
     }
     else {
         Write-Host "  现在启动 Codex CLI，即可使用本项目提供的 AGENTS.md 与 Skills"
     }
     Write-Host ""
-    Write-Host "  「圣工已毕，机魂安宁。赞美万机神，知识即力量！」" -ForegroundColor Cyan
+    Write-Host "  「吾不惧死。吾惧的是，死前未能飞升。」" -ForegroundColor Cyan
     Write-Host ""
 }
 

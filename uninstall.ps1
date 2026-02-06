@@ -27,7 +27,7 @@ $EnableOutputStyle = $false
 $Skills = @("verify-security", "verify-module", "verify-change", "verify-quality", "gen-docs")
 
 # 输出风格
-$OutputStyleName = "mechanicus-sage"
+$OutputStyleName = "abyss-cultivator"
 
 function Get-UserProfileDir {
     $home = $env:USERPROFILE
@@ -130,10 +130,10 @@ function Init-TargetVars {
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
-    Write-Host "       机械神教·铸造贤者 卸载程序" -ForegroundColor Cyan
+    Write-Host "☠️ ═══════════════════════════════════════════════════════════════ ☠️" -ForegroundColor Cyan
+    Write-Host "       邪修红尘仙·宿命深渊 卸载程序" -ForegroundColor Cyan
     Write-Host "       Claude Sage Uninstaller v$Version" -ForegroundColor Cyan
-    Write-Host "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️" -ForegroundColor Cyan
+    Write-Host "☠️ ═══════════════════════════════════════════════════════════════ ☠️" -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -326,7 +326,7 @@ function Write-SuccessBanner {
     Write-Host "  如需重新安装:"
     Write-Host "    irm https://raw.githubusercontent.com/telagod/claude-sage/main/install.ps1 | iex"
     Write-Host ""
-    Write-Host "  「机魂已净，愿万机神庇佑。」" -ForegroundColor Cyan
+    Write-Host "  「道基已净，愿来世再渡此劫。」" -ForegroundColor Cyan
     Write-Host ""
 }
 

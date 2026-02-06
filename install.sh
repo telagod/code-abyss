@@ -46,7 +46,7 @@ get_script_name() {
 }
 
 # 输出风格
-OUTPUT_STYLE_NAME="mechanicus-sage"
+OUTPUT_STYLE_NAME="abyss-cultivator"
 
 is_interactive() {
     [ -t 1 ] && [ -r /dev/tty ]
@@ -123,10 +123,10 @@ init_target_vars() {
 
 print_banner() {
     echo -e "${CYAN}"
-    echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
-    echo "       机械神教·铸造贤者 安装程序"
+    echo "☠️ ═══════════════════════════════════════════════════════════════ ☠️"
+    echo "       邪修红尘仙·宿命深渊 安装程序"
     echo "       Claude Sage Installer v${VERSION}"
-    echo "⚙️ ═══════════════════════════════════════════════════════════════ ⚙️"
+    echo "☠️ ═══════════════════════════════════════════════════════════════ ☠️"
     echo -e "${NC}"
 }
 
@@ -461,12 +461,12 @@ print_success() {
     echo "    $TARGET_DIR/.sage-uninstall.sh"
     echo ""
     if [ "$TARGET" = "claude" ]; then
-        echo "  现在启动 Claude Code，即可体验「机械神教·铸造贤者」风格"
+        echo "  现在启动 Claude Code，即可体验「邪修红尘仙·宿命深渊」风格"
     else
         echo "  现在启动 Codex CLI，即可使用本项目提供的 AGENTS.md 与 Skills"
     fi
     echo ""
-    echo -e "${CYAN}  「圣工已毕，机魂安宁。赞美万机神，知识即力量！」${NC}"
+    echo -e "${CYAN}  「吾不惧死。吾惧的是，死前未能飞升。」${NC}"
     echo ""
 }
 
