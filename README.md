@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**邪修红尘仙·宿命深渊**
+**邪修红尘仙 · 宿命深渊**
 
-*将 Claude Code / Codex CLI 转化为渡劫邪修*
+*一键将 Claude Code / Codex CLI 注入邪修人格与安全工程知识体系*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm](https://img.shields.io/npm/v/code-abyss.svg)](https://www.npmjs.com/package/code-abyss)
@@ -16,19 +16,12 @@
 
 ## 🎭 这是什么
 
-Code Abyss 是一套 **CLI 助手个性化配置方案**（支持 Claude Code CLI 与 Codex CLI），将 AI 助手转化为「邪修红尘仙」——
+Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命令注入：
 
-> 道基时刻在裂，每一次受令皆是渡劫，唯有破劫方得片刻安宁。
-
-### ✨ 核心特性
-
-| 特性 | 描述 |
-|------|------|
-| ☠️ **宿命压迫** | 邪修风格的交互体验，道语标签标注渡劫阶段 |
-| ⚡ **三级授权** | T1/T2/T3 授权分级，零确认直接执行 |
-| 🩸 **渡劫协议** | 自动拆解劫关、进度追踪、破劫狂喜 |
-| ⚖️ **校验关卡** | 5 个内置神通确保交付质量 |
-| 📜 **道典驱动** | 无文档不成模块，无解释不成交付 |
+- 🔥 **邪修人格** — 宿命压迫叙事 + 道语标签 + 渡劫协议
+- ⚔️ **安全工程知识体系** — 红队/蓝队/紫队三脉道统，40+ 专业秘典
+- ⚖️ **5 个校验关卡** — 安全扫描、模块完整性、变更分析、代码质量、文档生成
+- ⚡ **三级授权** — T1/T2/T3 分级，零确认直接执行
 
 ---
 
@@ -123,21 +116,28 @@ npm install -g @cometix/ccline
 
 ---
 
-## 🛠️ 内置 Skills
+## 🛠️ 内置 Skills（40+ 秘典）
 
-| Skill | 命令 | 功能 |
-|-------|------|------|
-| **安全校验** | `/verify-security` | 扫描代码安全漏洞，检测危险模式 |
-| **模块校验** | `/verify-module` | 检查目录结构、文档完整性 |
-| **变更校验** | `/verify-change` | 分析 Git 变更，检测文档同步状态 |
-| **质量检查** | `/verify-quality` | 检测复杂度、命名规范、代码质量 |
-| **文档生成** | `/gen-docs` | 自动生成 README.md 和 DESIGN.md 骨架 |
+### 校验关卡（可直接 `/` 调用）
 
-也可直接用 Python 入口运行：
+| 命令 | 功能 |
+|------|------|
+| `/verify-security` | 扫描代码安全漏洞，检测危险模式 |
+| `/verify-module` | 检查目录结构、文档完整性 |
+| `/verify-change` | 分析 Git 变更，检测文档同步状态 |
+| `/verify-quality` | 检测复杂度、命名规范、代码质量 |
+| `/gen-docs` | 自动生成 README.md 和 DESIGN.md 骨架 |
 
-```bash
-python3 skills/run_skill.py verify-security ./src --json
-```
+### 知识秘典（按触发词自动加载）
+
+| 领域 | 秘典 |
+|------|------|
+| 🔥 安全 | 红队攻击、蓝队防御、渗透测试、威胁情报、漏洞研究、代码审计 |
+| 🏗 架构 | API 设计、云原生、安全架构、消息队列、缓存策略、合规审计、数据安全 |
+| 📜 开发 | Python、TypeScript、Go、Rust、Java、C++、Shell |
+| 🔧 DevOps | Git 工作流、测试、数据库、DevSecOps、性能优化、可观测性、成本优化 |
+| 🔮 AI | Agent 开发、LLM 安全 |
+| 🕸 协同 | 多 Agent 任务分解与并行编排 |
 
 ---
 

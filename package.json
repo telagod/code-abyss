@@ -1,7 +1,7 @@
 {
   "name": "code-abyss",
   "version": "1.5.1",
-  "description": "邪修红尘仙·宿命深渊 - Claude Code CLI 个性化配置方案",
+  "description": "邪修红尘仙·宿命深渊 - 一键为 Claude Code / Codex CLI 注入邪修人格与安全工程知识体系",
   "keywords": [
     "claude",
     "claude-code",
