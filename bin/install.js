@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const VERSION = '1.6.2';
+const VERSION = '1.6.3';
 const HOME = os.homedir();
 const SKIP = ['__pycache__', '.pyc', '.pyo', '.egg-info', '.DS_Store', 'Thumbs.db', '.git'];
 const PKG_ROOT = path.join(__dirname, '..');
@@ -160,10 +160,11 @@ const SETTINGS_TEMPLATE = {
   }
 };
 
+const CCLINE_CMD = process.platform === 'win32' ? 'ccline' : '~/.claude/ccline/ccline';
 const CCLINE_STATUS_LINE = {
   statusLine: {
     type: 'command',
-    command: path.join(HOME, '.claude', 'ccline', 'ccline'),
+    command: CCLINE_CMD,
     padding: 0
   }
 };
@@ -342,11 +343,13 @@ async function installCcline(ctx) {
   console.log('');
   info('安装 ccline 状态栏...');
   const { execSync } = require('child_process');
-  const cclineBin = path.join(HOME, '.claude', 'ccline', 'ccline');
 
   let installed = false;
   try { execSync('ccline --version', { stdio: 'pipe' }); installed = true; } catch (e) {}
-  if (!installed && fs.existsSync(cclineBin)) installed = true;
+  if (!installed) {
+    const cclineBin = path.join(HOME, '.claude', 'ccline', 'ccline');
+    if (fs.existsSync(cclineBin)) installed = true;
+  }
 
   if (!installed) {
     info('ccline 未检测到，正在安装...');
