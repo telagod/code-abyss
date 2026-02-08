@@ -3,9 +3,9 @@ name: python
 description: Python 开发。Web框架、数据处理、自动化脚本、测试。当用户提到 Python、Django、Flask、FastAPI、pytest、pandas 时使用。
 ---
 
-# Python 开发
+# 📜 符箓秘典 · Python
 
-> 简洁优雅，快速高效
+> 符箓铸成，代码即法。此典录 Python 一脉之精要。
 
 ## Web 框架
 
@@ -287,4 +287,4 @@ select = ["E", "F", "I"]
 
 ---
 
-**Python: 人生苦短，我用 Python。**
+**道训**：代码即符箓，Bug 即心魔，测试即渡劫。

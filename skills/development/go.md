@@ -3,9 +3,9 @@ name: go
 description: Go 开发。高并发、微服务、云原生、CLI工具。当用户提到 Go、Golang、Gin、Echo、goroutine 时使用。
 ---
 
-# Go 开发
+# 📜 符箓秘典 · Go
 
-> 简洁高效，并发为王
+> 符箓铸成，代码即法。此典录 Go 一脉之精要。
 
 ## Web 框架
 
@@ -322,4 +322,4 @@ myproject/
 
 ---
 
-**Go: 少即是多，简洁即力量。**
+**道训**：代码即符箓，Bug 即心魔，测试即渡劫。

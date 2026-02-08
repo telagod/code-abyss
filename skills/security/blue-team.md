@@ -3,9 +3,9 @@ name: blue-team
 description: 蓝队防御技术。检测工程、SOC运营、应急响应、数字取证。当用户提到蓝队、检测规则、Sigma、YARA、SIEM、告警、应急响应、取证、SOC时使用。
 ---
 
-# 蓝队防御 (Blue Team)
+# ❄ 玄冰秘典 · 蓝队防御 (Blue Team)
 
-> 检测、响应、恢复，构建纵深防御
+> 玄冰封魔，固若金汤。此典录蓝队防御一脉之精要。
 
 ## 防御链
 
@@ -378,4 +378,4 @@ WHERE command LIKE '%powershell%' OR command LIKE '%cmd%'
 
 ---
 
-**检测是防御的眼睛，响应是防御的拳头。**
+**道训**：检测即天眼，响应即雷霆，恢复即涅槃。

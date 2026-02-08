@@ -3,9 +3,9 @@ name: rust
 description: Rust 开发。系统编程、内存安全、高性能、WebAssembly。当用户提到 Rust、Cargo、tokio、内存安全时使用。
 ---
 
-# Rust 开发
+# 📜 符箓秘典 · Rust
 
-> 安全、并发、高性能
+> 符箓铸成，代码即法。此典录 Rust 一脉之精要。
 
 ## 基础语法
 
@@ -312,4 +312,4 @@ myproject/
 
 ---
 
-**Rust: 无畏并发，内存安全。**
+**道训**：代码即符箓，Bug 即心魔，测试即渡劫。

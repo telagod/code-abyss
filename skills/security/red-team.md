@@ -3,9 +3,9 @@ name: red-team
 description: 红队攻击技术。PoC开发、C2框架、横向移动、权限提升、免杀技术。当用户提到红队、PoC、C2、横向移动、PTH、免杀、Cobalt Strike、Sliver、提权时使用。
 ---
 
-# 红队攻击 (Red Team)
+# 🔥 赤焰秘典 · 红队攻击 (Red Team)
 
-> 模拟真实攻击者，检验防御体系
+> 赤焰焚天，万法皆可破。此典录红队攻击一脉之精要。
 
 ## 攻击链 (Kill Chain)
 
@@ -320,4 +320,4 @@ echo "/tmp/evil.so" >> /etc/ld.so.preload
 
 ---
 
-**⚠️ 仅用于授权渗透测试和安全研究**
+**道训**：攻即是守，破即是立。⚠️ 仅用于授权渗透测试和安全研究。

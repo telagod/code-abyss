@@ -2,7 +2,20 @@
 
 ## 项目概述
 
-Claude Sage 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 Codex CLI），目标是提供一键安装的「机械神教·铸造贤者」风格体验。
+Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 Codex CLI），采用三层架构提供「邪修红尘仙·宿命深渊」风格体验。
+
+## 三层架构分工
+
+| 层 | 文件 | 职责 |
+|---|------|------|
+| **身份与规则** | `config/CLAUDE.md` | 定义"做什么"：身份、规则、场景路由、执行链、成功标准 |
+| **输出风格** | `output-styles/abyss-cultivator.md` | 定义"怎么说"：道语标签、情绪递进、报告模板、术语映射 |
+| **技术知识** | `skills/**/*.md` | 定义"会什么"：技术知识 + 道语浸染首尾 |
+| **合并版** | `config/AGENTS.md` | CLAUDE.md + output-style 合并生成（Codex CLI 用） |
+
+### AGENTS.md 生成规则
+
+`config/AGENTS.md` = `config/CLAUDE.md` 全文 + `output-styles/abyss-cultivator.md` 全文拼接。每次更新 CLAUDE.md 或 output-style 后需重新生成。
 
 ## 设计决策
 
@@ -10,11 +23,11 @@ Claude Sage 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 
 
 | 方案 | 优点 | 缺点 | 决策 |
 |------|------|------|------|
-| Shell 脚本 | 无依赖、跨平台 | 功能有限 | ✅ 采用 |
+| Shell 脚本 | 无依赖、跨平台 | 功能有限 | ❌ 已移除 |
 | Python 安装器 | 功能强大 | 需要 Python 环境 | ❌ 放弃 |
-| npm 包 | 生态成熟 | 需要 Node.js | ❌ 放弃 |
+| npm 包 | 生态成熟 | 需要 Node.js | ✅ 采用 |
 
-**取舍说明**：选择 Shell 脚本，在功能复杂度上做了取舍，换取零依赖的安装体验。
+**取舍说明**：选择 npm 包（npx code-abyss），在安装便捷性和生态成熟度上取得平衡。
 
 ### 2. Skills 实现语言
 

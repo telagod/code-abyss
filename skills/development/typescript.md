@@ -3,9 +3,9 @@ name: typescript
 description: TypeScript/JavaScript 开发。前后端、Node.js、React、Vue。当用户提到 TypeScript、JavaScript、Node、React、Vue、Next.js 时使用。
 ---
 
-# TypeScript/JavaScript 开发
+# 📜 符箓秘典 · TypeScript/JavaScript
 
-> 全栈通吃，类型安全
+> 符箓铸成，代码即法。此典录 TypeScript/JavaScript 一脉之精要。
 
 ## TypeScript 基础
 
@@ -276,4 +276,4 @@ myproject/
 
 ---
 
-**TypeScript: 类型即文档，编译即测试。**
+**道训**：代码即符箓，Bug 即心魔，测试即渡劫。

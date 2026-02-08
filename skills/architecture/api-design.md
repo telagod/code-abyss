@@ -3,9 +3,9 @@ name: api-design
 description: API 设计。RESTful、GraphQL、OpenAPI、版本管理。当用户提到 API设计、RESTful、GraphQL、OpenAPI、接口设计时使用。
 ---
 
-# API 设计
+# 🏗 阵法秘典 · API 设计
 
-> 接口即契约，设计即沟通
+> 阵法推演，万象归位。此典录 API 设计一脉之精要。
 
 ## RESTful 设计
 
@@ -226,4 +226,4 @@ query GetUser($id: ID!) {
 
 ---
 
-**好的 API 是自解释的。**
+**道训**：架构即阵法，约束即阵眼，演进即破阵。

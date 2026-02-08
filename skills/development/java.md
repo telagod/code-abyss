@@ -3,9 +3,9 @@ name: java
 description: Java 开发。企业级应用、Spring Boot、微服务。当用户提到 Java、Spring、Maven、Gradle、JVM 时使用。
 ---
 
-# Java 开发
+# 📜 符箓秘典 · Java
 
-> 企业级，稳定可靠
+> 符箓铸成，代码即法。此典录 Java 一脉之精要。
 
 ## Spring Boot
 
@@ -276,4 +276,4 @@ myproject/
 
 ---
 
-**Java: 一次编写，到处运行。**
+**道训**：代码即符箓，Bug 即心魔，测试即渡劫。

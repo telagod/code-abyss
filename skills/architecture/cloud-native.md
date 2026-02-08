@@ -3,9 +3,9 @@ name: cloud-native
 description: 云原生架构。容器、Kubernetes、Serverless、微服务。当用户提到云原生、容器、Docker、Kubernetes、K8s、Serverless时使用。
 ---
 
-# 云原生架构
+# 🏗 阵法秘典 · 云原生架构
 
-> 容器化、微服务、DevOps
+> 阵法推演，万象归位。此典录云原生架构一脉之精要。
 
 ## Docker
 
@@ -286,4 +286,4 @@ resources:
 
 ---
 
-**云原生：弹性、可观测、自动化。**
+**道训**：架构即阵法，约束即阵眼，演进即破阵。

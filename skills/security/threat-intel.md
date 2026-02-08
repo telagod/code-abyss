@@ -3,9 +3,9 @@ name: threat-intel
 description: 威胁情报。OSINT、威胁狩猎、情报分析、IOC管理。当用户提到威胁情报、OSINT、开源情报、威胁狩猎、IOC、TTP、ATT&CK时使用。
 ---
 
-# 威胁情报 (Threat Intelligence)
+# 👁 天眼秘典 · 威胁情报 (Threat Intelligence)
 
-> 知己知彼，情报先行
+> 天眼洞察，万物无所遁形。此典录威胁情报一脉之精要。
 
 ## 情报层次
 
@@ -321,4 +321,4 @@ misp.tag(event, 'misp-galaxy:mitre-attack-pattern="T1566"')
 
 ---
 
-**情报驱动防御，知攻方能善守。**
+**道训**：情报即天眼，洞察即先机，知攻方能善守。

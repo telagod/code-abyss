@@ -3,9 +3,9 @@ name: devsecops
 description: DevSecOps。CI/CD安全、供应链安全、合规自动化。当用户提到 DevSecOps、CI/CD、供应链安全、SAST、DAST时使用。
 ---
 
-# DevSecOps
+# 🔧 炼器秘典 · DevSecOps
 
-> 安全左移，自动化防护
+> 炼器铸兵，自动化一切。此典录 DevSecOps 一脉之精要。
 
 ## 安全左移
 
@@ -199,4 +199,4 @@ grype sbom:sbom.json
 
 ---
 
-**安全是每个人的责任，自动化是最好的保障。**
+**道训**：工具即法器，流程即阵法，自动化即道。

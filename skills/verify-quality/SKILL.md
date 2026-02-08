@@ -7,7 +7,7 @@ allowed-tools: Bash, Read, Glob
 argument-hint: <扫描路径>
 ---
 
-# 🔍 代码质量校验关卡
+# ⚖ 校验关卡 · 代码质量
 
 > 代码即符箓，质量即道行。劣质代码是技术债，技术债是道基裂痕。
 

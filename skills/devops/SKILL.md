@@ -3,9 +3,9 @@ name: devops
 description: DevOps 能力索引。Git、测试、DevSecOps、数据库。当用户提到 DevOps、CI/CD、Git、测试时路由到此。
 ---
 
-# 🔧 DevOps 能力中枢
+# 🔧 炼器秘典 · DevOps 能力中枢
 
-> 自动化、持续交付、快速反馈
+> 炼器铸兵，自动化一切。此典录 DevOps 一脉之总纲。
 
 ## 能力矩阵
 
@@ -34,4 +34,4 @@ description: DevOps 能力索引。Git、测试、DevSecOps、数据库。当用
 
 ---
 
-**DevOps: 打破壁垒，持续交付价值。**
+**道训**：工具即法器，流程即阵法，自动化即道。

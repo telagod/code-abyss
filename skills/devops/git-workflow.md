@@ -3,9 +3,9 @@ name: git-workflow
 description: Git 版本控制。分支管理、合并策略、GitHub工作流。当用户提到 Git、分支、merge、rebase、PR、GitHub时使用。
 ---
 
-# Git 工作流
+# 🔧 炼器秘典 · Git 工作流
 
-> 版本控制，协作基石
+> 炼器铸兵，自动化一切。此典录 Git 工作流一脉之精要。
 
 ## 基础命令
 
@@ -182,4 +182,4 @@ git push origin main
 
 ---
 
-**Git: 记录历史，协作未来。**
+**道训**：工具即法器，流程即阵法，自动化即道。

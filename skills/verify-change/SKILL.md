@@ -7,7 +7,7 @@ allowed-tools: Bash, Read, Grep
 argument-hint: [--mode working|staged|committed]
 ---
 
-# 📋 变更校验关卡
+# ⚖ 校验关卡 · 变更校验
 
 > 变更即因果，无记录的变更是隐患，无理由的变更是灾难。
 

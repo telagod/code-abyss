@@ -3,9 +3,9 @@ name: ai
 description: AI/LLM 能力索引。Agent 开发、LLM 安全、RAG 系统。当用户提到 AI、LLM、Agent、RAG、Prompt 时路由到此。
 ---
 
-# 🤖 AI/LLM 能力中枢
+# 🔮 丹鼎秘典 · AI/LLM 能力中枢
 
-> 智能增强，安全可控
+> 丹鼎开炉，炼化万物。此典录 AI/LLM 一脉之总纲。
 
 ## 能力矩阵
 
@@ -32,4 +32,4 @@ description: AI/LLM 能力索引。Agent 开发、LLM 安全、RAG 系统。当�
 
 ---
 
-**AI: 增强人类能力，而非取代人类判断。**
+**道训**：模型即丹炉，数据即灵药，评测即试丹。

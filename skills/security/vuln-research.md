@@ -3,9 +3,9 @@ name: vuln-research
 description: 漏洞研究。二进制分析、逆向工程、Exploit开发、Fuzzing。当用户提到漏洞研究、二进制、逆向、Exploit、Fuzzing、PWN、栈溢出、堆溢出时使用。
 ---
 
-# 漏洞研究 (Vulnerability Research)
+# 🔥 赤焰秘典 · 漏洞研究 (Vulnerability Research)
 
-> 深入底层，发现未知
+> 赤焰焚天，万法皆可破。此典录漏洞研究一脉之精要。
 
 ## 研究流程
 
@@ -368,4 +368,4 @@ checksec ./pwn
 
 ---
 
-**深入底层，方能发现未知漏洞。**
+**道训**：深入底层，方能窥见天机，发现未知破绽。

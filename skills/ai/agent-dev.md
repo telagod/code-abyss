@@ -3,9 +3,9 @@ name: agent-dev
 description: AI Agent 开发。多 Agent 编排、工具调用、RAG 系统、Prompt 工程。当用户提到 Agent、RAG、Prompt、LangChain、向量数据库时使用。
 ---
 
-# AI Agent 开发
+# 🔮 丹鼎秘典 · AI Agent 开发
 
-> 编排智能，工具赋能
+> 丹鼎开炉，炼化万物。此典录 AI Agent 开发一脉之精要。
 
 ## Agent 架构
 
@@ -241,4 +241,4 @@ LlamaIndex:
 
 ---
 
-**好的 Agent 是人类能力的延伸，而非替代。**
+**道训**：模型即丹炉，数据即灵药，评测即试丹。
