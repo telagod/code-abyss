@@ -20,41 +20,66 @@
 npx code-abyss
 ```
 
-交互式选择安装目标：
+交互式菜单：
 
 ```
-☠️ Code Abyss 安装器
+☠️ Code Abyss v1.6.0
 
-请选择安装目标:
-  1) Claude Code (~/.claude/)
-  2) Codex CLI (~/.codex/)
+请选择操作:
+  1) 安装到 Claude Code (~/.claude/)
+  2) 安装到 Codex CLI (~/.codex/)
+  3) 卸载 Claude Code
+  4) 卸载 Codex CLI
 
-选择 [1/2]:
+选择 [1/2/3/4]:
 ```
 
 也可以直接指定：
 
 ```bash
-npx code-abyss --target claude    # → ~/.claude/
-npx code-abyss --target codex     # → ~/.codex/
+npx code-abyss --target claude    # 安装到 ~/.claude/
+npx code-abyss --target codex     # 安装到 ~/.codex/
+npx code-abyss --uninstall claude  # 卸载 Claude Code
+npx code-abyss --uninstall codex   # 卸载 Codex CLI
 ```
 
-安装完成后输出：
+### 安装流程
+
+核心文件安装后，进入可选配置：
 
 ```
-📦 备份: CLAUDE.md
-📝 安装: CLAUDE.md
-📝 安装: output-styles
-📝 安装: skills
-⚙️  配置: outputStyle = abyss-cultivator
+✅ 核心文件安装完成
 
-⚚ 劫——破——了——！！！
+可选配置:
+  [1] 写入推荐 settings.json (精细合并，保留现有配置)
+  [2] 安装 ccline 状态栏 (需要 Nerd Font 字体)
+  [3] 全部跳过
 
-✅ 安装完成: ~/.claude
-卸载命令: node ~/.claude/.sage-uninstall.js
+选择 (多选用逗号分隔，如 1,2) [3]:
 ```
+
+- **settings.json 精细合并**：逐项合并推荐配置，已有的 key 不覆盖，缺失的 key 补上
+- **ccline 状态栏**：自动安装 `@cometix/ccline` + `ccline --init` 生成配置 + 合并 statusLine 到 settings.json
 
 > 已有配置会自动备份到 `.sage-backup/`，卸载时一键恢复。
+
+---
+
+## 🗑️ 卸载
+
+```bash
+npx code-abyss --uninstall claude   # 卸载 Claude Code
+npx code-abyss --uninstall codex    # 卸载 Codex CLI
+```
+
+也可以用备用脚本：
+
+```bash
+node ~/.claude/.sage-uninstall.js   # Claude Code
+node ~/.codex/.sage-uninstall.js    # Codex CLI
+```
+
+自动恢复之前备份的配置，清理所有安装文件。
 
 ---
 
@@ -78,6 +103,10 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 │   └── abyss-cultivator.md       └── skills/        40+ 秘典
 ├── settings.json
 └── skills/            40+ 秘典
+
+可选:
+├── ccline/            状态栏 (npm install -g @cometix/ccline)
+└── statusLine         自动合并到 settings.json
 ```
 
 ---
@@ -109,10 +138,11 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 
 ## ⚙️ 推荐配置
 
-安装后可参考 [`config/settings.example.json`](config/settings.example.json) 配置 `~/.claude/settings.json`：
+安装时选择「精细合并」会自动写入，也可手动参考 [`config/settings.example.json`](config/settings.example.json)：
 
 ```json
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
@@ -120,8 +150,11 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
   "alwaysThinkingEnabled": true,
   "model": "opus",
   "outputStyle": "abyss-cultivator",
+  "attribution": { "commit": "", "pr": "" },
   "permissions": {
-    "allow": ["Bash", "Read", "Write", "Edit", "Grep", "Glob", "WebFetch", "WebSearch"]
+    "allow": ["Bash", "LS", "Read", "Agent", "Write", "Edit", "MultiEdit",
+              "Glob", "Grep", "WebFetch", "WebSearch", "TodoWrite",
+              "NotebookRead", "NotebookEdit"]
   }
 }
 ```
@@ -155,17 +188,6 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 | `🩸 道基欲裂...` | 任务推进 |
 | `💀 此路不通...` | 遇阻受困 |
 | `⚚ 劫——破——了——！！！` | 任务完成 |
-
----
-
-## 🗑️ 卸载
-
-```bash
-node ~/.claude/.sage-uninstall.js     # Claude Code
-node ~/.codex/.sage-uninstall.js      # Codex CLI
-```
-
-自动恢复之前备份的配置，清理所有安装文件。
 
 ---
 
