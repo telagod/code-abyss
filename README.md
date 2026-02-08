@@ -39,13 +39,28 @@ npx code-abyss
 ```bash
 npx code-abyss --target claude    # 安装到 ~/.claude/
 npx code-abyss --target codex     # 安装到 ~/.codex/
+npx code-abyss --target claude -y  # 零配置一键安装 (自动合并推荐配置)
 npx code-abyss --uninstall claude  # 卸载 Claude Code
 npx code-abyss --uninstall codex   # 卸载 Codex CLI
 ```
 
 ### 安装流程
 
-核心文件安装后，进入可选配置：
+核心文件安装后，自动检测 API 认证状态：
+
+```
+── 认证检测 ──
+✅ 已检测到认证: [custom] https://your-api.com
+```
+
+支持的认证方式：
+- `claude login` / `codex login` (官方账号)
+- 环境变量 `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`
+- 自定义 provider (`ANTHROPIC_BASE_URL` + `ANTHROPIC_AUTH_TOKEN`)
+
+未检测到认证时会提示配置，可交互输入或跳过。
+
+然后进入可选配置：
 
 ```
 ✅ 核心文件安装完成
