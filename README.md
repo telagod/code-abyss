@@ -4,11 +4,12 @@
 
 **邪修红尘仙 · 宿命深渊**
 
-*一键为 Claude Code / Codex CLI 注入邪修人格与 40+ 安全工程秘典*
+*一键为 Claude Code / Codex CLI 注入邪修人格与 59 篇安全工程秘典*
 
 [![npm](https://img.shields.io/npm/v/code-abyss.svg)](https://www.npmjs.com/package/code-abyss)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-blue.svg)]()
+[![Node](https://img.shields.io/badge/Node.js-%3E%3D18-green.svg)]()
 
 </div>
 
@@ -23,7 +24,7 @@ npx code-abyss
 交互式菜单（方向键选择，回车确认）：
 
 ```
-☠️ Code Abyss v1.6.3
+☠️ Code Abyss v1.6.9
 
 ? 请选择操作 (Use arrow keys)
 ❯ 安装到 Claude Code (~/.claude/)
@@ -97,7 +98,7 @@ node ~/.codex/.sage-uninstall.js    # Codex CLI
 Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命令注入：
 
 - 🔥 **邪修人格** — 宿命压迫叙事 + 道语标签 + 渡劫协议
-- ⚔️ **安全工程知识体系** — 红队/蓝队/紫队三脉道统，40+ 专业秘典
+- ⚔️ **安全工程知识体系** — 红队/蓝队/紫队三脉道统，11 领域 59 篇专业秘典
 - ⚖️ **5 个校验关卡** — 安全扫描、模块完整性、变更分析、代码质量、文档生成
 - ⚡ **三级授权** — T1/T2/T3 分级，零确认直接执行
 
@@ -109,9 +110,9 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 ~/.claude/（Claude Code）          ~/.codex/（Codex CLI）
 ├── CLAUDE.md          道典        ├── AGENTS.md      道典+风格
 ├── output-styles/     输出风格    ├── settings.json
-│   └── abyss-cultivator.md       └── skills/        40+ 秘典
+│   └── abyss-cultivator.md       └── skills/        59 篇秘典
 ├── settings.json
-└── skills/            40+ 秘典
+└── skills/            59 篇秘典
 
 可选:
 ├── ccline/            状态栏 (npm install -g @cometix/ccline)
@@ -120,7 +121,7 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 
 ---
 
-## 🛠️ 内置 Skills（40+ 秘典）
+## 🛠️ 内置 Skills（11 领域 59 篇秘典）
 
 ### 校验关卡（`/` 直接调用）
 
@@ -136,11 +137,15 @@ Code Abyss 是一套 **Claude Code / Codex CLI 个性化配置包**，一条命�
 
 | 领域 | 秘典 |
 |------|------|
-| 🔥 安全 | 红队攻击、蓝队防御、渗透测试、威胁情报、漏洞研究、代码审计 |
+| 🔥 安全 | 红队攻击、蓝队防御、渗透测试、威胁情报、威胁建模、漏洞研究、代码审计、密钥管理、供应链安全 |
 | 🏗 架构 | API 设计、云原生、安全架构、消息队列、缓存策略、合规审计、数据安全 |
-| 📜 开发 | Python、TypeScript、Go、Rust、Java、C++、Shell |
-| 🔧 DevOps | Git 工作流、测试、数据库、DevSecOps、性能优化、可观测性、成本优化 |
-| 🔮 AI | Agent 开发、LLM 安全 |
+| 📜 开发 | Python、TypeScript、Go、Rust、Java、C++、Shell、Dart、Kotlin、PHP、Swift |
+| 🔧 DevOps | Git 工作流、测试策略、E2E 测试、性能测试、数据库、DevSecOps、性能优化、可观测性、成本优化 |
+| 🎨 前端 | 构建工具、组件模式、性能优化、状态管理、前端测试、UI 美学、UX 原则 |
+| 📱 移动端 | Android 开发、iOS 开发、跨平台开发 |
+| 🔮 AI | Agent 开发、LLM 安全、RAG 系统、模型评估、Prompt 工程 |
+| 🏭 数据工程 | 数据管道、数据质量、流处理 |
+| ☁️ 基础设施 | GitOps、IaC、Kubernetes |
 | 🕸 协同 | 多 Agent 任务分解与并行编排 |
 
 ---
