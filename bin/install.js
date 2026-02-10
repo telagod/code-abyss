@@ -7,7 +7,7 @@ const os = require('os');
 const VERSION = require(path.join(__dirname, '..', 'package.json')).version;
 const HOME = os.homedir();
 const SKIP = ['__pycache__', '.pyc', '.pyo', '.egg-info', '.DS_Store', 'Thumbs.db', '.git'];
-const PKG_ROOT = path.join(__dirname, '..');
+const PKG_ROOT = fs.realpathSync(path.join(__dirname, '..'));
 
 // ── ANSI ──
 
@@ -250,7 +250,10 @@ function installCore(tgt) {
   filesToInstall.forEach(({ src, dest }) => {
     const srcPath = path.join(PKG_ROOT, src);
     const destPath = path.join(targetDir, dest);
-    if (!fs.existsSync(srcPath)) { warn(`跳过: ${src}`); return; }
+    if (!fs.existsSync(srcPath)) {
+      if (src === 'skills') { fail(`核心文件缺失: ${srcPath}\n    请尝试: npm cache clean --force && npx code-abyss`); process.exit(1); }
+      warn(`跳过: ${src}`); return;
+    }
     if (fs.existsSync(destPath)) {
       const bp = path.join(backupDir, dest);
       rmSafe(bp); copyRecursive(destPath, bp); manifest.backups.push(dest);
