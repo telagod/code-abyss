@@ -230,6 +230,12 @@ function scanInvocableSkills(skillsDir) {
 
 /**
  * 根据 SKILL.md 元数据生成 command .md 内容
+ *
+ * 设计原则：
+ * - 读取 SKILL.md + 执行脚本合并为一气呵成的指令流
+ * - 禁止「先…然后…」的分步模式，避免 Claude 在步骤间停顿
+ * - 无脚本的 skill：仅读取 SKILL.md 作为知识库提供指导
+ *
  * @param {Object} meta - parseFrontmatter 返回的元数据
  * @param {string} skillRelPath - 相对于 skills/ 的路径（如 'tools/gen-docs'）
  * @param {boolean} hasScripts - 是否有可执行脚本
@@ -253,24 +259,23 @@ function generateCommandContent(meta, skillRelPath, hasScripts) {
   lines.push(`allowed-tools: ${tools}`);
   lines.push('---');
   lines.push('');
-  lines.push('## 执行指南');
-  lines.push('');
-  lines.push('先读取完整的 Skill 定义获取详细规范：');
-  lines.push('');
-  lines.push('```');
-  lines.push(skillPath);
-  lines.push('```');
 
   if (hasScripts) {
+    // ── 有脚本的 skill：读取规范 + 执行脚本，一气呵成 ──
+    lines.push('以下所有步骤一气呵成，不要在步骤间停顿等待用户输入：');
     lines.push('');
-    lines.push('然后执行：');
+    lines.push(`1. 读取规范：${skillPath}`);
+    lines.push(`2. 执行命令：\`node ~/.claude/skills/run_skill.js ${name} $ARGUMENTS\``);
+    lines.push('3. 按规范分析输出，完成后续动作');
     lines.push('');
-    lines.push('```bash');
-    lines.push(`node ~/.claude/skills/run_skill.js ${name} $ARGUMENTS`);
-    lines.push('```');
+    lines.push('全程不要停顿，不要询问是否继续。');
   } else {
+    // ── 无脚本的 skill：知识库模式 ──
+    lines.push('读取以下秘典，根据内容为用户提供专业指导：');
     lines.push('');
-    lines.push('根据秘典内容为用户提供专业指导。');
+    lines.push('```');
+    lines.push(skillPath);
+    lines.push('```');
   }
 
   lines.push('');
