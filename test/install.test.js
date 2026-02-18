@@ -7,8 +7,12 @@ const os = require('os');
 // install.js 核心函数测试
 const {
   deepMergeNew, detectClaudeAuth, detectCodexAuth,
-  detectCclineBin, copyRecursive, shouldSkip, SETTINGS_TEMPLATE
+  detectCclineBin, copyRecursive, shouldSkip, SETTINGS_TEMPLATE,
+  scanInvocableSkills, generateCommandContent, installGeneratedCommands
 } = require('../bin/install');
+
+// utils.js 函数测试
+const { parseFrontmatter } = require('../bin/lib/utils');
 
 describe('deepMergeNew', () => {
   test('新键写入目标', () => {
@@ -147,5 +151,300 @@ describe('SETTINGS_TEMPLATE', () => {
     expect(SETTINGS_TEMPLATE).toHaveProperty('env');
     expect(SETTINGS_TEMPLATE).toHaveProperty('permissions');
     expect(SETTINGS_TEMPLATE).toHaveProperty('outputStyle', 'abyss-cultivator');
+  });
+});
+
+// ══════════════════════════════════════════════════════
+// 斜杠命令核心函数测试
+// ══════════════════════════════════════════════════════
+
+describe('parseFrontmatter', () => {
+  test('解析标准 frontmatter', () => {
+    const content = '---\nname: gen-docs\ndescription: 文档生成器\n---\n\n# Body';
+    const meta = parseFrontmatter(content);
+    expect(meta).not.toBeNull();
+    expect(meta.name).toBe('gen-docs');
+    expect(meta.description).toBe('文档生成器');
+  });
+
+  test('无 frontmatter 返回 null', () => {
+    expect(parseFrontmatter('# Just a heading\n\nNo frontmatter here.')).toBeNull();
+    expect(parseFrontmatter('')).toBeNull();
+  });
+
+  test('剥离引号包裹的值', () => {
+    const content = '---\nname: "quoted-name"\ndescription: \'single-quoted\'\n---';
+    const meta = parseFrontmatter(content);
+    expect(meta.name).toBe('quoted-name');
+    expect(meta.description).toBe('single-quoted');
+  });
+
+  test('支持 key 中的连字符', () => {
+    const content = '---\nuser-invocable: true\nargument-hint: <path>\nallowed-tools: Bash, Read\n---';
+    const meta = parseFrontmatter(content);
+    expect(meta['user-invocable']).toBe('true');
+    expect(meta['argument-hint']).toBe('<path>');
+    expect(meta['allowed-tools']).toBe('Bash, Read');
+  });
+
+  test('忽略空行和无效行', () => {
+    const content = '---\nname: test\n\n  # comment-like\nbad line without colon\ndescription: ok\n---';
+    const meta = parseFrontmatter(content);
+    expect(meta.name).toBe('test');
+    expect(meta.description).toBe('ok');
+    expect(Object.keys(meta).length).toBe(2);
+  });
+
+  test('处理 Windows 换行符 (CRLF)', () => {
+    const content = '---\r\nname: win-test\r\ndescription: crlf\r\n---\r\n\r\nBody';
+    const meta = parseFrontmatter(content);
+    expect(meta).not.toBeNull();
+    expect(meta.name).toBe('win-test');
+  });
+});
+
+describe('scanInvocableSkills', () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-scan-test-'));
+  });
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  function makeSkill(relPath, frontmatter, withScript) {
+    const dir = path.join(tmpDir, relPath);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\n# Skill`);
+    if (withScript) {
+      const scriptsDir = path.join(dir, 'scripts');
+      fs.mkdirSync(scriptsDir, { recursive: true });
+      fs.writeFileSync(path.join(scriptsDir, 'run.js'), '// noop');
+    }
+  }
+
+  test('仅返回 user-invocable: true 的 skill', () => {
+    makeSkill('tools/gen-docs', 'name: gen-docs\nuser-invocable: true', true);
+    makeSkill('tools/verify-module', 'name: verify-module\nuser-invocable: true', true);
+    makeSkill('domains/security', 'name: security\nuser-invocable: false', false);
+
+    const results = scanInvocableSkills(tmpDir);
+    expect(results.length).toBe(2);
+    const names = results.map(r => r.meta.name).sort();
+    expect(names).toEqual(['gen-docs', 'verify-module']);
+  });
+
+  test('正确检测 hasScripts', () => {
+    makeSkill('tools/with-script', 'name: with-script\nuser-invocable: true', true);
+    makeSkill('domains/no-script', 'name: no-script\nuser-invocable: true', false);
+
+    const results = scanInvocableSkills(tmpDir);
+    const withScript = results.find(r => r.meta.name === 'with-script');
+    const noScript = results.find(r => r.meta.name === 'no-script');
+    expect(withScript.hasScripts).toBe(true);
+    expect(noScript.hasScripts).toBe(false);
+  });
+
+  test('返回正确的 relPath', () => {
+    makeSkill('tools/gen-docs', 'name: gen-docs\nuser-invocable: true', true);
+
+    const results = scanInvocableSkills(tmpDir);
+    expect(results[0].relPath).toBe(path.join('tools', 'gen-docs'));
+  });
+
+  test('空目录返回空数组', () => {
+    expect(scanInvocableSkills(tmpDir)).toEqual([]);
+  });
+
+  test('无 name 字段的 skill 被忽略', () => {
+    makeSkill('tools/no-name', 'user-invocable: true\ndescription: no name field', false);
+
+    const results = scanInvocableSkills(tmpDir);
+    expect(results.length).toBe(0);
+  });
+
+  test('扫描真实 skills 目录', () => {
+    const realSkillsDir = path.join(__dirname, '..', 'skills');
+    if (!fs.existsSync(realSkillsDir)) return; // CI 中可能不存在
+
+    const results = scanInvocableSkills(realSkillsDir);
+    // 至少有 gen-docs, verify-module, verify-change, verify-quality, verify-security, frontend-design
+    expect(results.length).toBeGreaterThanOrEqual(6);
+
+    const names = results.map(r => r.meta.name);
+    expect(names).toContain('gen-docs');
+    expect(names).toContain('verify-module');
+    expect(names).toContain('frontend-design');
+  });
+});
+
+describe('generateCommandContent', () => {
+  test('有脚本的 skill: 包含一气呵成指令流', () => {
+    const meta = {
+      name: 'gen-docs',
+      description: '文档生成器',
+      'argument-hint': '<模块路径> [--force]',
+      'allowed-tools': 'Bash, Read, Write, Glob',
+    };
+    const content = generateCommandContent(meta, 'tools/gen-docs', true);
+
+    // Frontmatter 正确
+    expect(content).toMatch(/^---\n/);
+    expect(content).toContain('name: gen-docs');
+    expect(content).toContain('description: "文档生成器"');
+    expect(content).toContain('argument-hint: "<模块路径> [--force]"');
+    expect(content).toContain('allowed-tools: Bash, Read, Write, Glob');
+
+    // 一气呵成指令（关键：不能有「先…然后…」分步停顿）
+    expect(content).toContain('一气呵成');
+    expect(content).toContain('不要在步骤间停顿');
+    expect(content).toContain('不要停顿');
+
+    // SKILL.md 读取路径正确
+    expect(content).toContain('~/.claude/skills/tools/gen-docs/SKILL.md');
+
+    // run_skill.js 执行命令正确
+    expect(content).toContain('node ~/.claude/skills/run_skill.js gen-docs $ARGUMENTS');
+  });
+
+  test('无脚本的 skill: 知识库模式', () => {
+    const meta = {
+      name: 'frontend-design',
+      description: '前端设计美学秘典',
+      'allowed-tools': 'Read',
+    };
+    const content = generateCommandContent(meta, 'domains/frontend-design', false);
+
+    // Frontmatter 正确
+    expect(content).toContain('name: frontend-design');
+    expect(content).toContain('allowed-tools: Read');
+
+    // 知识库模式关键词
+    expect(content).toContain('读取以下秘典');
+    expect(content).toContain('~/.claude/skills/domains/frontend-design/SKILL.md');
+
+    // 不包含 run_skill.js 命令
+    expect(content).not.toContain('run_skill.js');
+    expect(content).not.toContain('一气呵成');
+  });
+
+  test('无 argument-hint 时不输出该字段', () => {
+    const meta = {
+      name: 'test-skill',
+      description: 'test',
+    };
+    const content = generateCommandContent(meta, 'test', false);
+    expect(content).not.toContain('argument-hint');
+  });
+
+  test('无 allowed-tools 时默认 Read', () => {
+    const meta = { name: 'minimal', description: 'minimal skill' };
+    const content = generateCommandContent(meta, 'minimal', false);
+    expect(content).toContain('allowed-tools: Read');
+  });
+
+  test('空 skillRelPath 使用根路径', () => {
+    const meta = { name: 'root', description: 'root skill' };
+    const content = generateCommandContent(meta, '', false);
+    expect(content).toContain('~/.claude/skills/SKILL.md');
+  });
+
+  test('description 中的双引号被转义', () => {
+    const meta = { name: 'escaped', description: 'has "quotes" inside' };
+    const content = generateCommandContent(meta, 'test', false);
+    expect(content).toContain('description: "has \\"quotes\\" inside"');
+  });
+});
+
+describe('installGeneratedCommands', () => {
+  let tmpDir, targetDir, backupDir, manifest;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-cmd-test-'));
+    targetDir = path.join(tmpDir, 'target');
+    backupDir = path.join(tmpDir, 'backup');
+    fs.mkdirSync(targetDir, { recursive: true });
+    fs.mkdirSync(backupDir, { recursive: true });
+    manifest = { installed: [], backups: [] };
+  });
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  function makeSkillDir(base, relPath, frontmatter, withScript) {
+    const dir = path.join(base, relPath);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'SKILL.md'), `---\n${frontmatter}\n---\n\n# Skill`);
+    if (withScript) {
+      const scriptsDir = path.join(dir, 'scripts');
+      fs.mkdirSync(scriptsDir, { recursive: true });
+      fs.writeFileSync(path.join(scriptsDir, 'run.js'), '// noop');
+    }
+  }
+
+  test('为 user-invocable skill 生成 command 文件', () => {
+    const skillsSrc = path.join(tmpDir, 'skills');
+    fs.mkdirSync(skillsSrc, { recursive: true });
+    makeSkillDir(skillsSrc, 'tools/gen-docs', 'name: gen-docs\nuser-invocable: true', true);
+    makeSkillDir(skillsSrc, 'tools/verify-module', 'name: verify-module\nuser-invocable: true', true);
+
+    const count = installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
+
+    expect(count).toBe(2);
+    expect(fs.existsSync(path.join(targetDir, 'commands', 'gen-docs.md'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'commands', 'verify-module.md'))).toBe(true);
+    expect(manifest.installed).toContain('commands/gen-docs.md');
+    expect(manifest.installed).toContain('commands/verify-module.md');
+  });
+
+  test('已存在的 command 文件被备份', () => {
+    const skillsSrc = path.join(tmpDir, 'skills');
+    fs.mkdirSync(skillsSrc, { recursive: true });
+    makeSkillDir(skillsSrc, 'tools/gen-docs', 'name: gen-docs\nuser-invocable: true', true);
+
+    // 预置一个同名 command 文件
+    const cmdsDir = path.join(targetDir, 'commands');
+    fs.mkdirSync(cmdsDir, { recursive: true });
+    fs.writeFileSync(path.join(cmdsDir, 'gen-docs.md'), 'old content');
+
+    installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
+
+    // 原文件被备份
+    expect(fs.existsSync(path.join(backupDir, 'commands', 'gen-docs.md'))).toBe(true);
+    expect(fs.readFileSync(path.join(backupDir, 'commands', 'gen-docs.md'), 'utf8')).toBe('old content');
+    expect(manifest.backups).toContain('commands/gen-docs.md');
+
+    // 新文件已覆盖
+    const newContent = fs.readFileSync(path.join(cmdsDir, 'gen-docs.md'), 'utf8');
+    expect(newContent).toContain('name: gen-docs');
+    expect(newContent).not.toBe('old content');
+  });
+
+  test('无 user-invocable skill 时返回 0', () => {
+    const skillsSrc = path.join(tmpDir, 'skills');
+    fs.mkdirSync(skillsSrc, { recursive: true });
+    makeSkillDir(skillsSrc, 'domains/security', 'name: security\nuser-invocable: false', false);
+
+    const count = installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
+    expect(count).toBe(0);
+    expect(fs.existsSync(path.join(targetDir, 'commands'))).toBe(false);
+  });
+
+  test('生成的 command 文件内容格式正确', () => {
+    const skillsSrc = path.join(tmpDir, 'skills');
+    fs.mkdirSync(skillsSrc, { recursive: true });
+    makeSkillDir(skillsSrc, 'tools/gen-docs',
+      'name: gen-docs\nuser-invocable: true\nargument-hint: <path>\nallowed-tools: Bash, Read',
+      true);
+
+    installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
+
+    const content = fs.readFileSync(path.join(targetDir, 'commands', 'gen-docs.md'), 'utf8');
+    // 必须以 --- 开头（YAML frontmatter）
+    expect(content).toMatch(/^---\n/);
+    // 包含一气呵成指令流（有脚本的 skill）
+    expect(content).toContain('一气呵成');
+    expect(content).toContain('run_skill.js gen-docs');
   });
 });
