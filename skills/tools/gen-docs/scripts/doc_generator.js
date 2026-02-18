@@ -9,12 +9,66 @@ const path = require('path');
 
 // --- Utilities ---
 
-function rglob(dir, filter) {
+function parseGitignore(modPath) {
+  const patterns = [];
+  const hardcoded = ['node_modules', '.git', '__pycache__', '.vscode', '.idea', 'dist', 'build', '.DS_Store'];
+
+  // 硬编码常见排除
+  hardcoded.forEach(p => patterns.push({ pattern: p, negate: false }));
+
+  // 解析 .gitignore
+  try {
+    const gitignorePath = path.join(modPath, '.gitignore');
+    const content = fs.readFileSync(gitignorePath, 'utf8');
+    content.split('\n').forEach(line => {
+      line = line.trim();
+      if (line && !line.startsWith('#')) {
+        const negate = line.startsWith('!');
+        if (negate) line = line.slice(1);
+        patterns.push({ pattern: line, negate });
+      }
+    });
+  } catch {}
+
+  return patterns;
+}
+
+function shouldIgnore(filePath, basePath, patterns) {
+  const relPath = path.relative(basePath, filePath);
+  const name = path.basename(filePath);
+
+  let ignored = false;
+  for (const {pattern, negate} of patterns) {
+    let match = false;
+
+    if (pattern.includes('*')) {
+      // 通配符匹配
+      const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+      match = regex.test(name) || regex.test(relPath);
+    } else if (pattern.includes('/')) {
+      // 路径匹配
+      match = relPath.includes(pattern) || relPath.startsWith(pattern);
+    } else {
+      // 文件名匹配
+      match = name === pattern || relPath.includes(`/${pattern}`) || relPath.startsWith(pattern);
+    }
+
+    if (match) ignored = !negate;
+  }
+  return ignored;
+}
+
+function rglob(dir, filter, basePath = dir) {
+  const patterns = parseGitignore(basePath);
   const results = [];
+
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
+
+    if (shouldIgnore(full, basePath, patterns)) continue;
+
     if (entry.isDirectory()) {
-      results.push(...rglob(full, filter));
+      results.push(...rglob(full, filter, basePath));
     } else if (!filter || filter(entry.name, full)) {
       results.push(full);
     }
