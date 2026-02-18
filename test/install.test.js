@@ -448,3 +448,134 @@ describe('installGeneratedCommands', () => {
     expect(content).toContain('run_skill.js gen-docs');
   });
 });
+
+// ══════════════════════════════════════════════════════
+// 斜杠命令回归防护（防止 skills 目录重组后路径失效）
+// ══════════════════════════════════════════════════════
+
+describe('斜杠命令回归防护', () => {
+  const realSkillsDir = path.join(__dirname, '..', 'skills');
+  const skillsExist = fs.existsSync(realSkillsDir);
+
+  // 跳过条件：CI 中可能没有 skills 目录
+  const describeIf = skillsExist ? describe : describe.skip;
+
+  describeIf('SKILL.md 路径有效性烟雾测试', () => {
+    let invocableSkills;
+
+    beforeAll(() => {
+      invocableSkills = scanInvocableSkills(realSkillsDir);
+    });
+
+    test('至少存在 6 个 user-invocable skill', () => {
+      expect(invocableSkills.length).toBeGreaterThanOrEqual(6);
+    });
+
+    test('所有 user-invocable skill 的 SKILL.md 路径必须真实存在', () => {
+      const missing = [];
+
+      invocableSkills.forEach(({ meta, relPath }) => {
+        // 生成 command 内容
+        const content = generateCommandContent(meta, relPath, false);
+
+        // 从生成内容中提取 ~/.claude/skills/.../SKILL.md 路径
+        const match = content.match(/~\/\.claude\/skills\/(.+?\/SKILL\.md)/);
+        expect(match).not.toBeNull();
+
+        // 将 ~/.claude/skills/X/SKILL.md 映射回真实 skills/X/SKILL.md
+        const extractedRelPath = match[1]; // e.g. "tools/gen-docs/SKILL.md"
+        const realPath = path.join(realSkillsDir, extractedRelPath);
+
+        if (!fs.existsSync(realPath)) {
+          missing.push({
+            name: meta.name,
+            expectedPath: realPath,
+            relPath: extractedRelPath,
+          });
+        }
+      });
+
+      // 若 skills 目录重组但 relPath 算错，此处立刻爆红
+      expect(missing).toEqual([]);
+    });
+  });
+
+  describeIf('脚本引用完整性', () => {
+    let invocableSkills;
+
+    beforeAll(() => {
+      invocableSkills = scanInvocableSkills(realSkillsDir);
+    });
+
+    test('有脚本的 skill 的 command 必须包含正确的 run_skill.js 调用', () => {
+      const errors = [];
+
+      invocableSkills
+        .filter(s => s.hasScripts)
+        .forEach(({ meta, relPath, hasScripts }) => {
+          const content = generateCommandContent(meta, relPath, hasScripts);
+
+          // 验证 command 内容包含 run_skill.js {name} $ARGUMENTS
+          const expectedCall = `run_skill.js ${meta.name} $ARGUMENTS`;
+          if (!content.includes(expectedCall)) {
+            errors.push({
+              name: meta.name,
+              expected: expectedCall,
+              issue: 'run_skill.js 调用缺失或格式错误',
+            });
+          }
+
+          // 验证 skills/{relPath}/scripts/ 下确实存在 .js 文件
+          const scriptsDir = path.join(realSkillsDir, relPath, 'scripts');
+          const hasJsFiles = fs.existsSync(scriptsDir) &&
+            fs.readdirSync(scriptsDir).some(f => f.endsWith('.js'));
+          if (!hasJsFiles) {
+            errors.push({
+              name: meta.name,
+              scriptsDir,
+              issue: 'scripts/ 目录不存在或无 .js 文件',
+            });
+          }
+        });
+
+      // 若脚本目录移走但 command 仍引用旧路径，此处立刻爆红
+      expect(errors).toEqual([]);
+    });
+
+    test('无脚本的 skill 不应引用 run_skill.js', () => {
+      invocableSkills
+        .filter(s => !s.hasScripts)
+        .forEach(({ meta, relPath, hasScripts }) => {
+          const content = generateCommandContent(meta, relPath, hasScripts);
+          expect(content).not.toContain('run_skill.js');
+        });
+    });
+  });
+
+  describeIf('command 文件名合法性', () => {
+    test('每个 skill 的 name 符合合法文件名格式', () => {
+      const invocableSkills = scanInvocableSkills(realSkillsDir);
+      const invalid = [];
+
+      invocableSkills.forEach(({ meta }) => {
+        // 必须以小写字母开头，仅包含小写字母、数字、连字符
+        if (!/^[a-z][a-z0-9-]*$/.test(meta.name)) {
+          invalid.push({
+            name: meta.name,
+            issue: '名称不符合 /^[a-z][a-z0-9-]*$/ 格式',
+          });
+        }
+      });
+
+      expect(invalid).toEqual([]);
+    });
+
+    test('skill name 无重复（防止 command 文件冲突）', () => {
+      const invocableSkills = scanInvocableSkills(realSkillsDir);
+      const names = invocableSkills.map(s => s.meta.name);
+      const duplicates = names.filter((n, i) => names.indexOf(n) !== i);
+
+      expect(duplicates).toEqual([]);
+    });
+  });
+});
