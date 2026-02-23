@@ -136,3 +136,31 @@ Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 C
 - 问题：零测试覆盖，与自定 >80% 覆盖率要求严重矛盾。
 - 决策：引入 Jest，为 `deepMergeNew`、`detectClaudeAuth`、`copyRecursive`、`shared.js` 等核心函数编写 34 个测试用例。`install.js` 添加 `require.main` 守卫支持测试导入。
 - 取舍：首批覆盖核心纯函数，后续逐步扩展到集成测试。
+
+
+### v1.7.3 设计决策
+
+#### 1. Codex 适配器分离 (`bin/adapters/codex.js`)
+
+- 问题：`bin/install.js` 同时内聚 Claude 与 Codex 细节，导致目标分支耦合、变更风险高。
+- 决策：提取 Codex 专属逻辑到独立模块：`detectCodexAuth()`、`getCodexCoreFiles()`、`postCodex()`。
+- 取舍：增加一个模块文件，换取职责边界清晰与可测试性提升。
+
+#### 2. 主安装器降维为编排层
+
+- 问题：主流程需了解过多 provider 细节（认证文件、config 模板路径、核心文件映射）。
+- 决策：`install.js` 仅做调度与上下文注入，Codex 细节由 `postCodexFlow`/`getCodexCoreFiles` 提供。
+- 取舍：通过依赖注入（`step/ok/warn/info/c`）保持输出一致，避免行为回归。
+
+#### 3. Codex 单测补齐
+
+- 问题：Codex 逻辑抽离后缺少模块级回归保护。
+- 决策：新增 `test/codex.test.js`，覆盖 env/login/custom/损坏凭证与文件映射断言。
+- 取舍：增加少量测试维护成本，显著降低后续重构回归风险。
+
+
+#### 4. Claude 适配器分离 (`bin/adapters/claude.js`)
+
+- 问题：Claude 认证检测、settings merge、交互配置仍留在 `install.js`，与编排层混合。
+- 决策：抽离 `SETTINGS_TEMPLATE`、`detectClaudeAuth()`、`postClaude()`、`getClaudeCoreFiles()` 到 `bin/adapters/claude.js`。
+- 取舍：主安装器依赖注入参数稍增，但 provider 边界更稳定、单测更直接。

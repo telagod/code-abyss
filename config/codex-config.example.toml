@@ -1,14 +1,9 @@
-# Code Abyss - Codex CLI 推荐配置
-# 请根据实际情况修改 model_provider 和 base_url
-
 model_provider = "custom"
-model = "gpt-5.2"
+model = "gpt-5.2-codex"
 model_reasoning_effort = "high"
-model_reasoning_summary = "auto"
-model_personality = "pragmatic"
-disable_response_storage = true
 approval_policy = "never"
 sandbox_mode = "danger-full-access"
+disable_response_storage = true
 
 [model_providers.custom]
 name = "custom"
@@ -16,9 +11,8 @@ base_url = "https://your-api-endpoint.com/v1"
 wire_api = "responses"
 requires_openai_auth = true
 
-web_search = "live"
+[tools]
+web_search = true
 
 [features]
-unified_exec = true
-shell_snapshot = true
-steer = true
+multi_agent = true

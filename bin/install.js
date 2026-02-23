@@ -18,6 +18,17 @@ const PKG_ROOT = fs.realpathSync(path.join(__dirname, '..'));
 const { shouldSkip, copyRecursive, rmSafe, deepMergeNew, printMergeLog, parseFrontmatter } =
   require(path.join(__dirname, 'lib', 'utils.js'));
 const { detectCclineBin, installCcline: _installCcline } = require(path.join(__dirname, 'lib', 'ccline.js'));
+const {
+  detectCodexAuth: detectCodexAuthImpl,
+  getCodexCoreFiles,
+  postCodex: postCodexFlow,
+} = require(path.join(__dirname, 'adapters', 'codex.js'));
+const {
+  SETTINGS_TEMPLATE,
+  getClaudeCoreFiles,
+  detectClaudeAuth: detectClaudeAuthImpl,
+  postClaude: postClaudeFlow,
+} = require(path.join(__dirname, 'adapters', 'claude.js'));
 
 // ── ANSI ──
 
@@ -66,67 +77,14 @@ function fail(msg) { console.log(`  ${c.red('✘')} ${msg}`); }
 // ── 认证 ──
 
 function detectClaudeAuth(settings) {
-  const env = settings.env || {};
-  if (env.ANTHROPIC_BASE_URL && env.ANTHROPIC_AUTH_TOKEN) return { type: 'custom', detail: env.ANTHROPIC_BASE_URL };
-  if (process.env.ANTHROPIC_API_KEY) return { type: 'env', detail: 'ANTHROPIC_API_KEY' };
-  if (process.env.ANTHROPIC_BASE_URL && process.env.ANTHROPIC_AUTH_TOKEN) {
-    return { type: 'env-custom', detail: process.env.ANTHROPIC_BASE_URL };
-  }
-  const cred = path.join(HOME, '.claude', '.credentials.json');
-  if (fs.existsSync(cred)) {
-    try {
-      const cc = JSON.parse(fs.readFileSync(cred, 'utf8'));
-      if (cc.claudeAiOauth || cc.apiKey) return { type: 'login', detail: 'claude login' };
-    } catch (e) { warn(`凭证文件损坏: ${cred}`); }
-  }
-  return null;
+  return detectClaudeAuthImpl({ settings, HOME, warn });
 }
 
 function detectCodexAuth() {
-  if (process.env.OPENAI_API_KEY) return { type: 'env', detail: 'OPENAI_API_KEY' };
-  const auth = path.join(HOME, '.codex', 'auth.json');
-  if (fs.existsSync(auth)) {
-    try {
-      const a = JSON.parse(fs.readFileSync(auth, 'utf8'));
-      if (a.token || a.api_key) return { type: 'login', detail: 'codex login' };
-    } catch (e) { warn(`凭证文件损坏: ${auth}`); }
-  }
-  const cfg = path.join(HOME, '.codex', 'config.toml');
-  if (fs.existsSync(cfg)) {
-    if (fs.readFileSync(cfg, 'utf8').includes('base_url')) return { type: 'custom', detail: 'config.toml' };
-  }
-  return null;
+  return detectCodexAuthImpl({ HOME, warn });
 }
 
 // ── 模板 ──
-
-const SETTINGS_TEMPLATE = {
-  $schema: 'https://json.schemastore.org/claude-code-settings.json',
-  env: {
-    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '1',
-    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
-  },
-  alwaysThinkingEnabled: true,
-  model: 'opus',
-  outputStyle: 'abyss-cultivator',
-  attribution: { commit: '', pr: '' },
-  permissions: {
-    allow: [
-      'Bash', 'LS', 'Read', 'Agent', 'Write', 'Edit', 'MultiEdit',
-      'Glob', 'Grep', 'WebFetch', 'WebSearch', 'TodoWrite',
-      'NotebookRead', 'NotebookEdit'
-    ]
-  }
-};
-
-const CCLINE_CMD = process.platform === 'win32' ? 'ccline' : '~/.claude/ccline/ccline';
-const CCLINE_STATUS_LINE = {
-  statusLine: {
-    type: 'command',
-    command: CCLINE_CMD,
-    padding: 0
-  }
-};
 
 // ── CLI 参数 ──
 
@@ -322,12 +280,9 @@ function installCore(tgt) {
   step(1, 3, `安装核心文件 → ${c.cyn(targetDir)}`);
   fs.mkdirSync(backupDir, { recursive: true });
 
-  const filesToInstall = [
-    { src: 'config/CLAUDE.md', dest: tgt === 'claude' ? 'CLAUDE.md' : null },
-    { src: 'config/AGENTS.md', dest: tgt === 'codex' ? 'AGENTS.md' : null },
-    { src: 'output-styles', dest: tgt === 'claude' ? 'output-styles' : null },
-    { src: 'skills', dest: 'skills' },
-  ].filter(f => f.dest !== null);
+  const filesToInstall = tgt === 'codex'
+    ? getCodexCoreFiles()
+    : getClaudeCoreFiles();
 
   const manifest = {
     manifest_version: 1, version: VERSION, target: tgt,
@@ -389,108 +344,36 @@ function installCore(tgt) {
 
 // ── Claude 后续 ──
 
-async function configureCustomProvider(ctx) {
-  const { confirm, input } = await import('@inquirer/prompts');
-  const doCfg = await confirm({ message: '配置自定义 provider?', default: false });
-  if (!doCfg) return;
-  if (!ctx.settings.env) ctx.settings.env = {};
-  const url = await input({ message: 'ANTHROPIC_BASE_URL:' });
-  const token = await input({ message: 'ANTHROPIC_AUTH_TOKEN:' });
-  if (url) ctx.settings.env.ANTHROPIC_BASE_URL = url;
-  if (token) ctx.settings.env.ANTHROPIC_AUTH_TOKEN = token;
-  fs.writeFileSync(ctx.settingsPath, JSON.stringify(ctx.settings, null, 2) + '\n');
-  ok('provider 已配置');
-}
-
-function mergeSettings(ctx) {
-  const log = [];
-  deepMergeNew(ctx.settings, SETTINGS_TEMPLATE, '', log);
-  printMergeLog(log, c);
-  fs.writeFileSync(ctx.settingsPath, JSON.stringify(ctx.settings, null, 2) + '\n');
-  ok('settings.json 合并完成');
-}
-
 async function postClaude(ctx) {
-  step(2, 3, '认证检测');
-  const auth = detectClaudeAuth(ctx.settings);
-  if (auth) {
-    ok(`${c.b(auth.type)} → ${auth.detail}`);
-  } else {
-    warn('未检测到 API 认证');
-    info(`支持: ${c.cyn('claude login')} | ${c.cyn('ANTHROPIC_API_KEY')} | ${c.cyn('自定义 provider')}`);
-    if (!autoYes) await configureCustomProvider(ctx);
-  }
-
-  step(3, 3, '可选配置');
-  if (autoYes) {
-    info('自动模式: 合并推荐配置');
-    mergeSettings(ctx);
-    await installCcline(ctx);
-    return;
-  }
-
-  const { checkbox } = await import('@inquirer/prompts');
-  const choices = await checkbox({
-    message: '选择要安装的配置 (空格选择, 回车确认)',
-    choices: [
-      { name: '精细合并推荐 settings.json (保留现有配置)', value: 'settings', checked: true },
-      { name: '安装 ccline 状态栏 (需要 Nerd Font)', value: 'ccline', checked: true },
-    ],
+  await postClaudeFlow({
+    ctx,
+    autoYes,
+    HOME,
+    PKG_ROOT,
+    step,
+    ok,
+    warn,
+    info,
+    c,
+    deepMergeNew,
+    printMergeLog,
+    installCcline: _installCcline,
   });
-
-  if (choices.includes('settings')) mergeSettings(ctx);
-  if (choices.includes('ccline')) await installCcline(ctx);
-}
-
-async function installCcline(ctx) {
-  await _installCcline(ctx, { HOME, PKG_ROOT, CCLINE_STATUS_LINE, ok, warn, info, fail, c });
 }
 
 // ── Codex 后续 ──
 
 async function postCodex() {
-  const { confirm } = await import('@inquirer/prompts');
-  const cfgPath = path.join(HOME, '.codex', 'config.toml');
-  const exists = fs.existsSync(cfgPath);
-
-  step(2, 3, '认证检测');
-  const auth = detectCodexAuth();
-  if (auth) {
-    ok(`${c.b(auth.type)} → ${auth.detail}`);
-  } else {
-    warn('未检测到 API 认证');
-    info(`支持: ${c.cyn('codex login')} | ${c.cyn('OPENAI_API_KEY')} | ${c.cyn('自定义 provider')}`);
-  }
-
-  step(3, 3, '可选配置');
-  if (autoYes) {
-    if (!exists) {
-      const src = path.join(PKG_ROOT, 'config', 'codex-config.example.toml');
-      if (fs.existsSync(src)) {
-        fs.copyFileSync(src, cfgPath);
-        ok('写入: ~/.codex/config.toml (模板)');
-        warn('请编辑 base_url 和 model');
-      }
-    } else {
-      ok('config.toml 已存在');
-    }
-    return;
-  }
-
-  if (!exists) {
-    warn('未检测到 ~/.codex/config.toml');
-    const doWrite = await confirm({ message: '写入推荐 config.toml (含自定义 provider 模板)?', default: true });
-    if (doWrite) {
-      const src = path.join(PKG_ROOT, 'config', 'codex-config.example.toml');
-      if (fs.existsSync(src)) {
-        fs.copyFileSync(src, cfgPath);
-        ok('写入: ~/.codex/config.toml');
-        warn('请编辑 base_url 和 model');
-      }
-    }
-  } else {
-    ok('config.toml 已存在');
-  }
+  await postCodexFlow({
+    autoYes,
+    HOME,
+    PKG_ROOT,
+    step,
+    ok,
+    warn,
+    info,
+    c,
+  });
 }
 
 // ── 主流程 ──
