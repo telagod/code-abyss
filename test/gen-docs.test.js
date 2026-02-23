@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { spawn } = require('child_process');
+const { generateDocs } = require('../skills/tools/gen-docs/scripts/doc_generator.js');
 
 // 集成测试：通过实际运行验证功能
 describe('gen-docs gitignore 支持', () => {
@@ -18,29 +18,8 @@ describe('gen-docs gitignore 支持', () => {
   });
 
   function runGenDocs(targetPath, args = []) {
-    return new Promise((resolve, reject) => {
-      const scriptPath = path.join(__dirname, '../skills/tools/gen-docs/scripts/doc_generator.js');
-      const child = spawn('node', [scriptPath, targetPath, '--json', ...args], {
-        stdio: 'pipe'
-      });
-
-      let stdout = '';
-      let stderr = '';
-      child.stdout.on('data', (data) => stdout += data);
-      child.stderr.on('data', (data) => stderr += data);
-
-      child.on('close', (code) => {
-        if (code === 0) {
-          try {
-            resolve(JSON.parse(stdout));
-          } catch {
-            resolve({ stdout, stderr });
-          }
-        } else {
-          reject(new Error(`Exit ${code}: ${stderr}`));
-        }
-      });
-    });
+    const force = args.includes('--force') || args.includes('-f');
+    return Promise.resolve(generateDocs(targetPath, force));
   }
 
   test('排除 node_modules 目录', async () => {
