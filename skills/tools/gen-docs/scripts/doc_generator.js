@@ -403,7 +403,7 @@ function main() {
   const result = generateDocs(args.path, args.force);
 
   if (args.json) {
-    console.log(JSON.stringify(result, null, 2));
+    process.stdout.write(JSON.stringify(result, null, 2) + '\n');
   } else {
     console.log('='.repeat(50));
     console.log('文档生成报告');
@@ -414,7 +414,22 @@ function main() {
     console.log('='.repeat(50));
   }
 
-  process.exit(result.status === 'success' ? 0 : 1);
+  process.exitCode = result.status === 'success' ? 0 : 1;
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  parseGitignore,
+  shouldIgnore,
+  rglob,
+  detectLanguage,
+  analyzeModule,
+  generateReadme,
+  generateDesign,
+  generateDocs,
+  parseArgs,
+  main,
+};
