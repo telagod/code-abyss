@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.7] - 2026-02-27
+
+### Fixed
+- 修复 Codex 配置补全时的 TOML 分块问题：root 参数（如 `approval_policy`、`sandbox_mode`）现在会写入首个 section 之前，不再误拼到 table 内导致不生效。
+- 新增错层参数清理逻辑：自动移除非 root section 内误写的 root 键，避免“有配置但无效”。
+- 当 `sandbox_mode = "danger-full-access"` 时，自动清理 `projects.*.trust_level` 段，减少冗余 trusted 项干扰。
+
+### Changed
+- `README` 兼容性说明同步更新：明确包含 root 分块修复与 full access 下 trust 清理行为。
+
+### Verification
+- Jest: **8 suites / 118 tests passed**
+
+## [1.7.6] - 2026-02-27
+
+### Changed
+- 强化 Codex 多 Agent 协同提示词链路：在 `CLAUDE.md` / `AGENTS.md` 增加执行闭环与硬约束（文件所有权、awaiter 长任务、close_agent 回收）。
+- `skills/orchestration/multi-agent/SKILL.md` 与 `skills/domains/orchestration/multi-agent.md` 新增 Codex 原生动作映射与强约束模板（Worker/Reviewer/Lead）。
+- `skills/domains/orchestration/SKILL.md` 增加 Codex 多 Agent 强化要点，统一路由时的执行规范。
+
+### Verification
+- Jest: **8 suites / 115 tests passed**
+
 ## [1.7.5] - 2026-02-27
 
 ### Changed
