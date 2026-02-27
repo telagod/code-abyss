@@ -21,3 +21,9 @@ disable-model-invocation: false
 - 复杂系统重构
 - 跨模块协同开发
 - 紧急多点修复
+
+## Codex 强化要点
+
+- 优先使用 `spawn_agent/send_input/wait/close_agent` 形成闭环。
+- 代码探索优先 `explorer`，执行改动使用 `worker`，长耗时任务使用 `awaiter`。
+- 每个文件同一时刻仅允许一个 Agent 写入，先锁文件再并行。

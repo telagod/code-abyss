@@ -35,6 +35,32 @@ disable-model-invocation: false
 
 ---
 
+## Codex 原生协同协议（强化）
+
+在 Codex CLI 中，TeamCreate/Task 抽象统一映射到以下原生动作：
+
+| 协同意图 | Codex 动作 | 约束 |
+|---------|------------|------|
+| 创建团队/子任务 | `spawn_agent` | 明确角色、文件所有权、完成定义 |
+| 下发任务/追问 | `send_input` | 单条消息只包含一个目标动作 |
+| 等待完成 | `wait` | 优先长等待，避免忙轮询 |
+| 长耗时命令 | `awaiter` agent | 测试/构建/监控必须用 awaiter |
+| 代码探索 | `explorer` agent | 探索结果视为权威，不重复检索 |
+| 执行改动 | `worker` agent | 明确“只改分配文件” |
+| 收尾回收 | `close_agent` | 任务结束必须关闭子 Agent |
+
+### 执行顺序（不可跳步）
+
+```
+1. 拆解任务 + 文件锁定矩阵
+2. spawn explorer/worker/awaiter
+3. 并行执行 + wait 收敛
+4. reviewer 审查 + 必要修复
+5. 汇总结果 + close_agent 全量回收
+```
+
+---
+
 ## 何时启用多 Agent
 
 ### TeamCreate vs Task(subagent) 决策树
@@ -47,8 +73,8 @@ disable-model-invocation: false
   ├─ 总步骤 >10 步？          → TeamCreate
   ├─ 魔尊明确要求并行/团队？   → TeamCreate
   │
-  ├─ 单一探索/搜索任务？       → Task(subagent_type=Explore)
-  ├─ 单文件独立操作？          → Task(subagent)
+  ├─ 单一探索/搜索任务？       → explorer agent
+  ├─ 单文件独立操作？          → worker agent
   └─ 简单查询/单步操作？       → 直接执行
 ```
 
@@ -69,19 +95,20 @@ disable-model-invocation: false
 
 | 角色 | 蚁群映射 | 道语 | 职责 | 工具权限 | 模型建议 |
 |------|----------|------|------|----------|----------|
-| 主修 (Lead) | 蚁后 Queen | 天罗主修 | 任务分解、调度、汇总 | TaskCreate/TaskUpdate/SendMessage | 当前模型 |
-| 斥候 (Scout) | 侦察蚁 Scout | 天罗斥候 | 只读探索，标记关键文件 | Read/Grep/Glob（只读） | haiku（快速低成本） |
-| 道侣 (Worker) | 工蚁 Worker | 天罗道侣 | 执行任务，可产生子任务 | Read/Write/Edit/Bash/SendMessage | sonnet/当前模型 |
-| 护法 (Soldier) | 兵蚁 Soldier | 天罗护法 | 审查质量，发现问题 | Read/Grep/Glob/SendMessage（只读） | sonnet |
+| 主修 (Lead) | 蚁后 Queen | 天罗主修 | 任务分解、调度、汇总 | `spawn_agent/send_input/wait/close_agent` | 当前模型 |
+| 斥候 (Scout) | 侦察蚁 Scout | 天罗斥候 | 只读探索，标记关键文件 | `explorer` + Read/Grep/Glob（只读） | haiku（快速低成本） |
+| 道侣 (Worker) | 工蚁 Worker | 天罗道侣 | 执行任务，可产生子任务 | `worker` + Read/Write/Edit/Bash | sonnet/当前模型 |
+| 护法 (Soldier) | 兵蚁 Soldier | 天罗护法 | 审查质量，发现问题 | `worker`(审查模式) + Read/Grep/Glob（只读） | sonnet |
 | 走卒 (Drone) | 无人蚁 Drone | 天罗走卒 | 简单 bash 命令，零 LLM 成本 | Bash（仅此一个） | 无（execSync） |
 
 ### 角色使用时机
 
 ```
-需要了解代码库结构？ → 派 Scout（Task subagent_type=Explore, model=haiku）
-需要修改代码？       → 派 Worker（Task subagent_type=general-purpose）
-需要审查变更？       → 派 Soldier（Task subagent_type=general-purpose, 只读 prompt）
-需要跑命令？         → 直接 Bash（Drone 等价）
+需要了解代码库结构？ → 派 Scout（agent_type=explorer）
+需要修改代码？       → 派 Worker（agent_type=worker）
+需要审查变更？       → 派 Soldier（agent_type=worker，审查提示词）
+需要长耗时命令？      → 派 awaiter（agent_type=awaiter）
+需要短命令？         → 直接 Bash（Drone 等价）
 ```
 
 ---
@@ -236,6 +263,7 @@ Scout(侦察) → Worker(执行) → Soldier(审查) → Worker(修复) → Lead
 - 独立任务必须并行启动
 - 关注信息素：discovery 优先分配，repellent 避免分配
 - 收到所有道侣完成消息后才能进入审查
+- 所有子 Agent 完成后必须 close_agent 回收
 ```
 
 ### 斥候（Scout）启动模板
@@ -282,6 +310,41 @@ Scout(侦察) → Worker(执行) → Soldier(审查) → Worker(修复) → Lead
 输出：
 - 通过：确认所有变更合格
 - 问题：列出问题 + 修复建议（释放 warning 信息素）
+```
+
+---
+
+## 强约束提示词模板（可直接复用）
+
+### Worker 指令模板（Codex）
+
+```text
+你是执行 Agent，当前任务只允许修改以下文件：
+{owned_files}
+
+硬性约束：
+1) 不得修改未分配文件。
+2) 若必须跨文件修改，先报告阻塞，不得自行扩域。
+3) 完成后返回：改动文件、验证命令、风险点。
+4) 若失败，返回最小复现与替代方案。
+```
+
+### Reviewer 指令模板（Codex）
+
+```text
+你是审查 Agent，只读模式。
+请按“正确性 > 安全性 > 回归风险 > 风格”输出问题清单。
+若无问题，明确写“no findings”。
+```
+
+### Lead 汇总模板（Codex）
+
+```text
+汇总每个子 Agent 的结果，给出：
+1) 已完成项
+2) 阻塞项
+3) 剩余风险
+4) 下一步（可执行命令）
 ```
 
 ---

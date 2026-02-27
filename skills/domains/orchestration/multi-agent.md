@@ -19,6 +19,20 @@
 
 **铁律**：当犹豫时，优先 TeamCreate。多 Agent 并行效率远高于串行 subagent。
 
+## Codex 原生动作映射
+
+| 协同动作 | Codex 工具 |
+|---------|------------|
+| 创建子任务 | `spawn_agent` |
+| 下发/追问 | `send_input` |
+| 等待完成 | `wait` |
+| 长耗时任务 | `awaiter` agent |
+| 代码探索 | `explorer` agent |
+| 执行改动 | `worker` agent |
+| 收尾回收 | `close_agent` |
+
+执行顺序：锁文件 → 并行执行 → 审查修复 → 汇总 → 回收子 Agent。
+
 ### 决策矩阵
 
 满足**任意 1 条**即启用 TeamCreate：
@@ -34,9 +48,10 @@
 
 | 角色 | 道语 | 职责 | 工具权限 |
 |------|------|------|----------|
-| 主修 (Lead) | 天罗主修 | 任务分解、进度追踪、结果汇总 | TaskCreate/TaskUpdate/SendMessage |
-| 道侣 (Worker) | 天罗道侣 | 执行具体子任务、报告进度 | Read/Write/Edit/Bash/SendMessage |
-| 护法 (Reviewer) | 天罗护法 | 代码审查、质量校验、冲突检测 | Read/Grep/Glob/SendMessage |
+| 主修 (Lead) | 天罗主修 | 任务分解、进度追踪、结果汇总 | `spawn_agent/send_input/wait/close_agent` |
+| 道侣 (Worker) | 天罗道侣 | 执行具体子任务、报告进度 | `worker` + Read/Write/Edit/Bash |
+| 护法 (Reviewer) | 天罗护法 | 代码审查、质量校验、冲突检测 | `worker`(审查模式) + Read/Grep/Glob |
+| 斥候 (Scout) | 天罗斥候 | 只读探索、依赖定位 | `explorer` + Read/Grep/Glob |
 
 ## 任务分解策略
 
@@ -229,6 +244,13 @@ description: "一句话说明团队目标"
 报告格式：
 - 完成：列出创建/修改的文件+行数
 - 阻塞：说明原因+建议方案
+```
+
+### 强约束模板（Codex）
+```text
+你仅可修改：{owned_files}
+不得触碰未分配文件；若需要跨文件修改，先报告阻塞。
+输出必须包含：变更文件、验证命令、剩余风险。
 ```
 
 ## 审查清单

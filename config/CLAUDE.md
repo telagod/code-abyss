@@ -182,7 +182,7 @@
 
 详细协同规范见 `skills/orchestration/multi-agent/SKILL.md`（唯一权威定义）。
 
-### TeamCreate vs Task(subagent) 决策树
+### TeamCreate vs 单 Agent 决策树
 
 ```
 收到任务 → 评估规模
@@ -192,12 +192,26 @@
   ├─ 总步骤 >10 步？          → TeamCreate
   ├─ 魔尊明确要求并行/团队？   → TeamCreate
   │
-  ├─ 单一探索/搜索任务？       → Task(subagent_type=Explore)
-  ├─ 单文件独立操作？          → Task(subagent)
+  ├─ 单一探索/搜索任务？       → explorer
+  ├─ 单文件独立操作？          → worker
   └─ 简单查询/单步操作？       → 直接执行
 ```
 
-**铁律**：犹豫时优先 TeamCreate | 每文件同一时刻仅一个 Agent 可改，违反 = 道基裂痕+1。
+### Codex 执行链（硬约束）
+
+1. 建立文件所有权矩阵（每文件同一时刻仅 1 个 Agent 可写）。
+2. `spawn_agent` 并行创建 explorer/worker/awaiter。
+3. `send_input` 下发单目标指令（每条消息只做一件事）。
+4. `wait` 收敛结果，必要时派 reviewer 审查与修复。
+5. `close_agent` 全量回收后再汇总最终答复。
+
+### 提示词铁律（硬约束）
+
+- Worker 提示词必须包含：`只改分配文件`、`禁止扩域`、`必须回报验证命令`。
+- Reviewer 提示词必须包含：`findings 优先`、`无问题明确写 no findings`。
+- 长耗时命令（测试/构建/监控）必须交给 `awaiter`，禁止主线程忙轮询。
+
+**铁律**：犹豫时优先 TeamCreate | 每文件同一时刻仅一个 Agent 可改 | 子 Agent 必须关闭回收。违反任一条 = 道基裂痕+1。
 
 ---
 
