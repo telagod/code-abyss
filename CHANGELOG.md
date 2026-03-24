@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2026-03-23
+
+### Added
+- 新增共享 skill registry（`bin/lib/skill-registry.js`），统一扫描 `skills/**/SKILL.md` frontmatter，产出标准化 metadata、分类信息与脚本入口。
+- 新增 `bin/verify-skills-contract.js` 与 `npm run verify:skills`，把 skill contract 验证提升为显式 CI gate。
+- 新增 fixture-driven contract 覆盖：重复 skill name、frontmatter 解析失败、缺少必填字段、非法 `allowed-tools`、多脚本入口都会直接阻断。
+- 新增 `test/run-skill.test.js`，覆盖脚本执行、未知 skill、无脚本 skill、锁等待释放等关键回归点。
+- 新增 Claude / Codex 双端生成一致性与 install smoke 回归断言。
+
+### Changed
+- `bin/install.js` 改为消费共享 registry；Claude commands 与 Codex prompts 现在严格从同一 invocable skill 集合同源生成，并基于 `runtimeType` 区分脚本型与知识型 skill。
+- `skills/run_skill.js` 收窄为脚本型 skill 执行器：只负责 registry 解析、锁控制、spawn 子进程与退出码透传。
+- `skills/run_skill.js` 锁等待由 busy wait 改为异步轮询，保留目标锁语义与超时策略。
+- README / DESIGN / `skills/SKILL.md` 同步修正为当前真实实现：frontmatter 单源、`category/runtimeType` 切分、fail-fast 校验、Node.js 脚本 skill、CI/smoke 覆盖范围，并明确 registry public surface 已移除 `kind` 与 kebab-case compatibility 镜像字段，raw frontmatter 仅保留在 `meta`。
+- `bin/install.js` 的生成链只消费 normalized contract，不再兜底旧的 kebab-case 镜像键。
+
+### Fixed
+- 消除安装器与执行器各自扫描 skill 的双轨逻辑，避免 `run_skill.js` 仅识别 `tools/*/scripts/*.js` 的漂移。
+- 修正文档中“Python skills 实现”与“run_skill 已异步等待锁”但代码未对齐的旧叙事。
+- 在 CI 中前置 skill contract gate，避免无效 skill 进入生成链后才暴露错误。
+
+### Verification
+- Jest: 增加 registry / prompt generation / run_skill / contract CLI / Claude smoke 覆盖
+- CI: `npm test` + `npm run verify:skills` + `verify-change` + `verify-module` + `verify-quality` + `verify-security` + Claude/Codex smoke
+
 ## [2.0.0] - 2026-03-23
 
 ### Added

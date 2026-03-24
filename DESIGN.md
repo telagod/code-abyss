@@ -29,12 +29,15 @@ Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 C
 
 **取舍说明**：选择 npm 包（npx code-abyss），在安装便捷性和生态成熟度上取得平衡。
 
-### 2. Skills 实现语言
+### 2. Skills 实现与元数据单源
 
-选择 Python 实现 skills：
-- Claude Code 环境通常有 Python
-- 跨平台兼容性好
-- 便于扩展和维护
+当前 skills 与执行器统一采用 Node.js 实现：
+- 脚本型 skill 位于 `skills/**/scripts/*.js`
+- 每个 skill 的权威元数据来自对应 `SKILL.md` frontmatter
+- 共享 registry（`bin/lib/skill-registry.js`）负责扫描、分类、脚本入口解析
+- Claude commands、Codex prompts、`skills/run_skill.js` 都消费同一份 skill 清单
+
+这样避免安装器、执行器、双端生成器各自维护一套 discovery 逻辑。
 
 ### 3. 配置文件位置
 
@@ -51,7 +54,26 @@ Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 C
 - 通过 manifest 记录备份清单
 - 避免用户数据丢失
 
-## 技术债记录
+### 5. Skill registry 与双端生成
+
+- 问题：skills 元数据发现、脚本执行、Claude commands、Codex prompts 曾各自扫描，容易漂移。
+- 决策：以 `SKILL.md` frontmatter 为唯一事实源，抽出共享 registry，统一产出 `name`、`description`、`userInvocable`、`allowedTools`、`argumentHint`、`relPath`、`category`、`runtimeType`、`scriptPath`、`meta` 等标准化字段；`kind` 与 kebab-case compatibility 镜像字段已从 registry public surface 移除。
+- 决策：`category` 按目录前缀自动推断（`tools` / `domains` / `orchestration`），`runtimeType` 按脚本入口自动推断（`scripted` / `knowledge`）。
+- 决策：registry 在扫描阶段 fail-fast 校验 frontmatter 解析、必填字段、合法工具名、重复 skill name、多脚本入口，拒绝把脏数据交给后续生成链。
+- 取舍：多了一层 registry 抽象，但 commands/prompts/run_skill/CI gate 共享同一条契约，测试面更集中，错误更早暴露。
+
+### 6. `run_skill.js` 职责收窄
+
+- 问题：`run_skill.js` 曾只扫描 `tools/*/scripts/*.js`，与安装器递归扫描 `SKILL.md` 的逻辑不一致。
+- 决策：`run_skill.js` 只做脚本型 skill 执行编排：通过 registry 解析 skill、校验 `runtimeType=scripted`、加目标锁、spawn 子进程、透传退出码。
+- 决策：`knowledge` skill 立即报错并指向对应 `SKILL.md`，由上层 command/prompt 走知识型执行链。
+- 取舍：执行器不再隐式推断目录结构，但边界更清晰、行为与安装器一致。
+
+### 7. 锁等待实现
+
+- 问题：历史版本存在 busy wait 自旋锁，文档与实现长期漂移。
+- 决策：当前 `skills/run_skill.js` 使用异步定时等待（`setTimeout`/Promise 轮询）保留锁语义与超时策略，消除 CPU 空转。
+- 取舍：入口改为 async，但锁释放时序更稳定、资源占用更低。
 
 | 债务 | 原因 | 计划 |
 |------|------|------|

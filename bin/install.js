@@ -15,8 +15,11 @@ if (parseInt(process.versions.node) < parseInt(MIN_NODE)) {
   process.exit(1);
 }
 const PKG_ROOT = fs.realpathSync(path.join(__dirname, '..'));
-const { shouldSkip, copyRecursive, rmSafe, deepMergeNew, printMergeLog, parseFrontmatter } =
+const { shouldSkip, copyRecursive, rmSafe, deepMergeNew, printMergeLog } =
   require(path.join(__dirname, 'lib', 'utils.js'));
+const {
+  collectInvocableSkills,
+} = require(path.join(__dirname, 'lib', 'skill-registry.js'));
 const { detectCclineBin, installCcline: _installCcline } = require(path.join(__dirname, 'lib', 'ccline.js'));
 const {
   detectCodexAuth: detectCodexAuthImpl,
@@ -151,39 +154,8 @@ function runUninstall(tgt) {
 
 // ── 安装核心 ──
 
-/**
- * 递归扫描 skills 目录，找出所有 user-invocable: true 的 SKILL.md
- * @param {string} skillsDir - skills 源目录绝对路径
- * @returns {Array<{meta: Object, relPath: string, hasScripts: boolean}>}
- */
 function scanInvocableSkills(skillsDir) {
-  const results = [];
-  function scan(dir) {
-    const skillMd = path.join(dir, 'SKILL.md');
-    if (fs.existsSync(skillMd)) {
-      try {
-        const content = fs.readFileSync(skillMd, 'utf8');
-        const meta = parseFrontmatter(content);
-        if (meta && meta['user-invocable'] === 'true' && meta.name) {
-          const relPath = path.relative(skillsDir, dir);
-          const scriptsDir = path.join(dir, 'scripts');
-          const hasScripts = fs.existsSync(scriptsDir) &&
-            fs.readdirSync(scriptsDir).some(f => f.endsWith('.js'));
-          results.push({ meta, relPath, hasScripts });
-        }
-      } catch (e) { /* 解析失败跳过 */ }
-    }
-    try {
-      fs.readdirSync(dir).forEach(sub => {
-        const subPath = path.join(dir, sub);
-        if (fs.statSync(subPath).isDirectory() && !shouldSkip(sub) && sub !== 'scripts') {
-          scan(subPath);
-        }
-      });
-    } catch (e) { /* 读取失败跳过 */ }
-  }
-  scan(skillsDir);
-  return results;
+  return collectInvocableSkills(skillsDir);
 }
 
 const INVOCABLE_TARGETS = {
@@ -211,11 +183,13 @@ function getSkillPath(skillRoot, skillRelPath) {
     : `${skillRoot}/SKILL.md`;
 }
 
-function buildCommandFrontmatter(meta) {
-  const desc = (meta.description || '').replace(/"/g, '\\"');
-  const argHint = meta['argument-hint'];
-  const tools = meta['allowed-tools'] || 'Read';
-  const lines = ['---', `name: ${meta.name}`, `description: "${desc}"`];
+function buildCommandFrontmatter(skill) {
+  const desc = (skill.description || '').replace(/"/g, '\\"');
+  const argHint = skill.argumentHint;
+  const tools = Array.isArray(skill.allowedTools)
+    ? skill.allowedTools.join(', ')
+    : (skill.allowedTools || 'Read');
+  const lines = ['---', `name: ${skill.name}`, `description: "${desc}"`];
 
   if (argHint) lines.push(`argument-hint: "${argHint}"`);
   lines.push(`allowed-tools: ${tools}`);
@@ -223,28 +197,48 @@ function buildCommandFrontmatter(meta) {
   return lines;
 }
 
-function buildClaudeBody(skillPath, meta, hasScripts) {
+function buildSkillArtifactSpec(skill, targetName) {
+  const targetCfg = getInvocableTarget(targetName);
+  const runtimeType = skill.runtimeType || 'knowledge';
+  const allowedTools = Array.isArray(skill.allowedTools)
+    ? skill.allowedTools.join(', ')
+    : (skill.allowedTools || 'Read');
+  return {
+    targetName,
+    targetCfg,
+    name: skill.name,
+    description: skill.description,
+    argumentHint: skill.argumentHint || '',
+    allowedTools,
+    relPath: skill.relPath,
+    runtimeType,
+    scriptRunner: `node ${targetCfg.skillRoot}/run_skill.js ${skill.name} $ARGUMENTS`,
+    skillPath: getSkillPath(targetCfg.skillRoot, skill.relPath),
+  };
+}
+
+function buildClaudeBody(spec) {
   const lines = [];
-  if (hasScripts) {
+  if (spec.runtimeType === 'scripted') {
     lines.push('以下所有步骤一气呵成，不要在步骤间停顿等待用户输入：', '');
-    lines.push(`1. 读取规范：${skillPath}`);
-    lines.push(`2. 执行命令：\`node ~/.claude/skills/run_skill.js ${meta.name} $ARGUMENTS\``);
+    lines.push(`1. 读取规范：${spec.skillPath}`);
+    lines.push(`2. 执行命令：\`${spec.scriptRunner}\``);
     lines.push('3. 按规范分析输出，完成后续动作', '');
     lines.push('全程不要停顿，不要询问是否继续。');
     return lines;
   }
 
   lines.push('读取以下秘典，根据内容为用户提供专业指导：', '');
-  lines.push('```', skillPath, '```');
+  lines.push('```', spec.skillPath, '```');
   return lines;
 }
 
-function buildCodexPromptBody(skillPath, meta, hasScripts) {
+function buildCodexPromptBody(spec) {
   const lines = [];
-  if (meta['argument-hint']) lines.push(`Arguments: ${meta['argument-hint']}`, '');
-  lines.push(`Read \`${skillPath}\` before acting.`, '');
-  if (hasScripts) {
-    lines.push(`Then run \`node ~/.codex/skills/run_skill.js ${meta.name} $ARGUMENTS\`.`);
+  if (spec.argumentHint) lines.push(`Arguments: ${spec.argumentHint}`, '');
+  lines.push(`Read \`${spec.skillPath}\` before acting.`, '');
+  if (spec.runtimeType === 'scripted') {
+    lines.push(`Then run \`${spec.scriptRunner}\`.`);
     lines.push('Do not stop between steps unless blocked by permissions or missing required inputs.');
     lines.push('Use the skill guidance plus script output to complete the task end-to-end.');
     return lines;
@@ -255,34 +249,44 @@ function buildCodexPromptBody(skillPath, meta, hasScripts) {
   return lines;
 }
 
-function generateInvocableContent(meta, skillRelPath, hasScripts, targetName) {
-  const targetCfg = getInvocableTarget(targetName);
-  const skillPath = getSkillPath(targetCfg.skillRoot, skillRelPath);
-  const lines = targetName === 'claude' ? buildCommandFrontmatter(meta) : [];
+function generateInvocableContent(skill, targetName) {
+  const spec = buildSkillArtifactSpec(skill, targetName);
+  const lines = targetName === 'claude' ? buildCommandFrontmatter(spec) : [];
   const body = targetName === 'claude'
-    ? buildClaudeBody(skillPath, meta, hasScripts)
-    : buildCodexPromptBody(skillPath, meta, hasScripts);
+    ? buildClaudeBody(spec)
+    : buildCodexPromptBody(spec);
   return [...lines, ...body, ''].join('\n');
 }
 
-function generateCommandContent(meta, skillRelPath, hasScripts) {
-  return generateInvocableContent(meta, skillRelPath, hasScripts, 'claude');
+function normalizeGeneratedSkill(meta, skillRelPath, runtimeType) {
+  return {
+    ...meta,
+    description: meta.description || '',
+    argumentHint: meta.argumentHint || '',
+    allowedTools: meta.allowedTools || 'Read',
+    relPath: skillRelPath,
+    runtimeType,
+  };
 }
 
-function generatePromptContent(meta, skillRelPath, hasScripts) {
-  return generateInvocableContent(meta, skillRelPath, hasScripts, 'codex');
+function generateCommandContent(meta, skillRelPath, runtimeType = 'knowledge') {
+  return generateInvocableContent(normalizeGeneratedSkill(meta, skillRelPath, runtimeType), 'claude');
+}
+
+function generatePromptContent(meta, skillRelPath, runtimeType = 'knowledge') {
+  return generateInvocableContent(normalizeGeneratedSkill(meta, skillRelPath, runtimeType), 'codex');
 }
 
 function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest, targetName) {
-  const skills = scanInvocableSkills(skillsSrcDir);
+  const skills = collectInvocableSkills(skillsSrcDir);
   if (skills.length === 0) return 0;
 
   const targetCfg = getInvocableTarget(targetName);
   const installDir = path.join(targetDir, targetCfg.dir);
   fs.mkdirSync(installDir, { recursive: true });
 
-  skills.forEach(({ meta, relPath, hasScripts }) => {
-    const fileName = `${meta.name}.md`;
+  skills.forEach((skill) => {
+    const fileName = `${skill.name}.md`;
     const destFile = path.join(installDir, fileName);
     const relFile = path.posix.join(targetCfg.dir, fileName);
 
@@ -294,7 +298,7 @@ function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest,
       info(`备份: ${c.d(relFile)}`);
     }
 
-    const content = generateInvocableContent(meta, relPath, hasScripts, targetName);
+    const content = generateInvocableContent(skill, targetName);
     fs.writeFileSync(destFile, content);
     manifest.installed.push(relFile);
   });

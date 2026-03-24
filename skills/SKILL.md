@@ -8,6 +8,108 @@ disable-model-invocation: false
 
 # 神通秘典 · 总纲
 
+## Skill Authoring Contract
+
+以下规则是 `skills/**/SKILL.md` 的正式 authoring contract；共享 registry、`run_skill.js`、Claude commands、Codex prompts、CI gate 全部以此为准。
+
+### 必填 frontmatter
+
+```yaml
+---
+name: verify-quality
+description: 代码质量校验关卡。
+user-invocable: true
+allowed-tools: Bash, Read, Glob   # 可选，省略时默认 Read
+argument-hint: <扫描路径>          # 可选
+---
+```
+
+必填字段：
+
+- `name`：唯一标识，必须是 kebab-case slug，仅允许小写字母、数字、连字符
+- `description`：会进入 Claude command frontmatter 与 Codex prompt 文本，不能为空
+- `user-invocable`：`true/false`，决定是否进入生成集合
+
+可选字段：
+
+- `allowed-tools`：逗号分隔工具名列表；省略时默认 `Read`
+- `argument-hint`：生成命令/提示词时展示参数说明
+- 其他 frontmatter 可保留在 `meta` 中，但不会自动进入生成物
+
+### 分类与运行时推断
+
+- `category` 不是手写字段，而是由目录前缀自动推断：
+  - `skills/tools/*` → `tool`
+  - `skills/domains/*` → `domain`
+  - `skills/orchestration/*` → `orchestration`
+  - 其他位置 → `root`
+- `runtimeType` 同样自动推断：
+  - `scripts/` 下存在且仅存在一个 `.js` 文件 → `scripted`
+  - 没有脚本入口 → `knowledge`
+
+### 脚本入口规则
+
+- 脚本型 skill 必须把唯一入口放在 `scripts/*.js`
+- `scripts/` 下若出现多个 `.js` 文件，registry 会 fail-fast 报错
+- `runtimeType=scripted` 时，Claude / Codex 产物都会调用各自的 `run_skill.js`
+- `runtimeType=knowledge` 时，产物只读取对应 `SKILL.md`，不会尝试执行脚本
+- `kind` 与 kebab-case compatibility 镜像字段已从 registry 返回面移除；对外只暴露 normalized fields，raw frontmatter 仅保留在 `meta`
+
+### Fail-fast 校验
+
+以下情况会让 `collectSkills()` / `npm run verify:skills` / CI 立即失败：
+
+- `SKILL.md` 没有可解析 frontmatter
+- frontmatter 缺少 `name`、`description` 或 `user-invocable`
+- `name` 不是合法 kebab-case slug
+- `allowed-tools` 含非法工具名
+- skill name 重复，导致生成文件名冲突
+- `scripts/` 下出现多个 `.js` 入口
+
+### 生成链
+
+1. registry 扫描并标准化 `skills/**/SKILL.md`
+2. 仅 `userInvocable=true` 的 skill 进入 invocable 集合
+3. Claude 生成 `~/.claude/commands/*.md`
+4. Codex 生成 `~/.codex/prompts/*.md`
+5. `run_skill.js` 仅负责 `runtimeType=scripted` 的执行编排
+
+### 作者清单
+
+新增或修改 skill 时，至少完成以下检查：
+
+- 运行 `npm run verify:skills`
+- 运行 `npm test -- --runInBand test/install-utils.test.js test/install-registry.test.js test/install-generation.test.js test/install-smoke.test.js test/run-skill.test.js`
+- 确认命令名不会与现有 skill 冲突
+- 若新增脚本型 skill，确认 `scripts/` 下仅一个 `.js` 入口
+
+## 能力地图 / 调用规则 / 生成规则
+
+### 能力地图
+
+- `domains/`：知识型秘典，负责场景路由、原则、模板与执行纪律
+- `tools/`：可执行校验/生成关卡，既可被 slash command / custom prompt 直接调用，也可在流程中自动触发
+- `orchestration/`：协同规范与多 Agent 编排
+- `run_skill.js`：脚本型 skill 执行器，不负责知识路由
+
+### 调用规则
+
+1. 每个 skill 的权威元数据来自对应 `SKILL.md` frontmatter
+2. `user-invocable: true` 表示该 skill 进入可调用集合
+3. 若 skill 目录下存在唯一 `scripts/*.js`，则视为脚本型 skill（`runtimeType=scripted`）
+4. 若不存在脚本入口，则视为知识型 skill（`runtimeType=knowledge`），只读取 `SKILL.md` 执行
+5. `run_skill.js` 只负责脚本型 skill：解析 skill、校验 `runtimeType`、加锁、执行脚本、透传退出码
+
+### 自动生成规则
+
+1. 安装器通过共享 registry 递归扫描 `skills/**/SKILL.md`
+2. Claude 与 Codex 使用同一 invocable skill 集合
+3. Claude 生成 `~/.claude/commands/*.md`
+4. Codex 生成 `~/.codex/prompts/*.md`
+5. `runtimeType=scripted` 时，双端都调用各自的 `~/.claude/skills/run_skill.js` / `~/.codex/skills/run_skill.js`
+6. `runtimeType=knowledge` 时，双端都退化为“先读 `SKILL.md`，再据秘典执行”
+7. `npm run verify:skills` 与 CI 会在生成前先校验整个 contract，任何无效 skill 都会阻断后续流程
+
 ## 目录结构
 
 ```

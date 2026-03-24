@@ -77,9 +77,15 @@ function parseFrontmatter(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return null;
   const meta = Object.create(null);
-  match[1].split('\n').forEach(line => {
-    const m = line.match(/^([\w][\w-]*)\s*:\s*(.+)/);
-    if (m && !UNSAFE_KEYS.has(m[1])) meta[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
+  match[1].split(/\r?\n/).forEach((rawLine, index) => {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) return;
+
+    const m = rawLine.match(/^([\w][\w-]*)\s*:\s*(.+)$/);
+    if (!m) {
+      throw new Error(`frontmatter 第 ${index + 1} 行格式无效: ${rawLine}`);
+    }
+    if (!UNSAFE_KEYS.has(m[1])) meta[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
   });
   return meta;
 }

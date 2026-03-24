@@ -36,7 +36,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "verify:skills": "node bin/verify-skills-contract.js"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.10.1"

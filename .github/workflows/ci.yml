@@ -17,8 +17,54 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm test
+      - run: npm run verify:skills
+      - run: node skills/tools/verify-change/scripts/change_analyzer.js --mode staged || node skills/tools/verify-change/scripts/change_analyzer.js --mode working
+      - run: node skills/tools/verify-module/scripts/module_scanner.js .
       - run: node skills/tools/verify-quality/scripts/quality_checker.js .
       - run: node skills/tools/verify-security/scripts/security_scanner.js .
+
+  smoke-claude:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Pack npm tarball
+        shell: bash
+        run: npm pack
+      - name: Smoke install/uninstall Claude target
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg_tgz="$(ls code-abyss-*.tgz | head -n 1)"
+          abyss_home="$RUNNER_TEMP/abyss-home"
+          rm -rf "$abyss_home"
+          mkdir -p "$abyss_home"
+
+          export HOME="$abyss_home"
+          export USERPROFILE="$abyss_home"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --target claude -y
+
+          test -f "$abyss_home/.claude/CLAUDE.md"
+          test -d "$abyss_home/.claude/skills"
+          test -d "$abyss_home/.claude/commands"
+          test -f "$abyss_home/.claude/commands/gen-docs.md"
+          test -f "$abyss_home/.claude/settings.json"
+          test -f "$abyss_home/.claude/.sage-uninstall.js"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --uninstall claude
+
+          test ! -e "$abyss_home/.claude/CLAUDE.md"
+          test ! -e "$abyss_home/.claude/skills"
+          test ! -e "$abyss_home/.claude/.sage-backup"
 
   smoke-codex:
     runs-on: ${{ matrix.os }}

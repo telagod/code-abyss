@@ -15,12 +15,11 @@
  */
 
 const { spawn } = require('child_process');
-const { readdirSync, statSync, writeFileSync, unlinkSync, closeSync, openSync } = require('fs');
+const { unlinkSync, closeSync, openSync } = require('fs');
 const { join, resolve } = require('path');
 const { createHash } = require('crypto');
 const { tmpdir } = require('os');
-
-const IS_WIN = process.platform === 'win32';
+const { resolveExecutableSkillScript } = require('../bin/lib/skill-registry');
 
 function getSkillsDir() {
   const override = process.env.SAGE_SKILLS_DIR;
@@ -28,39 +27,29 @@ function getSkillsDir() {
   return __dirname;
 }
 
-function discoverSkills(skillsDir) {
-  const found = {};
-  const toolsDir = join(skillsDir, 'tools');
-  let entries;
-  try { entries = readdirSync(toolsDir).sort(); } catch { return found; }
-
-  for (const name of entries) {
-    const scriptsDir = join(toolsDir, name, 'scripts');
-    let scripts;
-    try { scripts = readdirSync(scriptsDir); } catch { continue; }
-    const jsFile = scripts.find(f => f.endsWith('.js'));
-    if (jsFile) found[name] = join(scriptsDir, jsFile);
-  }
-  return found;
+function sleep(ms) {
+  return new Promise(resolveSleep => setTimeout(resolveSleep, ms));
 }
 
-function getScriptPath(skillName) {
-  const available = discoverSkills(getSkillsDir());
-  if (!(skillName in available)) {
-    const names = Object.keys(available).join(', ') || '(无)';
+function getScriptEntry(skillName) {
+  const skillsDir = getSkillsDir();
+  const { skill, scriptPath, reason } = resolveExecutableSkillScript(skillsDir, skillName);
+
+  if (reason === 'missing') {
     console.error(`错误: 未知的 skill '${skillName}'`);
-    console.error(`可用的 skills: ${names}`);
     process.exit(1);
   }
-  return available[skillName];
+
+  if (reason === 'no-script') {
+    console.error(`错误: skill '${skillName}' 的 runtimeType 不是 scripted`);
+    console.error(`请先阅读: ${skill.skillPath}`);
+    process.exit(1);
+  }
+
+  return { skill, scriptPath };
 }
 
-function sleepMs(ms) {
-  const end = Date.now() + ms;
-  while (Date.now() < end) { /* busy wait */ }
-}
-
-function acquireTargetLock(args) {
+async function acquireTargetLock(args) {
   const target = args.find(a => !a.startsWith('-')) || process.cwd();
   const hash = createHash('md5').update(resolve(target)).digest('hex').slice(0, 12);
   const lockPath = join(tmpdir(), `sage_skill_${hash}.lock`);
@@ -70,12 +59,18 @@ function acquireTargetLock(args) {
   while (true) {
     try {
       const fd = openSync(lockPath, 'wx');
-      return { fd, lockPath };
+      return { fd, lockPath, target };
     } catch (e) {
-      if (e.code !== 'EEXIST') return { fd: null, lockPath: null };
-      if (first) { console.log(`⏳ 等待锁释放: ${target}`); first = false; }
-      if (Date.now() >= deadline) { console.error(`⏳ 等待锁超时: ${target}`); process.exit(1); }
-      sleepMs(200);
+      if (e.code !== 'EEXIST') return { fd: null, lockPath: null, target };
+      if (first) {
+        console.log(`⏳ 等待锁释放: ${target}`);
+        first = false;
+      }
+      if (Date.now() >= deadline) {
+        console.error(`⏳ 等待锁超时: ${target}`);
+        process.exit(1);
+      }
+      await sleep(200);
     }
   }
 }
@@ -89,7 +84,7 @@ function releaseLock({ fd, lockPath }) {
   }
 }
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
@@ -98,10 +93,9 @@ function main() {
   }
 
   const skillName = args[0];
-  const scriptPath = getScriptPath(skillName);
+  const { scriptPath } = getScriptEntry(skillName);
   const scriptArgs = args.slice(1);
-
-  const lock = acquireTargetLock(scriptArgs);
+  const lock = await acquireTargetLock(scriptArgs);
 
   const child = spawn(process.execPath, [scriptPath, ...scriptArgs], {
     stdio: 'inherit',
@@ -126,4 +120,7 @@ function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  console.error(`执行错误: ${err.message}`);
+  process.exit(1);
+});
