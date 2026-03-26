@@ -369,7 +369,6 @@ function detectCodexAuth({
 
 function getCodexCoreFiles() {
   return [
-    { src: 'config/AGENTS.md', dest: 'AGENTS.md' },
     { src: 'skills', dest: 'skills' },
   ];
 }

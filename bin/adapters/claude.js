@@ -2,6 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { getDefaultStyle } = require(path.join(__dirname, '..', 'lib', 'style-registry.js'));
+
+const PROJECT_ROOT = path.join(__dirname, '..', '..');
+const DEFAULT_OUTPUT_STYLE = getDefaultStyle(PROJECT_ROOT, 'claude').slug;
 
 const SETTINGS_TEMPLATE = {
   $schema: 'https://json.schemastore.org/claude-code-settings.json',
@@ -16,7 +20,7 @@ const SETTINGS_TEMPLATE = {
   alwaysThinkingEnabled: true,
   autoMemoryEnabled: true,
   model: 'opus',
-  outputStyle: 'abyss-cultivator',
+  outputStyle: DEFAULT_OUTPUT_STYLE,
   attribution: { commit: '', pr: '' },
   sandbox: {
     autoAllowBashIfSandboxed: true
@@ -148,6 +152,7 @@ async function postClaude({
 }
 
 module.exports = {
+  DEFAULT_OUTPUT_STYLE,
   SETTINGS_TEMPLATE,
   CCLINE_STATUS_LINE,
   getClaudeCoreFiles,

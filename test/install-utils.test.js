@@ -147,6 +147,6 @@ describe('SETTINGS_TEMPLATE', () => {
   test('包含必要字段', () => {
     expect(SETTINGS_TEMPLATE).toHaveProperty('env');
     expect(SETTINGS_TEMPLATE).toHaveProperty('permissions');
-    expect(SETTINGS_TEMPLATE).toHaveProperty('outputStyle', 'abyss-cultivator');
+    expect(SETTINGS_TEMPLATE).toHaveProperty('outputStyle');
   });
 });

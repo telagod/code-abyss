@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 
 const {
+  DEFAULT_OUTPUT_STYLE,
   SETTINGS_TEMPLATE,
   getClaudeCoreFiles,
   detectClaudeAuth,
@@ -24,7 +25,7 @@ describe('claude adapter', () => {
   test('SETTINGS_TEMPLATE 保持关键字段', () => {
     expect(SETTINGS_TEMPLATE).toHaveProperty('env');
     expect(SETTINGS_TEMPLATE).toHaveProperty('permissions');
-    expect(SETTINGS_TEMPLATE).toHaveProperty('outputStyle', 'abyss-cultivator');
+    expect(SETTINGS_TEMPLATE).toHaveProperty('outputStyle', DEFAULT_OUTPUT_STYLE);
   });
 
   test('getClaudeCoreFiles: 返回 Claude 核心映射', () => {
