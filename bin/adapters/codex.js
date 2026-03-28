@@ -370,6 +370,7 @@ function detectCodexAuth({
 function getCodexCoreFiles() {
   return [
     { src: 'skills', dest: 'skills' },
+    { src: 'bin/lib', dest: 'bin/lib' },
   ];
 }
 

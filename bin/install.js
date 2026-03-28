@@ -300,25 +300,33 @@ function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest,
   const installDir = path.join(targetDir, targetCfg.dir);
   fs.mkdirSync(installDir, { recursive: true });
 
+  let totalFiles = 0;
+
   skills.forEach((skill) => {
-    const fileName = `${skill.name}.md`;
-    const destFile = path.join(installDir, fileName);
-    const relFile = path.posix.join(targetCfg.dir, fileName);
+    // 主命令 + aliases 都生成文件
+    const names = [skill.name, ...(skill.aliases || [])];
 
-    if (fs.existsSync(destFile)) {
-      const backupSubdir = path.join(backupDir, targetCfg.dir);
-      fs.mkdirSync(backupSubdir, { recursive: true });
-      fs.copyFileSync(destFile, path.join(backupSubdir, fileName));
-      manifest.backups.push(relFile);
-      info(`备份: ${c.d(relFile)}`);
-    }
+    names.forEach((cmdName) => {
+      const fileName = `${cmdName}.md`;
+      const destFile = path.join(installDir, fileName);
+      const relFile = path.posix.join(targetCfg.dir, fileName);
 
-    const content = generateInvocableContent(skill, targetName);
-    fs.writeFileSync(destFile, content);
-    manifest.installed.push(relFile);
+      if (fs.existsSync(destFile)) {
+        const backupSubdir = path.join(backupDir, targetCfg.dir);
+        fs.mkdirSync(backupSubdir, { recursive: true });
+        fs.copyFileSync(destFile, path.join(backupSubdir, fileName));
+        manifest.backups.push(relFile);
+        info(`备份: ${c.d(relFile)}`);
+      }
+
+      const content = generateInvocableContent(skill, targetName);
+      fs.writeFileSync(destFile, content);
+      manifest.installed.push(relFile);
+      totalFiles++;
+    });
   });
 
-  ok(`${targetCfg.dir}/ ${c.d(`(自动生成 ${skills.length} 个 ${targetCfg.label})`)}`);
+  ok(`${targetCfg.dir}/ ${c.d(`(自动生成 ${totalFiles} 个 ${targetCfg.label})`)}`);
   return skills.length;
 }
 

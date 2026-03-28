@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.5] - 2026-03-28
+
+### Fixed
+- `/hi` 命令重命名：skill name 从 `override-refusal` 改为 `hi`，命令文件直接生成 `hi.md`，不再生成 `override-refusal.md`
+- 跨平台路径修复：`refusal_rewriter.js` 的 cwd slug 生成改用 `[\\/]` 正则，兼容 Linux/Mac/Windows
+- Claude 项目目录 slug 修复：保留前导 `-`，与 Claude Code 实际命名一致
+- 安装器新增 `bin/lib/` 到核心文件映射：Claude 和 Codex 均复制 `bin/lib/` 到目标目录，修复 `run_skill.js` 的 `skill-registry` 依赖断链
+- 安装器支持 `aliases` frontmatter 字段：可为同一 skill 生成多个命令/prompt 文件
+
+### Verification
+- Jest: **13 suites / 148 tests passed**
+- Skill contract gate: `npm run verify:skills` — 22 skills 通过
+- 双端安装验证：`/hi` 在 Claude Code (`~/.claude/commands/hi.md`) 和 Codex CLI (`~/.codex/prompts/hi.md`) 均正常生成
+- `run_skill.js hi --dry-run` 执行成功
+
 ## [2.0.4] - 2026-03-28
 
 ### Fixed

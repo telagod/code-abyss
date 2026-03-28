@@ -48,6 +48,7 @@ function getClaudeCoreFiles() {
     { src: 'config/CLAUDE.md', dest: 'CLAUDE.md' },
     { src: 'output-styles', dest: 'output-styles' },
     { src: 'skills', dest: 'skills' },
+    { src: 'bin/lib', dest: 'bin/lib' },
   ];
 }
 

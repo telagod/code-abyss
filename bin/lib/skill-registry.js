@@ -97,12 +97,17 @@ function normalizeSkillRecord(skillsDir, skillDir, meta) {
   const scriptPath = scriptEntries[0] || null;
   const skillPath = path.join(skillDir, 'SKILL.md');
 
+  const aliases = normalizedMeta.aliases
+    ? String(normalizedMeta.aliases).split(',').map(a => a.trim()).filter(Boolean)
+    : [];
+
   return {
     name,
     description,
     userInvocable,
     allowedTools,
     argumentHint,
+    aliases,
     relPath,
     category,
     runtimeType,

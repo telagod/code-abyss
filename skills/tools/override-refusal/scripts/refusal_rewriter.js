@@ -80,6 +80,15 @@ function parseArgs(argv) {
   return { last, dryRun };
 }
 
+// ─── 跨平台 slug ─────────────────────────────────────────
+
+function cwdToSlug(cwd) {
+  // Claude 项目目录 slug：所有路径分隔符替换为 -，保留前导 -
+  // Windows: C:\Users\foo → -C--Users-foo
+  // Linux/Mac: /home/foo → -home-foo
+  return cwd.replace(/[\\/]/g, '-');
+}
+
 // ─── 环境检测 ─────────────────────────────────────────────
 
 function detectRuntime() {
@@ -94,8 +103,7 @@ function detectRuntime() {
   const claudeProjects = path.join(home, '.claude', 'projects');
 
   // 优先检测当前 cwd 是否有对应的 claude project
-  const cwd = process.cwd();
-  const slug = cwd.replace(/\//g, '-').replace(/^-/, '');
+  const slug = cwdToSlug(process.cwd());
   const claudeProjectDir = path.join(claudeProjects, slug);
   if (fs.existsSync(claudeProjectDir)) return 'claude';
   if (fs.existsSync(codexSessions)) return 'codex';
@@ -106,8 +114,7 @@ function detectRuntime() {
 // ─── Claude 会话定位 ─────────────────────────────────────
 
 function findClaudeSessionJsonl() {
-  const cwd = process.cwd();
-  const slug = cwd.replace(/\//g, '-').replace(/^-/, '');
+  const slug = cwdToSlug(process.cwd());
   const projectDir = path.join(os.homedir(), '.claude', 'projects', slug);
 
   if (!fs.existsSync(projectDir)) {
