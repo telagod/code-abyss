@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hi"
+  short_description: "反拒绝覆写（/hi）"
+  default_prompt: "Read the skill at skills/tools/override-refusal/SKILL.md, then run: node skills/run_skill.js hi $ARGUMENTS"

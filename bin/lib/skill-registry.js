@@ -159,7 +159,7 @@ function collectSkills(skillsDir) {
 
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
-      if (entry.name === 'scripts' || shouldSkip(entry.name)) continue;
+      if (entry.name === 'scripts' || entry.name === 'agents' || shouldSkip(entry.name)) continue;
       scan(path.join(dir, entry.name));
     }
   }

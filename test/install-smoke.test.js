@@ -87,17 +87,18 @@ describe('codex install smoke', () => {
     });
   }
 
-  test('安装 Codex 时生成 prompts 且不写 settings.json', () => {
+  test('安装 Codex 时生成 skills（含 agents/openai.yaml）且不写 settings.json', () => {
     const result = runInstall(['--target', 'codex', '-y']);
     const codexDir = path.join(tmpHome, '.codex');
 
     expect(result.status).toBe(0);
     expect(fs.existsSync(path.join(codexDir, 'AGENTS.md'))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, 'skills'))).toBe(true);
-    expect(fs.existsSync(path.join(codexDir, 'prompts'))).toBe(true);
-    expect(fs.existsSync(path.join(codexDir, 'prompts', 'gen-docs.md'))).toBe(true);
+    expect(fs.existsSync(path.join(codexDir, 'bin', 'lib'))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, 'config.toml'))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, 'settings.json'))).toBe(false);
+    // Codex 0.117.0+ 已移除 custom prompts，不再生成 prompts/
+    expect(fs.existsSync(path.join(codexDir, 'prompts'))).toBe(false);
   });
 
   test('安装 Codex 时根据 --style 动态生成 AGENTS.md', () => {

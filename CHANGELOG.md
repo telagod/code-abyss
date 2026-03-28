@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.6] - 2026-03-28
+
+### Fixed
+- Codex 0.117.0+ 已移除 custom prompts（`~/.codex/prompts/`），安装器不再为 Codex 生成 `prompts/` 目录
+- 为所有 7 个 user-invocable skill 添加 `agents/openai.yaml`，使其在 Codex TUI skill picker 中可见
+- `skill-registry.js` 扫描时跳过 `agents/` 目录，避免误识别为子 skill
+
+### Verification
+- Jest: **13 suites / 148 tests passed**
+- Skill contract gate: `npm run verify:skills` — 22 skills 通过
+- Codex 重装验证：`agents/openai.yaml` 随 `skills/` 复制到 `~/.codex/skills/`
+
 ## [2.0.5] - 2026-03-28
 
 ### Fixed
