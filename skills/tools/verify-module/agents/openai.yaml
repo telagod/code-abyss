@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify Module"
+  short_description: "模块完整性校验关卡"
+  default_prompt: "Read the skill at skills/tools/verify-module/SKILL.md, then run: node skills/run_skill.js verify-module $ARGUMENTS"

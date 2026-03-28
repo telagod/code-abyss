@@ -453,8 +453,8 @@ function installCore(tgt, selectedStyle) {
     const skillsSrc = path.join(PKG_ROOT, 'skills');
     installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
   } else if (tgt === 'codex') {
-    const skillsSrc = path.join(PKG_ROOT, 'skills');
-    installGeneratedPrompts(skillsSrc, targetDir, backupDir, manifest);
+    // Codex 0.117.0+ 已移除 custom prompts，skills 通过 agents/openai.yaml 注册
+    // 不再生成 prompts/ 目录
     installCodexAgents(targetDir, backupDir, manifest, selectedStyle);
   }
 
