@@ -275,7 +275,7 @@ network_access = false
 - `.code-abyss/packs.lock.json` 现在支持按 host 配置 `optional_policy=auto|prompt|off` 与 `sources.<pack>=pinned|local|disabled`
 - `--list-styles` 可列出当前内置风格；`--style <slug>` 可在安装时显式切换风格
 - `skills/run_skill.js` 现在仅负责执行脚本型 skill：通过共享 registry 定位脚本入口、加目标锁、spawn 子进程，并把退出码原样透传
-- 若 skill 没有 `scripts/*.js`，Claude/Codex 两端都会退化为“先读 `SKILL.md`，再按秘典执行”的知识型模式
+- 若 skill 没有 `scripts/*.js`，Claude/Codex/Gemini 三端都会退化为“先读 `SKILL.md`，再按秘典执行”的知识型模式
 - Codex 改为 `skills-only` 安装形态：不再写运行时 `AGENTS.md`，而是在 `~/.agents/skills/` 下自动安装 Code Abyss 与 gstack skills
 - 安装器不会再为 Codex 写入伪配置 `~/.codex/settings.json`；若检测到旧版遗留文件，会在安装时备份后移除，卸载时恢复
 - 若你本地已有旧配置，安装器不会强制覆盖；会自动补齐缺失 root defaults，并把旧 `web_search_*` / `[tools].web_search` 迁移到新版 `web_search = "cached|live|disabled"`
@@ -289,8 +289,8 @@ network_access = false
 
 ### Pack registry
 
-- `packs/abyss/manifest.json`：声明 Code Abyss core pack 在 Claude/Codex 两个 host 下的安装映射
-- `packs/gstack/manifest.json`：声明 pinned upstream gstack 的 repo、commit、Claude/Codex runtime 目录与路径改写规则
+- `packs/abyss/manifest.json`：声明 Code Abyss core pack 在 Claude/Codex/Gemini 三个 host 下的安装映射
+- `packs/gstack/manifest.json`：声明 pinned upstream gstack 的 repo、commit、Claude/Codex/Gemini runtime 目录与路径改写规则
 - `bin/lib/pack-registry.js`：安装器与 host adapter 的唯一 pack 真相源
 - `.code-abyss/packs.lock.json`：项目级 pack 声明；支持 `required` / `optional` / `optional_policy` / `sources`
 - `sources.<pack>` 支持：
@@ -323,7 +323,7 @@ flowchart TD
   D -->|领域能力| E[Abyss Core Skills\nverify-change / verify-quality / gen-docs ...]
   D -->|工作流编排| F[gstack Workflows\noffice-hours / review / qa / ship]
 
-  E --> G[Claude / Codex Runtime]
+  E --> G[Claude / Codex / Gemini Runtime]
   F --> G
 
   G --> H[执行阶段\n规划 / 实现 / 评审 / 验证 / 发布]
@@ -365,7 +365,7 @@ flowchart TD
 
 - 每个 style 记录 `slug`、`label`、`description`、`file`、`targets`、`default`
 - Claude 安装时复制整个 `output-styles/` 目录，并把 `settings.json.outputStyle` 指向选中的 slug
-- Codex 安装时不复制静态模板，而是由 `config/CLAUDE.md + output-styles/<slug>.md` 动态生成 `AGENTS.md`
+- Gemini 安装时由 `config/CLAUDE.md + output-styles/<slug>.md` 动态生成 `GEMINI.md`
 - `--list-styles` 用于查看可用风格，`--style <slug>` 用于无交互切换
 
 ---
@@ -382,11 +382,12 @@ flowchart TD
 - `verify-security`
 - Claude install/uninstall smoke
 - Codex install/uninstall smoke
+- Gemini install/uninstall smoke
 - 生成一致性回归：Claude commands 与 Codex skill metadata 的路径必须与最新安装布局一致
 
 ---
 
-## 🧩 适配器解耦（Claude / Codex）
+## 🧩 适配器解耦（Claude / Codex / Gemini）
 
 为避免过度耦合，安装器按目标 CLI 拆分适配层：
 
@@ -394,9 +395,10 @@ flowchart TD
 - `bin/adapters/claude.js`：Claude 侧认证检测、settings merge、可选配置流程
 - `bin/lib/ccline.js`：Claude 侧状态栏与 ccline 集成
 - `bin/adapters/codex.js`：Codex 侧认证检测、核心文件映射、config 模板流程
-- `bin/lib/style-registry.js`：输出风格 registry、默认风格解析、Codex AGENTS 动态拼装
+- `bin/adapters/gemini.js`：Gemini 侧认证检测、settings merge、安装后可选配置
+- `bin/lib/style-registry.js`：输出风格 registry、默认风格解析、Gemini `GEMINI.md` 动态拼装
 
-当前 Claude/Codex 安装映射分别由 `getClaudeCoreFiles()` 与 `getCodexCoreFiles()` 提供；Claude 额外生成 `commands/` 并保留完整 `output-styles/`，Codex 则采用 `~/.agents/skills/` 的 `skills-only` 主路径。额外 pack 由 `.code-abyss/packs.lock.json` 自动声明并同步，避免再向 `AGENTS.md` 注入大段运行时规则。
+当前 Claude/Codex/Gemini 安装映射分别由 `getClaudeCoreFiles()`、`getCodexCoreFiles()` 与 `getGeminiCoreFiles()` 提供；Claude 额外生成 `commands/` 并保留完整 `output-styles/`，Codex 采用 `~/.agents/skills/` 的 `skills-only` 主路径，Gemini 则安装 `skills/`、`commands/*.toml` 与动态生成的 `GEMINI.md`。额外 pack 由 `.code-abyss/packs.lock.json` 自动声明并同步，避免再向运行时文档注入大段重复规则。
 
 ---
 
