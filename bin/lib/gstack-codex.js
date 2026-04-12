@@ -11,6 +11,8 @@ const {
 const { getPack } = require('./pack-registry');
 
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
+const GSTACK_RUNTIME_EXTRA_DIRS = new Set(['references', 'templates', 'specialists', 'bin', 'migrations', 'vendor']);
+const GSTACK_FRONTMATTER_DESCRIPTION_LIMIT = 240;
 
 function getGstackConfig(hostName = 'codex', projectRoot = PROJECT_ROOT) {
   const manifest = getPack(projectRoot, 'gstack');
@@ -76,9 +78,19 @@ function extractNameAndDescription(content) {
 
 function buildCodexFrontmatter(name, description) {
   const safeName = name.trim();
-  const safeDesc = description.trim();
+  const safeDesc = condenseDescription(description, GSTACK_FRONTMATTER_DESCRIPTION_LIMIT);
   const indented = safeDesc.split('\n').map((line) => `  ${line}`).join('\n');
   return `---\nname: ${safeName}\ndescription: |\n${indented}\n---`;
+}
+
+function condenseDescription(description, limit) {
+  const firstParagraph = description.split(/\n\s*\n/)[0] || description;
+  const collapsed = firstParagraph.replace(/\s+/g, ' ').trim();
+  if (collapsed.length <= limit) return collapsed;
+  const truncated = collapsed.slice(0, limit - 3);
+  const lastSpace = truncated.lastIndexOf(' ');
+  const safe = lastSpace > 40 ? truncated.slice(0, lastSpace) : truncated;
+  return `${safe}...`;
 }
 
 function injectRuntimeRootPreamble(content) {
@@ -250,11 +262,30 @@ function copyRuntimeAssets(sourceRoot, destRoot) {
   });
 }
 
+function copySkillRuntimeFiles(sourceSkillDir, destSkillDir, { transformSkill = null } = {}) {
+  ensureDir(destSkillDir);
+  rmSafe(path.join(destSkillDir, 'SKILL.md.tmpl'));
+  const sourceSkillPath = path.join(sourceSkillDir, 'SKILL.md');
+  if (!fs.existsSync(sourceSkillPath)) return;
+
+  const content = fs.readFileSync(sourceSkillPath, 'utf8');
+  fs.writeFileSync(
+    path.join(destSkillDir, 'SKILL.md'),
+    typeof transformSkill === 'function' ? transformSkill(content) : content
+  );
+
+  fs.readdirSync(sourceSkillDir, { withFileTypes: true }).forEach((entry) => {
+    if (entry.name === 'SKILL.md' || entry.name === 'SKILL.md.tmpl') return;
+    if (!entry.isDirectory()) return;
+    if (!GSTACK_RUNTIME_EXTRA_DIRS.has(entry.name)) return;
+    copyRecursive(path.join(sourceSkillDir, entry.name), path.join(destSkillDir, entry.name));
+  });
+}
+
 function installNestedSkill(sourceSkillDir, destSkillDir) {
-  copyRecursive(sourceSkillDir, destSkillDir);
-  const skillPath = path.join(destSkillDir, 'SKILL.md');
-  const content = fs.readFileSync(skillPath, 'utf8');
-  fs.writeFileSync(skillPath, transformGstackSkillContent(content));
+  copySkillRuntimeFiles(sourceSkillDir, destSkillDir, {
+    transformSkill: transformGstackSkillContent,
+  });
 }
 
 function installGstackCodexPack({
@@ -301,9 +332,11 @@ function installGstackCodexPack({
 module.exports = {
   getGstackConfig,
   extractNameAndDescription,
+  condenseDescription,
   transformGstackSkillContent,
   listTopLevelSkillDirs,
   ensurePinnedGstackSource,
   resolveGstackSource,
+  copySkillRuntimeFiles,
   installGstackCodexPack,
 };

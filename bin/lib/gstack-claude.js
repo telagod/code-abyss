@@ -12,6 +12,8 @@ const {
   extractNameAndDescription,
   listTopLevelSkillDirs,
   resolveGstackSource,
+  condenseDescription,
+  copySkillRuntimeFiles,
 } = require('./gstack-codex');
 
 function readFrontmatterBlock(content) {
@@ -49,7 +51,7 @@ function extractAllowedTools(content) {
 }
 
 function buildClaudeCommand(name, description, allowedTools, skillPath) {
-  const escapedDescription = description.replace(/"/g, '\\"');
+  const escapedDescription = condenseDescription(description, 180).replace(/"/g, '\\"');
   return [
     '---',
     `name: ${name}`,
@@ -123,7 +125,7 @@ function installGstackClaudePack({
   listTopLevelSkillDirs(sourceRoot, 'claude').forEach((skillDirName) => {
     const srcDir = path.join(sourceRoot, skillDirName);
     const destDir = path.join(skillRoot, skillDirName);
-    copyRecursive(srcDir, destDir);
+    copySkillRuntimeFiles(srcDir, destDir);
 
     const content = fs.readFileSync(path.join(srcDir, 'SKILL.md'), 'utf8');
     const { name, description } = extractNameAndDescription(content);

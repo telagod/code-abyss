@@ -6,6 +6,7 @@ const path = require('path');
 
 const {
   extractNameAndDescription,
+  condenseDescription,
   transformGstackSkillContent,
   listTopLevelSkillDirs,
   getGstackConfig,
@@ -36,6 +37,12 @@ describe('gstack codex integration', () => {
     expect(transformed).not.toContain('~/.claude/skills/gstack');
   });
 
+  test('condenseDescription 会压缩长描述到单段短文', () => {
+    const result = condenseDescription('one two three four five six seven eight nine ten eleven twelve', 24);
+    expect(result.length).toBeLessThanOrEqual(24);
+    expect(result.endsWith('...')).toBe(true);
+  });
+
   test('listTopLevelSkillDirs 跳过 codex wrapper skill', () => {
     expect(listTopLevelSkillDirs(fixtureRoot)).toEqual(['office-hours', 'review']);
   });
@@ -63,6 +70,8 @@ describe('gstack codex integration', () => {
     expect(fs.existsSync(path.join(runtimeRoot, 'office-hours', 'SKILL.md'))).toBe(true);
     expect(fs.existsSync(path.join(runtimeRoot, 'codex', 'SKILL.md'))).toBe(false);
     expect(fs.existsSync(path.join(runtimeRoot, 'bin', 'gstack-update-check'))).toBe(true);
+    expect(fs.existsSync(path.join(runtimeRoot, 'review', 'SKILL.md.tmpl'))).toBe(false);
+    expect(fs.existsSync(path.join(runtimeRoot, 'review', 'specialists', 'security.md'))).toBe(true);
     expect(manifest.installed).toContainEqual({ root: 'agents', path: 'skills/gstack' });
 
     fs.rmSync(tmpHome, { recursive: true, force: true });

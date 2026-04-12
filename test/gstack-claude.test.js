@@ -19,10 +19,11 @@ describe('gstack claude integration', () => {
   });
 
   test('buildClaudeCommand 生成 command frontmatter + skill path', () => {
-    const command = buildClaudeCommand('review', 'Review skill.', 'Bash, Read', '~/.claude/skills/gstack/review/SKILL.md');
+    const command = buildClaudeCommand('review', 'Review skill. '.repeat(40), 'Bash, Read', '~/.claude/skills/gstack/review/SKILL.md');
     expect(command).toContain('name: review');
     expect(command).toContain('allowed-tools: Bash, Read');
     expect(command).toContain('~/.claude/skills/gstack/review/SKILL.md');
+    expect(command.length).toBeLessThan(500);
   });
 
   test('installGstackClaudePack 安装 runtime root 与 commands', () => {
@@ -43,6 +44,7 @@ describe('gstack claude integration', () => {
 
     expect(installed).toMatchObject({ installed: true, sourceMode: 'pinned' });
     expect(fs.existsSync(path.join(tmpHome, '.claude', 'skills', 'gstack', 'review', 'SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpHome, '.claude', 'skills', 'gstack', 'review', 'SKILL.md.tmpl'))).toBe(false);
     expect(fs.existsSync(path.join(tmpHome, '.claude', 'commands', 'review.md'))).toBe(true);
     expect(fs.existsSync(path.join(tmpHome, '.claude', 'commands', 'office-hours.md'))).toBe(true);
     expect(manifest.installed).toContainEqual({ root: 'claude', path: 'skills/gstack' });
