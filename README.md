@@ -18,6 +18,15 @@
 
 ## 🚀 安装
 
+### v2.0.8 新特性
+
+- `target-registry` 收束宿主常量：Claude / Codex / Gemini 的 target 与安装根改为单一真相源，后续扩宿主不再散改多处硬编码
+- runtime guidance 进一步瘦身：默认内核与 4 个输出风格重新压缩，并用测试门禁限制各风格体积
+- Gemini 文档与 pack 叙事补齐：README 现在完整覆盖 Gemini host、dynamic `GEMINI.md`、Gemini smoke 与 pack 映射
+- Windows CI 修复：gstack frontmatter 解析现已兼容 `CRLF`，Windows 下 Claude / Codex / Gemini smoke 全绿
+- Codex 自定义说明文件：安装器会同步 `instruction.md` 到 `~/.codex/`，并在 `config.toml` 写入 `model_instructions_file = "./instruction.md"`
+- 仓库分支已收束：历史 automation 分支内容已并回 `main`，当前 npm 包面向单主线发布
+
 ```bash
 npx code-abyss
 npx code-abyss --list-styles
@@ -26,7 +35,7 @@ npx code-abyss --list-styles
 交互式菜单（方向键选择，回车确认）：
 
 ```
-☠️ Code Abyss v2.0.3
+☠️ Code Abyss v2.0.8
 
 ? 请选择操作 (Use arrow keys)
 ❯ 安装到 Claude Code (~/.claude/)
@@ -94,9 +103,9 @@ npx code-abyss --uninstall gemini  # 卸载 Gemini CLI
 
 若更在意上下文与 token 消耗，优先选 `abyss-concise` 或 `abyss-command`。当前运行时 guidance 已做轻量化压缩，并有测试限制各风格体积，避免后续版本再次膨胀。
 
-Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`。Gemini 作为第三宿主，安装到 `~/.gemini/`，生成 `GEMINI.md`、`settings.json`、`commands/*.toml` 与 `skills/`；若项目声明了 `gstack`，也会同步安装 `~/.gemini/skills/gstack/` 与对应 TOML commands。
+Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`，并会同步 `instruction.md` 与 `model_instructions_file`。Gemini 作为第三宿主，安装到 `~/.gemini/`，生成 `GEMINI.md`、`settings.json`、`commands/*.toml` 与 `skills/`；若项目声明了 `gstack`，也会同步安装 `~/.gemini/skills/gstack/` 与对应 TOML commands。
 
-当前 runtime kernel 已进一步瘦身：默认 `GEMINI.md` / 动态 guidance 体积控制在约 `1.6KB~1.9KB`，较上一版再降约 `25%`，优先把细节下沉到 `skills/**/SKILL.md` 与工具脚本，减少常驻 token 占用。
+当前 runtime kernel 已进一步瘦身：默认 `GEMINI.md` / 动态 guidance 体积控制在约 `1.45KB~1.65KB`，并通过 Jest 预算门禁限制各风格体积，避免后续版本再次膨胀。
 
 ### 多风格切换
 

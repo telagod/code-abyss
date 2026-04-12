@@ -95,6 +95,7 @@ describe('codex install smoke', () => {
     const result = runInstall(['--target', 'codex', '-y']);
     const codexDir = path.join(tmpHome, '.codex');
     const agentsDir = path.join(tmpHome, '.agents');
+    const codexConfig = fs.readFileSync(path.join(codexDir, 'config.toml'), 'utf8');
 
     expect(result.status).toBe(0);
     expect(fs.existsSync(path.join(codexDir, 'AGENTS.md'))).toBe(false);
@@ -102,6 +103,8 @@ describe('codex install smoke', () => {
     expect(fs.existsSync(path.join(agentsDir, 'bin', 'lib'))).toBe(true);
     expect(fs.existsSync(path.join(agentsDir, 'skills', 'gstack', 'review', 'SKILL.md'))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, 'config.toml'))).toBe(true);
+    expect(fs.existsSync(path.join(codexDir, 'instruction.md'))).toBe(true);
+    expect(codexConfig).toContain('model_instructions_file = "./instruction.md"');
     expect(fs.existsSync(path.join(codexDir, 'settings.json'))).toBe(false);
     // Codex 0.117.0+ 已移除 custom prompts，不再生成 prompts/
     expect(fs.existsSync(path.join(codexDir, 'prompts'))).toBe(false);

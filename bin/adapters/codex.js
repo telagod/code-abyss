@@ -10,6 +10,7 @@ const CODEX_DEFAULTS = {
   approvalPolicy: 'on-request',
   allowLoginShell: true,
   cliAuthCredentialsStore: 'file',
+  modelInstructionsFile: './instruction.md',
   sandboxMode: 'read-only',
   webSearch: 'cached',
 };
@@ -329,6 +330,7 @@ function mergeCodexConfigDefaults(content) {
     'approval_policy',
     'allow_login_shell',
     'cli_auth_credentials_store',
+    'model_instructions_file',
     'sandbox_mode',
     'web_search',
   ];
@@ -359,6 +361,17 @@ function mergeCodexConfigDefaults(content) {
   merged = credentialsStore.merged;
   if (credentialsStore.added) {
     added.push('cli_auth_credentials_store');
+  }
+
+  const modelInstructions = ensureRootKey(
+    merged,
+    'model_instructions_file',
+    `"${CODEX_DEFAULTS.modelInstructionsFile}"`,
+    eol
+  );
+  merged = modelInstructions.merged;
+  if (modelInstructions.added) {
+    added.push('model_instructions_file');
   }
 
   const sandbox = ensureRootKey(merged, 'sandbox_mode', `"${CODEX_DEFAULTS.sandboxMode}"`, eol);

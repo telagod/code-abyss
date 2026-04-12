@@ -67,6 +67,7 @@ describe('codex adapter', () => {
 
   test('getCodexCoreFiles: 仅包含 codex 所需核心文件', () => {
     expect(getCodexCoreFiles()).toEqual([
+      { src: 'config/instruction.md', dest: 'instruction.md', root: 'codex' },
       { src: 'skills', dest: 'skills', root: 'agents' },
       { src: 'bin/lib', dest: 'bin/lib', root: 'agents' },
     ]);
@@ -86,12 +87,14 @@ describe('codex adapter', () => {
       'approval_policy',
       'allow_login_shell',
       'cli_auth_credentials_store',
+      'model_instructions_file',
       'sandbox_mode',
       'web_search',
     ]);
     expect(merged).toContain('approval_policy = "on-request"');
     expect(merged).toContain('allow_login_shell = true');
     expect(merged).toContain('cli_auth_credentials_store = "file"');
+    expect(merged).toContain('model_instructions_file = "./instruction.md"');
     expect(merged).toContain('sandbox_mode = "read-only"');
     expect(merged).toContain('web_search = "cached"');
   });
@@ -111,6 +114,7 @@ describe('codex adapter', () => {
       'approval_policy',
       'allow_login_shell',
       'cli_auth_credentials_store',
+      'model_instructions_file',
       'web_search',
     ]);
     expect(merged).toContain('sandbox_mode = "workspace-write"');
@@ -134,6 +138,7 @@ describe('codex adapter', () => {
       'approval_policy',
       'allow_login_shell',
       'cli_auth_credentials_store',
+      'model_instructions_file',
       'sandbox_mode',
       'web_search',
     ]);
@@ -155,12 +160,14 @@ describe('codex adapter', () => {
       'approval_policy',
       'allow_login_shell',
       'cli_auth_credentials_store',
+      'model_instructions_file',
       'sandbox_mode',
       'web_search',
     ]);
     expect(saved).toContain('approval_policy = "on-request"');
     expect(saved).toContain('allow_login_shell = true');
     expect(saved).toContain('cli_auth_credentials_store = "file"');
+    expect(saved).toContain('model_instructions_file = "./instruction.md"');
     expect(saved).toContain('sandbox_mode = "read-only"');
     expect(saved).toContain('web_search = "cached"');
   });
@@ -224,6 +231,7 @@ describe('codex adapter', () => {
       'approval_policy',
       'allow_login_shell',
       'cli_auth_credentials_store',
+      'model_instructions_file',
       'sandbox_mode',
     ]);
     expect(report.removed.sort()).toEqual(['remote_models', 'web_search_request']);
@@ -231,6 +239,7 @@ describe('codex adapter', () => {
     expect(saved).toContain('approval_policy = "on-request"');
     expect(saved).toContain('allow_login_shell = true');
     expect(saved).toContain('cli_auth_credentials_store = "file"');
+    expect(saved).toContain('model_instructions_file = "./instruction.md"');
     expect(saved).toContain('sandbox_mode = "read-only"');
     expect(saved).toContain('web_search = "live"');
     expect(saved).not.toContain('remote_models = true');

@@ -16,6 +16,7 @@
     },
     "codex": {
       "files": [
+        { "src": "config/instruction.md", "dest": "instruction.md", "root": "codex" },
         { "src": "skills", "dest": "skills", "root": "agents" },
         { "src": "bin/lib", "dest": "bin/lib", "root": "agents" }
       ]

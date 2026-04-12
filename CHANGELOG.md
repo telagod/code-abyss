@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.8] - 2026-04-12
+
+### Added
+- 新增 `bin/lib/target-registry.js`，集中维护 Claude / Codex / Gemini 的安装 target 与 managed roots，供安装器、style registry、pack registry 与 bootstrap 文档共用。
+- 新增 `test/target-registry.test.js`，为 target/host 单一真相源增加回归覆盖。
+- 新增 gstack `CRLF` 回归测试：`test/gstack-codex.test.js` 与 `test/gstack-claude.test.js` 现在显式覆盖 Windows 行尾场景。
+- 新增 `config/instruction.md`，Codex 安装时会同步到 `~/.codex/instruction.md`。
+
+### Changed
+- README 新增 `v2.0.8` 新特性摘要，并补齐 Gemini host、runtime guidance budget、Windows smoke 修复、Codex instruction 同步与单主线发布叙事。
+- runtime guidance 再次压缩：`config/CLAUDE.md` 与 `output-styles/*.md` 进一步精简，同时用 `test/style-registry.test.js` 约束各风格 guidance 长度预算。
+- 历史远端 automation 分支内容已并回 `main`，发布基线收束到单主线。
+- Codex 默认模板与配置补全链现会写入 `model_instructions_file = "./instruction.md"`。
+
+### Fixed
+- Windows 下 gstack skill frontmatter 解析现已兼容 `CRLF`，修复 `name` / `description` / `allowed-tools` 丢失导致的 Claude / Codex / Gemini smoke 失败。
+- Gemini README 叙事已与当前实现对齐：pack manifest、runtime、CI smoke、dynamic `GEMINI.md` 生成链不再缺位。
+
+### Verification
+- Jest: **21 suites / 208 tests passed**
+- Skill contract gate: `npm run verify:skills` — 21 skills 通过
+- GitHub Actions: Windows / macOS / Ubuntu 全矩阵 CI 通过
+
 ## [2.0.7] - 2026-03-28
 
 ### Changed
