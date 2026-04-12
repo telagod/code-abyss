@@ -44,4 +44,10 @@ describe('style registry', () => {
     expect(content).toContain('# 邪修红尘仙 · 宿命深渊 v4.1');
     expect(content).toContain('# 冷刃简报 · 输出之道');
   });
+
+  test('默认 cultivator runtime guidance 保持轻量', () => {
+    const content = renderGeminiContext(projectRoot, 'abyss-cultivator');
+    expect(content.length).toBeLessThan(2500);
+    expect(content).toContain('# 宿命深渊 · 输出之道');
+  });
 });
