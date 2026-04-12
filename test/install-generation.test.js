@@ -7,6 +7,7 @@ const os = require('os');
 const {
   scanInvocableSkills,
   generateCommandContent,
+  generateGeminiCommandContent,
   installGeneratedCommands,
 } = require('../bin/install');
 

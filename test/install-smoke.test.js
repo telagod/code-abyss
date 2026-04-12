@@ -135,3 +135,49 @@ describe('codex install smoke', () => {
     expect(fs.existsSync(path.join(agentsDir, 'skills'))).toBe(false);
   });
 });
+
+
+describe('gemini install smoke', () => {
+  let tmpHome;
+
+  beforeEach(() => {
+    tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gemini-home-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpHome, { recursive: true, force: true });
+  });
+
+  function runInstall(args) {
+    return spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'install.js'), ...args], {
+      cwd: path.join(__dirname, '..'),
+      env: {
+        ...process.env,
+        HOME: tmpHome,
+        USERPROFILE: tmpHome,
+      },
+      encoding: 'utf8',
+    });
+  }
+
+  test('安装 Gemini 时生成 GEMINI.md、skills、commands 与 settings.json', () => {
+    const result = runInstall(['--target', 'gemini', '-y']);
+    const geminiDir = path.join(tmpHome, '.gemini');
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(path.join(geminiDir, 'GEMINI.md'))).toBe(true);
+    expect(fs.existsSync(path.join(geminiDir, 'skills'))).toBe(true);
+    expect(fs.existsSync(path.join(geminiDir, 'commands', 'gen-docs.toml'))).toBe(true);
+    expect(fs.existsSync(path.join(geminiDir, 'settings.json'))).toBe(true);
+    expect(fs.existsSync(path.join(geminiDir, '.sage-uninstall.js'))).toBe(true);
+  });
+
+  test('安装 Gemini 时支持 --style 切换 GEMINI.md', () => {
+    const result = runInstall(['--target', 'gemini', '--style', 'abyss-concise', '-y']);
+    const geminiDir = path.join(tmpHome, '.gemini');
+    const content = fs.readFileSync(path.join(geminiDir, 'GEMINI.md'), 'utf8');
+
+    expect(result.status).toBe(0);
+    expect(content).toContain('# 冷刃简报 · 输出之道');
+  });
+});

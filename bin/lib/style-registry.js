@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SUPPORTED_TARGETS = new Set(['claude', 'codex']);
+const SUPPORTED_TARGETS = new Set(['claude', 'codex', 'gemini']);
 
 // Module-level cache: projectRoot → normalized styles
 const _cache = new Map();
@@ -75,7 +75,7 @@ function requireNonEmptyString(value, fieldName) {
 }
 
 function normalizeTargets(targets, slug) {
-  const values = Array.isArray(targets) && targets.length > 0 ? targets : ['claude', 'codex'];
+  const values = Array.isArray(targets) && targets.length > 0 ? targets : ['claude', 'codex', 'gemini'];
   values.forEach((target) => {
     if (!SUPPORTED_TARGETS.has(target)) {
       throw new Error(`style ${slug} 包含不支持的 target: ${target}`);
@@ -109,8 +109,8 @@ function readStyleContent(projectRoot, style) {
   return fs.readFileSync(stylePath, 'utf8');
 }
 
-function renderCodexAgents(projectRoot, styleSlug) {
-  const style = resolveStyle(projectRoot, styleSlug, 'codex');
+function renderRuntimeGuidance(projectRoot, styleSlug, targetName = 'codex') {
+  const style = resolveStyle(projectRoot, styleSlug, targetName === 'gemini' ? 'claude' : targetName);
   if (!style) {
     throw new Error(`未知输出风格: ${styleSlug}. Try: node bin/install.js --list-styles`);
   }
@@ -121,10 +121,20 @@ function renderCodexAgents(projectRoot, styleSlug) {
   return `${base}\n\n${styleContent}\n`;
 }
 
+function renderCodexAgents(projectRoot, styleSlug) {
+  return renderRuntimeGuidance(projectRoot, styleSlug, 'codex');
+}
+
+function renderGeminiContext(projectRoot, styleSlug) {
+  return renderRuntimeGuidance(projectRoot, styleSlug, 'gemini');
+}
+
 module.exports = {
   listStyles,
   getDefaultStyle,
   resolveStyle,
   renderCodexAgents,
+  renderGeminiContext,
+  renderRuntimeGuidance,
   clearStyleCache,
 };

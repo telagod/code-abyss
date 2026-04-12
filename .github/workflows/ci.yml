@@ -115,3 +115,46 @@ jobs:
           test ! -e "$abyss_home/.codex/AGENTS.md"
           test ! -e "$abyss_home/.agents/skills"
           test ! -e "$abyss_home/.codex/.sage-backup"
+
+  smoke-gemini:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Pack npm tarball
+        shell: bash
+        run: npm pack
+      - name: Smoke install/uninstall Gemini target
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg_tgz="$(ls code-abyss-*.tgz | head -n 1)"
+          abyss_home="$RUNNER_TEMP/abyss-home"
+          rm -rf "$abyss_home"
+          mkdir -p "$abyss_home"
+
+          export HOME="$abyss_home"
+          export USERPROFILE="$abyss_home"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --target gemini -y
+
+          test -f "$abyss_home/.gemini/GEMINI.md"
+          test -d "$abyss_home/.gemini/skills"
+          test -d "$abyss_home/.gemini/commands"
+          test -f "$abyss_home/.gemini/commands/gen-docs.toml"
+          test -f "$abyss_home/.gemini/settings.json"
+          test -f "$abyss_home/.gemini/.sage-uninstall.js"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --uninstall gemini
+
+          test ! -e "$abyss_home/.gemini/GEMINI.md"
+          test ! -e "$abyss_home/.gemini/skills"
+          test ! -e "$abyss_home/.gemini/.sage-backup"

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Code Abyss is an npm package that installs a "邪修红尘仙" persona configuration into Claude Code and Codex CLI. It delivers: persona rules, 4 switchable output styles, 56 skill documents, and 5 executable verification/generation tools.
+Code Abyss is an npm package that installs a "邪修红尘仙" persona configuration into Claude Code, Codex CLI, and Gemini CLI. It delivers: persona rules, 4 switchable output styles, 56 skill documents, and 5 executable verification/generation tools.
 
 ## Commands
 
@@ -14,6 +14,7 @@ npm run verify:skills             # Validate all SKILL.md frontmatter contracts 
 node bin/install.js --help        # Installer CLI help
 node bin/install.js --target claude -y   # Zero-config install to ~/.claude/
 node bin/install.js --target codex -y    # Zero-config install to ~/.codex/
+node bin/install.js --target gemini -y   # Zero-config install to ~/.gemini/
 node bin/install.js --list-styles        # List available output styles
 ```
 
@@ -72,6 +73,7 @@ The installer generates different artifacts per target CLI:
 
 - **Claude**: `~/.claude/commands/*.md` (slash commands) — `runtimeType=scripted` calls `run_skill.js`, `knowledge` reads SKILL.md directly
 - **Codex**: `~/.agents/skills/**/SKILL.md` — Codex discovers user skills from `~/.agents/skills`; Code Abyss auto-installs an embedded gstack runtime under `~/.agents/skills/gstack`
+- **Gemini**: `~/.gemini/GEMINI.md` + `~/.gemini/commands/*.toml` + `~/.gemini/skills/**/SKILL.md` — Gemini reads persistent context from `GEMINI.md` and custom commands from TOML files
 
 Claude command generation and Codex skill installation share the same skill source tree; only Claude filters on `user-invocable` to emit slash commands.
 
@@ -130,5 +132,6 @@ aliases: vq                    # optional comma-separated aliases
 |--------|-------------|-----------------|-----------------|
 | Claude | `~/.claude/CLAUDE.md` | `~/.claude/commands/*.md` + `~/.claude/skills/` | `settings.json.outputStyle` = slug |
 | Codex | `~/.codex/config.toml` | `~/.agents/skills/` + `~/.agents/skills/gstack/` | Skills-only runtime; no generated AGENTS.md |
+| Gemini | `~/.gemini/settings.json` | `~/.gemini/GEMINI.md` + `~/.gemini/commands/*.toml` + `~/.gemini/skills/` | Global context + TOML command runtime |
 
 Backups go to `<target-dir>/.sage-backup/` with `manifest.json`. Uninstall restores from backup.

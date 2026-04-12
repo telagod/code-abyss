@@ -24,6 +24,7 @@ The system has four main flows:
 
 - Claude: `~/.claude/`
 - Codex: `~/.codex/` plus `~/.agents/`
+- Gemini: `~/.gemini/`
 
 ### Project declaration
 
@@ -49,6 +50,7 @@ Entry point:
 ```bash
 npx code-abyss --target claude -y
 npx code-abyss --target codex -y
+npx code-abyss --target gemini -y
 ```
 
 What happens:
@@ -149,6 +151,7 @@ Current artifact families:
 
 - `install-claude-*`
 - `install-codex-*`
+- `install-gemini-*`
 - `pack-uninstall-<artifactPrefix>-*`
 
 ### Summary view

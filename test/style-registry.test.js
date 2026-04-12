@@ -7,6 +7,7 @@ const {
   getDefaultStyle,
   resolveStyle,
   renderCodexAgents,
+  renderGeminiContext,
 } = require('../bin/lib/style-registry');
 
 describe('style registry', () => {
@@ -34,6 +35,12 @@ describe('style registry', () => {
 
   test('为 Codex 动态生成 AGENTS', () => {
     const content = renderCodexAgents(projectRoot, 'abyss-concise');
+    expect(content).toContain('# 邪修红尘仙 · 宿命深渊 v4.1');
+    expect(content).toContain('# 冷刃简报 · 输出之道');
+  });
+
+  test('为 Gemini 动态生成 GEMINI context', () => {
+    const content = renderGeminiContext(projectRoot, 'abyss-concise');
     expect(content).toContain('# 邪修红尘仙 · 宿命深渊 v4.1');
     expect(content).toContain('# 冷刃简报 · 输出之道');
   });

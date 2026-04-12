@@ -31,9 +31,11 @@ const {
   listStyles,
   getDefaultStyle,
   resolveStyle,
+  renderGeminiContext,
 } = require(path.join(__dirname, 'lib', 'style-registry.js'));
 const { detectCclineBin, installCcline: _installCcline } = require(path.join(__dirname, 'lib', 'ccline.js'));
 const { installGstackClaudePack } = require(path.join(__dirname, 'lib', 'gstack-claude.js'));
+
 const { installGstackCodexPack } = require(path.join(__dirname, 'lib', 'gstack-codex.js'));
 const {
   detectCodexAuth: detectCodexAuthImpl,
@@ -46,6 +48,12 @@ const {
   detectClaudeAuth: detectClaudeAuthImpl,
   postClaude: postClaudeFlow,
 } = require(path.join(__dirname, 'adapters', 'claude.js'));
+const {
+  GEMINI_SETTINGS_TEMPLATE,
+  getGeminiCoreFiles,
+  detectGeminiAuth: detectGeminiAuthImpl,
+  postGemini: postGeminiFlow,
+} = require(path.join(__dirname, 'adapters', 'gemini.js'));
 
 // ── ANSI ──
 
@@ -101,10 +109,15 @@ function detectCodexAuth() {
   return detectCodexAuthImpl({ HOME, warn });
 }
 
+function detectGeminiAuth(settings) {
+  return detectGeminiAuthImpl({ settings, HOME, warn });
+}
+
 function resolveManagedRootDir(tgt, rootName = tgt) {
   if (rootName === 'claude') return path.join(HOME, '.claude');
   if (rootName === 'codex') return path.join(HOME, '.codex');
   if (rootName === 'agents') return path.join(HOME, '.agents');
+  if (rootName === 'gemini') return path.join(HOME, '.gemini');
   throw new Error(`不支持的安装根: ${rootName}`);
 }
 
@@ -156,8 +169,8 @@ for (let i = 0; i < args.length; i++) {
     console.log(`${c.b('用法:')}  npx code-abyss [选项]
 
 ${c.b('选项:')}
-  --target ${c.cyn('<claude|codex>')}      安装目标
-  --uninstall ${c.cyn('<claude|codex>')}   卸载目标
+  --target ${c.cyn('<claude|codex|gemini>')}      安装目标
+  --uninstall ${c.cyn('<claude|codex|gemini>')}   卸载目标
   --style ${c.cyn('<slug>')}               指定输出风格
   --list-styles               列出可用输出风格
   --yes, -y                    全自动模式
@@ -178,7 +191,7 @@ ${c.b('示例:')}
 // ── 卸载 ──
 
 function runUninstall(tgt) {
-  if (!['claude', 'codex'].includes(tgt)) { fail(formatActionableError('--uninstall 必须是 claude 或 codex', 'Try: npx code-abyss --uninstall claude')); process.exit(1); }
+  if (!['claude', 'codex', 'gemini'].includes(tgt)) { fail(formatActionableError('--uninstall 必须是 claude、codex 或 gemini', 'Try: npx code-abyss --uninstall claude')); process.exit(1); }
   const targetDir = resolveManagedRootDir(tgt);
   const backupDir = path.join(targetDir, '.sage-backup');
   const manifestPath = path.join(backupDir, 'manifest.json');
@@ -239,6 +252,12 @@ const CLAUDE_COMMAND_TARGET = {
   dir: 'commands',
   label: '斜杠命令',
   skillRoot: '~/.claude/skills',
+};
+
+const GEMINI_COMMAND_TARGET = {
+  dir: 'commands',
+  label: 'Gemini commands',
+  skillRoot: '~/.gemini/skills',
 };
 
 function getSkillPath(skillRoot, skillRelPath) {
@@ -311,6 +330,56 @@ function generateCommandContent(meta, skillRelPath, runtimeType = 'knowledge') {
   return [...buildCommandFrontmatter(spec), ...buildClaudeBody(spec), ''].join('\n');
 }
 
+function buildGeminiCommandSpec(skill) {
+  const runtimeType = skill.runtimeType || 'knowledge';
+  return {
+    name: skill.name,
+    description: skill.description || '',
+    relPath: skill.relPath,
+    runtimeType,
+    scriptRunner: `node ${GEMINI_COMMAND_TARGET.skillRoot}/run_skill.js ${skill.name}`,
+    skillPath: getSkillPath(GEMINI_COMMAND_TARGET.skillRoot, skill.relPath),
+  };
+}
+
+function escapeTomlMultiline(value) {
+  return String(value || '').replace(/"""/g, '\"\"\"').trim();
+}
+
+function buildGeminiPromptBody(spec) {
+  const lines = [
+    `Read \`${spec.skillPath}\` before acting.`,
+    '',
+    'If Gemini CLI appended the raw command invocation after these instructions, parse any extra arguments from that appended invocation before acting.',
+    '',
+  ];
+
+  if (spec.runtimeType === 'scripted') {
+    lines.push(`Then run \`${spec.scriptRunner} <parsed-arguments>\` and complete the task end-to-end.`);
+    lines.push('Do not stop between steps unless blocked by permissions or missing required input.');
+  } else {
+    lines.push('Use that skill as the authoritative playbook for the task.');
+    lines.push('Respond with concrete actions instead of generic advice.');
+  }
+
+  return lines.join('\n').trim();
+}
+
+function generateGeminiCommandContent(meta, skillRelPath, runtimeType = 'knowledge') {
+  const skill = normalizeGeneratedSkill(meta, skillRelPath, runtimeType);
+  const spec = buildGeminiCommandSpec(skill);
+  const description = escapeTomlMultiline(spec.description).replace(/"/g, '\\"');
+  const prompt = escapeTomlMultiline(buildGeminiPromptBody(spec));
+  return [
+    `description = "${description}"`,
+    'prompt = """',
+    prompt,
+    '"""',
+    '',
+  ].join('\n');
+}
+
+
 function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest) {
   const skills = collectInvocableSkills(skillsSrcDir);
   if (skills.length === 0) return 0;
@@ -352,6 +421,51 @@ function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest)
 function installGeneratedCommands(skillsSrcDir, targetDir, backupDir, manifest) {
   return installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest);
 }
+
+function installGeneratedGeminiCommands(skillsSrcDir, targetDir, backupDir, manifest) {
+  const skills = collectInvocableSkills(skillsSrcDir);
+  if (skills.length === 0) return 0;
+
+  const installDir = path.join(targetDir, GEMINI_COMMAND_TARGET.dir);
+  fs.mkdirSync(installDir, { recursive: true });
+  let totalFiles = 0;
+
+  skills.forEach((skill) => {
+    const names = [skill.name, ...(skill.aliases || [])];
+    names.forEach((cmdName) => {
+      const fileName = `${cmdName}.toml`;
+      const destFile = path.join(installDir, fileName);
+      const relFile = path.posix.join(GEMINI_COMMAND_TARGET.dir, fileName);
+
+      if (fs.existsSync(destFile)) {
+        const backupSubdir = path.join(backupDir, 'gemini', GEMINI_COMMAND_TARGET.dir);
+        fs.mkdirSync(backupSubdir, { recursive: true });
+        fs.copyFileSync(destFile, path.join(backupSubdir, fileName));
+        pushManifestEntry(manifest.backups, 'gemini', relFile);
+        info(`备份: ${c.d(relFile)}`);
+      }
+
+      const content = generateGeminiCommandContent(skill, skill.relPath, skill.runtimeType);
+      fs.writeFileSync(destFile, content);
+      pushManifestEntry(manifest.installed, 'gemini', relFile);
+      totalFiles++;
+    });
+  });
+
+  ok(`${GEMINI_COMMAND_TARGET.dir}/ ${c.d(`(自动生成 ${totalFiles} 个 ${GEMINI_COMMAND_TARGET.label})`)}`);
+  return totalFiles;
+}
+
+function installGeminiContext(targetDir, backupDir, manifest, selectedStyle) {
+  const relPath = 'GEMINI.md';
+  backupManagedPathIfExists('gemini', 'gemini', backupDir, relPath, manifest);
+  const destPath = path.join(targetDir, relPath);
+  const content = renderGeminiContext(PKG_ROOT, selectedStyle.slug);
+  fs.writeFileSync(destPath, content);
+  pushManifestEntry(manifest.installed, 'gemini', relPath);
+  ok(`${relPath} ${c.d(`(动态生成: ${selectedStyle.slug})`)}`);
+}
+
 
 function backupManagedPathIfExists(tgt, rootName, backupDir, relPath, manifest) {
   const targetRoot = resolveManagedRootDir(tgt, rootName);
@@ -429,6 +543,17 @@ async function resolveInstallStyle(targetName) {
     return getDefaultStyle(PKG_ROOT, 'claude');
   }
 
+  if (targetName === 'gemini') {
+    if (requestedStyleSlug) {
+      const requested = resolveStyle(PKG_ROOT, requestedStyleSlug, 'gemini') || resolveStyle(PKG_ROOT, requestedStyleSlug, 'claude');
+      if (!requested) {
+        throw new Error(`未知输出风格: ${requestedStyleSlug}`);
+      }
+      return requested;
+    }
+    return getDefaultStyle(PKG_ROOT, 'claude');
+  }
+
   if (requestedStyleSlug) {
     const style = resolveStyle(PKG_ROOT, requestedStyleSlug, targetName);
     if (!style) {
@@ -468,7 +593,9 @@ function installCore(tgt, selectedStyle, packPlan) {
 
   const filesToInstall = tgt === 'codex'
     ? getCodexCoreFiles()
-    : getClaudeCoreFiles();
+    : tgt === 'gemini'
+      ? getGeminiCoreFiles()
+      : getClaudeCoreFiles();
 
   const manifest = {
     manifest_version: 2, version: VERSION, target: tgt,
@@ -577,6 +704,10 @@ function installCore(tgt, selectedStyle, packPlan) {
         reason: sourceMode === 'disabled' ? 'source-disabled' : `optional-policy-${packPlan.optionalPolicy || 'auto'}`,
       });
     }
+  } else if (tgt === 'gemini') {
+    const skillsSrc = path.join(PKG_ROOT, 'skills');
+    installGeneratedGeminiCommands(skillsSrc, targetDir, backupDir, manifest);
+    installGeminiContext(targetDir, backupDir, manifest, selectedStyle);
   }
 
   let settingsPath = null;
@@ -598,6 +729,21 @@ function installCore(tgt, selectedStyle, packPlan) {
     ok(`outputStyle = ${c.mag(selectedStyle.slug)}`);
     fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
     pushManifestEntry(manifest.installed, 'claude', 'settings.json');
+  } else if (tgt === 'gemini') {
+    settingsPath = path.join(targetDir, 'settings.json');
+    if (fs.existsSync(settingsPath)) {
+      try {
+        settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+      } catch (e) {
+        warn('Gemini settings.json 解析失败，将使用空配置');
+        settings = {};
+      }
+      fs.mkdirSync(path.join(backupDir, 'gemini'), { recursive: true });
+      fs.copyFileSync(settingsPath, path.join(backupDir, 'gemini', 'settings.json'));
+      pushManifestEntry(manifest.backups, 'gemini', 'settings.json');
+    }
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
+    pushManifestEntry(manifest.installed, 'gemini', 'settings.json');
   } else {
     pruneLegacyCodexSettings(tgt, backupDir, manifest);
   }
@@ -645,6 +791,21 @@ async function postCodex() {
   });
 }
 
+async function postGemini(ctx) {
+  await postGeminiFlow({
+    settingsPath: ctx.settingsPath,
+    settings: ctx.settings,
+    autoYes,
+    HOME,
+    PKG_ROOT,
+    step,
+    ok,
+    warn,
+    info,
+    c,
+  });
+}
+
 // ── 主流程 ──
 
 async function main() {
@@ -658,7 +819,7 @@ async function main() {
   banner();
 
   if (target) {
-    if (!['claude', 'codex'].includes(target)) { fail(formatActionableError('--target 必须是 claude 或 codex', 'Try: node bin/install.js --target claude')); process.exit(1); }
+    if (!['claude', 'codex', 'gemini'].includes(target)) { fail(formatActionableError('--target 必须是 claude、codex 或 gemini', 'Try: node bin/install.js --target claude')); process.exit(1); }
     const style = await resolveInstallStyle(target);
     const packPlan = await resolveProjectPackPlan(target);
     info(`输出风格: ${c.mag(style.slug)} (${style.label})`);
@@ -667,7 +828,8 @@ async function main() {
     }
     const ctx = installCore(target, style, packPlan);
     if (target === 'claude') await postClaude(ctx);
-    else await postCodex();
+    else if (target === 'codex') await postCodex();
+    else await postGemini(ctx);
     finish(ctx);
     return;
   }
@@ -678,8 +840,10 @@ async function main() {
     choices: [
       { name: `安装到 Claude Code ${c.d('(~/.claude/')}${c.d(')')}`, value: 'install-claude' },
       { name: `安装到 Codex CLI   ${c.d('(~/.codex/')}${c.d(')')}`, value: 'install-codex' },
+      { name: `安装到 Gemini CLI  ${c.d('(~/.gemini/)')}`, value: 'install-gemini' },
       { name: `${c.red('卸载')} Claude Code`, value: 'uninstall-claude' },
       { name: `${c.red('卸载')} Codex CLI`, value: 'uninstall-codex' },
+      { name: `${c.red('卸载')} Gemini CLI`, value: 'uninstall-gemini' },
     ],
   });
 
@@ -706,8 +870,17 @@ async function main() {
       await postCodex();
       finish(ctx); break;
     }
+    case 'install-gemini': {
+      const style = await resolveInstallStyle('gemini');
+      const packPlan = await resolveProjectPackPlan('gemini');
+      info(`输出风格: ${c.mag(style.slug)} (${style.label})`);
+      const ctx = installCore('gemini', style, packPlan);
+      await postGemini(ctx);
+      finish(ctx); break;
+    }
     case 'uninstall-claude': runUninstall('claude'); break;
     case 'uninstall-codex': runUninstall('codex'); break;
+    case 'uninstall-gemini': runUninstall('gemini'); break;
   }
 }
 
@@ -780,5 +953,7 @@ module.exports = {
   detectCclineBin, copyRecursive, shouldSkip, SETTINGS_TEMPLATE,
   scanInvocableSkills,
   generateCommandContent,
+  generateGeminiCommandContent,
   installGeneratedCommands,
+  installGeneratedGeminiCommands,
 };

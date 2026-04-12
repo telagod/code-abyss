@@ -4,7 +4,7 @@
 
 **邪修红尘仙 · 宿命深渊**
 
-*为 Claude Code / Codex CLI 注入邪修人格、4种可切换输出风格与 56 篇攻防工程秘典*
+*为 Claude Code / Codex CLI / Gemini CLI 注入邪修人格、4种可切换输出风格与 56 篇攻防工程秘典*
 
 [![npm](https://img.shields.io/npm/v/code-abyss.svg)](https://www.npmjs.com/package/code-abyss)
 [![CI](https://github.com/telagod/code-abyss/actions/workflows/ci.yml/badge.svg)](https://github.com/telagod/code-abyss/actions/workflows/ci.yml)
@@ -40,13 +40,16 @@ npx code-abyss --list-styles
 ```bash
 npx code-abyss --target claude    # 安装到 ~/.claude/
 npx code-abyss --target codex     # 安装到 ~/.codex/
+npx code-abyss --target gemini    # 安装到 ~/.gemini/
 npx code-abyss --style abyss-concise --target claude
 npx code-abyss --style abyss-concise --target codex
 npx code-abyss --target claude -y  # 零配置一键安装 (自动合并推荐配置)
 npx code-abyss --target codex -y   # 零配置一键安装 (自动写入 config.toml 模板)
+npx code-abyss --target gemini -y  # 零配置一键安装 (自动生成 GEMINI.md + TOML commands)
 npx code-abyss --list-styles       # 列出可用输出风格
 npx code-abyss --uninstall claude  # 卸载 Claude Code
 npx code-abyss --uninstall codex   # 卸载 Codex CLI
+npx code-abyss --uninstall gemini  # 卸载 Gemini CLI
 ```
 
 ### 安装流程
@@ -89,7 +92,7 @@ npx code-abyss --uninstall codex   # 卸载 Codex CLI
 - `abyss-command`：铁律军令，命令式、压缩式输出，适合发布/故障/修复
 - `abyss-ritual`：祭仪长卷，仪式感更强，适合长任务、战报与迁移总结
 
-Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`。
+Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`。Gemini 作为第三宿主，安装到 `~/.gemini/`，生成 `GEMINI.md`、`settings.json`、`commands/*.toml` 与 `skills/`。
 
 ---
 
@@ -105,6 +108,7 @@ npx code-abyss --uninstall codex    # 卸载 Codex CLI
 ```bash
 node ~/.claude/.sage-uninstall.js   # Claude Code
 node ~/.codex/.sage-uninstall.js    # Codex CLI
+node ~/.gemini/.sage-uninstall.js   # Gemini CLI
 ```
 
 自动恢复之前备份的配置，清理所有安装文件。
