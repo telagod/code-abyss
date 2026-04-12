@@ -18,6 +18,8 @@
 
 ## 🚀 安装
 
+当前 npm 最新版：`2.0.8`
+
 ### v2.0.8 新特性
 
 - `target-registry` 收束宿主常量：Claude / Codex / Gemini 的 target 与安装根改为单一真相源，后续扩宿主不再散改多处硬编码
@@ -30,6 +32,7 @@
 ```bash
 npx code-abyss
 npx code-abyss --list-styles
+npm install -g code-abyss@2.0.8
 ```
 
 交互式菜单（方向键选择，回车确认）：
