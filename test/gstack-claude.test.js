@@ -18,6 +18,11 @@ describe('gstack claude integration', () => {
     expect(extractAllowedTools(content)).toBe('Bash, Read');
   });
 
+  test('extractAllowedTools 支持 CRLF frontmatter', () => {
+    const content = fs.readFileSync(path.join(fixtureRoot, 'review', 'SKILL.md'), 'utf8').replace(/\n/g, '\r\n');
+    expect(extractAllowedTools(content)).toBe('Bash, Read');
+  });
+
   test('buildClaudeCommand 生成 command frontmatter + skill path', () => {
     const command = buildClaudeCommand('review', 'Review skill. '.repeat(40), 'Bash, Read', '~/.claude/skills/gstack/review/SKILL.md');
     expect(command).toContain('name: review');

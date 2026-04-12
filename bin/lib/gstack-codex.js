@@ -14,6 +14,10 @@ const PROJECT_ROOT = path.join(__dirname, '..', '..');
 const GSTACK_RUNTIME_EXTRA_DIRS = new Set(['references', 'templates', 'specialists', 'bin', 'migrations', 'vendor']);
 const GSTACK_FRONTMATTER_DESCRIPTION_LIMIT = 240;
 
+function normalizeEol(content) {
+  return String(content || '').replace(/\r\n/g, '\n');
+}
+
 function getGstackConfig(hostName = 'codex', projectRoot = PROJECT_ROOT) {
   const manifest = getPack(projectRoot, 'gstack');
   const hostConfig = manifest.hosts && manifest.hosts[hostName];
@@ -32,13 +36,14 @@ function getGstackConfig(hostName = 'codex', projectRoot = PROJECT_ROOT) {
 }
 
 function readFrontmatterBlock(content) {
-  const fmStart = content.indexOf('---\n');
+  const normalized = normalizeEol(content);
+  const fmStart = normalized.indexOf('---\n');
   if (fmStart !== 0) return null;
-  const fmEnd = content.indexOf('\n---', fmStart + 4);
+  const fmEnd = normalized.indexOf('\n---', fmStart + 4);
   if (fmEnd === -1) return null;
   return {
-    raw: content.slice(fmStart + 4, fmEnd),
-    body: content.slice(fmEnd + 4),
+    raw: normalized.slice(fmStart + 4, fmEnd),
+    body: normalized.slice(fmEnd + 4),
   };
 }
 

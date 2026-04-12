@@ -17,11 +17,12 @@ const {
 } = require('./gstack-codex');
 
 function readFrontmatterBlock(content) {
-  const fmStart = content.indexOf('---\n');
+  const normalized = String(content || '').replace(/\r\n/g, '\n');
+  const fmStart = normalized.indexOf('---\n');
   if (fmStart !== 0) return null;
-  const fmEnd = content.indexOf('\n---', fmStart + 4);
+  const fmEnd = normalized.indexOf('\n---', fmStart + 4);
   if (fmEnd === -1) return null;
-  return content.slice(fmStart + 4, fmEnd);
+  return normalized.slice(fmStart + 4, fmEnd);
 }
 
 function extractAllowedTools(content) {

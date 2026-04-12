@@ -26,6 +26,14 @@ describe('gstack codex integration', () => {
     expect(parsed.description).toContain('~/.claude/skills/gstack/review/checklist.md');
   });
 
+  test('extractNameAndDescription 支持 CRLF frontmatter', () => {
+    const content = fs.readFileSync(path.join(fixtureRoot, 'review', 'SKILL.md'), 'utf8').replace(/\n/g, '\r\n');
+    const parsed = extractNameAndDescription(content);
+
+    expect(parsed.name).toBe('review');
+    expect(parsed.description).toContain('Review skill.');
+  });
+
   test('transformGstackSkillContent 注入 GSTACK_ROOT 并改写路径', () => {
     const content = fs.readFileSync(path.join(fixtureRoot, 'review', 'SKILL.md'), 'utf8');
     const transformed = transformGstackSkillContent(content);
