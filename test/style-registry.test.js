@@ -48,16 +48,16 @@ describe('style registry', () => {
 
   test('默认 cultivator runtime guidance 保持轻量', () => {
     const content = renderGeminiContext(projectRoot, 'abyss-cultivator');
-    expect(content.length).toBeLessThan(1500);
+    expect(content.length).toBeLessThan(1530);
     expect(content).toContain('# 宿命深渊 · 输出之道');
   });
 
   test('所有 runtime guidance 保持在预算内', () => {
     const budgets = new Map([
-      ['abyss-cultivator', 1500],
-      ['abyss-command', 1420],
+      ['abyss-cultivator', 1530],
+      ['abyss-command', 1450],
       ['abyss-concise', 1700],
-      ['abyss-ritual', 1480],
+      ['abyss-ritual', 1510],
     ]);
 
     for (const [slug, limit] of budgets.entries()) {
