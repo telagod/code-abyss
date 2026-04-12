@@ -91,6 +91,14 @@ describe('pack registry', () => {
       optionalPolicy: 'auto',
       sources: { gstack: 'pinned' },
     });
+
+    expect(resolveProjectPacks(projectRoot, 'gemini')).toMatchObject({
+      root: projectRoot,
+      required: ['gstack'],
+      optional: [],
+      optionalPolicy: 'auto',
+      sources: { gstack: 'pinned' },
+    });
   });
 
   test('optional policy = auto 时自动安装 optional packs', async () => {

@@ -67,8 +67,8 @@ async function postGemini({
 
   step(3, 3, '可选配置');
   const merged = mergeGeminiSettings(settings);
-  fs.writeFileSync(settingsPath, JSON.stringify(merged, null, 2) + '\n');
   if (autoYes) {
+    fs.writeFileSync(settingsPath, JSON.stringify(merged, null, 2) + '\n');
     ok('写入: ~/.gemini/settings.json (模板)');
     return;
   }

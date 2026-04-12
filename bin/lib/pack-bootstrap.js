@@ -16,12 +16,22 @@ function renderReadmeSnippet(lock) {
     '',
   ];
 
-  ['claude', 'codex'].forEach((host) => {
+  ['claude', 'codex', 'gemini'].forEach((host) => {
     const cfg = lock.hosts[host];
     lines.push(`- ${host}: required=[${cfg.required.join(', ') || 'none'}], optional=[${cfg.optional.join(', ') || 'none'}], optional_policy=${cfg.optional_policy}`);
   });
 
-  lines.push('', 'Recommended install:', '', '```bash', 'npx code-abyss --target claude -y', 'npx code-abyss --target codex -y', '```', '');
+  lines.push(
+    '',
+    'Recommended install:',
+    '',
+    '```bash',
+    'npx code-abyss --target claude -y',
+    'npx code-abyss --target codex -y',
+    'npx code-abyss --target gemini -y',
+    '```',
+    ''
+  );
   return lines.join('\n');
 }
 
@@ -33,9 +43,9 @@ function renderContributingSnippet(lock) {
     '',
     '- Update the lock with `npm run packs:update -- [flags]`.',
     '- Validate it with `npm run packs:check`.',
-    '- Re-run `npx code-abyss --target claude -y` or `npx code-abyss --target codex -y` after pack changes.',
+    '- Re-run `npx code-abyss --target claude|codex|gemini -y` after pack changes.',
     '',
-    `Current host policies: claude=${lock.hosts.claude.optional_policy}, codex=${lock.hosts.codex.optional_policy}`,
+    `Current host policies: claude=${lock.hosts.claude.optional_policy}, codex=${lock.hosts.codex.optional_policy}, gemini=${lock.hosts.gemini.optional_policy}`,
     '',
   ].join('\n');
 }

@@ -57,3 +57,22 @@ describe('gemini adapter', () => {
     expect(merged.privacy.usageStatisticsEnabled).toBe(false);
   });
 });
+
+
+describe('gstack gemini renderer', () => {
+  const { buildGeminiCommand, transformGeminiSkillContent } = require('../bin/lib/gstack-gemini');
+
+  test('buildGeminiCommand 生成 TOML command', () => {
+    const content = buildGeminiCommand('review', 'Review skill.', '~/.gemini/skills/gstack/review/SKILL.md');
+    expect(content).toContain('description = "Review skill."');
+    expect(content).toContain('prompt = """');
+    expect(content).toContain('~/.gemini/skills/gstack/review/SKILL.md');
+  });
+
+  test('transformGeminiSkillContent 重写 Claude skill 路径', () => {
+    const content = transformGeminiSkillContent('Read ~/.claude/skills/gstack/review/SKILL.md and .claude/skills/gstack/bin/tool');
+    expect(content).toContain('~/.gemini/skills/gstack/review/SKILL.md');
+    expect(content).toContain('.gemini/skills/gstack/bin/tool');
+    expect(content).not.toContain('.claude/skills/gstack');
+  });
+});

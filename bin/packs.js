@@ -423,6 +423,7 @@ function resolveHomeRoot(rootName) {
   if (rootName === 'claude') return path.join(home, '.claude');
   if (rootName === 'codex') return path.join(home, '.codex');
   if (rootName === 'agents') return path.join(home, '.agents');
+  if (rootName === 'gemini') return path.join(home, '.gemini');
   throw new Error(`未知安装根: ${rootName}`);
 }
 
@@ -450,6 +451,7 @@ function uninstallPackForHost(projectRoot, packName, host) {
   if (uninstallConfig.commandRoot) {
     const commandRoot = path.join(resolveHomeRoot(uninstallConfig.commandRoot.root), uninstallConfig.commandRoot.path);
     const commandAliases = uninstallConfig.commandAliases || {};
+    const commandExtension = uninstallConfig.commandExtension || '.md';
     const names = uninstallConfig.commandsFromRuntime ? listSkillDirectories(runtimeRoot) : [];
     const commandNames = uniqueSorted([
       ...names,
@@ -458,7 +460,7 @@ function uninstallPackForHost(projectRoot, packName, host) {
     ]);
 
     commandNames.forEach((name) => {
-      const commandPath = path.join(commandRoot, `${name}.md`);
+      const commandPath = path.join(commandRoot, `${name}${commandExtension}`);
       if (fs.existsSync(commandPath)) {
         fs.rmSync(commandPath, { force: true });
         reports.push({ host, path: commandPath, action: 'removed' });

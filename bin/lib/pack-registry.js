@@ -7,7 +7,7 @@ const { listVendorProviderNames } = require('./vendor-providers');
 const PROJECT_PACKS_LOCK_REL = path.join('.code-abyss', 'packs.lock.json');
 const OPTIONAL_POLICIES = new Set(['auto', 'prompt', 'off']);
 const PACK_SOURCE_MODES = new Set(['pinned', 'local', 'disabled']);
-const HOST_NAMES = ['claude', 'codex'];
+const HOST_NAMES = ['claude', 'codex', 'gemini'];
 
 function validatePackManifest(manifest, manifestPath, projectRoot = null) {
   const errors = [];

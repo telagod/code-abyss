@@ -59,7 +59,7 @@ What happens:
 2. Read nearest `packs.lock`
 3. Select external packs by `required/optional/optional_policy`
 4. Resolve each pack source by `sources.<pack>`
-5. Install runtime artifacts for the target host
+5. Install runtime artifacts for the target host (including external workflow packs such as gstack when declared)
 6. Write install report JSON to `.code-abyss/reports/` when inside a project
 7. Refresh bootstrap snippets; if docs already contain managed markers, update them in place
 

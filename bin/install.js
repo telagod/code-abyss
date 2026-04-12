@@ -35,6 +35,7 @@ const {
 } = require(path.join(__dirname, 'lib', 'style-registry.js'));
 const { detectCclineBin, installCcline: _installCcline } = require(path.join(__dirname, 'lib', 'ccline.js'));
 const { installGstackClaudePack } = require(path.join(__dirname, 'lib', 'gstack-claude.js'));
+const { installGstackGeminiPack } = require(path.join(__dirname, 'lib', 'gstack-gemini.js'));
 
 const { installGstackCodexPack } = require(path.join(__dirname, 'lib', 'gstack-codex.js'));
 const {
@@ -708,6 +709,36 @@ function installCore(tgt, selectedStyle, packPlan) {
     const skillsSrc = path.join(PKG_ROOT, 'skills');
     installGeneratedGeminiCommands(skillsSrc, targetDir, backupDir, manifest);
     installGeminiContext(targetDir, backupDir, manifest, selectedStyle);
+    if (packPlan.selected.includes('gstack')) {
+      const sourceMode = (packPlan.sources && packPlan.sources.gstack) || 'pinned';
+      const result = installGstackGeminiPack({
+        HOME,
+        backupDir,
+        manifest,
+        info,
+        ok,
+        warn,
+        sourceMode,
+        projectRoot: packPlan.root,
+        fallback: true,
+      });
+      pushPackReport(manifest, {
+        pack: 'gstack',
+        host: 'gemini',
+        status: result.installed ? 'installed' : 'skipped',
+        source: resolveEffectivePackSource(sourceMode, result),
+        reason: result.reason || null,
+      });
+    } else if (packPlan.required.includes('gstack') || packPlan.optional.includes('gstack')) {
+      const sourceMode = (packPlan.sources && packPlan.sources.gstack) || 'pinned';
+      pushPackReport(manifest, {
+        pack: 'gstack',
+        host: 'gemini',
+        status: sourceMode === 'disabled' ? 'disabled' : 'skipped',
+        source: sourceMode,
+        reason: sourceMode === 'disabled' ? 'source-disabled' : `optional-policy-${packPlan.optionalPolicy || 'auto'}`,
+      });
+    }
   }
 
   let settingsPath = null;

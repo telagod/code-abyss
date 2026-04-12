@@ -92,7 +92,7 @@ npx code-abyss --uninstall gemini  # 卸载 Gemini CLI
 - `abyss-command`：铁律军令，命令式、压缩式输出，适合发布/故障/修复
 - `abyss-ritual`：祭仪长卷，仪式感更强，适合长任务、战报与迁移总结
 
-Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`。Gemini 作为第三宿主，安装到 `~/.gemini/`，生成 `GEMINI.md`、`settings.json`、`commands/*.toml` 与 `skills/`。
+Claude 安装时会把所选 slug 写入 `settings.json.outputStyle`；若当前仓库声明了 project packs，则自动同步对应 runtime + commands。Codex 走 `skills-only`，根据项目 `packs.lock` 自动附带对应 pack，不再写运行时 `~/.codex/AGENTS.md`。Gemini 作为第三宿主，安装到 `~/.gemini/`，生成 `GEMINI.md`、`settings.json`、`commands/*.toml` 与 `skills/`；若项目声明了 `gstack`，也会同步安装 `~/.gemini/skills/gstack/` 与对应 TOML commands。
 
 ---
 

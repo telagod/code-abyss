@@ -29,6 +29,7 @@ describe('packs cli', () => {
       projectDefaults: {
         claude: 'required',
         codex: 'required',
+        gemini: 'required',
       },
       hosts: {
         claude: {
@@ -46,6 +47,14 @@ describe('packs cli', () => {
             runtimeRoot: { root: 'agents', path: 'skills/gstack' },
           },
         },
+        gemini: {
+          uninstall: {
+            runtimeRoot: { root: 'gemini', path: 'skills/gstack' },
+            commandRoot: { root: 'gemini', path: 'commands' },
+            commandExtension: '.toml',
+            commandsFromRuntime: true,
+          },
+        },
       },
       upstream: {
         repo: upstreamRepo,
@@ -59,6 +68,7 @@ describe('packs cli', () => {
       hosts: {
         claude: { files: [] },
         codex: { files: [] },
+        gemini: { files: [] },
       },
     }, null, 2));
   });
@@ -88,6 +98,7 @@ describe('packs cli', () => {
     expect(result.status).toBe(0);
     expect(lock.hosts.claude.required).toEqual(['gstack']);
     expect(lock.hosts.codex.required).toEqual(['gstack']);
+    expect(lock.hosts.gemini.required).toEqual(['gstack']);
     expect(lock.hosts.codex.optional_policy).toBe('auto');
   });
 
@@ -110,7 +121,9 @@ describe('packs cli', () => {
     expect(result.status).toBe(0);
     expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'packs.lock.json'))).toBe(true);
     expect(fs.readFileSync(path.join(snippetDir, 'README.packs.md'), 'utf8')).toContain('AI Pack Bootstrap');
+    expect(fs.readFileSync(path.join(snippetDir, 'README.packs.md'), 'utf8')).toContain('npx code-abyss --target gemini -y');
     expect(fs.readFileSync(path.join(snippetDir, 'CONTRIBUTING.packs.md'), 'utf8')).toContain('This repository uses `.code-abyss/packs.lock.json`');
+    expect(fs.readFileSync(path.join(snippetDir, 'CONTRIBUTING.packs.md'), 'utf8')).toContain('gemini=auto');
   });
 
   test('bootstrap --apply-docs 自动写入 README/CONTRIBUTING', () => {
@@ -220,10 +233,18 @@ describe('packs cli', () => {
     run(['bootstrap']);
     const claudeSkillRoot = path.join(tmpDir, '.claude', 'skills', 'gstack');
     const codexSkillRoot = path.join(tmpDir, '.agents', 'skills', 'gstack');
+    const geminiSkillRoot = path.join(tmpDir, '.gemini', 'skills', 'gstack');
     fs.mkdirSync(claudeSkillRoot, { recursive: true });
     fs.mkdirSync(codexSkillRoot, { recursive: true });
+    fs.mkdirSync(geminiSkillRoot, { recursive: true });
+    fs.mkdirSync(path.join(claudeSkillRoot, 'review'), { recursive: true });
+    fs.mkdirSync(path.join(geminiSkillRoot, 'review'), { recursive: true });
+    fs.writeFileSync(path.join(claudeSkillRoot, 'review', 'SKILL.md'), '# review\n');
+    fs.writeFileSync(path.join(geminiSkillRoot, 'review', 'SKILL.md'), '# review\n');
     fs.mkdirSync(path.join(tmpDir, '.claude', 'commands'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.gemini', 'commands'), { recursive: true });
     fs.writeFileSync(path.join(tmpDir, '.claude', 'commands', 'review.md'), 'x');
+    fs.writeFileSync(path.join(tmpDir, '.gemini', 'commands', 'review.toml'), 'x');
     run(['vendor-pull', 'gstack']);
 
     const result = run(['uninstall', 'gstack', '--host', 'all', '--remove-lock', '--remove-vendor']);
@@ -232,9 +253,12 @@ describe('packs cli', () => {
     expect(result.status).toBe(0);
     expect(fs.existsSync(claudeSkillRoot)).toBe(false);
     expect(fs.existsSync(codexSkillRoot)).toBe(false);
+    expect(fs.existsSync(geminiSkillRoot)).toBe(false);
+    expect(fs.existsSync(path.join(tmpDir, '.gemini', 'commands', 'review.toml'))).toBe(false);
     expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'vendor', 'gstack'))).toBe(false);
     expect(lock.hosts.claude.required).toEqual([]);
     expect(lock.hosts.codex.required).toEqual([]);
+    expect(lock.hosts.gemini.required).toEqual([]);
     expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'reports'))).toBe(true);
     expect(fs.readdirSync(path.join(tmpDir, '.code-abyss', 'reports')).some((name) => name.startsWith('pack-uninstall-gstack-'))).toBe(true);
   });

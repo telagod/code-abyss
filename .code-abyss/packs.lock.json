@@ -2,7 +2,9 @@
   "version": 1,
   "hosts": {
     "claude": {
-      "required": ["gstack"],
+      "required": [
+        "gstack"
+      ],
       "optional": [],
       "optional_policy": "auto",
       "sources": {
@@ -10,7 +12,19 @@
       }
     },
     "codex": {
-      "required": ["gstack"],
+      "required": [
+        "gstack"
+      ],
+      "optional": [],
+      "optional_policy": "auto",
+      "sources": {
+        "gstack": "pinned"
+      }
+    },
+    "gemini": {
+      "required": [
+        "gstack"
+      ],
       "optional": [],
       "optional_policy": "auto",
       "sources": {

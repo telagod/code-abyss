@@ -143,6 +143,7 @@ jobs:
 
           export HOME="$abyss_home"
           export USERPROFILE="$abyss_home"
+          export CODE_ABYSS_GSTACK_SOURCE="$GITHUB_WORKSPACE/test/fixtures/gstack-codex-source"
 
           npx --yes --package "./$pkg_tgz" code-abyss --target gemini -y
 
@@ -150,6 +151,8 @@ jobs:
           test -d "$abyss_home/.gemini/skills"
           test -d "$abyss_home/.gemini/commands"
           test -f "$abyss_home/.gemini/commands/gen-docs.toml"
+          test -f "$abyss_home/.gemini/commands/review.toml"
+          test -d "$abyss_home/.gemini/skills/gstack/review"
           test -f "$abyss_home/.gemini/settings.json"
           test -f "$abyss_home/.gemini/.sage-uninstall.js"
 

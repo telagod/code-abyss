@@ -1,6 +1,6 @@
 {
   "name": "gstack",
-  "description": "Pinned upstream gstack pack integrated as an auto-installed Codex skill runtime.",
+  "description": "Pinned upstream gstack pack integrated as an auto-installed workflow runtime.",
   "reporting": {
     "label": "gstack",
     "artifactPrefix": "gstack"
@@ -12,40 +12,139 @@
   },
   "projectDefaults": {
     "claude": "required",
-    "codex": "required"
+    "codex": "required",
+    "gemini": "required"
   },
   "hosts": {
     "claude": {
       "autoInstall": true,
       "sourceOverrideEnv": "CODE_ABYSS_GSTACK_SOURCE",
-      "runtimeDirs": ["bin", "browse", "review", "qa", "design"],
-      "runtimeFiles": ["ETHOS.md", "VERSION", "SKILL.md"],
+      "runtimeDirs": [
+        "bin",
+        "browse",
+        "review",
+        "qa",
+        "design"
+      ],
+      "runtimeFiles": [
+        "ETHOS.md",
+        "VERSION",
+        "SKILL.md"
+      ],
       "commandAliases": {
-        "open-gstack-browser": ["connect-chrome"]
+        "open-gstack-browser": [
+          "connect-chrome"
+        ]
       },
       "uninstall": {
-        "runtimeRoot": { "root": "claude", "path": "skills/gstack" },
-        "commandRoot": { "root": "claude", "path": "commands" },
+        "runtimeRoot": {
+          "root": "claude",
+          "path": "skills/gstack"
+        },
+        "commandRoot": {
+          "root": "claude",
+          "path": "commands"
+        },
         "commandsFromRuntime": true,
         "commandAliases": {
-          "open-gstack-browser": ["connect-chrome"]
+          "open-gstack-browser": [
+            "connect-chrome"
+          ]
         }
       }
     },
     "codex": {
       "autoInstall": true,
       "sourceOverrideEnv": "CODE_ABYSS_GSTACK_SOURCE",
-      "skipSkills": ["codex"],
-      "runtimeDirs": ["bin", "browse", "review", "qa", "design"],
-      "runtimeFiles": ["ETHOS.md", "VERSION"],
+      "skipSkills": [
+        "codex"
+      ],
+      "runtimeDirs": [
+        "bin",
+        "browse",
+        "review",
+        "qa",
+        "design"
+      ],
+      "runtimeFiles": [
+        "ETHOS.md",
+        "VERSION"
+      ],
       "pathRewrites": [
-        ["~/.claude/skills/gstack", "$GSTACK_ROOT"],
-        [".claude/skills/gstack", ".agents/skills/gstack"],
-        [".claude/skills/review", ".agents/skills/gstack/review"],
-        [".claude/skills", ".agents/skills"]
+        [
+          "~/.claude/skills/gstack",
+          "$GSTACK_ROOT"
+        ],
+        [
+          ".claude/skills/gstack",
+          ".agents/skills/gstack"
+        ],
+        [
+          ".claude/skills/review",
+          ".agents/skills/gstack/review"
+        ],
+        [
+          ".claude/skills",
+          ".agents/skills"
+        ]
       ],
       "uninstall": {
-        "runtimeRoot": { "root": "agents", "path": "skills/gstack" }
+        "runtimeRoot": {
+          "root": "agents",
+          "path": "skills/gstack"
+        }
+      }
+    },
+    "gemini": {
+      "autoInstall": true,
+      "sourceOverrideEnv": "CODE_ABYSS_GSTACK_SOURCE",
+      "runtimeDirs": [
+        "bin",
+        "browse",
+        "review",
+        "qa",
+        "design"
+      ],
+      "runtimeFiles": [
+        "ETHOS.md",
+        "VERSION",
+        "SKILL.md"
+      ],
+      "pathRewrites": [
+        [
+          "~/.claude/skills/gstack",
+          "~/.gemini/skills/gstack"
+        ],
+        [
+          ".claude/skills/gstack",
+          ".gemini/skills/gstack"
+        ],
+        [
+          ".claude/skills",
+          ".gemini/skills"
+        ]
+      ],
+      "commandAliases": {
+        "open-gstack-browser": [
+          "connect-chrome"
+        ]
+      },
+      "uninstall": {
+        "runtimeRoot": {
+          "root": "gemini",
+          "path": "skills/gstack"
+        },
+        "commandRoot": {
+          "root": "gemini",
+          "path": "commands"
+        },
+        "commandExtension": ".toml",
+        "commandsFromRuntime": true,
+        "commandAliases": {
+          "open-gstack-browser": [
+            "connect-chrome"
+          ]
+        }
       }
     }
   }

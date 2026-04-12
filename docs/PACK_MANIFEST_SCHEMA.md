@@ -57,6 +57,7 @@ Each host block may define `files`, `uninstall`, and host-specific runtime metad
       "uninstall": {
         "runtimeRoot": { "root": "claude", "path": "skills/example-pack" },
         "commandRoot": { "root": "claude", "path": "commands" },
+        "commandExtension": ".md",
         "commandsFromRuntime": true,
         "commandAliases": {
           "primary-command": ["legacy-alias"]
@@ -79,9 +80,10 @@ Used by the main installer for bundled/core packs.
 
 Used by `node bin/packs.js uninstall <pack>`.
 
-- `runtimeRoot.root`: install root name (`claude|codex|agents`)
+- `runtimeRoot.root`: install root name (`claude|codex|agents|gemini`)
 - `runtimeRoot.path`: runtime directory to remove
 - `commandRoot`: optional command directory root for command cleanup
+- `commandExtension`: optional command filename suffix, defaults to `.md`
 - `commandsFromRuntime`: if true, derive command names from subdirectories under `runtimeRoot`
 - `commandAliases`: optional extra command names to delete
 
@@ -143,7 +145,8 @@ Current validation enforces:
   },
   "projectDefaults": {
     "claude": "optional",
-    "codex": "optional"
+    "codex": "optional",
+    "gemini": "optional"
   },
   "upstream": {
     "repo": "https://github.com/acme/acme-pack.git",
@@ -161,6 +164,14 @@ Current validation enforces:
     "codex": {
       "uninstall": {
         "runtimeRoot": { "root": "agents", "path": "skills/acme-pack" }
+      }
+    },
+    "gemini": {
+      "uninstall": {
+        "runtimeRoot": { "root": "gemini", "path": "skills/acme-pack" },
+        "commandRoot": { "root": "gemini", "path": "commands" },
+        "commandExtension": ".toml",
+        "commandsFromRuntime": true
       }
     }
   }
