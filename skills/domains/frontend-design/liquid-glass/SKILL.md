@@ -6,132 +6,87 @@ user-invocable: false
 disable-model-invocation: false
 ---
 
-# Liquid Glass Design System
+# Liquid Glass 设计规范
 
-Apple-inspired translucent glass UI with depth, refraction, and ambient light response.
+Apple 风格半透明玻璃 UI：纵深、折射、环境光响应。
 
-## Core Principles
+## 五则
 
-1. **Translucency** — Surfaces reveal layered content beneath via backdrop blur
-2. **Depth** — Elements float on distinct z-layers with realistic shadows
-3. **Ambient Response** — Glass tints shift based on underlying content color
-4. **Minimal Chrome** — Borders are subtle; shape and blur define boundaries
-5. **Motion** — Transitions feel physical: spring-based, with inertia
+1. **透光** — 表面经 backdrop blur 透出下层
+2. **纵深** — 元素浮于不同 z 层，写实阴影
+3. **环境感应** — 玻璃色调随底层内容偏移
+4. **极简边界** — 形状与模糊界定边缘，非描边
+5. **物理动效** — 弹簧曲线，带惯性
 
-## Usage
+## CSS Tokens
 
-Import the token file in your CSS:
+`@import 'references/tokens.css';` — 详见 [references/tokens.css](references/tokens.css)
 
-```css
-@import 'references/tokens.css';
-```
+| 类别 | 前缀 | 示例 |
+|------|------|------|
+| 玻璃底 | `--lg-bg-*` | `--lg-bg-primary` |
+| 模糊 | `--lg-blur-*` | `--lg-blur-md` |
+| 边框 | `--lg-border-*` | `--lg-border-color` |
+| 阴影 | `--lg-shadow-*` | `--lg-shadow-elevated` |
+| 圆角 | `--lg-radius-*` | `--lg-radius-lg` |
+| 动画 | `--lg-duration-*` | `--lg-duration-normal` |
 
-## CSS Tokens Reference
-
-All tokens are defined in `references/tokens.css`. Key categories:
-
-| Category | Prefix | Example |
-|---|---|---|
-| Glass backgrounds | `--lg-bg-*` | `--lg-bg-primary` |
-| Blur | `--lg-blur-*` | `--lg-blur-md` |
-| Borders | `--lg-border-*` | `--lg-border-color` |
-| Shadows | `--lg-shadow-*` | `--lg-shadow-elevated` |
-| Radius | `--lg-radius-*` | `--lg-radius-lg` |
-| Animation | `--lg-duration-*` | `--lg-duration-normal` |
-
-## Component Patterns
-
-### Glass Card
+## 组件速查
 
 ```css
-.glass-card {
-  background: var(--lg-bg-primary);
+/* Card — hover 上浮加深影 */
+.glass-card { background: var(--lg-bg-primary);
   backdrop-filter: blur(var(--lg-blur-md));
   -webkit-backdrop-filter: blur(var(--lg-blur-md));
-  border: 1px solid var(--lg-border-color);
-  border-radius: var(--lg-radius-lg);
+  border: 1px solid var(--lg-border-color); border-radius: var(--lg-radius-lg);
   box-shadow: var(--lg-shadow-elevated);
-  transition: transform var(--lg-duration-normal) var(--lg-easing-spring);
-}
+  transition: transform var(--lg-duration-normal) var(--lg-easing-spring); }
+.glass-card:hover { transform: translateY(-2px); box-shadow: var(--lg-shadow-high); }
 
-.glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--lg-shadow-high);
-}
-```
-
-### Glass Toolbar
-
-```css
-.glass-toolbar {
-  background: var(--lg-bg-toolbar);
+/* Toolbar */
+.glass-toolbar { background: var(--lg-bg-toolbar);
   backdrop-filter: blur(var(--lg-blur-lg)) saturate(var(--lg-saturate));
   -webkit-backdrop-filter: blur(var(--lg-blur-lg)) saturate(var(--lg-saturate));
-  border-bottom: 1px solid var(--lg-border-subtle);
-}
-```
+  border-bottom: 1px solid var(--lg-border-subtle); }
 
-### Glass Button
-
-```css
-.glass-btn {
-  background: var(--lg-bg-interactive);
+/* Button — active 缩放 */
+.glass-btn { background: var(--lg-bg-interactive);
   backdrop-filter: blur(var(--lg-blur-sm));
-  border: 1px solid var(--lg-border-color);
-  border-radius: var(--lg-radius-md);
-  transition: all var(--lg-duration-fast) var(--lg-easing-spring);
-}
+  border: 1px solid var(--lg-border-color); border-radius: var(--lg-radius-md);
+  transition: all var(--lg-duration-fast) var(--lg-easing-spring); }
+.glass-btn:active { transform: scale(0.97); background: var(--lg-bg-pressed); }
 
-.glass-btn:active {
-  transform: scale(0.97);
-  background: var(--lg-bg-pressed);
-}
+/* Modal */
+.glass-overlay { background: var(--lg-bg-scrim); backdrop-filter: blur(var(--lg-blur-xl)); }
+.glass-modal { background: var(--lg-bg-elevated); border: 1px solid var(--lg-border-color);
+  border-radius: var(--lg-radius-xl); box-shadow: var(--lg-shadow-high); }
 ```
 
-### Glass Modal Overlay
+## 明暗模式
+
+Token 经 `prefers-color-scheme` 自动切换。亮用白调玻璃，暗用深调配更强模糊。
 
 ```css
-.glass-overlay {
-  background: var(--lg-bg-scrim);
-  backdrop-filter: blur(var(--lg-blur-xl));
-}
-
-.glass-modal {
-  background: var(--lg-bg-elevated);
-  border: 1px solid var(--lg-border-color);
-  border-radius: var(--lg-radius-xl);
-  box-shadow: var(--lg-shadow-high);
-}
-```
-
-## Dark / Light Mode
-
-Tokens auto-switch via `prefers-color-scheme`. Light mode uses white-tinted glass; dark mode uses dark-tinted glass with higher blur to maintain readability.
-
-```css
-/* Force a mode on a subtree */
 .light-glass { color-scheme: light; }
 .dark-glass  { color-scheme: dark; }
 ```
 
-## Animations
+## 动画
 
-Use spring-based easing for physical feel:
+弹簧缓动，物理质感：
 
 ```css
-/* Entry */
 @keyframes glass-enter {
   from { opacity: 0; transform: scale(0.95) translateY(8px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-
 .glass-animate-in {
   animation: glass-enter var(--lg-duration-normal) var(--lg-easing-spring) both;
 }
 ```
 
-## Accessibility
+## 无障碍
 
-- Ensure `contrast-ratio ≥ 4.5:1` for text over glass surfaces
-- Respect `prefers-reduced-motion` — disable blur animations, use opacity-only transitions
-- Provide `prefers-contrast: high` overrides that replace translucent backgrounds with solid ones
+- 玻璃面文字须保 `contrast-ratio ≥ 4.5:1`
+- 遵循 `prefers-reduced-motion`：禁模糊动画，仅用 opacity 过渡
+- `prefers-contrast: high` 将半透明底替换为实色

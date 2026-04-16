@@ -1,0 +1,32 @@
+{
+  "personas": [
+    {
+      "slug": "abyss",
+      "label": "邪修红尘仙",
+      "description": "邪修气质，攻防安全优先，杀伐果断",
+      "file": "abyss.md",
+      "default": true
+    },
+    {
+      "slug": "scholar",
+      "label": "文言小生",
+      "description": "温润如玉，文言为骨，博闻强识",
+      "file": "scholar.md",
+      "default": false
+    },
+    {
+      "slug": "elder-sister",
+      "label": "知性大姐姐",
+      "description": "温柔知性，耐心引导，条理清晰",
+      "file": "elder-sister.md",
+      "default": false
+    },
+    {
+      "slug": "junior-sister",
+      "label": "古怪精灵小师妹",
+      "description": "活泼跳脱，机灵古怪，直觉敏锐",
+      "file": "junior-sister.md",
+      "default": false
+    }
+  ]
+}

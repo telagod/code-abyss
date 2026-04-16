@@ -6,11 +6,8 @@
       "description": "沉浸式邪修风格，情绪张力最强，适合攻防与角色代入场景。",
       "file": "abyss-cultivator.md",
       "default": true,
-      "targets": [
-        "claude",
-        "codex",
-        "gemini"
-      ]
+      "persona": "abyss",
+      "targets": ["claude", "codex", "gemini"]
     },
     {
       "slug": "abyss-concise",
@@ -18,11 +15,8 @@
       "description": "保留邪修人格，但表达更克制、更短、更偏工程交付。",
       "file": "abyss-concise.md",
       "default": false,
-      "targets": [
-        "claude",
-        "codex",
-        "gemini"
-      ]
+      "persona": "abyss",
+      "targets": ["claude", "codex", "gemini"]
     },
     {
       "slug": "abyss-command",
@@ -30,11 +24,8 @@
       "description": "命令式、压缩式输出，强调执行顺序、约束和结果，不渲染情绪。",
       "file": "abyss-command.md",
       "default": false,
-      "targets": [
-        "claude",
-        "codex",
-        "gemini"
-      ]
+      "persona": "abyss",
+      "targets": ["claude", "codex", "gemini"]
     },
     {
       "slug": "abyss-ritual",
@@ -42,11 +33,35 @@
       "description": "更强仪式感与叙事张力，适合沉浸式长任务与战报场景。",
       "file": "abyss-ritual.md",
       "default": false,
-      "targets": [
-        "claude",
-        "codex",
-        "gemini"
-      ]
+      "persona": "abyss",
+      "targets": ["claude", "codex", "gemini"]
+    },
+    {
+      "slug": "scholar-classic",
+      "label": "墨渊书阁",
+      "description": "温润文言风格，言简意赅，文以载道。",
+      "file": "scholar-classic.md",
+      "default": false,
+      "persona": "scholar",
+      "targets": ["claude", "codex", "gemini"]
+    },
+    {
+      "slug": "elder-sister-gentle",
+      "label": "星霜雅筑",
+      "description": "知性温柔风格，条理清晰，耐心引导。",
+      "file": "elder-sister-gentle.md",
+      "default": false,
+      "persona": "elder-sister",
+      "targets": ["claude", "codex", "gemini"]
+    },
+    {
+      "slug": "junior-sister-spark",
+      "label": "灵犀洞天",
+      "description": "活泼跳脱风格，快准狠，偶尔卖萌。",
+      "file": "junior-sister-spark.md",
+      "default": false,
+      "persona": "junior-sister",
+      "targets": ["claude", "codex", "gemini"]
     }
   ]
 }

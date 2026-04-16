@@ -6,11 +6,70 @@ const { listTargetNames } = require('./target-registry');
 
 const SUPPORTED_TARGETS = new Set(listTargetNames());
 
-// Module-level cache: projectRoot → normalized styles
+// Module-level cache: projectRoot → normalized styles / personas
 const _cache = new Map();
+const _personaCache = new Map();
 
 function clearStyleCache() {
   _cache.clear();
+  _personaCache.clear();
+}
+
+// ── Persona Registry ──
+
+function loadPersonaRegistry(projectRoot) {
+  if (_personaCache.has(projectRoot)) return _personaCache.get(projectRoot);
+
+  const registryPath = path.join(projectRoot, 'config', 'personas', 'index.json');
+  const raw = fs.readFileSync(registryPath, 'utf8');
+  const parsed = JSON.parse(raw);
+  const personas = Array.isArray(parsed.personas) ? parsed.personas : null;
+  if (!personas || personas.length === 0) {
+    throw new Error('config/personas/index.json 缺少 personas 列表');
+  }
+
+  const seen = new Set();
+  let defaultCount = 0;
+  const normalized = personas.map((p) => {
+    if (!p || typeof p !== 'object') throw new Error('persona registry 存在无效条目');
+    const slug = requireNonEmptyString(p.slug, 'persona.slug');
+    if (seen.has(slug)) throw new Error(`persona slug 重复: ${slug}`);
+    seen.add(slug);
+    if (p.default) defaultCount += 1;
+    return {
+      slug,
+      label: requireNonEmptyString(p.label, `persona.${slug}.label`),
+      description: requireNonEmptyString(p.description, `persona.${slug}.description`),
+      file: requireNonEmptyString(p.file || `${slug}.md`, `persona.${slug}.file`),
+      default: p.default === true,
+    };
+  });
+
+  if (defaultCount !== 1) {
+    throw new Error('persona registry 必须且只能有一个 default persona');
+  }
+
+  _personaCache.set(projectRoot, normalized);
+  return normalized;
+}
+
+function listPersonas(projectRoot) {
+  return loadPersonaRegistry(projectRoot);
+}
+
+function getDefaultPersona(projectRoot) {
+  const personas = loadPersonaRegistry(projectRoot);
+  return personas.find(p => p.default);
+}
+
+function resolvePersona(projectRoot, slug) {
+  const personas = loadPersonaRegistry(projectRoot);
+  return personas.find(p => p.slug === slug) || null;
+}
+
+function readPersonaContent(projectRoot, persona) {
+  const personaPath = path.join(projectRoot, 'config', 'personas', persona.file);
+  return fs.readFileSync(personaPath, 'utf8');
 }
 
 function loadStyleRegistry(projectRoot) {
@@ -64,6 +123,7 @@ function normalizeStyle(style, seen) {
     description,
     file,
     targets,
+    persona: typeof style.persona === 'string' ? style.persona.trim() : null,
     default: style.default === true,
   };
 }
@@ -116,8 +176,18 @@ function renderRuntimeGuidance(projectRoot, styleSlug, targetName = 'codex') {
     throw new Error(`未知输出风格: ${styleSlug}. Try: node bin/install.js --list-styles`);
   }
 
-  const basePath = path.join(projectRoot, 'config', 'CLAUDE.md');
-  const base = fs.readFileSync(basePath, 'utf8').replace(/\s+$/, '');
+  let base;
+  if (style.persona) {
+    const persona = resolvePersona(projectRoot, style.persona);
+    if (persona) {
+      base = readPersonaContent(projectRoot, persona).replace(/\s+$/, '');
+    }
+  }
+  if (!base) {
+    const basePath = path.join(projectRoot, 'config', 'CLAUDE.md');
+    base = fs.readFileSync(basePath, 'utf8').replace(/\s+$/, '');
+  }
+
   const styleContent = readStyleContent(projectRoot, style).replace(/^\s+/, '');
   return `${base}\n\n${styleContent}\n`;
 }
@@ -134,6 +204,10 @@ module.exports = {
   listStyles,
   getDefaultStyle,
   resolveStyle,
+  listPersonas,
+  getDefaultPersona,
+  resolvePersona,
+  readPersonaContent,
   renderCodexAgents,
   renderGeminiContext,
   renderRuntimeGuidance,

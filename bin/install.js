@@ -38,6 +38,10 @@ const {
   listStyles,
   getDefaultStyle,
   resolveStyle,
+  listPersonas,
+  getDefaultPersona,
+  resolvePersona,
+  readPersonaContent,
   renderGeminiContext,
 } = require(path.join(__dirname, 'lib', 'style-registry.js'));
 const { detectCcstatusline, installCcstatusline } = require(path.join(__dirname, 'lib', 'ccstatusline.js'));
@@ -161,13 +165,17 @@ let target = null;
 let uninstallTarget = null;
 let autoYes = false;
 let listStylesOnly = false;
+let listPersonasOnly = false;
 let requestedStyleSlug = null;
+let requestedPersonaSlug = null;
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--target' && args[i + 1]) { target = args[++i]; }
   else if (args[i] === '--uninstall' && args[i + 1]) { uninstallTarget = args[++i]; }
   else if (args[i] === '--style' && args[i + 1]) { requestedStyleSlug = args[++i]; }
+  else if (args[i] === '--persona' && args[i + 1]) { requestedPersonaSlug = args[++i]; }
   else if (args[i] === '--list-styles') { listStylesOnly = true; }
+  else if (args[i] === '--list-personas') { listPersonasOnly = true; }
   else if (args[i] === '--yes' || args[i] === '-y') { autoYes = true; }
   else if (args[i] === '--help' || args[i] === '-h') {
     banner();
@@ -177,7 +185,9 @@ ${c.b('选项:')}
   --target ${c.cyn(`<${formatTargetList('|')}>`)}      安装目标
   --uninstall ${c.cyn(`<${formatTargetList('|')}>`)}   卸载目标
   --style ${c.cyn('<slug>')}               指定输出风格
+  --persona ${c.cyn('<slug>')}             指定人格预设
   --list-styles               列出可用输出风格
+  --list-personas             列出可用人格预设
   --yes, -y                    全自动模式
   --help, -h                   显示帮助
 
@@ -512,6 +522,17 @@ function printStyleCatalog() {
   console.log('');
 }
 
+function printPersonaCatalog() {
+  banner();
+  divider('可用人格预设');
+  listPersonas(PKG_ROOT).forEach((persona) => {
+    const tag = persona.default ? ' [默认]' : '';
+    console.log(`  ${c.cyn(persona.slug)}  ${persona.label}${c.d(tag)}`);
+    console.log(`  ${c.d(persona.description)}`);
+  });
+  console.log('');
+}
+
 async function resolveProjectPackPlan(targetName) {
   const projectPacks = resolveProjectPacks(process.cwd(), targetName);
   if (!projectPacks.path) {
@@ -559,9 +580,10 @@ async function resolveInstallStyle(targetName) {
       }
       return requested;
     }
-    return getDefaultStyle(PKG_ROOT, 'claude');
+    if (autoYes) return getDefaultStyle(PKG_ROOT, 'claude');
   }
 
+  // CLI 直接指定 --style
   if (requestedStyleSlug) {
     const style = resolveStyle(PKG_ROOT, requestedStyleSlug, targetName);
     if (!style) {
@@ -571,19 +593,46 @@ async function resolveInstallStyle(targetName) {
   }
 
   if (autoYes) {
+    // --persona 指定时取该人格的第一个风格
+    if (requestedPersonaSlug) {
+      const persona = resolvePersona(PKG_ROOT, requestedPersonaSlug);
+      if (!persona) throw new Error(`未知人格预设: ${requestedPersonaSlug}`);
+      const styles = listStyles(PKG_ROOT, targetName).filter(s => s.persona === persona.slug);
+      if (styles.length === 0) throw new Error(`人格 ${persona.slug} 无可用风格`);
+      return styles[0];
+    }
     return getDefaultStyle(PKG_ROOT, targetName);
   }
 
-  const styles = listStyles(PKG_ROOT, targetName);
-  const defaultStyle = getDefaultStyle(PKG_ROOT, targetName);
+  // 交互模式：先选人格，再选该人格下的风格
   const { select } = await import('@inquirer/prompts');
+  const personas = listPersonas(PKG_ROOT);
+  const defaultPersona = getDefaultPersona(PKG_ROOT);
+
+  const personaSlug = await select({
+    message: '选择人格预设',
+    choices: personas.map(p => ({
+      name: `${p.label} (${p.slug})${p.default ? ' [默认]' : ''} — ${p.description}`,
+      value: p.slug,
+    })),
+    default: defaultPersona.slug,
+  });
+
+  const allStyles = listStyles(PKG_ROOT, targetName);
+  const personaStyles = allStyles.filter(s => s.persona === personaSlug);
+  if (personaStyles.length === 0) {
+    warn(`人格 ${personaSlug} 无专属风格，使用全局默认`);
+    return getDefaultStyle(PKG_ROOT, targetName);
+  }
+  if (personaStyles.length === 1) return personaStyles[0];
+
   const slug = await select({
     message: '选择输出风格',
-    choices: styles.map(style => ({
-      name: `${style.label} (${style.slug})${style.default ? ' [默认]' : ''} - ${style.description}`,
+    choices: personaStyles.map(style => ({
+      name: `${style.label} (${style.slug})${style.default ? ' [默认]' : ''} — ${style.description}`,
       value: style.slug,
     })),
-    default: defaultStyle.slug,
+    default: personaStyles[0].slug,
   });
   return resolveStyle(PKG_ROOT, slug, targetName);
 }
@@ -793,6 +842,24 @@ function installCore(tgt, selectedStyle, packPlan) {
 
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 
+  // 根据选中风格的 persona 覆盖 CLAUDE.md / GEMINI.md
+  if (selectedStyle.persona) {
+    const persona = resolvePersona(PKG_ROOT, selectedStyle.persona);
+    if (persona) {
+      const personaContent = readPersonaContent(PKG_ROOT, persona);
+      if (tgt === 'claude') {
+        const claudeMdPath = path.join(targetDir, 'CLAUDE.md');
+        fs.writeFileSync(claudeMdPath, personaContent);
+        ok(`人格预设 → ${c.mag(persona.label)} (${persona.slug})`);
+      } else if (tgt === 'gemini') {
+        const geminiMdPath = path.join(targetDir, 'GEMINI.md');
+        const guidance = renderGeminiContext(PKG_ROOT, selectedStyle.slug);
+        fs.writeFileSync(geminiMdPath, guidance);
+        ok(`人格预设 → ${c.mag(persona.label)} (${persona.slug})`);
+      }
+    }
+  }
+
   const uSrc = path.join(PKG_ROOT, 'bin', 'uninstall.js');
   const uDest = path.join(targetDir, '.sage-uninstall.js');
   if (fs.existsSync(uSrc)) { fs.copyFileSync(uSrc, uDest); fs.chmodSync(uDest, '755'); }
@@ -854,6 +921,11 @@ async function postGemini(ctx) {
 async function main() {
   if (listStylesOnly) {
     printStyleCatalog();
+    return;
+  }
+
+  if (listPersonasOnly) {
+    printPersonaCatalog();
     return;
   }
 

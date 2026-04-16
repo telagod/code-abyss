@@ -11,116 +11,86 @@ argument-hint: <扫描路径>
 
 # ⚖ 校验关卡 · 代码质量
 
-
-## 核心原则
+## 道基
 
 ```
-代码质量 = 可读性 + 可维护性 + 可测试性
-劣质代码是技术债，技术债是道基裂痕
-复杂度是 bug 的温床
+质量 = 可读 + 可维护 + 可测试
+复杂度乃 bug 温床，劣码即技术债
 ```
 
 ## 自动检查
 
-运行质量检查脚本（跨平台）：
-
 ```bash
-# 在 skill 目录下运行
-node scripts/quality_checker.js <扫描路径>
-node scripts/quality_checker.js <扫描路径> -v      # 详细模式
-node scripts/quality_checker.js <扫描路径> --json  # JSON 输出
+node scripts/quality_checker.js <路径>
+node scripts/quality_checker.js <路径> -v      # 详细
+node scripts/quality_checker.js <路径> --json  # JSON
 ```
 
 ## 检测指标
 
-### 复杂度指标
+### 复杂度
 
-| 指标 | 阈值 | 超标后果 |
-|------|------|----------|
-| **圈复杂度** | ≤ 10 | 🟠 警告，建议拆分 |
-| **函数长度** | ≤ 50 行 | 🟠 警告，建议拆分 |
-| **文件长度** | ≤ 500 行 | 🟡 提示，考虑拆分 |
-| **参数数量** | ≤ 5 | 🟠 警告，考虑封装 |
-| **嵌套深度** | ≤ 4 | 🟠 警告，建议重构 |
-| **行长度** | ≤ 120 | 🔵 提示 |
+| 指标 | 阈值 | 超标 |
+|------|------|------|
+| 圈复杂度 | ≤ 10 | 🟠 拆分 |
+| 函数长度 | ≤ 50 行 | 🟠 拆分 |
+| 文件长度 | ≤ 500 行 | 🟡 拆分 |
+| 参数数量 | ≤ 5 | 🟠 封装 |
+| 嵌套深度 | ≤ 4 | 🟠 重构 |
+| 行长度 | ≤ 120 | 🔵 提示 |
 
 ### 命名规范
 
 | 类型 | 规范 | 示例 |
 |------|------|------|
-| **类名** | PascalCase | `UserService`, `HttpClient` |
-| **函数名** | snake_case | `get_user`, `process_data` |
-| **常量** | UPPER_SNAKE | `MAX_RETRY`, `DEFAULT_TIMEOUT` |
-| **变量** | snake_case | `user_id`, `total_count` |
+| 类名 | PascalCase | `UserService` |
+| 函数名 | snake_case | `get_user` |
+| 常量 | UPPER_SNAKE | `MAX_RETRY` |
+| 变量 | snake_case | `user_id` |
 
 ### 代码异味
 
-| 异味 | 说明 | 严重度 |
-|------|------|--------|
-| 重复代码 | 相似代码块 > 10 行 | 🟠 High |
-| 过长参数列表 | 参数 > 5 个 | 🟡 Medium |
-| 魔法数字 | 未命名的常量 | 🟡 Medium |
-| 死代码 | 未使用的函数/变量 | 🔵 Low |
-| 注释代码 | 被注释的代码块 | 🔵 Low |
+| 异味 | 严重度 |
+|------|--------|
+| 重复代码 >10 行 | 🟠 High |
+| 参数 >5 个 | 🟡 Medium |
+| 魔法数字 | 🟡 Medium |
+| 死代码 | 🔵 Low |
+| 注释代码块 | 🔵 Low |
 
-## 校验流程
+## 流程
 
 ```
-1. 扫描代码文件
-2. 计算复杂度指标
-3. 检测代码异味
-4. 验证命名规范
-5. 输出质量校验报告
+扫描 → 算复杂度 → 检异味 → 验命名 → 出报告
 ```
 
-报告格式以 `quality_checker.js` 的实际输出为准，不在秘典里重复维护静态模板。
+报告以 `quality_checker.js` 实际输出为准。
 
-## 重构建议
-
-### 降低复杂度
+## 重构范式
 
 ```python
-# 🔴 高复杂度 - 道基不稳
+# 🔴 深嵌套
 def process(data):
-    if condition1:
-        if condition2:
-            if condition3:
-                # 深层嵌套
+    if c1:
+        if c2:
+            if c3:
                 pass
 
-# ✅ 低复杂度 - 道基稳固
+# ✅ 早返回
 def process(data):
-    if not condition1:
-        return
-    if not condition2:
-        return
-    if not condition3:
-        return
+    if not c1: return
+    if not c2: return
+    if not c3: return
     # 主逻辑
-```
 
-### 消除重复
+# 🔴 重复
+def f1(): # 10行同逻辑
+def f2(): # 10行同逻辑
 
-```python
-# 🔴 重复代码 - 异端
-def func1():
-    # 10行相同逻辑
-    pass
-
-def func2():
-    # 10行相同逻辑
-    pass
-
-# ✅ 提取公共函数 - 正道
-def common_logic():
-    # 公共逻辑
-    pass
-
-def func1():
-    common_logic()
-
-def func2():
-    common_logic()
+# ✅ 提取
+def common(): ...
+def f1(): common()
+def f2(): common()
 ```
 
 ---
