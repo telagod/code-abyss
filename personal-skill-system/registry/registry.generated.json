@@ -1,0 +1,95 @@
+{
+  "schema-version": 1,
+  "skills": [
+    {
+      "name": "sage",
+      "kind": "router",
+      "path": "skills/routers/sage/SKILL.md"
+    },
+    {
+      "name": "development",
+      "kind": "domain",
+      "path": "skills/domains/development/SKILL.md"
+    },
+    {
+      "name": "data-engineering",
+      "kind": "domain",
+      "path": "skills/domains/data-engineering/SKILL.md"
+    },
+    {
+      "name": "security",
+      "kind": "domain",
+      "path": "skills/domains/security/SKILL.md"
+    },
+    {
+      "name": "architecture",
+      "kind": "domain",
+      "path": "skills/domains/architecture/SKILL.md"
+    },
+    {
+      "name": "infrastructure",
+      "kind": "domain",
+      "path": "skills/domains/infrastructure/SKILL.md"
+    },
+    {
+      "name": "mobile",
+      "kind": "domain",
+      "path": "skills/domains/mobile/SKILL.md"
+    },
+    {
+      "name": "orchestration",
+      "kind": "domain",
+      "path": "skills/domains/orchestration/SKILL.md"
+    },
+    {
+      "name": "frontend-design",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/SKILL.md"
+    },
+    {
+      "name": "claymorphism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/claymorphism/SKILL.md"
+    },
+    {
+      "name": "glassmorphism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/glassmorphism/SKILL.md"
+    },
+    {
+      "name": "liquid-glass",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/liquid-glass/SKILL.md"
+    },
+    {
+      "name": "neubrutalism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/neubrutalism/SKILL.md"
+    },
+    {
+      "name": "investigate",
+      "kind": "workflow",
+      "path": "skills/workflows/investigate/SKILL.md"
+    },
+    {
+      "name": "bugfix",
+      "kind": "workflow",
+      "path": "skills/workflows/bugfix/SKILL.md"
+    },
+    {
+      "name": "verify-change",
+      "kind": "tool",
+      "path": "skills/tools/verify-change/SKILL.md"
+    },
+    {
+      "name": "multi-agent",
+      "kind": "workflow",
+      "path": "skills/workflows/multi-agent/SKILL.md"
+    },
+    {
+      "name": "pre-merge-gate",
+      "kind": "guard",
+      "path": "skills/guards/pre-merge-gate/SKILL.md"
+    }
+  ]
+}

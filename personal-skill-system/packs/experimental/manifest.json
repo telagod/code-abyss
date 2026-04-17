@@ -1,0 +1,12 @@
+{
+  "name": "experimental",
+  "version": "0.1.0",
+  "description": "Staging area for unstable skills before promotion into personal-core.",
+  "includes": [],
+  "targets": [
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "mode": "copy"
+}

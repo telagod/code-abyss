@@ -1,0 +1,28 @@
+{
+  "codex": {
+    "supports_scripts": true,
+    "supports_skill_discovery": true,
+    "supports_manual_paste": true,
+    "notes": [
+      "Best when copying the whole skill directory.",
+      "Router and domain skills also work as standalone pasted markdown."
+    ]
+  },
+  "claude": {
+    "supports_scripts": true,
+    "supports_skill_discovery": true,
+    "supports_manual_paste": true,
+    "notes": [
+      "Standalone SKILL.md paste works well for router, domain, and workflow layers.",
+      "Tool and guard layers are stronger when copied with scripts."
+    ]
+  },
+  "gemini": {
+    "supports_scripts": true,
+    "supports_skill_discovery": true,
+    "supports_manual_paste": true,
+    "notes": [
+      "Treat this bundle as host-agnostic prompt assets plus optional scripts."
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "host": "claude",
+  "manual_import": "paste SKILL.md or copy full folders",
+  "preferred_layers": [
+    "routers",
+    "domains",
+    "workflows"
+  ],
+  "notes": [
+    "Prompt-only import is enough for many skills.",
+    "Copy scripts for deterministic checks."
+  ]
+}

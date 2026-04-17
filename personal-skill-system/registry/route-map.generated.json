@@ -1,0 +1,229 @@
+{
+  "schema-version": 1,
+  "router": "sage",
+  "default-threshold": 40,
+  "scoring": {
+    "exact-match": 100,
+    "alias-match": 80,
+    "keyword-hit": 8,
+    "negative-hit": -12,
+    "namespace-hit": 10,
+    "host-unsupported": -100
+  },
+  "routes": [
+    {
+      "skill": "bugfix",
+      "kind": "workflow",
+      "priority": 85,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "execute"
+        ],
+        "trigger-keywords": [
+          "fix",
+          "bug",
+          "报错",
+          "异常",
+          "回归"
+        ],
+        "negative-keywords": [
+          "brainstorm",
+          "review-only"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "review"
+      ],
+      "auto-chain": [
+        "verify-quality",
+        "verify-security"
+      ]
+    },
+    {
+      "skill": "frontend-design",
+      "kind": "domain",
+      "priority": 72,
+      "namespace": "design",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design",
+          "knowledge"
+        ],
+        "trigger-keywords": [
+          "ui",
+          "ux",
+          "前端设计",
+          "组件设计"
+        ],
+        "negative-keywords": [
+          "sql",
+          "数据库"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "architecture"
+      ],
+      "auto-chain": []
+    },
+    {
+      "skill": "data-engineering",
+      "kind": "domain",
+      "priority": 74,
+      "namespace": "data",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "etl",
+          "数据管道",
+          "stream processing",
+          "flink",
+          "dbt"
+        ],
+        "negative-keywords": [
+          "ui",
+          "visual design"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": []
+    },
+    {
+      "skill": "infrastructure",
+      "kind": "domain",
+      "priority": 77,
+      "namespace": "platform",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "kubernetes",
+          "terraform",
+          "gitops",
+          "infra"
+        ],
+        "negative-keywords": [
+          "ux",
+          "component design"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": []
+    },
+    {
+      "skill": "mobile",
+      "kind": "domain",
+      "priority": 67,
+      "namespace": "client",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design"
+        ],
+        "trigger-keywords": [
+          "ios",
+          "android",
+          "react native",
+          "flutter",
+          "mobile"
+        ],
+        "negative-keywords": [
+          "kubernetes",
+          "etl"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": []
+    },
+    {
+      "skill": "multi-agent",
+      "kind": "workflow",
+      "priority": 83,
+      "namespace": "orchestration",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "orchestrate",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "multi-agent",
+          "parallel",
+          "delegation",
+          "多agent",
+          "任务拆解"
+        ],
+        "negative-keywords": [
+          "single-file tweak"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": []
+    },
+    {
+      "skill": "verify-change",
+      "kind": "tool",
+      "priority": 90,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-change",
+          "变更检查",
+          "diff analysis"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": []
+    }
+  ]
+}

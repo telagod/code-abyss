@@ -1,0 +1,12 @@
+{
+  "name": "work-private",
+  "version": "0.1.0",
+  "description": "Reserved pack for private company references, internal APIs, compliance, and local conventions.",
+  "includes": [],
+  "targets": [
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "mode": "overlay"
+}

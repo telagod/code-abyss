@@ -1,0 +1,12 @@
+{
+  "name": "project-overlay",
+  "version": "0.1.0",
+  "description": "Repository-specific overlay pack for layout rules, test commands, deploy flow, and local constraints.",
+  "includes": [],
+  "targets": [
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "mode": "overlay"
+}

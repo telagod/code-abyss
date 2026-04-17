@@ -1,0 +1,14 @@
+{
+  "host": "gemini",
+  "manual_import": "treat bundle as host-agnostic markdown plus optional scripts",
+  "preferred_layers": [
+    "routers",
+    "domains",
+    "workflows",
+    "tools"
+  ],
+  "notes": [
+    "Keep routing policy in the router skill.",
+    "Keep scripts local when deterministic verification is needed."
+  ]
+}

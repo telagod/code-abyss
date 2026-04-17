@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-abyss.local/personal-skill-system/skill.schema.json",
+  "title": "Portable Personal Skill Frontmatter Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema-version",
+    "name",
+    "description",
+    "kind",
+    "user-invocable",
+    "trigger-mode",
+    "priority",
+    "runtime",
+    "executor",
+    "supported-hosts",
+    "status"
+  ],
+  "properties": {
+    "schema-version": {
+      "type": "integer",
+      "const": 2
+    },
+    "name": {
+      "$ref": "#/$defs/skillName"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 400
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "router",
+        "domain",
+        "workflow",
+        "tool",
+        "guard"
+      ]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "private",
+        "project"
+      ],
+      "default": "public"
+    },
+    "user-invocable": {
+      "type": "boolean"
+    },
+    "trigger-mode": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "manual"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "trigger-keywords": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "negative-keywords": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "namespace": {
+      "$ref": "#/$defs/skillName"
+    },
+    "parent": {
+      "$ref": "#/$defs/skillName"
+    },
+    "depends-on": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skillName"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "conflicts-with": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skillName"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "auto-chain": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skillName"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "runtime": {
+      "type": "string",
+      "enum": [
+        "knowledge",
+        "scripted",
+        "hybrid"
+      ]
+    },
+    "executor": {
+      "type": "string",
+      "enum": [
+        "none",
+        "node",
+        "python",
+        "bash",
+        "powershell"
+      ]
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "risk-level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "low"
+    },
+    "supported-hosts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "codex",
+          "claude",
+          "gemini"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "experimental",
+        "stable",
+        "deprecated",
+        "archived"
+      ]
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "last-reviewed": {
+      "type": "string",
+      "format": "date"
+    },
+    "review-cycle-days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3650
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tag"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skillName"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  },
+  "$defs": {
+    "skillName": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "tag": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 1,
+      "maxLength": 40
+    }
+  }
+}
