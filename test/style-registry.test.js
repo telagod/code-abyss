@@ -44,7 +44,7 @@ describe('style registry', () => {
 
   test('为 Gemini 动态生成 GEMINI context', () => {
     const content = renderGeminiContext(projectRoot, 'scholar-classic', 'scholar');
-    expect(content).toContain('# 文言小生 · 墨渊书阁 v1.0');
+    expect(content).toContain('# 文言小生 · 墨渊书阁 v2.0');
     expect(content).toContain('# 墨渊书阁 · 输出之道');
   });
 
