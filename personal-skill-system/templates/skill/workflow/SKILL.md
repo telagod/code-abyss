@@ -1,8 +1,8 @@
 ---
 schema-version: 2
 name: workflow-template
-title: 工作流模板
-description: 用于创建新的 workflow skill。
+title: Workflow Template
+description: Template for creating a new workflow skill.
 kind: workflow
 visibility: public
 user-invocable: true

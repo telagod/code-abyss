@@ -1,14 +1,15 @@
 ---
 schema-version: 2
 name: glassmorphism
-title: Glassmorphism 风格
-description: 通透分层的前端视觉风格 skill，适合科技感、玻璃感、浮层界面。
+title: Glassmorphism Variant
+description: Glassmorphism design variant for frosted transparency, layered blur, and depth. Use when the desired frontend style is glassmorphism.
+
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [glassmorphism, frosted glass, 玻璃风格]
-negative-keywords: [低端移动端极限优化]
+trigger-keywords: [glassmorphism, frosted glass]
+negative-keywords: [api design]
 priority: 58
 runtime: knowledge
 executor: none

@@ -1,8 +1,8 @@
 ---
 schema-version: 2
 name: guard-template
-title: 关卡模板
-description: 用于创建新的 guard skill。
+title: Guard Template
+description: Template for creating a new guard skill.
 kind: guard
 visibility: public
 user-invocable: true

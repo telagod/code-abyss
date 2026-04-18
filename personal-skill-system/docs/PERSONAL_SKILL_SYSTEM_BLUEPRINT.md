@@ -1,28 +1,18 @@
-# Personal Skill System Blueprint / 个人 SKILL 体系蓝图
+# Personal Skill System Blueprint
 
-## 1. Objective / 目标
+## Objective
 
-**中文**
-
-这不是 prompt 收藏夹，而是一套可长期演进的个人 skill 体系。目标有五个：
-
-1. 可路由
-2. 可治理
-3. 可执行
-4. 可分发
-5. 可覆盖
-
-**English**
-
-This is not a loose prompt archive. It is meant to be a long-lived personal skill system with five goals:
+This is not a loose prompt archive.
+It is a portable, self-hosting skill runtime that should remain:
 
 1. routable
 2. governable
-3. executable
-4. portable
-5. overlay-friendly
+3. executable where needed
+4. portable across hosts
+5. reference-rich without bloated entry points
+6. evolvable by the system itself
 
-## 2. Directory Layout / 目录结构
+## Directory model
 
 ```text
 personal-skill-system/
@@ -39,154 +29,146 @@ personal-skill-system/
   templates/
 ```
 
-**中文**
+## Layer model
 
-- `docs/` 放使用说明与审计
-- `registry/` 放 schema 和 route map
-- `skills/` 放实际可导入 skill
-- `packs/` 放分层分发示例
-- `templates/` 放后续扩展模板
+- `routers/`: top-level dispatch and conflict policy
+- `domains/`: knowledge and judgement surfaces
+- `workflows/`: multi-step execution chains
+- `tools/`: deterministic checks and generators
+- `guards/`: risk gates attached downstream
+- `adapters/`: host-specific import notes and capability hints
+- `references/` under each skill: deep content loaded only when needed
 
-**English**
+## Design principles
 
-- `docs/` contains usage guidance and audit notes
-- `registry/` contains schemas and route maps
-- `skills/` contains importable skills
-- `packs/` contains layering examples
-- `templates/` contains starter templates
+### 1. Thin entry, deep references
 
-## 3. Layer Model / 分层模型
+Keep `SKILL.md` concise.
+Put heavy detail in `references/` unless the rule must always be in context.
 
-| Layer | 中文 | English |
-| --- | --- | --- |
-| `routers/` | 负责分流 | routes requests |
-| `domains/` | 负责知识索引 | provides knowledge index |
-| `workflows/` | 负责多步方法 | provides multi-step execution methods |
-| `tools/` | 负责确定性检查 | provides deterministic tools |
-| `guards/` | 负责阻断与放行 | blocks or passes risky work |
-| `adapters/` | 负责宿主差异说明 | documents host-specific import hints |
+### 2. Stable route surface
 
-## 4. Routing Principles / 路由原则
+Do not expose every expert variant as a public peer skill.
+Keep the route surface stable and escalate into depth only when needed.
 
-**中文**
+### 3. Generated metadata must be honest
 
-1. 明确点名 skill 时直接命中
-2. 要做事时优先 workflow
-3. 要知识时优先 domain
-4. 要检查时优先 tool
-5. guard 默认自动补挂，不主动抢路由
+`registry.generated.json` and `route-map.generated.json` must describe the real bundle, not a partial subset.
 
-**English**
+### 4. Portable means self-contained
 
-1. explicit skill name wins first
-2. workflows win when the user wants action
-3. domains win when the user wants guidance
-4. tools win when the user asks for verification
-5. guards are mainly automatic, not primary routing targets
+A copied bundle should not depend on sibling folders outside itself at answer time.
+Source provenance may be recorded, but runtime depth must live inside the bundle.
 
-## 5. Portable vs Full Runtime / 便携版与完整版的区别
+### 5. Workflows own action, tools own proof
 
-**中文**
+Use workflows for multi-step execution.
+Use tools for deterministic validation.
+Do not blur the two.
 
-这个 bundle 的目标是“便于手工拷走与粘贴”，所以它优先保留：
+### 6. Guards are attached, not primary
 
-- skill 入口
-- 路由结构
-- 基本 frontmatter
-- 最小可运行 stub
+Guards should gate risky work after routing.
+They should not replace the router.
 
-它暂时不追求完全保留：
+### 7. Expert depth should be normalized
 
-- 原版所有 references 文档
-- 所有 `agents/openai.yaml`
-- 与安装器、registry、runner 的硬接线
+When several expert sources overlap, merge them into one reusable reference instead of duplicating them across public skills.
 
-**English**
+### 8. The system must improve itself
 
-This bundle is optimized for manual copy-and-paste portability, so it prioritizes:
+The bundle should contain a first-class path for evolving the skill system itself.
+That is the role of `skill-evolution`.
 
-- skill entry points
-- routing structure
-- portable frontmatter
-- minimal runnable stubs
+## Routing doctrine
 
-It does not yet aim to fully preserve:
+Use this order:
 
-- every original reference file
-- every `agents/openai.yaml`
-- full installer / registry / runner integration
+1. explicit skill invocation
+2. self-system work
+3. action workflow
+4. explicit validation tool
+5. advisory domain
+6. downstream guard
 
-## 6. Pack Strategy / Pack 策略
+Route quality is judged by:
 
-| Pack | 中文 | English |
-| --- | --- | --- |
-| `personal-core` | 通用核心能力 | general reusable skills |
-| `work-private` | 私有工作资产 | private company or team assets |
-| `project-overlay` | 项目定制覆盖层 | project-specific overlay |
-| `experimental` | 实验区 | experimental area |
+- correct first choice
+- clear conflict handling
+- sensible auto-chains
+- minimal ambiguity
+- graceful escalation into depth
 
-## 7. Governance / 治理关卡
+## Depth tiers
 
-**中文**
+Use three tiers of context:
 
-推荐至少维持以下 6 类治理：
+1. metadata
+2. `SKILL.md`
+3. `references/` and deterministic scripts
 
-- schema validation
-- route regression
-- link integrity
-- runtime smoke
-- stale review
-- collision detection
+The default should be to keep tiers 1 and 2 small and move density into tier 3.
 
-**English**
+## Pack model
 
-At minimum, keep these six governance gates:
+- `personal-core`: reusable baseline bundle
+- `project-overlay`: project-specific local constraints
+- `work-private`: private assets and internal knowledge
+- `experimental`: unstable ideas and staging area for promotion
+
+## Governance
+
+A serious personal skill system should maintain at least:
 
 - schema validation
+- registry completeness checks
 - route regression
-- link integrity
-- runtime smoke
-- stale review
+- link and reference integrity
+- runtime smoke for tools and guards
+- stale review rhythm
 - collision detection
+- encoding hygiene for portable files
 
-## 8. Current Skill Scope / 当前 skill 覆盖
+## Maturity model
 
-**中文**
+### Level 1: Portable skeleton
 
-当前 bundle 已覆盖：
+- basic layers exist
+- copy-paste works
+- route surface is recognizable
 
-- root router
-- 原版主要 domains
-- 原版 tools
-- 原版前端设计 variants
-- 原版 multi-agent 能力
-- 新增 workflows 与 guards
+### Level 2: Reference-rich bundle
 
-**English**
+- each important skill has direct references
+- domains and workflows are no longer hollow shells
 
-The current bundle now covers:
+### Level 3: Deterministic core
 
-- the root router
-- the main original domains
-- the original tool set
-- the original frontend design variants
-- the original multi-agent capability
-- additional workflows and guards
+- tools and guards have real runtime behavior
+- generated metadata is trustworthy
 
-## 9. Recommended Evolution Path / 推荐演进路径
+### Level 4: Expert depth
 
-**中文**
+- overlapping expert knowledge is normalized into internal references
+- escalation rules are explicit
 
-1. 先导入并实际使用
-2. 根据常用场景裁掉不用的 skill
-3. 把常用 tool 的 stub 改成真实脚本
-4. 再补 references 与 host metadata
-5. 最后再接自动安装链
+### Level 5: Self-evolving system
 
-**English**
+- the bundle can audit, redesign, and harden itself through first-class skills and governance loops
 
-1. import and use the bundle first
-2. remove skills you do not actually use
-3. upgrade frequently used tool stubs into real scripts
-4. add references and host metadata next
-5. wire automation only after the manual flow feels right
+## Current direction
+
+The current design direction is:
+
+- portable but not shallow
+- generated but still readable
+- expert-depth aware without route sprawl
+- self-hosting rather than dependent on external sibling skill folders
+
+## Evolution path
+
+1. keep the route surface clean
+2. deepen references where repeated hard decisions occur
+3. normalize expert overlays into portable internal depth
+4. improve generated registry and route coverage
+5. keep adding governance before adding more public surface area

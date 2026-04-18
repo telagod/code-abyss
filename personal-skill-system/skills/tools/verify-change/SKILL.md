@@ -1,13 +1,14 @@
 ---
 schema-version: 2
 name: verify-change
-title: 变更校验工具
-description: 对工作区、暂存区或提交内容做结构化变更分析，识别受影响模块、文档同步、测试缺口与风险面。
+title: Verify Change Tool
+description: Diff-aware validation of changed files, likely module impact, and possible documentation drift. Use when the task is to inspect a change set rather than a whole module.
+
 kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-change, diff, 变更检查, 提交前检查]
+trigger-keywords: [verify-change, diff analysis, change audit]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -31,14 +32,18 @@ aliases: [vc]
   Read when choosing `working`, `staged`, or `committed`, and when analyzing only a subdirectory target.
 - `references/interpreting-change-warnings.md`
   Read when the tool warns about tests, docs, or config drift and you need to decide whether to act or downgrade it.
+- `references/expert-operating-principles.md`
+  Read when change analysis must account for blast radius, sensitive surfaces, or release verification strategy.
 
 ## Checks
 
 - changed file classes
 - affected modules
+- sensitive change surfaces
 - docs sync
 - tests sync
 - risk summary
+- recommended follow-up checks
 - git-aware working/staged/committed modes when available
 
 ## Run

@@ -1,0 +1,734 @@
+{
+    "schema-version":  2,
+    "integration-mode":  "capability-modules",
+    "portable":  true,
+    "module-count":  42,
+    "groups":  [
+                   {
+                       "kind":  "domain",
+                       "name":  "architecture",
+                       "modules":  [
+                                       "architecture-requirements-and-constraints",
+                                       "architecture-pattern-selection",
+                                       "architecture-middleware-evolution",
+                                       "architecture-reliability-and-ha",
+                                       "architecture-performance-architecture",
+                                       "architecture-security-architecture",
+                                       "architecture-platform-governance"
+                                   ]
+                   },
+                   {
+                       "kind":  "workflow",
+                       "name":  "architecture-decision",
+                       "modules":  [
+                                       "architecture-decision-framing",
+                                       "architecture-option-scoring",
+                                       "architecture-migration-and-rollback",
+                                       "architecture-org-and-ownership-tradeoffs"
+                                   ]
+                   },
+                   {
+                       "kind":  "domain",
+                       "name":  "development",
+                       "modules":  [
+                                       "development-python-design-and-types",
+                                       "development-python-concurrency",
+                                       "development-python-memory-and-runtime",
+                                       "development-query-shape-and-orm",
+                                       "development-transactions-pagination-and-write-paths",
+                                       "development-bottleneck-diagnosis",
+                                       "development-batching-caching-and-concurrency",
+                                       "development-config-and-runtime-boundaries",
+                                       "development-observability-and-shutdown"
+                                   ]
+                   },
+                   {
+                       "kind":  "workflow",
+                       "name":  "review",
+                       "modules":  [
+                                       "review-findings-and-severity",
+                                       "review-test-surface-mapping",
+                                       "review-mocks-fixtures-and-isolation",
+                                       "review-ci-signal-quality",
+                                       "review-release-readiness-and-rollback",
+                                       "review-git-and-pr-discipline",
+                                       "review-cause-model-and-proof",
+                                       "review-recurrence-prevention-and-defect-governance"
+                                   ]
+                   },
+                   {
+                       "kind":  "domain",
+                       "name":  "devops",
+                       "modules":  [
+                                       "devops-release-gate-design",
+                                       "devops-rollback-and-release-operations",
+                                       "devops-signal-design-and-instrumentation",
+                                       "devops-alerts-runbooks-and-diagnosis"
+                                   ]
+                   },
+                   {
+                       "kind":  "domain",
+                       "name":  "infrastructure",
+                       "modules":  [
+                                       "infrastructure-control-plane-and-tenancy",
+                                       "infrastructure-cluster-shape-and-environment-strategy",
+                                       "infrastructure-traffic-governance-and-mesh-adoption",
+                                       "infrastructure-runtime-policy-and-identity-plane",
+                                       "infrastructure-failover-topology-and-consistency",
+                                       "infrastructure-dr-exercises-and-recovery-operations"
+                                   ]
+                   },
+                   {
+                       "kind":  "domain",
+                       "name":  "security",
+                       "modules":  [
+                                       "security-authn-authz-boundaries",
+                                       "security-secret-lifecycle-and-rotation",
+                                       "security-layered-controls-and-trust-zones",
+                                       "security-detection-response-and-recovery"
+                                   ]
+                   }
+               ],
+    "modules":  [
+                    {
+                        "module":  "architecture-requirements-and-constraints",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-requirements-and-constraints.md",
+                        "capability":  "Frame business, system, and technical constraints before architecture choice.",
+                        "derived-from":  [
+                                             "top-architect"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-pattern-selection",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-pattern-selection.md",
+                        "capability":  "Choose architectural shape with explicit pattern-fit judgement.",
+                        "derived-from":  [
+                                             "top-architect"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-middleware-evolution",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-middleware-evolution.md",
+                        "capability":  "Reason about queue, cache, database, search, and observability evolution.",
+                        "derived-from":  [
+                                             "top-middleware-evolutionary"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-reliability-and-ha",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-reliability-and-ha.md",
+                        "capability":  "Design HA, DR, and failure controls with explicit reliability posture.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-performance-architecture",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-performance-architecture.md",
+                        "capability":  "Treat latency, throughput, and saturation as architecture-level constraints.",
+                        "derived-from":  [
+                                             "top-performance-optimizer"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-security-architecture",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-security-architecture.md",
+                        "capability":  "Shape architecture around trust boundaries, auth, secrets, and auditability.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-platform-governance",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "architecture",
+                                           "path":  "skills/domains/architecture/SKILL.md"
+                                       },
+                        "path":  "skills/domains/architecture/references/expert-platform-governance.md",
+                        "capability":  "Cover ownership, observability, ADRs, and team-fit governance.",
+                        "derived-from":  [
+                                             "top-platform-architect-practical-balance"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-decision-framing",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "architecture-decision",
+                                           "path":  "skills/workflows/architecture-decision/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/architecture-decision/references/expert-decision-framing.md",
+                        "capability":  "Force the true decision to be framed before comparing options.",
+                        "derived-from":  [
+                                             "top-platform-architect-decision-framework"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-option-scoring",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "architecture-decision",
+                                           "path":  "skills/workflows/architecture-decision/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/architecture-decision/references/expert-option-scoring.md",
+                        "capability":  "Score candidate paths with explicit dimensions and weighting.",
+                        "derived-from":  [
+                                             "top-platform-architect-decision-framework"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-migration-and-rollback",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "architecture-decision",
+                                           "path":  "skills/workflows/architecture-decision/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/architecture-decision/references/expert-migration-and-rollback.md",
+                        "capability":  "Design bridge periods, cutover, and rollback for risky decisions.",
+                        "derived-from":  [
+                                             "top-middleware-evolutionary",
+                                             "top-platform-architect-decision-framework"
+                                         ]
+                    },
+                    {
+                        "module":  "architecture-org-and-ownership-tradeoffs",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "architecture-decision",
+                                           "path":  "skills/workflows/architecture-decision/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/architecture-decision/references/expert-org-and-ownership-tradeoffs.md",
+                        "capability":  "Price in team capability, ownership, and operational tax.",
+                        "derived-from":  [
+                                             "top-platform-architect-decision-framework"
+                                         ]
+                    },
+                    {
+                        "module":  "development-python-design-and-types",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-python-design-and-types.md",
+                        "capability":  "Improve Python code shape, boundaries, and type-driven clarity.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-python-concurrency",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-python-concurrency.md",
+                        "capability":  "Choose the right Python concurrency model for the pressure.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-python-memory-and-runtime",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-python-memory-and-runtime.md",
+                        "capability":  "Reason about object lifetime, memory pressure, and runtime behavior.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-query-shape-and-orm",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-query-shape-and-orm.md",
+                        "capability":  "Diagnose query shape, ORM misuse, and N+1 behavior.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-transactions-pagination-and-write-paths",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-transactions-pagination-and-write-paths.md",
+                        "capability":  "Design safer transaction scope, pagination, and write-path behavior.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-bottleneck-diagnosis",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-bottleneck-diagnosis.md",
+                        "capability":  "Identify the dominant latency, throughput, or saturation bottleneck before changing code.",
+                        "derived-from":  [
+                                             "top-performance-optimizer"
+                                         ]
+                    },
+                    {
+                        "module":  "development-batching-caching-and-concurrency",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-batching-caching-and-concurrency.md",
+                        "capability":  "Use batching, cache, and bounded concurrency as first-class optimization levers.",
+                        "derived-from":  [
+                                             "top-performance-optimizer"
+                                         ]
+                    },
+                    {
+                        "module":  "development-config-and-runtime-boundaries",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-config-and-runtime-boundaries.md",
+                        "capability":  "Make runtime configuration and boundary assumptions explicit and safe.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "development-observability-and-shutdown",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "development",
+                                           "path":  "skills/domains/development/SKILL.md"
+                                       },
+                        "path":  "skills/domains/development/references/expert-observability-and-shutdown.md",
+                        "capability":  "Harden observability, health semantics, and shutdown behavior for production use.",
+                        "derived-from":  [
+                                             "top-python-dev"
+                                         ]
+                    },
+                    {
+                        "module":  "review-findings-and-severity",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-findings-and-severity.md",
+                        "capability":  "Rank findings by actual risk and failure scenario.",
+                        "derived-from":  [
+                                             "top-qa",
+                                             "top-performance-optimizer"
+                                         ]
+                    },
+                    {
+                        "module":  "review-test-surface-mapping",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-test-surface-mapping.md",
+                        "capability":  "Map changed surface to the correct test layer and evidence burden.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-mocks-fixtures-and-isolation",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-mocks-fixtures-and-isolation.md",
+                        "capability":  "Judge whether mocks, fixtures, and isolation hide real risk.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-ci-signal-quality",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-ci-signal-quality.md",
+                        "capability":  "Judge whether CI produces trustworthy signal for the changed surface.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-release-readiness-and-rollback",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-release-readiness-and-rollback.md",
+                        "capability":  "Judge release readiness, rollout risk, and rollback posture.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-git-and-pr-discipline",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-git-and-pr-discipline.md",
+                        "capability":  "Judge PR scope, commit hygiene, and reviewability quality.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-cause-model-and-proof",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-cause-model-and-proof.md",
+                        "capability":  "Judge the strength of the cause model and supporting evidence.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "review-recurrence-prevention-and-defect-governance",
+                        "host-skill":  {
+                                           "kind":  "workflow",
+                                           "name":  "review",
+                                           "path":  "skills/workflows/review/SKILL.md"
+                                       },
+                        "path":  "skills/workflows/review/references/expert-recurrence-prevention-and-defect-governance.md",
+                        "capability":  "Judge recurrence prevention and defect-governance quality.",
+                        "derived-from":  [
+                                             "top-qa"
+                                         ]
+                    },
+                    {
+                        "module":  "devops-release-gate-design",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "devops",
+                                           "path":  "skills/domains/devops/SKILL.md"
+                                       },
+                        "path":  "skills/domains/devops/references/expert-release-gate-design.md",
+                        "capability":  "Design release gates around blast radius and evidence depth.",
+                        "derived-from":  [
+                                             "top-qa",
+                                             "top-platform-architect-practical-balance"
+                                         ]
+                    },
+                    {
+                        "module":  "devops-rollback-and-release-operations",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "devops",
+                                           "path":  "skills/domains/devops/SKILL.md"
+                                       },
+                        "path":  "skills/domains/devops/references/expert-rollback-and-release-operations.md",
+                        "capability":  "Operate release, staged rollout, and rollback safely.",
+                        "derived-from":  [
+                                             "top-qa",
+                                             "top-platform-architect-practical-balance"
+                                         ]
+                    },
+                    {
+                        "module":  "devops-signal-design-and-instrumentation",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "devops",
+                                           "path":  "skills/domains/devops/SKILL.md"
+                                       },
+                        "path":  "skills/domains/devops/references/expert-signal-design-and-instrumentation.md",
+                        "capability":  "Design instrumentation and operational signal quality.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "devops-alerts-runbooks-and-diagnosis",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "devops",
+                                           "path":  "skills/domains/devops/SKILL.md"
+                                       },
+                        "path":  "skills/domains/devops/references/expert-alerts-runbooks-and-diagnosis.md",
+                        "capability":  "Improve alerts, runbooks, and diagnosis workflow.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-control-plane-and-tenancy",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-control-plane-and-tenancy.md",
+                        "capability":  "Define control-plane ownership, shared risk, and tenancy boundaries.",
+                        "derived-from":  [
+                                             "top-platform-architect-practical-balance"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-cluster-shape-and-environment-strategy",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-cluster-shape-and-environment-strategy.md",
+                        "capability":  "Choose cluster count and environment strategy deliberately.",
+                        "derived-from":  [
+                                             "top-platform-architect-practical-balance"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-traffic-governance-and-mesh-adoption",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-traffic-governance-and-mesh-adoption.md",
+                        "capability":  "Judge whether traffic governance or mesh adoption is justified.",
+                        "derived-from":  [
+                                             "top-middleware-evolutionary"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-runtime-policy-and-identity-plane",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-runtime-policy-and-identity-plane.md",
+                        "capability":  "Design workload identity and runtime policy enforcement.",
+                        "derived-from":  [
+                                             "top-middleware-evolutionary",
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-failover-topology-and-consistency",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-failover-topology-and-consistency.md",
+                        "capability":  "Reason about failover shape and consistency tradeoffs.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "infrastructure-dr-exercises-and-recovery-operations",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "infrastructure",
+                                           "path":  "skills/domains/infrastructure/SKILL.md"
+                                       },
+                        "path":  "skills/domains/infrastructure/references/expert-dr-exercises-and-recovery-operations.md",
+                        "capability":  "Operationalize DR through drills and recovery procedures.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "security-authn-authz-boundaries",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "security",
+                                           "path":  "skills/domains/security/SKILL.md"
+                                       },
+                        "path":  "skills/domains/security/references/expert-authn-authz-boundaries.md",
+                        "capability":  "Define authentication and authorization boundaries with least privilege.",
+                        "derived-from":  [
+                                             "top-architect"
+                                         ]
+                    },
+                    {
+                        "module":  "security-secret-lifecycle-and-rotation",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "security",
+                                           "path":  "skills/domains/security/SKILL.md"
+                                       },
+                        "path":  "skills/domains/security/references/expert-secret-lifecycle-and-rotation.md",
+                        "capability":  "Design secret creation, injection, rotation, and revocation lifecycle.",
+                        "derived-from":  [
+                                             "top-architect"
+                                         ]
+                    },
+                    {
+                        "module":  "security-layered-controls-and-trust-zones",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "security",
+                                           "path":  "skills/domains/security/SKILL.md"
+                                       },
+                        "path":  "skills/domains/security/references/expert-layered-controls-and-trust-zones.md",
+                        "capability":  "Design trust zones and independent defensive layers.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    },
+                    {
+                        "module":  "security-detection-response-and-recovery",
+                        "host-skill":  {
+                                           "kind":  "domain",
+                                           "name":  "security",
+                                           "path":  "skills/domains/security/SKILL.md"
+                                       },
+                        "path":  "skills/domains/security/references/expert-detection-response-and-recovery.md",
+                        "capability":  "Design operator signal, response, and recovery after prevention fails.",
+                        "derived-from":  [
+                                             "top-platform-architect-technical-depth"
+                                         ]
+                    }
+                ],
+    "source-index":  [
+                         {
+                             "source-skill":  "top-architect",
+                             "modules":  [
+                                             "architecture-requirements-and-constraints",
+                                             "architecture-pattern-selection",
+                                             "security-authn-authz-boundaries",
+                                             "security-secret-lifecycle-and-rotation"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-platform-architect-practical-balance",
+                             "modules":  [
+                                             "architecture-platform-governance",
+                                             "devops-release-gate-design",
+                                             "devops-rollback-and-release-operations",
+                                             "infrastructure-control-plane-and-tenancy",
+                                             "infrastructure-cluster-shape-and-environment-strategy"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-platform-architect-technical-depth",
+                             "modules":  [
+                                             "architecture-reliability-and-ha",
+                                             "architecture-security-architecture",
+                                             "devops-signal-design-and-instrumentation",
+                                             "devops-alerts-runbooks-and-diagnosis",
+                                             "infrastructure-runtime-policy-and-identity-plane",
+                                             "infrastructure-failover-topology-and-consistency",
+                                             "infrastructure-dr-exercises-and-recovery-operations",
+                                             "security-layered-controls-and-trust-zones",
+                                             "security-detection-response-and-recovery"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-platform-architect-decision-framework",
+                             "modules":  [
+                                             "architecture-decision-framing",
+                                             "architecture-option-scoring",
+                                             "architecture-migration-and-rollback",
+                                             "architecture-org-and-ownership-tradeoffs"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-middleware-evolutionary",
+                             "modules":  [
+                                             "architecture-middleware-evolution",
+                                             "architecture-migration-and-rollback",
+                                             "infrastructure-traffic-governance-and-mesh-adoption",
+                                             "infrastructure-runtime-policy-and-identity-plane"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-performance-optimizer",
+                             "modules":  [
+                                             "architecture-performance-architecture",
+                                             "development-bottleneck-diagnosis",
+                                             "development-batching-caching-and-concurrency",
+                                             "review-findings-and-severity"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-python-dev",
+                             "modules":  [
+                                             "development-python-design-and-types",
+                                             "development-python-concurrency",
+                                             "development-python-memory-and-runtime",
+                                             "development-query-shape-and-orm",
+                                             "development-transactions-pagination-and-write-paths",
+                                             "development-config-and-runtime-boundaries",
+                                             "development-observability-and-shutdown"
+                                         ]
+                         },
+                         {
+                             "source-skill":  "top-qa",
+                             "modules":  [
+                                             "review-findings-and-severity",
+                                             "review-test-surface-mapping",
+                                             "review-mocks-fixtures-and-isolation",
+                                             "review-ci-signal-quality",
+                                             "review-release-readiness-and-rollback",
+                                             "review-git-and-pr-discipline",
+                                             "review-cause-model-and-proof",
+                                             "review-recurrence-prevention-and-defect-governance",
+                                             "devops-release-gate-design",
+                                             "devops-rollback-and-release-operations"
+                                         ]
+                         }
+                     ]
+}

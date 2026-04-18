@@ -1,8 +1,8 @@
 ---
 schema-version: 2
 name: router-template
-title: 路由模板
-description: 用于创建新的 router skill。
+title: Router Template
+description: Template for creating a new router skill.
 kind: router
 visibility: public
 user-invocable: false

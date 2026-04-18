@@ -1,229 +1,1055 @@
 {
-  "schema-version": 1,
-  "router": "sage",
-  "default-threshold": 40,
-  "scoring": {
-    "exact-match": 100,
-    "alias-match": 80,
-    "keyword-hit": 8,
-    "negative-hit": -12,
-    "namespace-hit": 10,
-    "host-unsupported": -100
-  },
-  "routes": [
-    {
-      "skill": "bugfix",
-      "kind": "workflow",
-      "priority": 85,
-      "namespace": "engineering",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "execute"
-        ],
-        "trigger-keywords": [
-          "fix",
-          "bug",
-          "报错",
-          "异常",
-          "回归"
-        ],
-        "negative-keywords": [
-          "brainstorm",
-          "review-only"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [
-        "review"
-      ],
-      "auto-chain": [
-        "verify-quality",
-        "verify-security"
-      ]
-    },
-    {
-      "skill": "frontend-design",
-      "kind": "domain",
-      "priority": 72,
-      "namespace": "design",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "design",
-          "knowledge"
-        ],
-        "trigger-keywords": [
-          "ui",
-          "ux",
-          "前端设计",
-          "组件设计"
-        ],
-        "negative-keywords": [
-          "sql",
-          "数据库"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [
-        "architecture"
-      ],
-      "auto-chain": []
-    },
-    {
-      "skill": "data-engineering",
-      "kind": "domain",
-      "priority": 74,
-      "namespace": "data",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "knowledge",
-          "execute"
-        ],
-        "trigger-keywords": [
-          "etl",
-          "数据管道",
-          "stream processing",
-          "flink",
-          "dbt"
-        ],
-        "negative-keywords": [
-          "ui",
-          "visual design"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [],
-      "auto-chain": []
-    },
-    {
-      "skill": "infrastructure",
-      "kind": "domain",
-      "priority": 77,
-      "namespace": "platform",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "knowledge",
-          "execute"
-        ],
-        "trigger-keywords": [
-          "kubernetes",
-          "terraform",
-          "gitops",
-          "infra"
-        ],
-        "negative-keywords": [
-          "ux",
-          "component design"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [],
-      "auto-chain": []
-    },
-    {
-      "skill": "mobile",
-      "kind": "domain",
-      "priority": 67,
-      "namespace": "client",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "knowledge",
-          "design"
-        ],
-        "trigger-keywords": [
-          "ios",
-          "android",
-          "react native",
-          "flutter",
-          "mobile"
-        ],
-        "negative-keywords": [
-          "kubernetes",
-          "etl"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [],
-      "auto-chain": []
-    },
-    {
-      "skill": "multi-agent",
-      "kind": "workflow",
-      "priority": 83,
-      "namespace": "orchestration",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "orchestrate",
-          "execute"
-        ],
-        "trigger-keywords": [
-          "multi-agent",
-          "parallel",
-          "delegation",
-          "多agent",
-          "任务拆解"
-        ],
-        "negative-keywords": [
-          "single-file tweak"
-        ],
-        "requires-explicit-invocation": false
-      },
-      "conflicts-with": [],
-      "auto-chain": []
-    },
-    {
-      "skill": "verify-change",
-      "kind": "tool",
-      "priority": 90,
-      "namespace": "engineering",
-      "supported-hosts": [
-        "codex",
-        "claude",
-        "gemini"
-      ],
-      "activation": {
-        "intent-tags": [
-          "validate"
-        ],
-        "trigger-keywords": [
-          "verify-change",
-          "变更检查",
-          "diff analysis"
-        ],
-        "negative-keywords": [],
-        "requires-explicit-invocation": true
-      },
-      "conflicts-with": [],
-      "auto-chain": []
-    }
-  ]
+    "schema-version":  1,
+    "router":  "sage",
+    "default-threshold":  40,
+    "scoring":  {
+                    "exact-match":  100,
+                    "alias-match":  80,
+                    "keyword-hit":  8,
+                    "negative-hit":  -12,
+                    "namespace-hit":  10,
+                    "host-unsupported":  -100
+                },
+    "routes":  [
+                   {
+                       "skill":  "skill-evolution",
+                       "kind":  "workflow",
+                       "priority":  91,
+                       "namespace":  "system",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "execute",
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "skill system",
+                                                                   "skill architecture",
+                                                                   "skill-evolution",
+                                                                   "route map",
+                                                                   "registry",
+                                                                   "pack strategy",
+                                                                   "template design",
+                                                                   "portability",
+                                                                   "personal skill system"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "ordinary feature"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-skill-system",
+                                          "verify-change",
+                                          "verify-quality"
+                                      ]
+                   },
+                   {
+                       "skill":  "verify-security",
+                       "kind":  "tool",
+                       "priority":  91,
+                       "namespace":  "security",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "verify-security",
+                                                                   "security scan",
+                                                                   "vulnerability scan"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "verify-change",
+                       "kind":  "tool",
+                       "priority":  90,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "verify-change",
+                                                                   "diff analysis",
+                                                                   "change audit"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "verify-module",
+                       "kind":  "tool",
+                       "priority":  89,
+                       "namespace":  "documentation",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "verify-module",
+                                                                   "module audit",
+                                                                   "module completeness"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "verify-quality",
+                       "kind":  "tool",
+                       "priority":  89,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "verify-quality",
+                                                                   "quality scan",
+                                                                   "complexity scan",
+                                                                   "code smell"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "verify-skill-system",
+                       "kind":  "tool",
+                       "priority":  89,
+                       "namespace":  "system",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "verify-skill-system",
+                                                                   "skill system audit",
+                                                                   "registry audit",
+                                                                   "route map audit"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "investigate",
+                       "kind":  "workflow",
+                       "priority":  88,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "investigate",
+                                                                   "debug",
+                                                                   "why broken",
+                                                                   "root cause"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "known fix",
+                                                                    "review-only"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "pre-commit-gate",
+                       "kind":  "guard",
+                       "priority":  88,
+                       "namespace":  "guard",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "pre-commit",
+                                                                   "commit gate"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "bugfix",
+                       "kind":  "workflow",
+                       "priority":  87,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "fix",
+                                                                   "bug",
+                                                                   "error",
+                                                                   "regression"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "brainstorm",
+                                                                    "review-only"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+                                              "review",
+                                              "investigate"
+                                          ],
+                       "auto-chain":  [
+                                          "verify-quality",
+                                          "verify-security"
+                                      ]
+                   },
+                   {
+                       "skill":  "review",
+                       "kind":  "workflow",
+                       "priority":  86,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "review",
+                                                                   "code review",
+                                                                   "audit the change"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "directly implement"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-change"
+                                      ],
+                       "expert-modules":  [
+                                              "review-findings-and-severity",
+                                              "review-test-surface-mapping",
+                                              "review-mocks-fixtures-and-isolation",
+                                              "review-ci-signal-quality",
+                                              "review-release-readiness-and-rollback",
+                                              "review-git-and-pr-discipline",
+                                              "review-cause-model-and-proof",
+                                              "review-recurrence-prevention-and-defect-governance"
+                                          ]
+                   },
+                   {
+                       "skill":  "architecture-decision",
+                       "kind":  "workflow",
+                       "priority":  84,
+                       "namespace":  "architecture",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "architecture decision",
+                                                                   "tradeoff",
+                                                                   "migration plan",
+                                                                   "adr"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "small local fix"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-change"
+                                      ],
+                       "expert-modules":  [
+                                              "architecture-decision-framing",
+                                              "architecture-option-scoring",
+                                              "architecture-migration-and-rollback",
+                                              "architecture-org-and-ownership-tradeoffs"
+                                          ]
+                   },
+                   {
+                       "skill":  "security",
+                       "kind":  "domain",
+                       "priority":  84,
+                       "namespace":  "security",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "validate",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "security",
+                                                                   "audit",
+                                                                   "vulnerability",
+                                                                   "auth",
+                                                                   "secrets"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "visual design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-security"
+                                      ],
+                       "expert-modules":  [
+                                              "security-authn-authz-boundaries",
+                                              "security-secret-lifecycle-and-rotation",
+                                              "security-layered-controls-and-trust-zones",
+                                              "security-detection-response-and-recovery"
+                                          ]
+                   },
+                   {
+                       "skill":  "multi-agent",
+                       "kind":  "workflow",
+                       "priority":  83,
+                       "namespace":  "orchestration",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "orchestrate",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "multi-agent",
+                                                                   "parallel",
+                                                                   "delegation",
+                                                                   "parallelize"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "single-file tweak"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "ship",
+                       "kind":  "workflow",
+                       "priority":  82,
+                       "namespace":  "release",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "release",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "ship",
+                                                                   "release",
+                                                                   "deploy",
+                                                                   "merge"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "discuss only"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-change",
+                                          "pre-merge-gate"
+                                      ]
+                   },
+                   {
+                       "skill":  "gen-docs",
+                       "kind":  "tool",
+                       "priority":  81,
+                       "namespace":  "documentation",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "gen-docs",
+                                                                   "generate docs",
+                                                                   "doc scaffold",
+                                                                   "readme scaffold",
+                                                                   "design scaffold"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "review-only"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+                                          "verify-module"
+                                      ]
+                   },
+                   {
+                       "skill":  "architecture",
+                       "kind":  "domain",
+                       "priority":  80,
+                       "namespace":  "architecture",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "architecture",
+                                                                   "system design",
+                                                                   "api boundary",
+                                                                   "data flow",
+                                                                   "queue",
+                                                                   "cache",
+                                                                   "migration"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "visual design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+                                              "frontend-design"
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "architecture-requirements-and-constraints",
+                                              "architecture-pattern-selection",
+                                              "architecture-middleware-evolution",
+                                              "architecture-reliability-and-ha",
+                                              "architecture-performance-architecture",
+                                              "architecture-security-architecture",
+                                              "architecture-platform-governance"
+                                          ]
+                   },
+                   {
+                       "skill":  "development",
+                       "kind":  "domain",
+                       "priority":  76,
+                       "namespace":  "engineering",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "development",
+                                                                   "coding",
+                                                                   "implement",
+                                                                   "refactor",
+                                                                   "code"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "penetration test",
+                                                                    "visual design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "development-python-design-and-types",
+                                              "development-python-concurrency",
+                                              "development-python-memory-and-runtime",
+                                              "development-query-shape-and-orm",
+                                              "development-transactions-pagination-and-write-paths",
+                                              "development-bottleneck-diagnosis",
+                                              "development-batching-caching-and-concurrency",
+                                              "development-config-and-runtime-boundaries",
+                                              "development-observability-and-shutdown"
+                                          ]
+                   },
+                   {
+                       "skill":  "frontend-design",
+                       "kind":  "domain",
+                       "priority":  75,
+                       "namespace":  "design",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design",
+                                                              "knowledge"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "ui",
+                                                                   "ux",
+                                                                   "frontend design",
+                                                                   "component design",
+                                                                   "accessibility"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "sql",
+                                                                    "database design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+                                              "architecture"
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "infrastructure",
+                       "kind":  "domain",
+                       "priority":  74,
+                       "namespace":  "platform",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "kubernetes",
+                                                                   "terraform",
+                                                                   "gitops",
+                                                                   "infra",
+                                                                   "cluster",
+                                                                   "k8s"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "ux",
+                                                                    "component design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "infrastructure-control-plane-and-tenancy",
+                                              "infrastructure-cluster-shape-and-environment-strategy",
+                                              "infrastructure-traffic-governance-and-mesh-adoption",
+                                              "infrastructure-runtime-policy-and-identity-plane",
+                                              "infrastructure-failover-topology-and-consistency",
+                                              "infrastructure-dr-exercises-and-recovery-operations"
+                                          ]
+                   },
+                   {
+                       "skill":  "data-engineering",
+                       "kind":  "domain",
+                       "priority":  73,
+                       "namespace":  "data",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "etl",
+                                                                   "stream processing",
+                                                                   "flink",
+                                                                   "dbt",
+                                                                   "data pipeline"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "ui",
+                                                                    "visual design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "data-product-framing",
+                                              "data-batch-and-orchestration",
+                                              "data-streaming-and-state",
+                                              "data-contracts-quality-and-reconciliation"
+                                          ]
+                   },
+                   {
+                       "skill":  "devops",
+                       "kind":  "domain",
+                       "priority":  72,
+                       "namespace":  "release",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "execute"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "devops",
+                                                                   "ci",
+                                                                   "cd",
+                                                                   "pipeline",
+                                                                   "observability",
+                                                                   "release gate"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "pure product design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "devops-release-gate-design",
+                                              "devops-rollback-and-release-operations",
+                                              "devops-signal-design-and-instrumentation",
+                                              "devops-alerts-runbooks-and-diagnosis"
+                                          ]
+                   },
+                   {
+                       "skill":  "ai",
+                       "kind":  "domain",
+                       "priority":  71,
+                       "namespace":  "ai",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "ai",
+                                                                   "llm",
+                                                                   "prompt",
+                                                                   "rag",
+                                                                   "agent",
+                                                                   "eval"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "cluster sizing"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "ai-task-definition",
+                                              "ai-eval-design-and-acceptance",
+                                              "ai-retrieval-objective-and-corpus-shaping",
+                                              "ai-chunking-ranking-and-grounding",
+                                              "ai-tool-authority-and-boundaries",
+                                              "ai-agent-loop-and-state-control",
+                                              "ai-guardrail-policy-and-fallbacks",
+                                              "ai-latency-cost-and-reliability"
+                                          ]
+                   },
+                   {
+                       "skill":  "orchestration",
+                       "kind":  "domain",
+                       "priority":  70,
+                       "namespace":  "orchestration",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "orchestrate"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "orchestration",
+                                                                   "coordination",
+                                                                   "task decomposition",
+                                                                   "workflow coordination"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "single file bug"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ],
+                       "expert-modules":  [
+                                              "orchestration-work-decomposition",
+                                              "orchestration-ownership-and-write-boundaries",
+                                              "orchestration-dependency-and-integration",
+                                              "orchestration-status-and-handoffs"
+                                          ]
+                   },
+                   {
+                       "skill":  "mobile",
+                       "kind":  "domain",
+                       "priority":  68,
+                       "namespace":  "client",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "knowledge",
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "ios",
+                                                                   "android",
+                                                                   "react native",
+                                                                   "flutter",
+                                                                   "mobile"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "kubernetes",
+                                                                    "etl"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "claymorphism",
+                       "kind":  "domain",
+                       "priority":  64,
+                       "namespace":  "design-variant",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "claymorphism",
+                                                                   "soft ui"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "api design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "glassmorphism",
+                       "kind":  "domain",
+                       "priority":  64,
+                       "namespace":  "design-variant",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "glassmorphism",
+                                                                   "frosted glass"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "api design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "liquid-glass",
+                       "kind":  "domain",
+                       "priority":  64,
+                       "namespace":  "design-variant",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "liquid-glass",
+                                                                   "apple glass",
+                                                                   "liquid interface"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "api design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "neubrutalism",
+                       "kind":  "domain",
+                       "priority":  64,
+                       "namespace":  "design-variant",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "design"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "neubrutalism",
+                                                                   "brutalist ui"
+                                                               ],
+                                          "negative-keywords":  [
+                                                                    "api design"
+                                                                ],
+                                          "requires-explicit-invocation":  false
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   },
+                   {
+                       "skill":  "pre-merge-gate",
+                       "kind":  "guard",
+                       "priority":  92,
+                       "namespace":  "guard",
+                       "supported-hosts":  [
+                                               "codex",
+                                               "claude",
+                                               "gemini"
+                                           ],
+                       "activation":  {
+                                          "intent-tags":  [
+                                                              "validate",
+                                                              "release"
+                                                          ],
+                                          "trigger-keywords":  [
+                                                                   "pre-merge",
+                                                                   "merge gate",
+                                                                   "release gate"
+                                                               ],
+                                          "negative-keywords":  [
+
+                                                                ],
+                                          "requires-explicit-invocation":  true
+                                      },
+                       "conflicts-with":  [
+
+                                          ],
+                       "auto-chain":  [
+
+                                      ]
+                   }
+               ]
 }

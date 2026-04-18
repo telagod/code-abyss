@@ -1,14 +1,15 @@
 ---
 schema-version: 2
 name: gen-docs
-title: 文档生成工具
-description: 为新模块或新能力生成基础说明文档骨架，产出 README、DESIGN 或 usage outline。
+title: Generate Docs Tool
+description: Generate module documentation scaffolds such as README and DESIGN seeds. Use when creating a new module or when a project needs a documentation skeleton.
+
 kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [gen-docs, 文档生成, create docs]
-negative-keywords: []
+trigger-keywords: [gen-docs, generate docs, doc scaffold, readme scaffold, design scaffold]
+negative-keywords: [review-only]
 priority: 90
 runtime: scripted
 executor: node
@@ -31,6 +32,8 @@ aliases: []
   Read when deciding what the generated docs should cover and what they should deliberately omit.
 - `references/manual-fill-and-review.md`
   Read after generation to turn the scaffold into a real module document instead of leaving template sludge.
+- `references/expert-operating-principles.md`
+  Read when the generated scaffold needs to preserve boundary, dependency, failure-mode, and verification thinking.
 
 ## Input
 

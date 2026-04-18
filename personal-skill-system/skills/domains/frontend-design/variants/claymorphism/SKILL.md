@@ -1,14 +1,15 @@
 ---
 schema-version: 2
 name: claymorphism
-title: Claymorphism 风格
-description: 柔和圆润的前端视觉风格 skill，适合亲和、软性、触感化界面。
+title: Claymorphism Variant
+description: Claymorphism design variant for soft, puffy surfaces, large radii, and tactile depth. Use when the desired frontend style is claymorphism.
+
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [claymorphism, soft ui, 柔和界面]
-negative-keywords: [低性能极限约束]
+trigger-keywords: [claymorphism, soft ui]
+negative-keywords: [api design]
 priority: 58
 runtime: knowledge
 executor: none

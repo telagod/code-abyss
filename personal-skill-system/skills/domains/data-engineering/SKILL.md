@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: data-engineering
-title: 数据工程知识域
-description: 数据工程知识索引，覆盖数据管道、ETL、流处理、数据建模、数据质量与批流一体决策。
+title: Data Engineering Domain
+description: Data pipelines, ETL, streaming, contracts, and data quality. Use when the task is about pipelines, batch or stream processing, dbt, Flink, Kafka, or analytics data movement.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [数据工程, etl, 数据管道, 流处理, kafka, flink, dbt]
-negative-keywords: [纯ui, 纯移动端界面]
+trigger-keywords: [etl, data pipeline, streaming, flink, kafka, dbt]
+negative-keywords: [ui, visual design]
 priority: 74
 runtime: knowledge
 executor: none
@@ -45,6 +45,16 @@ aliases: [data-pipeline]
   Read when evaluating Kafka/Flink style streaming, windowing, replay, or exactly-once claims.
 - `references/data-quality-and-contracts.md`
   Read when the problem is schema drift, bad upstream data, reconciliation, or trust in metrics.
+- `references/expert-data-product-framing.md`
+  Read when the first mistake would be building the pipeline before naming the data product.
+- `references/expert-batch-and-orchestration.md`
+  Read when dependable scheduled flow, retry design, or backfill strategy are the hard parts.
+- `references/expert-streaming-and-state.md`
+  Read when real-time processing, state, event time, or replay semantics dominate the design.
+- `references/expert-contracts-quality-and-reconciliation.md`
+  Read when trust, data contracts, quality gates, or reconciliation drive the system design.
+- `references/expert-operating-principles.md`
+  Read when you want the compact expert index that routes into the split data modules.
 
 ## Output Expectations
 

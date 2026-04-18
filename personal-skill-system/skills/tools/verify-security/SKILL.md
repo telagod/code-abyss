@@ -1,13 +1,14 @@
 ---
 schema-version: 2
 name: verify-security
-title: 安全校验工具
-description: 对输入处理、命令执行、认证、敏感信息与危险模式做快速安全检查。
+title: Verify Security Tool
+description: Rule-based security scan for dangerous patterns, trust-boundary violations, and common vulnerability clues. Use when the task is explicit security validation.
+
 kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-security, 安全扫描, security check]
+trigger-keywords: [verify-security, security scan, vulnerability scan]
 negative-keywords: []
 priority: 95
 runtime: scripted
@@ -31,6 +32,8 @@ aliases: [vs]
   Read when deciding what this lightweight scan can and cannot prove.
 - `references/triaging-security-findings.md`
   Read when a finding appears and you need to separate real risk from fixture noise or benign matches.
+- `references/expert-operating-principles.md`
+  Read when the scan needs stronger severity judgement, exploit-surface framing, or triage discipline.
 
 ## Checks
 
@@ -38,7 +41,8 @@ aliases: [vs]
 - secrets exposure
 - unsafe execution
 - auth and boundary mistakes
-- lightweight heuristic scans for eval, exec, shell, innerHTML, and secret-like material
+- lightweight heuristic scans for eval, exec, shell, innerHTML, unsafe deserialization, TLS bypass, permissive CORS, and secret-like material
+- hotspot summary
 
 ## Run
 

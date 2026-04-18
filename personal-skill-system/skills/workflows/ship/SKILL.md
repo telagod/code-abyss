@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: ship
-title: 交付工作流
-description: 面向提交、合并、发布的交付流程，强调前置验证、变更摘要、风险确认与收口。
+title: Ship Workflow
+description: Release and merge workflow focused on readiness, risk, rollback, and guard conditions. Use when the task is to ship, merge, deploy, or prepare a change for release.
 kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ship, release, merge, deploy, 发布]
-negative-keywords: [只讨论不执行]
+trigger-keywords: [ship, release, deploy, merge]
+negative-keywords: [discuss only]
 priority: 79
 auto-chain: [verify-change, pre-merge-gate]
 runtime: knowledge
@@ -32,7 +32,8 @@ aliases: [release-flow]
 2. run the narrowest relevant checks
 3. summarize user-facing impact
 4. call out remaining risk
-5. proceed only if guard conditions pass
+5. name the rollback path and owner
+6. proceed only if guard conditions pass
 
 ## Read These References
 
@@ -40,3 +41,5 @@ aliases: [release-flow]
   Read when deciding whether the change is actually ready to merge or release.
 - `references/release-risk-and-rollback.md`
   Read when the release surface is risky and you need explicit rollback or mitigation planning.
+- `references/expert-operating-principles.md`
+  Read when the release needs stronger go/no-go judgement, rollback criteria, or operator-confidence framing.

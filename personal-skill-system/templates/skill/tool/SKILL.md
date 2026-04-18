@@ -1,8 +1,8 @@
 ---
 schema-version: 2
 name: tool-template
-title: 工具模板
-description: 用于创建新的 scripted tool skill。
+title: Tool Template
+description: Template for creating a new tool skill.
 kind: tool
 visibility: public
 user-invocable: true

@@ -130,6 +130,12 @@
             "items": {
               "type": "string"
             }
+          },
+          "expert-modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

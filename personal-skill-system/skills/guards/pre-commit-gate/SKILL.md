@@ -1,13 +1,13 @@
 ---
 schema-version: 2
 name: pre-commit-gate
-title: 提交前关卡
-description: 在提交前检查最小质量要求是否达标，避免明显缺陷、缺文档或缺测试的变更进入历史。
+title: Pre-Commit Gate
+description: Commit-time gate that consumes validation results before a change is finalized locally. Use when the user explicitly wants a commit gate rather than general review.
 kind: guard
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [pre-commit, commit gate, 提交前关卡]
+trigger-keywords: [pre-commit, commit gate]
 negative-keywords: []
 priority: 92
 auto-chain: [verify-change, verify-quality]

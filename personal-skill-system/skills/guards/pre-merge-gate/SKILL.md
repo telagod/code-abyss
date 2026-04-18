@@ -1,13 +1,13 @@
 ---
 schema-version: 2
 name: pre-merge-gate
-title: 合并前关卡
-description: 在合并前做更严格的质量、安全与发布准备确认，阻断高风险未收敛的改动。
+title: Pre-Merge Gate
+description: Merge and release gate that consumes verification results before a risky change is landed. Use when the user explicitly wants a merge gate or release gate.
 kind: guard
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [pre-merge, merge gate, 合并前关卡]
+trigger-keywords: [pre-merge, merge gate, release gate]
 negative-keywords: []
 priority: 94
 auto-chain: [verify-change, verify-quality, verify-security]

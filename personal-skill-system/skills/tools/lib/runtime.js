@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { printHumanReport } = require('./runtime-output');
 
 const SKIP_DIRS = new Set([
   '.git',
@@ -129,54 +130,6 @@ function classifyPath(relPath) {
   if (/\.(png|jpg|jpeg|gif|svg|ico|woff2?)$/.test(normalized)) return 'asset';
   if (/\.(js|jsx|ts|tsx|py|java|go|rs|cpp|c|h|sh|ps1|sql|css|scss|html|xml)$/.test(normalized)) return 'code';
   return 'other';
-}
-
-function printHumanReport(report) {
-  const summary = report.summary || '';
-  if (report.tool) console.log(`tool: ${report.tool}`);
-  if (report.guard) console.log(`guard: ${report.guard}`);
-  if (report.mode) console.log(`mode: ${report.mode}`);
-  if (report.target) console.log(`target: ${report.target}`);
-  if (summary) console.log(`summary: ${summary}`);
-
-  if (Array.isArray(report.findings)) {
-    console.log(`findings: ${report.findings.length}`);
-    for (const finding of report.findings.slice(0, 20)) {
-      const sev = finding.severity || 'info';
-      const file = finding.file ? ` [${finding.file}${finding.line_number ? ':' + finding.line_number : ''}]` : '';
-      console.log(`- ${sev}${file}: ${finding.message}`);
-    }
-  }
-
-  if (Array.isArray(report.issues)) {
-    console.log(`issues: ${report.issues.length}`);
-    for (const issue of report.issues.slice(0, 20)) {
-      const sev = issue.severity || 'info';
-      const file = issue.file ? ` [${issue.file}${issue.line_number ? ':' + issue.line_number : ''}]` : '';
-      console.log(`- ${sev}${file}: ${issue.message}`);
-    }
-  }
-
-  if (Array.isArray(report.blockers) && report.blockers.length) {
-    console.log('blockers:');
-    for (const blocker of report.blockers) {
-      console.log(`- ${blocker}`);
-    }
-  }
-
-  if (Array.isArray(report.outputs) && report.outputs.length) {
-    console.log('outputs:');
-    for (const output of report.outputs) {
-      console.log(`- ${output}`);
-    }
-  }
-
-  if (Array.isArray(report.nextSteps) && report.nextSteps.length) {
-    console.log('next-steps:');
-    for (const step of report.nextSteps) {
-      console.log(`- ${step}`);
-    }
-  }
 }
 
 function emit(report, args) {

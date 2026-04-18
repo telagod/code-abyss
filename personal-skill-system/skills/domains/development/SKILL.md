@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: development
-title: 开发知识域
-description: 通用开发知识索引，覆盖语言实现、重构、代码组织、调试与测试协作。
+title: Development Domain
+description: Implementation, refactoring, debugging, and test strategy for code changes. Use when the task is mainly about writing or modifying code rather than high-level architecture or explicit audit work.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [编程, 开发, 代码, 重构, 实现]
-negative-keywords: [渗透, 审计, 视觉设计]
+trigger-keywords: [coding, development, code, refactor, implement]
+negative-keywords: [penetration test, visual design]
 priority: 70
 runtime: knowledge
 executor: none
@@ -44,6 +44,26 @@ aliases: [coding]
   Read when the task is implementation quality, structure, abstraction, or safe refactoring.
 - `references/debugging-and-test-strategy.md`
   Read when the task is debugging, reproduction, regression prevention, or test selection.
+- `references/expert-python-design-and-types.md`
+  Read when Python code shape, type discipline, and boundary design are the hard part.
+- `references/expert-python-concurrency.md`
+  Read when the real decision is async versus threads versus processes versus workers.
+- `references/expert-python-memory-and-runtime.md`
+  Read when memory behavior, object lifetime, or runtime pressure dominate the problem.
+- `references/expert-query-shape-and-orm.md`
+  Read when ORM, query shape, or N+1 behavior are the real boundary failures.
+- `references/expert-transactions-pagination-and-write-paths.md`
+  Read when transactions, pagination, or write-path design are the real persistence risks.
+- `references/expert-bottleneck-diagnosis.md`
+  Read when the first task is proving where latency, throughput, or saturation is actually lost.
+- `references/expert-batching-caching-and-concurrency.md`
+  Read when the best fix is in batching, caching, coalescing, or bounded concurrency rather than micro-tuning.
+- `references/expert-config-and-runtime-boundaries.md`
+  Read when runtime safety depends on better configuration contracts and boundary defaults.
+- `references/expert-observability-and-shutdown.md`
+  Read when production-readiness hinges on operator visibility, health semantics, or shutdown behavior.
+- `references/top-developer-overlays.md`
+  Read when you want the compact expert index that routes into the split development modules.
 
 ## Route onward
 

@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: architecture-decision
-title: 架构决策工作流
-description: 面向关键技术决策的工作流，强调约束、方案对比、取舍、迁移与验收标准。
+title: Architecture Decision Workflow
+description: Structured flow for architectural tradeoffs, option comparison, migration design, and rollback thinking. Use when the task is a decision, not just a general architecture explanation.
 kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [架构决策, tradeoff, 选型, migration plan]
-negative-keywords: [单点小修复]
+trigger-keywords: [architecture decision, tradeoff, migration plan, adr]
+negative-keywords: [small local fix]
 priority: 80
 auto-chain: [verify-change]
 runtime: knowledge
@@ -40,3 +40,13 @@ aliases: [arch-decision]
   Read when you need to surface business, system, and technical constraints before comparing options.
 - `references/tradeoff-and-migration.md`
   Read when the hard part is choosing, documenting tradeoffs, or planning migration and rollback.
+- `references/expert-decision-framing.md`
+  Read when the first problem is deciding what the real decision even is.
+- `references/expert-option-scoring.md`
+  Read when candidate paths exist and now need disciplined scoring or weighting.
+- `references/expert-migration-and-rollback.md`
+  Read when the choice creates a bridge period, coexistence cost, or rollback risk.
+- `references/expert-org-and-ownership-tradeoffs.md`
+  Read when the architecture decision also changes who builds, owns, or operates the system.
+- `references/top-developer-overlays.md`
+  Read when you want the compact expert index that routes into the split decision modules.

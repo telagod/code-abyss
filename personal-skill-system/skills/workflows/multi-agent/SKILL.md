@@ -1,14 +1,13 @@
 ---
 schema-version: 2
 name: multi-agent
-title: 多 Agent 编排工作流
-description: 面向多角色并行协作的工作流，覆盖任务拆解、文件所有权、并发约束、等待与收口。
+title: Multi-Agent Workflow
+description: Parallel execution planning with explicit ownership, write boundaries, dependency order, and integration rules. Use when the task needs real concurrent streams rather than simple conceptual decomposition.
 kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [multi-agent, 多agent, 并行协作, delegation, 拆任务]
-negative-keywords: [单文件小修]
+trigger-keywords: [multi-agent, parallel, delegation, parallelize]
 priority: 83
 depends-on: [orchestration]
 runtime: knowledge

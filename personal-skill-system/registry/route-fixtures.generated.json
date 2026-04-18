@@ -1,0 +1,40 @@
+{
+  "schema-version": 1,
+  "cases": [
+    {
+      "name": "self-system-routing",
+      "query": "Improve the skill system route map and registry portability",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "architecture-vs-frontend",
+      "query": "Design service boundaries, queue migration, and cache strategy for this system",
+      "expect": "architecture"
+    },
+    {
+      "name": "frontend-experience",
+      "query": "Improve ui accessibility and component design for this frontend flow",
+      "expect": "frontend-design"
+    },
+    {
+      "name": "investigate-before-fix",
+      "query": "Debug why broken auth flow regressed and find the root cause",
+      "expect": "investigate"
+    },
+    {
+      "name": "known-bugfix",
+      "query": "Fix this bug regression in the login code",
+      "expect": "bugfix"
+    },
+    {
+      "name": "parallel-work",
+      "query": "Create a parallel multi-agent delegation plan for this refactor",
+      "expect": "multi-agent"
+    },
+    {
+      "name": "explicit-security-scan",
+      "query": "Run verify-security as a vulnerability scan on this module",
+      "expect": "verify-security"
+    }
+  ]
+}

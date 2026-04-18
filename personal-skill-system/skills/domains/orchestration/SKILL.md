@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: orchestration
-title: 协同编排知识域
-description: 协同编排知识索引，覆盖任务分解、并发边界、角色划分、状态传递与多 skill 协作。
+title: Orchestration Domain
+description: Coordination, decomposition, sequencing, ownership, and integration across multi-step work. Use when the task spans many modules, phases, or collaborating roles.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [orchestration, 多agent, 并行, 协作, 任务分解]
-negative-keywords: [单文件微调]
+trigger-keywords: [orchestration, coordination, decomposition, workflow]
+negative-keywords: [single file bug]
 priority: 73
 runtime: knowledge
 executor: none
@@ -44,6 +44,16 @@ aliases: []
   Read when the problem is shared files, sequencing, merge risk, or blocking dependencies.
 - `references/signaling-and-integration.md`
   Read when coordinating state handoff, result reporting, or final integration.
+- `references/expert-work-decomposition.md`
+  Read when the hard part is how to split the work without creating chaos.
+- `references/expert-ownership-and-write-boundaries.md`
+  Read when ownership, write surfaces, and conflict prevention are the core orchestration problem.
+- `references/expert-dependency-and-integration.md`
+  Read when sequencing and final integration are the main source of risk.
+- `references/expert-status-and-handoffs.md`
+  Read when the system needs clearer handoffs, completion signals, or status reporting.
+- `references/expert-operating-principles.md`
+  Read when you want the compact expert index that routes into the split orchestration modules.
 
 ## Route onward
 

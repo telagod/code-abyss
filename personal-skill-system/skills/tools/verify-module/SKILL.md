@@ -1,13 +1,13 @@
 ---
 schema-version: 2
 name: verify-module
-title: 模块校验工具
-description: 校验模块目录是否完整，检查代码、文档、脚本与测试骨架是否匹配。
+title: Verify Module Tool
+description: Module completeness and packaging validation for structure, key files, and importable shape. Use when auditing whether a module is coherent and complete.
 kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-module, 模块校验]
+trigger-keywords: [verify-module, module audit, module completeness]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -31,6 +31,8 @@ aliases: []
   Read when deciding which artifacts a module should contain and which warnings are meaningful.
 - `references/interpreting-findings.md`
   Read when the checker reports missing docs, tests, or structure and you need to decide whether that is real debt.
+- `references/expert-operating-principles.md`
+  Read when module validation needs stronger coherence judgement across docs, tests, scripts, and runtime shape.
 
 ## Checks
 

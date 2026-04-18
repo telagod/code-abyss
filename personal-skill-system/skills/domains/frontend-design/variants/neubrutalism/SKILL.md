@@ -1,15 +1,16 @@
 ---
 schema-version: 2
 name: neubrutalism
-title: Neubrutalism 风格
-description: 强边框、高饱和、低圆角的前端视觉风格 skill，适合大胆、叛逆、性能敏感界面。
+title: Neubrutalism Variant
+description: Neubrutalism design variant for bold color, thick borders, offset shadows, and intentionally blunt interfaces. Use when the desired frontend style is neubrutalism.
+
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [neubrutalism, brutal ui, 粗野风格]
-negative-keywords: [温柔品牌调性]
-priority: 58
+trigger-keywords: [neubrutalism, brutalist ui]
+negative-keywords: [api design]
+priority: 65
 runtime: knowledge
 executor: none
 permissions: [Read, Write]

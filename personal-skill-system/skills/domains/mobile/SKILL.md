@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: mobile
-title: 移动端知识域
-description: 移动开发知识索引，覆盖 iOS、Android、React Native、Flutter、离线能力与交互约束。
+title: Mobile Domain
+description: Mobile application design and implementation constraints: iOS, Android, React Native, Flutter, lifecycle, offline behavior, and permissions. Use when the task is clearly mobile-specific.
+
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [mobile, ios, android, react native, flutter, 移动开发]
-negative-keywords: [纯后端存储]
+trigger-keywords: [ios, android, react native, flutter, mobile]
 priority: 67
 runtime: knowledge
 executor: none
@@ -43,3 +43,5 @@ aliases: []
   Read when the task touches app state, navigation, lifecycle, or background/foreground transitions.
 - `references/offline-network-and-permissions.md`
   Read when the issue is offline behavior, sync, flaky networks, device permissions, or battery constraints.
+- `references/expert-operating-principles.md`
+  Read when the mobile task needs stronger lifecycle, offline, battery, permission, or platform-convention judgement.

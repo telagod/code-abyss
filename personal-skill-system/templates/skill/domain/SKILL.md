@@ -1,8 +1,8 @@
 ---
 schema-version: 2
 name: domain-template
-title: 知识域模板
-description: 用于创建新的 domain skill。
+title: Domain Template
+description: Template for creating a new domain skill.
 kind: domain
 visibility: public
 user-invocable: true

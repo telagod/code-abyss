@@ -1,14 +1,15 @@
 ---
 schema-version: 2
 name: liquid-glass
-title: Liquid Glass 风格
-description: 精致通透的高保真前端视觉风格 skill，适合高端、细腻、系统级观感。
+title: Liquid Glass Variant
+description: Liquid glass design variant for Apple-like translucent surfaces and depth-aware layering. Use when the desired frontend style is liquid glass.
+
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [liquid glass, apple glass, 高精致玻璃]
-negative-keywords: [低性能预算]
+trigger-keywords: [liquid-glass, apple glass, liquid interface]
+negative-keywords: [api design]
 priority: 57
 runtime: knowledge
 executor: none

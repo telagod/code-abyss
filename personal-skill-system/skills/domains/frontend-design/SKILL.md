@@ -1,14 +1,13 @@
 ---
 schema-version: 2
 name: frontend-design
-title: 前端设计知识域
-description: 前端设计与交互知识索引，覆盖 UI、UX、组件模式、可访问性与视觉风格选择。
+title: Frontend Design Domain
+description: UI, UX, interaction systems, accessibility, hierarchy, and style direction. Use when the task is about frontend experience, design systems, visual polish, or component behavior.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ui, ux, 前端设计, 组件设计, 交互设计, 可访问性]
-negative-keywords: [数据库, ssrf, queue]
+trigger-keywords: [ui, ux, frontend design, component design, accessibility]
 priority: 76
 runtime: knowledge
 executor: none
@@ -45,6 +44,8 @@ aliases: [ui-design]
   Read when the work touches hierarchy, typography, contrast, spacing, or accessibility.
 - `references/variant-selection-and-performance.md`
   Read when choosing among design variants or balancing aesthetics against performance constraints.
+- `references/expert-operating-principles.md`
+  Read when the design task needs top-tier hierarchy, interaction, accessibility, and visual-direction judgement.
 
 ## Route onward
 

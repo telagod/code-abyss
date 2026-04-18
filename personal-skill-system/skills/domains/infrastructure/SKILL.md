@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: infrastructure
-title: 基础设施知识域
-description: 云原生基础设施知识索引，覆盖 Kubernetes、GitOps、IaC、部署拓扑、平台治理与运行边界。
+title: Infrastructure Domain
+description: Infrastructure and platform runtime knowledge: Kubernetes, Terraform, GitOps, identity, cluster controls, and deployment topology. Use when the task is about infra shape or runtime platform operations.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [k8s, kubernetes, gitops, iac, terraform, infra, platform]
-negative-keywords: [纯视觉, 纯业务文案]
+trigger-keywords: [kubernetes, terraform, gitops, infra, cluster, k8s]
+negative-keywords: [ux, component design]
 priority: 77
 runtime: knowledge
 executor: none
@@ -45,6 +45,26 @@ aliases: [platform-infra]
   Read when the issue is desired state, reconciliation, config drift, or promotion flow.
 - `references/identity-secrets-and-runtime-ops.md`
   Read when the task touches access, secrets, tenancy, runtime governance, or operational safety.
+- `references/expert-operating-principles.md`
+  Read when the infra work needs stronger source-of-truth, control-plane, tenancy, or drift-control judgement.
+- `references/expert-cloud-native-topology.md`
+  Read when the hard part is the cloud-native shape itself: environment, tenancy, and topology decisions.
+- `references/expert-control-plane-and-tenancy.md`
+  Read when the main question is control-plane ownership, shared risk, or tenancy boundary.
+- `references/expert-cluster-shape-and-environment-strategy.md`
+  Read when cluster count, environment shape, or promotion flow are the real design choices.
+- `references/expert-service-mesh-and-runtime-control.md`
+  Read when runtime policy, service mesh, or traffic governance become first-class concerns.
+- `references/expert-traffic-governance-and-mesh-adoption.md`
+  Read when the real question is whether mesh or traffic governance is justified at all.
+- `references/expert-runtime-policy-and-identity-plane.md`
+  Read when workload identity, runtime policy, and trust enforcement are the hard parts.
+- `references/expert-multi-region-and-dr.md`
+  Read when multi-region, failover, DR, or geographic blast radius drive the infra decision.
+- `references/expert-failover-topology-and-consistency.md`
+  Read when failover shape and consistency tradeoffs are driving the design.
+- `references/expert-dr-exercises-and-recovery-operations.md`
+  Read when DR realism depends on exercises, operator drills, and recovery operations.
 
 ## Output Expectations
 

@@ -1,14 +1,14 @@
 ---
 schema-version: 2
 name: devops
-title: DevOps 知识域
-description: DevOps 与工程交付知识索引，覆盖测试、CI、部署、可观测性与运行质量。
+title: DevOps Domain
+description: CI/CD, release safety, observability, and operational readiness. Use when the task is about pipelines, deploy flow, release gates, logging, metrics, or runtime readiness.
 kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [devops, ci, deploy, test pipeline, observability]
-negative-keywords: [纯视觉设计]
+trigger-keywords: [devops, ci, cd, pipeline, deploy, observability]
+negative-keywords: [pure product design]
 priority: 68
 runtime: knowledge
 executor: none
@@ -42,6 +42,20 @@ aliases: []
   Read when the task is pipeline design, release readiness, or deployment safety gates.
 - `references/observability-and-incident-readiness.md`
   Read when the problem is logging, metrics, tracing, alerting, or incident response quality.
+- `references/expert-operating-principles.md`
+  Read when the task needs platform-grade release engineering judgement, rollback strategy, or signal-quality design.
+- `references/expert-release-gates.md`
+  Read when the hard part is deciding what should block or allow a release.
+- `references/expert-release-gate-design.md`
+  Read when gate depth, gate purpose, or evidence requirements need sharper design.
+- `references/expert-rollback-and-release-operations.md`
+  Read when rollback, staged rollout, or release operations are the real difficulty.
+- `references/expert-observability-operations.md`
+  Read when operator visibility, signal design, and diagnosis speed are the core DevOps problem.
+- `references/expert-signal-design-and-instrumentation.md`
+  Read when the question is what signals and instrumentation should exist at all.
+- `references/expert-alerts-runbooks-and-diagnosis.md`
+  Read when alerts, runbooks, and diagnosis workflow are the weak point.
 
 ## Route onward
 

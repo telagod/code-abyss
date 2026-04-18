@@ -1,13 +1,14 @@
 ---
 schema-version: 2
 name: verify-quality
-title: 质量校验工具
-description: 扫描复杂度、重复、命名与结构性异味，用于在改动后快速检查工程质量风险。
+title: Verify Quality Tool
+description: Code-shape and maintainability scan for complexity, size, and quality smells. Use when the task is explicit quality validation.
+
 kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-quality, 质量检查, code quality]
+trigger-keywords: [verify-quality, quality scan, complexity scan, code smell]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -31,14 +32,16 @@ aliases: [vq]
   Read when deciding how much trust to put in lightweight quality heuristics.
 - `references/acting-on-quality-findings.md`
   Read when warnings appear and you need to decide whether to refactor now, defer, or ignore.
+- `references/expert-operating-principles.md`
+  Read when the quality scan should emphasize maintainability hotspots and language-specific smells rather than shallow noise.
 
 ## Checks
 
 - file complexity
-- naming issues
-- duplicated patterns
 - oversized units
+- language-specific smells
 - long lines and TODO density heuristics
+- hotspot summary
 
 ## Run
 

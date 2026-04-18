@@ -1,8 +1,11 @@
 {
   "name": "experimental",
   "version": "0.1.0",
-  "description": "Staging area for unstable skills before promotion into personal-core.",
-  "includes": [],
+  "description": "Staging area for unstable skills and heavy expert overlays before promotion into personal-core.",
+  "includes": [
+    "docs/TOP_DEVELOPER_EMBEDDING.md",
+    "registry/top-developer-integration.generated.json"
+  ],
   "targets": [
     "codex",
     "claude",
