@@ -6,7 +6,9 @@ A pre-commit gate should usually block only when:
 
 - regression risk is obvious
 - documentation absence hides module intent
-- warnings indicate likely breakage
+- warnings in the current changed files indicate likely breakage
+
+Historical warning debt outside the changed file set should stay visible in reports, but should not block the commit by itself.
 
 ## 2. Review Questions
 

@@ -6,16 +6,51 @@ const { analyzeChange } = require('./change-analysis');
 const { analyzeQuality } = require('./quality-analysis');
 const { analyzeSecurity } = require('./security-analysis');
 
+function normalizeRelPath(file) {
+  return String(file || '').replace(/\\/g, '/');
+}
+
+function buildChangedFileSet(changedFiles) {
+  return new Set((Array.isArray(changedFiles) ? changedFiles : []).map(normalizeRelPath).filter(Boolean));
+}
+
+function issueTouchesChangedFiles(issue, changedFileSet) {
+  if (!issue || !issue.file) return false;
+  if (!changedFileSet || changedFileSet.size === 0) return false;
+  return changedFileSet.has(normalizeRelPath(issue.file));
+}
+
+function splitQualityIssues(issues, changedFiles) {
+  const changedFileSet = buildChangedFileSet(changedFiles);
+  const scoped = [];
+  const debt = [];
+
+  for (const issue of Array.isArray(issues) ? issues : []) {
+    if (issueTouchesChangedFiles(issue, changedFileSet)) {
+      scoped.push(issue);
+    } else {
+      debt.push(issue);
+    }
+  }
+
+  return {
+    scoped,
+    debt,
+    scopedWarnings: scoped.filter(item => item.severity === 'warning')
+  };
+}
+
 function evaluatePreCommit(targetDir, options = {}) {
-  const change = analyzeChange(targetDir, 'working');
+  const change = analyzeChange(targetDir, { mode: 'working', changedFiles: options.changedFiles });
   const quality = analyzeQuality(targetDir, options);
+  const qualitySplit = splitQualityIssues(quality.issues, change.changedFiles);
   const blockers = [];
 
   if (change.findings.some(item => item.severity === 'warning' && /no test files changed/.test(item.message))) {
     blockers.push('code changed without any accompanying test changes');
   }
-  if (quality.issues.some(item => item.severity === 'warning')) {
-    blockers.push('quality scan reported warning-level issues');
+  if (qualitySplit.scopedWarnings.length > 0) {
+    blockers.push('quality scan reported warning-level issues in changed files');
   }
 
   return {
@@ -26,22 +61,27 @@ function evaluatePreCommit(targetDir, options = {}) {
     blockers,
     detail: {
       changeSummary: change.counts,
-      qualityIssues: quality.issues.length
+      changedFiles: change.changedFiles.length,
+      qualityIssuesInChangedFiles: qualitySplit.scoped.length,
+      qualityWarningsInChangedFiles: qualitySplit.scopedWarnings.length,
+      qualityDebtOutsideChangedFiles: qualitySplit.debt.length,
+      qualityIssuesTotal: quality.issues.length
     }
   };
 }
 
 function evaluatePreMerge(targetDir, options = {}) {
-  const change = analyzeChange(targetDir, 'working');
+  const change = analyzeChange(targetDir, { mode: 'working', changedFiles: options.changedFiles });
   const quality = analyzeQuality(targetDir, options);
   const security = analyzeSecurity(targetDir, options);
+  const qualitySplit = splitQualityIssues(quality.issues, change.changedFiles);
   const blockers = [];
 
   if (security.findings.some(item => item.severity === 'critical' || item.severity === 'high')) {
     blockers.push('security scan reported high or critical findings');
   }
-  if (quality.issues.some(item => item.severity === 'warning')) {
-    blockers.push('quality scan reported warning-level issues');
+  if (qualitySplit.scopedWarnings.length > 0) {
+    blockers.push('quality scan reported warning-level issues in changed files');
   }
   if (change.findings.some(item => item.severity === 'warning')) {
     blockers.push('change analysis reported unresolved warning-level concerns');
@@ -55,7 +95,11 @@ function evaluatePreMerge(targetDir, options = {}) {
     blockers,
     detail: {
       changeSummary: change.counts,
-      qualityIssues: quality.issues.length,
+      changedFiles: change.changedFiles.length,
+      qualityIssuesInChangedFiles: qualitySplit.scoped.length,
+      qualityWarningsInChangedFiles: qualitySplit.scopedWarnings.length,
+      qualityDebtOutsideChangedFiles: qualitySplit.debt.length,
+      qualityIssuesTotal: quality.issues.length,
       securityFindings: security.findings.length
     }
   };

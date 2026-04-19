@@ -52,4 +52,6 @@ aliases: [vc, change-audit, 变更审计]
 node scripts/run.js --mode working
 node scripts/run.js --mode staged --json
 node scripts/run.js --mode committed --json
+node scripts/run.js --mode working --changed-files "src/a.ts,docs/README.md" --json
+PSS_CHANGED_FILES="src/a.ts,docs/README.md" node scripts/run.js --mode working --json
 ```

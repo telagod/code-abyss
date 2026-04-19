@@ -14,3 +14,11 @@ When a target directory is supplied, the analysis should be interpreted as scope
 
 - are you looking at the right mode for the decision you need
 - does the target scope match the review scope
+
+## 4. Fallback When Git Process Is Restricted
+
+If the runtime cannot spawn `git` (for example `EPERM` in restricted hosts), provide changed paths explicitly:
+
+- CLI argument: `--changed-files "src/a.ts,docs/README.md"`
+- file input: `--changed-files @.tmp_changed_files.txt`
+- env fallback: `PSS_CHANGED_FILES` (also accepts `CODEX_CHANGED_FILES` and `CHANGED_FILES`)

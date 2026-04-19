@@ -2,8 +2,8 @@
 
 ## Summary
 
-- TOP-ready: 31
-- strong-but-not-top: 27
+- TOP-ready: 58
+- strong-but-not-top: 0
 - thin: 0
 - total rated capability modules: 58
 
@@ -16,18 +16,11 @@
 ## Current Verdict
 
 The routed capability surface no longer has obviously thin modules.
-The main remaining work is upgrading the highest-leverage strong-but-not-top modules.
+In this snapshot, all rated modules are TOP-ready; iteration focus shifts to drift prevention and quality recalibration.
 
 ## Next Batch
 
-- `ai-guardrail-policy-and-fallbacks`
-- `devops-rollback-and-release-operations`
-- `infrastructure-failover-topology-and-consistency`
-- `security-layered-controls-and-trust-zones`
-- `review-release-readiness-and-rollback`
-- `development-observability-and-shutdown`
-- `data-batch-and-orchestration`
-- `orchestration-dependency-and-integration`
+- `(none; all 58 rated modules are TOP-ready in this snapshot)`
 
 ## TOP-ready
 
@@ -62,33 +55,34 @@ The main remaining work is upgrading the highest-leverage strong-but-not-top mod
 - `review-ci-signal-quality`
 - `data-contracts-quality-and-reconciliation`
 - `orchestration-ownership-and-write-boundaries`
-
-## Strong But Not Top
-
-- `architecture-platform-governance`
-- `architecture-org-and-ownership-tradeoffs`
-- `development-python-memory-and-runtime`
-- `development-transactions-pagination-and-write-paths`
-- `development-config-and-runtime-boundaries`
-- `development-observability-and-shutdown`
-- `review-test-surface-mapping`
-- `review-mocks-fixtures-and-isolation`
-- `review-release-readiness-and-rollback`
-- `review-git-and-pr-discipline`
-- `review-cause-model-and-proof`
-- `review-recurrence-prevention-and-defect-governance`
+- `ai-guardrail-policy-and-fallbacks`
+- `ai-latency-cost-and-reliability`
 - `devops-rollback-and-release-operations`
 - `devops-alerts-runbooks-and-diagnosis`
 - `infrastructure-cluster-shape-and-environment-strategy`
 - `infrastructure-traffic-governance-and-mesh-adoption`
 - `infrastructure-failover-topology-and-consistency`
 - `infrastructure-dr-exercises-and-recovery-operations`
+- `review-test-surface-mapping`
+- `review-mocks-fixtures-and-isolation`
+- `review-release-readiness-and-rollback`
+- `review-git-and-pr-discipline`
+- `review-cause-model-and-proof`
+- `review-recurrence-prevention-and-defect-governance`
+- `architecture-platform-governance`
+- `architecture-org-and-ownership-tradeoffs`
+- `development-python-memory-and-runtime`
+- `development-transactions-pagination-and-write-paths`
+- `development-config-and-runtime-boundaries`
+- `development-observability-and-shutdown`
 - `security-layered-controls-and-trust-zones`
-- `ai-guardrail-policy-and-fallbacks`
-- `ai-latency-cost-and-reliability`
 - `data-product-framing`
 - `data-batch-and-orchestration`
 - `data-streaming-and-state`
 - `orchestration-work-decomposition`
 - `orchestration-dependency-and-integration`
 - `orchestration-status-and-handoffs`
+
+## Strong But Not Top
+
+- `(none in this snapshot)`

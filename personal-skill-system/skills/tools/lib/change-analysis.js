@@ -138,8 +138,23 @@ function buildChangeRisk(changeSet, counts, modules, sensitiveAreas) {
   };
 }
 
-function analyzeChange(targetDir, mode) {
-  const changeSet = listChangedFiles(targetDir, mode);
+function resolveAnalyzeChangeOptions(modeOrOptions, maybeOptions) {
+  if (modeOrOptions && typeof modeOrOptions === 'object') {
+    return {
+      mode: modeOrOptions.mode || 'working',
+      changedFiles: modeOrOptions.changedFiles || []
+    };
+  }
+
+  return {
+    mode: modeOrOptions || 'working',
+    changedFiles: maybeOptions && maybeOptions.changedFiles ? maybeOptions.changedFiles : []
+  };
+}
+
+function analyzeChange(targetDir, modeOrOptions, maybeOptions = {}) {
+  const options = resolveAnalyzeChangeOptions(modeOrOptions, maybeOptions);
+  const changeSet = listChangedFiles(targetDir, options.mode, { changedFiles: options.changedFiles });
   const counts = { code: 0, doc: 0, test: 0, config: 0, asset: 0, other: 0 };
   const findings = [];
 
@@ -151,8 +166,17 @@ function analyzeChange(targetDir, mode) {
   if (changeSet.source === 'no-git') {
     findings.push({ severity: 'info', message: 'git repository was not detected; change analysis is limited' });
   }
+  if (changeSet.source === 'git-permission-denied') {
+    findings.push({ severity: 'info', message: 'git process could not be spawned (EPERM); provide --changed-files or PSS_CHANGED_FILES as fallback' });
+  }
   if (changeSet.source === 'git-failed') {
     findings.push({ severity: 'info', message: 'git metadata could not be read; change analysis is limited' });
+  }
+  if (changeSet.source === 'external-arg') {
+    findings.push({ severity: 'info', message: 'using externally supplied changed files from --changed-files' });
+  }
+  if (changeSet.source === 'external-env-no-git' || changeSet.source === 'external-env-git-eperm') {
+    findings.push({ severity: 'info', message: 'using externally supplied changed files from environment fallback' });
   }
   if (changeSet.files.length === 0) {
     findings.push({ severity: 'info', message: 'no changed files were detected for the selected target scope' });
@@ -185,7 +209,7 @@ function analyzeChange(targetDir, mode) {
   return {
     tool: 'verify-change',
     target: targetDir,
-    mode,
+    mode: options.mode,
     summary: `Analyzed ${changeSet.files.length} changed files from ${changeSet.source}.`,
     findings,
     changedFiles: changeSet.files.slice(0, 100),

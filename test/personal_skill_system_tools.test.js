@@ -8,7 +8,8 @@ const { generateDocs } = require('../personal-skill-system/skills/tools/lib/doc-
 const { analyzeQuality } = require('../personal-skill-system/skills/tools/lib/quality-analysis');
 const { analyzeSecurity } = require('../personal-skill-system/skills/tools/lib/security-analysis');
 const { analyzeSkillSystem } = require('../personal-skill-system/skills/tools/lib/skill-system');
-const { classifySensitiveChangeSurface, buildChangeRisk } = require('../personal-skill-system/skills/tools/lib/change-analysis');
+const { analyzeChange, classifySensitiveChangeSurface, buildChangeRisk } = require('../personal-skill-system/skills/tools/lib/change-analysis');
+const { evaluatePreCommit } = require('../personal-skill-system/skills/tools/lib/analyzers');
 
 describe('personal skill system tool runtime', () => {
   let tmpDir;
@@ -87,5 +88,82 @@ describe('personal skill system tool runtime', () => {
     expect(report.status).toBe('pass');
     expect(report.metrics.skillFiles).toBeGreaterThan(0);
     expect(report.metrics.routeFixtures).toBeGreaterThan(0);
+  });
+
+  test('pre-commit gate ignores quality debt outside changed files', () => {
+    const changedDoc = path.join(tmpDir, 'README.md');
+    const debtCode = path.join(tmpDir, 'lib', 'legacy.js');
+
+    fs.mkdirSync(path.dirname(debtCode), { recursive: true });
+    fs.writeFileSync(changedDoc, '# readme\n');
+    fs.writeFileSync(debtCode, [
+      'function debt(a, b, c, d, e, f, g) {',
+      '  if (a) {',
+      '    if (b) {',
+      '      if (c) {',
+      '        if (d) {',
+      '          if (e) {',
+      '            if (f) {',
+      '              if (g) { return 1; }',
+      '            }',
+      '          }',
+      '        }',
+      '      }',
+      '    }',
+      '  }',
+      '  return 0;',
+      '}',
+      ''
+    ].join('\n'));
+
+    const report = evaluatePreCommit(tmpDir, { changedFiles: ['README.md'] });
+
+    expect(report.status).toBe('pass');
+    expect(report.detail.qualityDebtOutsideChangedFiles).toBeGreaterThan(0);
+    expect(report.detail.qualityWarningsInChangedFiles).toBe(0);
+  });
+
+  test('pre-commit gate blocks quality warnings inside changed files', () => {
+    const changedCode = path.join(tmpDir, 'src', 'risk.js');
+    fs.mkdirSync(path.dirname(changedCode), { recursive: true });
+    const longBody = Array.from({ length: 70 }, (_, index) => `  const v${index} = ${index};`).join('\n');
+    fs.writeFileSync(changedCode, `function risk() {\n${longBody}\n  return true;\n}\n`);
+
+    const report = evaluatePreCommit(tmpDir, { changedFiles: ['src/risk.js'] });
+
+    expect(report.status).toBe('block');
+    expect(report.blockers).toContain('quality scan reported warning-level issues in changed files');
+    expect(report.detail.qualityWarningsInChangedFiles).toBeGreaterThan(0);
+  });
+
+  test('analyzeChange accepts --changed-files fallback when git is unavailable', () => {
+    const changedCode = path.join(tmpDir, 'src', 'app.js');
+    fs.mkdirSync(path.dirname(changedCode), { recursive: true });
+    fs.writeFileSync(changedCode, 'module.exports = 1;\n');
+
+    const report = analyzeChange(tmpDir, { mode: 'working', changedFiles: ['src/app.js'] });
+
+    expect(report.summary).toContain('external-arg');
+    expect(report.changedFiles).toContain('src/app.js');
+    expect(report.findings.map(item => item.message)).toContain('using externally supplied changed files from --changed-files');
+  });
+
+  test('analyzeChange uses env fallback when git repo is absent', () => {
+    const changedCode = path.join(tmpDir, 'src', 'env-app.js');
+    const prev = process.env.PSS_CHANGED_FILES;
+    fs.mkdirSync(path.dirname(changedCode), { recursive: true });
+    fs.writeFileSync(changedCode, 'module.exports = 2;\n');
+    process.env.PSS_CHANGED_FILES = 'src/env-app.js';
+
+    try {
+      const report = analyzeChange(tmpDir, 'working');
+
+      expect(report.summary).toContain('external-env-no-git');
+      expect(report.changedFiles).toContain('src/env-app.js');
+      expect(report.findings.map(item => item.message)).toContain('using externally supplied changed files from environment fallback');
+    } finally {
+      if (prev === undefined) delete process.env.PSS_CHANGED_FILES;
+      else process.env.PSS_CHANGED_FILES = prev;
+    }
   });
 });

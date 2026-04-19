@@ -33,43 +33,93 @@ function parseArgs(argv) {
     json: false,
     write: false,
     force: false,
-    maxFiles: 600
+    maxFiles: 600,
+    changedFiles: []
   };
 
   for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
-    if (token === '--target') {
-      args.target = argv[i + 1] || args.target;
-      i += 1;
+    const consumed = consumeValueOption(args, argv, i);
+    if (consumed > 0) {
+      i += consumed;
       continue;
     }
-    if (token === '--mode') {
-      args.mode = argv[i + 1] || args.mode;
-      i += 1;
-      continue;
-    }
-    if (token === '--max-files') {
-      const parsed = Number(argv[i + 1]);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        args.maxFiles = parsed;
-      }
-      i += 1;
-      continue;
-    }
-    if (token === '--json') {
-      args.json = true;
-      continue;
-    }
-    if (token === '--write') {
-      args.write = true;
-      continue;
-    }
-    if (token === '--force') {
-      args.force = true;
-    }
+    applyFlagOption(args, argv[i]);
   }
 
   return args;
+}
+
+function consumeValueOption(args, argv, index) {
+  const token = argv[index];
+  const next = argv[index + 1];
+
+  if (token === '--target') {
+    args.target = next || args.target;
+    return 1;
+  }
+  if (token === '--mode') {
+    args.mode = next || args.mode;
+    return 1;
+  }
+  if (token === '--max-files') {
+    const parsed = Number(next);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      args.maxFiles = parsed;
+    }
+    return 1;
+  }
+  if (token === '--changed-files') {
+    args.changedFiles = mergeChangedFileLists(args.changedFiles, parseChangedFilesValue(next));
+    return 1;
+  }
+
+  return 0;
+}
+
+function applyFlagOption(args, token) {
+  if (token === '--json') {
+    args.json = true;
+    return;
+  }
+  if (token === '--write') {
+    args.write = true;
+    return;
+  }
+  if (token === '--force') {
+    args.force = true;
+  }
+}
+
+function parseChangedFilesValue(raw) {
+  const value = String(raw || '').trim();
+  if (!value) return [];
+
+  if (value.startsWith('@')) {
+    const listFile = path.resolve(value.slice(1));
+    if (!fs.existsSync(listFile)) return [];
+    try {
+      const text = fs.readFileSync(listFile, 'utf8');
+      return splitChangedFilesText(text);
+    } catch {
+      return [];
+    }
+  }
+
+  return splitChangedFilesText(value);
+}
+
+function splitChangedFilesText(text) {
+  return String(text || '')
+    .split(/[\r\n,;]+/)
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function mergeChangedFileLists(base, extra) {
+  const merged = [...(Array.isArray(base) ? base : []), ...(Array.isArray(extra) ? extra : [])]
+    .map(normalizeChangedPath)
+    .filter(Boolean);
+  return [...new Set(merged)];
 }
 
 function resolveTarget(target) {
@@ -157,7 +207,7 @@ function runGit(args, cwd) {
   const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
   if (result.status === 0) return result;
   const alt = spawnSync('git.exe', args, { cwd, encoding: 'utf8' });
-  return alt.status === 0 ? alt : result;
+  return alt.status === 0 ? alt : (alt.error ? alt : result);
 }
 
 function findGitRoot(startDir) {
@@ -184,21 +234,90 @@ function normalizeChangedPath(raw) {
   return (renameParts[renameParts.length - 1] || value).replace(/\\/g, '/');
 }
 
-function filterFilesToTarget(repoRoot, targetDir, files) {
-  const target = path.resolve(targetDir);
-  return files
-    .map(normalizeChangedPath)
-    .filter(Boolean)
-    .filter(file => {
-      const abs = path.resolve(repoRoot, file);
-      return abs === target || abs.startsWith(target + path.sep);
-    });
+function normalizeExternalChangedFiles(baseDir, targetDir, files) {
+  const normalized = [];
+  const seen = new Set();
+
+  for (const raw of Array.isArray(files) ? files : []) {
+    const candidate = normalizeChangedPath(raw);
+    if (!candidate) continue;
+    let abs = path.resolve(baseDir, candidate);
+
+    if (path.isAbsolute(candidate)) {
+      abs = path.resolve(candidate);
+    } else {
+      const asTargetRelative = path.resolve(targetDir, candidate);
+      const asRootRelative = path.resolve(baseDir, candidate);
+      if (fs.existsSync(asTargetRelative)) abs = asTargetRelative;
+      else abs = asRootRelative;
+    }
+
+    const rel = path.relative(baseDir, abs).split(path.sep).join('/');
+    const clean = normalizeChangedPath(rel);
+    if (!clean || clean.startsWith('..')) continue;
+    if (seen.has(clean)) continue;
+    seen.add(clean);
+    normalized.push(clean);
+  }
+
+  return normalized;
 }
 
-function listChangedFiles(startDir, mode) {
-  const root = findGitRoot(startDir);
+function readChangedFilesFromEnv() {
+  const sources = [process.env.PSS_CHANGED_FILES, process.env.CODEX_CHANGED_FILES, process.env.CHANGED_FILES];
+  for (const source of sources) {
+    const parsed = parseChangedFilesValue(source);
+    if (parsed.length > 0) return parsed;
+  }
+  return [];
+}
+
+function isGitPermissionError(result) {
+  return !!(result && result.error && result.error.code === 'EPERM');
+}
+
+function filterFilesToTarget(repoRoot, targetDir, files) {
+  const target = path.resolve(targetDir);
+  const scoped = [];
+  const seen = new Set();
+
+  for (const file of files.map(normalizeChangedPath).filter(Boolean)) {
+    const abs = path.resolve(repoRoot, file);
+    if (!(abs === target || abs.startsWith(target + path.sep))) continue;
+    const rel = normalizeChangedPath(path.relative(target, abs).split(path.sep).join('/'));
+    if (!rel || seen.has(rel)) continue;
+    seen.add(rel);
+    scoped.push(rel);
+  }
+
+  return scoped;
+}
+
+function listChangedFiles(startDir, mode, options = {}) {
+  const scopedTarget = path.resolve(startDir);
+  const root = findGitRoot(scopedTarget);
+  const baseDir = root || scopedTarget;
+
+  const explicitChangedFiles = normalizeExternalChangedFiles(baseDir, scopedTarget, options.changedFiles);
+  if (explicitChangedFiles.length > 0) {
+    return {
+      root: baseDir,
+      files: filterFilesToTarget(baseDir, scopedTarget, explicitChangedFiles),
+      source: 'external-arg'
+    };
+  }
+
+  const envChangedFiles = normalizeExternalChangedFiles(baseDir, scopedTarget, readChangedFilesFromEnv());
+
   if (!root) {
-    return { root: startDir, files: [], source: 'no-git' };
+    if (envChangedFiles.length > 0) {
+      return {
+        root: baseDir,
+        files: filterFilesToTarget(baseDir, scopedTarget, envChangedFiles),
+        source: 'external-env-no-git'
+      };
+    }
+    return { root: scopedTarget, files: [], source: 'no-git' };
   }
 
   let result;
@@ -210,15 +329,25 @@ function listChangedFiles(startDir, mode) {
     result = runGit(['status', '--porcelain'], root);
     if (result.status === 0) {
       const files = result.stdout.split(/\r?\n/).filter(Boolean).map(line => line.slice(3).trim()).filter(Boolean);
-      return { root, files: filterFilesToTarget(root, startDir, files), source: 'git-status' };
+      return { root, files: filterFilesToTarget(root, scopedTarget, files), source: 'git-status' };
     }
   }
 
   if (result.status !== 0) {
+    if (isGitPermissionError(result) && envChangedFiles.length > 0) {
+      return {
+        root,
+        files: filterFilesToTarget(root, scopedTarget, envChangedFiles),
+        source: 'external-env-git-eperm'
+      };
+    }
+    if (isGitPermissionError(result)) {
+      return { root, files: [], source: 'git-permission-denied', errorCode: result.error.code };
+    }
     return { root, files: [], source: 'git-failed' };
   }
   const files = result.stdout.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  return { root, files: filterFilesToTarget(root, startDir, files), source: 'git-diff' };
+  return { root, files: filterFilesToTarget(root, scopedTarget, files), source: 'git-diff' };
 }
 
 module.exports = {

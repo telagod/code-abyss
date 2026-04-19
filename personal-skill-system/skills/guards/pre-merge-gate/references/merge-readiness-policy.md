@@ -7,6 +7,7 @@ At merge time, ask:
 - is the risk documented
 - has the relevant validation run
 - are high-risk findings acknowledged or fixed
+- do warning-level quality findings appear in this change set itself (not only in legacy debt)
 
 ## 2. Review Questions
 
