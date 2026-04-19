@@ -35,6 +35,56 @@
       "name": "explicit-security-scan",
       "query": "Run verify-security as a vulnerability scan on this module",
       "expect": "verify-security"
+    },
+    {
+      "name": "self-system-routing-zh",
+      "query": "改进技能系统的路由图与注册表可移植性",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "architecture-vs-frontend-zh",
+      "query": "为系统设计服务边界、队列迁移和缓存策略",
+      "expect": "architecture"
+    },
+    {
+      "name": "frontend-experience-zh",
+      "query": "提升这个前端流程的无障碍和组件设计体验",
+      "expect": "frontend-design"
+    },
+    {
+      "name": "investigate-before-fix-zh",
+      "query": "排查认证流程为什么坏了并定位根因",
+      "expect": "investigate"
+    },
+    {
+      "name": "known-bugfix-zh",
+      "query": "修复登录代码中的回归缺陷和报错",
+      "expect": "bugfix"
+    },
+    {
+      "name": "parallel-work-zh",
+      "query": "为这个重构制定 multi-agent 并行 delegation 任务委派计划",
+      "expect": "multi-agent"
+    },
+    {
+      "name": "explicit-security-scan-zh",
+      "query": "对这个模块执行 verify-security 进行漏洞扫描",
+      "expect": "verify-security"
+    },
+    {
+      "name": "review-alias-zh",
+      "query": "请执行代码评审并给出风险清单",
+      "expect": "review"
+    },
+    {
+      "name": "ship-alias-zh",
+      "query": "按照发布流程执行上线",
+      "expect": "ship"
+    },
+    {
+      "name": "bugfix-alias-zh",
+      "query": "尽快做缺陷修复并验证",
+      "expect": "bugfix"
     }
   ]
 }

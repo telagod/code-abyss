@@ -8,7 +8,7 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-security, security scan, vulnerability scan]
+trigger-keywords: [verify-security, security scan, vulnerability scan, 安全扫描, 漏洞扫描, 安全校验, security check, vulnerability review, 安全体检, 漏洞审查]
 negative-keywords: []
 priority: 95
 runtime: scripted
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 30
 tags: [tool, security]
-aliases: [vs]
+aliases: [vs, security-audit, 安全校验]
 ---
 
 # Verify Security Tool

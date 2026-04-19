@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [investigate, debug, why broken, root cause]
-negative-keywords: [known fix, review-only]
+trigger-keywords: [investigate, debug, why broken, root cause, 排查, 调试, 为什么坏了, 根因分析, incident investigation, issue triage, 故障定位, 问题排查]
+negative-keywords: [known fix, 已知修复, review-only, 仅评审]
 priority: 88
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [workflow, investigate]
-aliases: [debug-investigate]
+aliases: [debug-investigate, 故障排查]
 ---
 
 # Investigate Workflow

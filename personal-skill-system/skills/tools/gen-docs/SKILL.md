@@ -8,8 +8,8 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [gen-docs, generate docs, doc scaffold, readme scaffold, design scaffold]
-negative-keywords: [review-only]
+trigger-keywords: [gen-docs, generate docs, doc scaffold, readme scaffold, design scaffold, 生成文档, 文档脚手架, 生成README, 生成DESIGN, docs generator, 文档生成器, README骨架]
+negative-keywords: [review-only, 仅评审]
 priority: 90
 runtime: scripted
 executor: node
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [tool, docs]
-aliases: []
+aliases: [doc-generator, 文档生成]
 ---
 
 # Gen Docs Tool

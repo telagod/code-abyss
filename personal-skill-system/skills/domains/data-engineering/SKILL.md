@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [etl, data pipeline, streaming, flink, kafka, dbt]
-negative-keywords: [ui, visual design]
+trigger-keywords: [etl, data pipeline, streaming, flink, kafka, dbt, 数据工程, 数据管道, 流处理, 实时计算, flink作业, 数仓, data engineering, data modeling, 数据开发, 数据建模]
+negative-keywords: [ui, 界面设计, visual design, 视觉设计]
 priority: 74
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, data]
-aliases: [data-pipeline]
+aliases: [data-pipeline, 数据管道]
 ---
 
 # Data Engineering Domain

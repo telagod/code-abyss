@@ -8,7 +8,7 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-change, diff analysis, change audit]
+trigger-keywords: [verify-change, diff analysis, change audit, 变更校验, 差异分析, 变更审计, change review, diff review, 改动审查]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [tool, diff]
-aliases: [vc]
+aliases: [vc, change-audit, 变更审计]
 ---
 
 # Verify Change Tool

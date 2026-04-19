@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ship, release, deploy, merge]
-negative-keywords: [discuss only]
+trigger-keywords: [ship, release, deploy, merge, 发布, 上线, 部署, 合并, go live, production release, 上线发布]
+negative-keywords: [discuss only, 仅讨论]
 priority: 79
 auto-chain: [verify-change, pre-merge-gate]
 runtime: knowledge
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [workflow, release]
-aliases: [release-flow]
+aliases: [release-flow, 发布流程]
 ---
 
 # Ship Workflow

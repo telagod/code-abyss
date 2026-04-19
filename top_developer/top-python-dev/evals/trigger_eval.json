@@ -1,0 +1,22 @@
+[
+  {"query": "帮我写一个处理用户数据的Python模块，要求代码整洁且符合最佳实践", "should_trigger": true},
+  {"query": "这段Python代码太丑了，帮我重构得更Pythonic一点，遵循PEP 8", "should_trigger": true},
+  {"query": "用Python实现一个缓存装饰器，支持过期时间和容量限制", "should_trigger": true},
+  {"query": "帮我优化一下这个Python函数的性能，内存占用太高了", "should_trigger": false},
+  {"query": "我们的项目需要异步处理大量请求，帮我设计Python异步架构", "should_trigger": true},
+  {"query": "用Python实现一个LRU缓存，要求O(1)时间复杂度", "should_trigger": true},
+  {"query": "帮我review这段代码，看看是否遵循了Pythonic的写法", "should_trigger": true},
+  {"query": "我需要写一个上下文管理器来管理数据库连接，怎么写才规范？", "should_trigger": true},
+  {"query": "用生成器处理大数据文件，避免一次性加载到内存，怎么实现？", "should_trigger": true},
+  {"query": "这段Python代码运行很慢，帮我优化算法复杂度", "should_trigger": false},
+  {"query": "帮我写一个Python类型提示的完整示例，包括泛型和Protocol", "should_trigger": true},
+  {"query": "我们的Python项目要支持类型检查，帮我配置mypy和类型标注", "should_trigger": true},
+  {"query": "这个Python脚本有bug，帮我调试一下是什么问题", "should_trigger": false},
+  {"query": "用Python实现一个装饰器模式的完整示例，需要支持链式调用", "should_trigger": true},
+  {"query": "帮我写一个Python的测试框架，要求支持mock和parametrize", "should_trigger": true},
+  {"query": "这段代码内存泄漏了，帮我分析一下可能的原因", "should_trigger": false},
+  {"query": "用Python实现一个事件驱动的架构，需要支持异步发布订阅", "should_trigger": true},
+  {"query": "我的Python项目结构很乱，帮我设计一个清晰的项目目录结构", "should_trigger": true},
+  {"query": "帮我把这段Java代码转换成Python，要求保持相同的功能逻辑", "should_trigger": false},
+  {"query": "用Python写一个完整的数据处理pipeline，支持流式处理和错误重试", "should_trigger": true}
+]

@@ -7,7 +7,7 @@ kind: guard
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [pre-merge, merge gate, release gate]
+trigger-keywords: [pre-merge, merge gate, release gate, 合并前检查, 合并门禁, 发布门禁, merge check, 合并检查]
 negative-keywords: []
 priority: 94
 auto-chain: [verify-change, verify-quality, verify-security]
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 30
 tags: [guard, merge]
-aliases: []
+aliases: [merge-gate, 合并门禁]
 ---
 
 # Pre-Merge Gate

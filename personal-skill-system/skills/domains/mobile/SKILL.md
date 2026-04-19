@@ -8,7 +8,7 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ios, android, react native, flutter, mobile]
+trigger-keywords: [ios, android, react native, flutter, mobile, 移动端, iOS开发, Android开发, 跨平台移动, mobile app, 移动开发]
 priority: 67
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, mobile]
-aliases: []
+aliases: [mobile-dev, 移动开发]
 ---
 
 # Mobile Domain

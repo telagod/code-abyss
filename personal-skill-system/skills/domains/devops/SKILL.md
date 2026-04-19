@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [devops, ci, cd, pipeline, deploy, observability]
-negative-keywords: [pure product design]
+trigger-keywords: [devops, ci, cd, pipeline, deploy, observability, 运维, 持续集成, 持续交付, 流水线, 部署, 可观测性, release pipeline, ci/cd, 发布流水线, CI/CD]
+negative-keywords: [pure product design, 纯产品设计]
 priority: 68
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, devops]
-aliases: []
+aliases: [devops-flow, 运维流程]
 ---
 
 # DevOps Domain

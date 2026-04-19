@@ -8,8 +8,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [neubrutalism, brutalist ui]
-negative-keywords: [api design]
+trigger-keywords: [neubrutalism, brutalist ui, 新粗野主义, 粗野风界面, brutal style, 粗野风格]
+negative-keywords: [api design, 接口设计]
 priority: 65
 runtime: knowledge
 executor: none
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 90
 tags: [design, variant]
-aliases: []
+aliases: [brutalist-style, 新粗野主义]
 ---
 
 # Neubrutalism Variant

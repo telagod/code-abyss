@@ -8,8 +8,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [liquid-glass, apple glass, liquid interface]
-negative-keywords: [api design]
+trigger-keywords: [liquid-glass, apple glass, liquid interface, 液态玻璃, 苹果玻璃, 液态界面, liquid style, 液态风格]
+negative-keywords: [api design, 接口设计]
 priority: 57
 runtime: knowledge
 executor: none
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 90
 tags: [design, variant]
-aliases: []
+aliases: [apple-liquid-glass, 液态玻璃]
 ---
 
 # Liquid Glass Variant

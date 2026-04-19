@@ -1,0 +1,22 @@
+[
+  {"query": "我们的系统日活从1万增长到100万了，Redis单节点快撑不住，应该怎么升级？", "should_trigger": true},
+  {"query": "当前用的是MySQL单库，数据量到500G了，想咨询一下数据库演进方案", "should_trigger": true},
+  {"query": "我们的Kafka最近经常抖动，消息延迟不稳定，应该升级到集群吗？", "should_trigger": true},
+  {"query": "创业公司刚开始，应该选什么技术栈？需要考虑未来扩展吗？", "should_trigger": true},
+  {"query": "我们的Elasticsearch集群查询越来越慢，存储也快满了，有什么优化方案？", "should_trigger": true},
+  {"query": "当前用的是RabbitMQ，能支持10万QPS吗？需要换成Kafka吗？", "should_trigger": true},
+  {"query": "我们的系统要支持多区域部署，中间件需要怎么选型和配置？", "should_trigger": true},
+  {"query": "当前系统用的是单机MySQL，想升级成分布式数据库，哪个方案更好？", "should_trigger": true},
+  {"query": "我们的日志系统现在用ELK，成本太高了，有更经济的方案吗？", "should_trigger": true},
+  {"query": "我们想上微服务，但消息队列还没选好，RabbitMQ和Kafka怎么选？", "should_trigger": true},
+  {"query": "这段Python代码怎么写更Pythonic？", "should_trigger": false},
+  {"query": "帮我优化一下这个接口的性能，从500ms降到100ms", "should_trigger": false},
+  {"query": "我们的监控系统要换，Prometheus和Datadog哪个更适合？", "should_trigger": true},
+  {"query": "当前用的是Memcached，要换成Redis吗？需要注意什么？", "should_trigger": true},
+  {"query": "我们的搜索功能现在用数据库LIKE查询，数据量大了很慢，升级什么方案？", "should_trigger": true},
+  {"query": "帮我设计一个电商系统的数据库架构，要支持未来5年发展", "should_trigger": true},
+  {"query": "我们的系统要从单体拆成微服务，消息中间件需要重新选型吗？", "should_trigger": true},
+  {"query": "当前用的是单机Redis，内存快满了，有什么低成本方案？", "should_trigger": true},
+  {"query": "我们的系统要支持千万级用户，缓存策略应该怎么设计？", "should_trigger": true},
+  {"query": "想上实时数据Pipeline，Kafka、Flink、Spark怎么选型配合？", "should_trigger": true}
+]

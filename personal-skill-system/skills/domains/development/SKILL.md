@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [coding, development, code, refactor, implement]
-negative-keywords: [penetration test, visual design]
+trigger-keywords: [coding, development, code, refactor, implement, 开发, 编码, 代码实现, 重构, 实现, software development, write code, 编程开发, 写代码]
+negative-keywords: [penetration test, 渗透测试, visual design, 视觉设计]
 priority: 70
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, engineering]
-aliases: [coding]
+aliases: [coding, 开发]
 ---
 
 # Development Domain

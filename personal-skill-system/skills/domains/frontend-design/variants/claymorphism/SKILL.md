@@ -8,8 +8,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [claymorphism, soft ui]
-negative-keywords: [api design]
+trigger-keywords: [claymorphism, soft ui, 粘土风, 软拟态, soft neumorphism, 软拟物]
+negative-keywords: [api design, 接口设计]
 priority: 58
 runtime: knowledge
 executor: none
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 90
 tags: [design, variant]
-aliases: []
+aliases: [soft-ui, 粘土风]
 ---
 
 # Claymorphism Variant

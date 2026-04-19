@@ -7,7 +7,7 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [multi-agent, parallel, delegation, parallelize]
+trigger-keywords: [multi-agent, parallel, delegation, parallelize, 多Agent, 并行, 任务委派, 并行化, multi agent, parallel delegation, 多智能体, 并发委派]
 priority: 83
 depends-on: [orchestration]
 runtime: knowledge
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [workflow, orchestration]
-aliases: []
+aliases: [parallel-agents, 多Agent协同]
 ---
 
 # Multi-Agent Workflow

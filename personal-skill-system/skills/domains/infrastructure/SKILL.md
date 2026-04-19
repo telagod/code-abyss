@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [kubernetes, terraform, gitops, infra, cluster, k8s]
-negative-keywords: [ux, component design]
+trigger-keywords: [kubernetes, terraform, gitops, infra, cluster, k8s, 基础设施, 云原生, 集群, 平台运维, kubernetes集群, infra architecture, cloud infrastructure, 基础架构, 云基础设施]
+negative-keywords: [ux, 用户体验, component design, 组件设计]
 priority: 77
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [domain, infrastructure]
-aliases: [platform-infra]
+aliases: [platform-infra, 平台基础设施]
 ---
 
 # Infrastructure Domain

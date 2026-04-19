@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [architecture, system design, api, boundaries, migration, data flow]
-negative-keywords: [visual design]
+trigger-keywords: [architecture, system design, api, boundaries, migration, data flow, 架构, 系统设计, 接口设计, 边界, 迁移, 数据流, technical architecture, system architecture, 技术架构, 系统架构]
+negative-keywords: [visual design, 视觉设计]
 priority: 78
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, architecture]
-aliases: [system-design]
+aliases: [system-design, 系统设计]
 ---
 
 # Architecture Domain

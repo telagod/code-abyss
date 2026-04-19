@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [orchestration, coordination, decomposition, workflow]
-negative-keywords: [single file bug]
+trigger-keywords: [orchestration, coordination, decomposition, workflow, 编排, 协同, 任务分解, 工作流, workflow orchestration, 协同编排]
+negative-keywords: [single file bug, 单文件缺陷]
 priority: 73
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [domain, orchestration]
-aliases: []
+aliases: [workflow-orchestration, 任务编排]
 ---
 
 # Orchestration Domain

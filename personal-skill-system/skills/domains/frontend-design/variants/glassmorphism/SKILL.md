@@ -8,8 +8,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [glassmorphism, frosted glass]
-negative-keywords: [api design]
+trigger-keywords: [glassmorphism, frosted glass, 玻璃拟态, 毛玻璃, glass style, 玻璃风格]
+negative-keywords: [api design, 接口设计]
 priority: 58
 runtime: knowledge
 executor: none
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 90
 tags: [design, variant]
-aliases: []
+aliases: [frosted-ui, 玻璃拟态]
 ---
 
 # Glassmorphism Variant

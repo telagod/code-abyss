@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [review, code review, audit the change]
-negative-keywords: [directly implement]
+trigger-keywords: [review, code review, audit the change, 评审, 代码审查, 变更审计, code walkthrough, change review, 代码走查]
+negative-keywords: [directly implement, 直接实现]
 priority: 84
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [workflow, review]
-aliases: [code-review]
+aliases: [code-review, 代码评审]
 ---
 
 # Review Workflow

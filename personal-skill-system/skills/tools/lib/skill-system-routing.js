@@ -1,13 +1,37 @@
 'use strict';
 
+function escapeRegExp(input) {
+  return String(input).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function hasCjk(input) {
+  return /[\u4e00-\u9fff]/.test(String(input || ''));
+}
+
+function containsSignal(queryLower, rawValue) {
+  const value = String(rawValue || '').trim().toLowerCase();
+  if (!value) return false;
+
+  if (hasCjk(value)) {
+    return queryLower.includes(value);
+  }
+
+  // Keep hyphenated tokens together to avoid matching "security" inside "verify-security".
+  const pattern = `(^|[^a-z0-9-])${escapeRegExp(value)}([^a-z0-9-]|$)`;
+  return new RegExp(pattern).test(queryLower);
+}
+
 function positiveSignalCount(route, queryLower) {
   let hits = 0;
   const skillName = String(route.skill || '').toLowerCase();
-  if (skillName && queryLower.includes(skillName)) hits += 1;
+  if (skillName && containsSignal(queryLower, skillName)) hits += 1;
+  const aliases = Array.isArray(route.aliases) ? route.aliases : [];
+  for (const alias of aliases) {
+    if (containsSignal(queryLower, alias)) hits += 1;
+  }
   const triggerKeywords = (((route || {}).activation || {})['trigger-keywords']) || [];
   for (const keyword of triggerKeywords) {
-    const value = String(keyword || '').trim().toLowerCase();
-    if (value && queryLower.includes(value)) hits += 1;
+    if (containsSignal(queryLower, keyword)) hits += 1;
   }
   return hits;
 }
@@ -15,8 +39,12 @@ function positiveSignalCount(route, queryLower) {
 function routeHeuristicScore(route, queryLower, scoring) {
   let total = Number(route.priority || 0);
   const skillName = String(route.skill || '').toLowerCase();
-  if (skillName && queryLower.includes(skillName)) {
+  if (skillName && containsSignal(queryLower, skillName)) {
     total += scoring['exact-match'] || 0;
+  }
+  const aliases = Array.isArray(route.aliases) ? route.aliases : [];
+  for (const alias of aliases) {
+    if (containsSignal(queryLower, alias)) total += scoring['alias-match'] || 0;
   }
 
   const activation = route.activation || {};
@@ -24,12 +52,10 @@ function routeHeuristicScore(route, queryLower, scoring) {
   const negativeKeywords = activation['negative-keywords'] || [];
 
   for (const keyword of triggerKeywords) {
-    const value = String(keyword || '').trim().toLowerCase();
-    if (value && queryLower.includes(value)) total += scoring['keyword-hit'] || 0;
+    if (containsSignal(queryLower, keyword)) total += scoring['keyword-hit'] || 0;
   }
   for (const keyword of negativeKeywords) {
-    const value = String(keyword || '').trim().toLowerCase();
-    if (value && queryLower.includes(value)) total += scoring['negative-hit'] || 0;
+    if (containsSignal(queryLower, keyword)) total += scoring['negative-hit'] || 0;
   }
   return total;
 }

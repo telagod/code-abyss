@@ -7,8 +7,8 @@ kind: guard
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: []
-negative-keywords: []
+trigger-keywords: [guard keyword, 门禁关键词]
+negative-keywords: [negative keyword, 负向关键词]
 priority: 95
 runtime: scripted
 executor: node
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [template, guard]
-aliases: []
+aliases: [alias keyword, 别名关键词]
 ---
 
 # Guard Template

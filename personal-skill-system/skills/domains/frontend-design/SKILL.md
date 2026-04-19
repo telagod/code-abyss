@@ -7,7 +7,7 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ui, ux, frontend design, component design, accessibility]
+trigger-keywords: [ui, ux, frontend design, component design, accessibility, 前端设计, 界面设计, 用户体验, 组件设计, 无障碍, ui design, interaction design, UI设计, 交互设计]
 priority: 76
 runtime: knowledge
 executor: none
@@ -19,7 +19,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, design, frontend]
-aliases: [ui-design]
+aliases: [ui-design, 前端设计]
 ---
 
 # Frontend Design Domain

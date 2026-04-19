@@ -7,7 +7,7 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-module, module audit, module completeness]
+trigger-keywords: [verify-module, module audit, module completeness, 模块校验, 模块审计, 模块完整性, module check, 模块检查]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [tool, module]
-aliases: []
+aliases: [module-audit, 模块审计]
 ---
 
 # Verify Module Tool

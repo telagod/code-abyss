@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [security, audit, vulnerability, auth, secrets]
-negative-keywords: [visual design]
+trigger-keywords: [security, audit, vulnerability, auth, secrets, 安全, 审计, 漏洞, 认证, 密钥, offense defense, hardening, 攻防, 安全加固]
+negative-keywords: [visual design, 视觉设计]
 priority: 82
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [domain, security]
-aliases: [sec]
+aliases: [sec, 安全审计]
 ---
 
 # Security Domain

@@ -1,0 +1,22 @@
+[
+  {"query": "我们的接口响应时间从200ms变成2秒了，帮我分析一下性能瓶颈在哪里", "should_trigger": true},
+  {"query": "这个Python函数处理大数据量时内存占用几个G，帮我优化到100MB以内", "should_trigger": true},
+  {"query": "这个排序算法太慢了，帮我换成更高效的，排序100万数据要1秒以内", "should_trigger": true},
+  {"query": "我们的数据库查询有N+1问题，帮我优化一下，查询时间从5秒降到100ms", "should_trigger": true},
+  {"query": "这个循环里每次都调用API，1000次循环要10秒，怎么并行处理？", "should_trigger": true},
+  {"query": "我们的系统CPU总是跑满，帮我分析一下是哪个进程在消耗资源", "should_trigger": true},
+  {"query": "这个功能要用什么技术栈来实现？", "should_trigger": false},
+  {"query": "帮我写一个用户认证模块，需要支持JWT", "should_trigger": false},
+  {"query": "我们的Redis命中率只有60%，帮我分析一下原因和提高方案", "should_trigger": true},
+  {"query": "这个接口在高并发时总是超时，QPS从1000升到5000就挂了", "should_trigger": true},
+  {"query": "帮我分析一下这个算法的时间复杂度和空间复杂度", "should_trigger": true},
+  {"query": "这个大数据处理任务要跑10小时，有没有办法优化到1小时内？", "should_trigger": true},
+  {"query": "我们的Kafka消费者总是跟不上生产速度，消息积压越来越多", "should_trigger": true},
+  {"query": "这个搜索功能输入关键词要等3秒才出结果，能优化到100ms吗？", "should_trigger": true},
+  {"query": "帮我review一下这段代码的质量和可维护性", "should_trigger": false},
+  {"query": "这个数据表有1000万数据，查询很慢，应该怎么优化？", "should_trigger": true},
+  {"query": "我们的系统总是报OOM错误，帮我分析一下内存泄漏的原因", "should_trigger": true},
+  {"query": "这个批量插入操作要1分钟，能优化到10秒以内吗？", "should_trigger": true},
+  {"query": "帮我设计一个高并发的计数器，支持每秒10万次incr", "should_trigger": true},
+  {"query": "我们的接口延迟P99是500ms，帮我制定一个优化到50ms的计划", "should_trigger": true}
+]

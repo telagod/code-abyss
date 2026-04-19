@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [fix, bug, error, regression]
-negative-keywords: [brainstorm, review-only]
+trigger-keywords: [fix, bug, error, regression, 修复, 缺陷, 报错, 回归, bug fix, hotfix, 修bug, 故障修复]
+negative-keywords: [brainstorm, 头脑风暴, review-only, 仅评审]
 priority: 85
 depends-on: [investigate]
 auto-chain: [verify-quality, verify-security]
@@ -22,7 +22,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [workflow, bugfix]
-aliases: [fix-bug]
+aliases: [fix-bug, 缺陷修复]
 ---
 
 # Bugfix Workflow

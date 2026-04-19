@@ -7,7 +7,7 @@ kind: guard
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [pre-commit, commit gate]
+trigger-keywords: [pre-commit, commit gate, 提交前检查, 提交门禁, pre commit check, 提交检查]
 negative-keywords: []
 priority: 92
 auto-chain: [verify-change, verify-quality]
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 30
 tags: [guard, commit]
-aliases: []
+aliases: [commit-gate, 提交门禁]
 ---
 
 # Pre-Commit Gate

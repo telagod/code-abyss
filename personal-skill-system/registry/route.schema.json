@@ -72,6 +72,12 @@
           "skill": {
             "type": "string"
           },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "kind": {
             "type": "string"
           },

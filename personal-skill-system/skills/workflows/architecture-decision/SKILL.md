@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [architecture decision, tradeoff, migration plan, adr]
-negative-keywords: [small local fix]
+trigger-keywords: [architecture decision, tradeoff, migration plan, adr, 架构决策, 方案权衡, 迁移方案, 技术决策, tech selection, architecture selection, 技术选型, 架构选型]
+negative-keywords: [small local fix, 小范围修复]
 priority: 80
 auto-chain: [verify-change]
 runtime: knowledge
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [workflow, architecture]
-aliases: [arch-decision]
+aliases: [arch-decision, 架构决策]
 ---
 
 # Architecture Decision Workflow

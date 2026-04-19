@@ -7,8 +7,8 @@ kind: workflow
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [skill system, skill-evolution, skill architecture, route map, registry, portability, personal skill]
-negative-keywords: [ordinary feature, single bug]
+trigger-keywords: [skill system, skill-evolution, skill architecture, route map, registry, portability, personal skill, 技能系统, 技能演进, 技能架构, 路由图, 可移植性, 个人技能体系, skill governance, route strategy, 技能治理, 路由策略]
+negative-keywords: [ordinary feature, 普通功能开发, single bug, 单点缺陷]
 priority: 86
 auto-chain: [verify-skill-system, verify-change, verify-quality]
 runtime: knowledge
@@ -21,7 +21,7 @@ owner: self
 last-reviewed: 2026-04-18
 review-cycle-days: 30
 tags: [workflow, skills, system-design]
-aliases: [skill-system]
+aliases: [skill-system, 技能系统演进]
 ---
 
 # Skill Evolution Workflow

@@ -7,27 +7,27 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: []
-negative-keywords: []
+trigger-keywords: [tool keyword, 工具关键词]
+negative-keywords: [negative keyword, 负向关键词]
 priority: 90
 runtime: scripted
 executor: node
 permissions: [Read, Bash]
-risk-level: low
+risk-level: medium
 supported-hosts: [codex, claude, gemini]
 status: draft
 owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 45
 tags: [template, tool]
-aliases: []
+aliases: [alias keyword, 别名关键词]
 ---
 
 # Tool Template
 
 Describe:
 
-1. inputs
-2. outputs
-3. failure conditions
-4. invocation command
+1. what this tool validates or generates
+2. expected inputs
+3. output contract
+4. run command

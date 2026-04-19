@@ -7,7 +7,7 @@ kind: tool
 visibility: public
 user-invocable: true
 trigger-mode: [manual]
-trigger-keywords: [verify-skill-system, skill system audit, registry audit, route map audit]
+trigger-keywords: [verify-skill-system, skill system audit, registry audit, route map audit, 技能系统校验, 注册表审计, 路由图审计, skill audit, 技能体检]
 negative-keywords: []
 priority: 90
 runtime: scripted
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-18
 review-cycle-days: 30
 tags: [tool, skills, governance]
-aliases: [skill-system-audit]
+aliases: [skill-system-audit, 技能系统审计]
 ---
 
 # Verify Skill System Tool

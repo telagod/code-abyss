@@ -7,7 +7,7 @@ kind: router
 visibility: public
 user-invocable: false
 trigger-mode: [auto]
-trigger-keywords: [router, routing, skill system, dispatch]
+trigger-keywords: [router, routing, skill system, dispatch, 路由, 技能路由, 技能系统, 分发]
 negative-keywords: []
 priority: 100
 runtime: knowledge
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-18
 review-cycle-days: 60
 tags: [router, core]
-aliases: []
+aliases: [router-core, 总路由]
 ---
 
 # Sage Router

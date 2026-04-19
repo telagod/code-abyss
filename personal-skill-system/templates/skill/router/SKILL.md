@@ -7,8 +7,8 @@ kind: router
 visibility: public
 user-invocable: false
 trigger-mode: [auto]
-trigger-keywords: []
-negative-keywords: []
+trigger-keywords: [router keyword, 路由关键词]
+negative-keywords: [negative keyword, 负向关键词]
 priority: 100
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 90
 tags: [template, router]
-aliases: []
+aliases: [alias keyword, 别名关键词]
 ---
 
 # Router Template

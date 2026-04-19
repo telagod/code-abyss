@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: []
-negative-keywords: []
+trigger-keywords: [domain keyword, 领域关键词]
+negative-keywords: [negative keyword, 负向关键词]
 priority: 70
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [template, domain]
-aliases: []
+aliases: [alias keyword, 别名关键词]
 ---
 
 # Domain Template

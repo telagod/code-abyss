@@ -7,8 +7,8 @@ kind: domain
 visibility: public
 user-invocable: true
 trigger-mode: [auto, manual]
-trigger-keywords: [ai, llm, prompt, rag, agent, eval]
-negative-keywords: [cluster sizing]
+trigger-keywords: [ai, llm, prompt, rag, agent, eval, 人工智能, 大模型, 提示词, 检索增强, 智能体, 评测, model application, agent system, 模型应用, 智能体系统]
+negative-keywords: [cluster sizing, 集群容量规划]
 priority: 66
 runtime: knowledge
 executor: none
@@ -20,7 +20,7 @@ owner: self
 last-reviewed: 2026-04-17
 review-cycle-days: 60
 tags: [domain, ai]
-aliases: [llm]
+aliases: [llm, 大模型]
 ---
 
 # AI Domain
