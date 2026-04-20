@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { rmSafe } = require('../bin/lib/utils');
 
 describe('packs cli', () => {
   let tmpDir;
@@ -14,12 +15,6 @@ describe('packs cli', () => {
     upstreamRepo = path.join(tmpDir, 'upstream-gstack');
     fs.mkdirSync(upstreamRepo, { recursive: true });
     fs.writeFileSync(path.join(upstreamRepo, 'README.md'), '# upstream\n');
-    spawnSync('git', ['init'], { cwd: upstreamRepo, encoding: 'utf8' });
-    spawnSync('git', ['config', 'user.email', 'test@example.com'], { cwd: upstreamRepo, encoding: 'utf8' });
-    spawnSync('git', ['config', 'user.name', 'Test'], { cwd: upstreamRepo, encoding: 'utf8' });
-    spawnSync('git', ['add', '.'], { cwd: upstreamRepo, encoding: 'utf8' });
-    spawnSync('git', ['commit', '-m', 'init'], { cwd: upstreamRepo, encoding: 'utf8' });
-    const commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: upstreamRepo, encoding: 'utf8' }).stdout.trim();
 
     fs.mkdirSync(path.join(tmpDir, 'packs', 'gstack'), { recursive: true });
     fs.mkdirSync(path.join(tmpDir, 'packs', 'abyss'), { recursive: true });
@@ -57,8 +52,8 @@ describe('packs cli', () => {
         },
       },
       upstream: {
-        repo: upstreamRepo,
-        commit,
+        provider: 'local-dir',
+        path: 'upstream-gstack',
         version: '0.0.0-test',
       },
     }, null, 2));
@@ -74,7 +69,7 @@ describe('packs cli', () => {
   });
 
   afterEach(() => {
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    rmSafe(tmpDir);
   });
 
   function run(args, extraEnv = {}) {

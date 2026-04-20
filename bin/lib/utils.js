@@ -34,8 +34,33 @@ function copyRecursive(src, dest, errors) {
   }
 }
 
+function clearReadOnlyRecursive(targetPath) {
+  if (!fs.existsSync(targetPath)) return;
+  const stat = fs.lstatSync(targetPath);
+  try {
+    fs.chmodSync(targetPath, stat.isDirectory() ? 0o777 : 0o666);
+  } catch {}
+  if (stat.isDirectory()) {
+    for (const entry of fs.readdirSync(targetPath)) {
+      clearReadOnlyRecursive(path.join(targetPath, entry));
+    }
+  }
+}
+
 function rmSafe(p) {
-  if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true });
+  if (!fs.existsSync(p)) return;
+  const errors = [];
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      clearReadOnlyRecursive(p);
+      fs.rmSync(p, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      errors.push(error);
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50 * (attempt + 1));
+    }
+  }
+  throw errors[errors.length - 1];
 }
 
 function deepMergeNew(target, source, prefix, log) {

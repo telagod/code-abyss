@@ -3,8 +3,10 @@
 
 const { generateDocs, analyzeModule } = require('./doc-module-analysis');
 const { analyzeChange } = require('./change-analysis');
+const { analyzeChartSpec } = require('./chart-spec-analysis');
 const { analyzeQuality } = require('./quality-analysis');
 const { analyzeSecurity } = require('./security-analysis');
+const { analyzeS2Config } = require('./s2-config-analysis');
 
 function normalizeRelPath(file) {
   return String(file || '').replace(/\\/g, '/');
@@ -109,6 +111,8 @@ module.exports = {
   generateDocs,
   analyzeModule,
   analyzeChange,
+  analyzeChartSpec,
+  analyzeS2Config,
   analyzeQuality,
   analyzeSecurity,
   evaluatePreCommit,

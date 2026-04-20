@@ -4,7 +4,20 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const { spawnSync } = require('child_process');
+const { rmSafe } = require('../bin/lib/utils');
 const gstackFixture = path.join(__dirname, 'fixtures', 'gstack-codex-source');
+
+function cleanupHomeRoot(tmpHome) {
+  if (!fs.existsSync(tmpHome)) return;
+  for (const entry of fs.readdirSync(tmpHome)) {
+    try {
+      rmSafe(path.join(tmpHome, entry));
+    } catch {}
+  }
+  try {
+    fs.rmdirSync(tmpHome);
+  } catch {}
+}
 
 describe('install cli styles', () => {
   test('--list-styles 列出可用风格', () => {
@@ -27,7 +40,7 @@ describe('claude install smoke', () => {
   });
 
   afterEach(() => {
-    fs.rmSync(tmpHome, { recursive: true, force: true });
+    cleanupHomeRoot(tmpHome);
   });
 
   function runInstall(args) {
@@ -76,7 +89,7 @@ describe('codex install smoke', () => {
   });
 
   afterEach(() => {
-    fs.rmSync(tmpHome, { recursive: true, force: true });
+    cleanupHomeRoot(tmpHome);
   });
 
   function runInstall(args) {
@@ -159,7 +172,7 @@ describe('gemini install smoke', () => {
   });
 
   afterEach(() => {
-    fs.rmSync(tmpHome, { recursive: true, force: true });
+    cleanupHomeRoot(tmpHome);
   });
 
   function runInstall(args) {

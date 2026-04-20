@@ -113,10 +113,10 @@ node personal-skill-system/skills/guards/pre-merge-gate/scripts/run.js --target 
 
 褰撳墠璇勫垎闈細
 
-- `TOP-ready`: 58
+- `TOP-ready`: 74
 - `strong-but-not-top`: 0
 - `thin`: 0
-- total: 58
+- total: 74
 
 璇存槑锛?
 - 本轮已完成 `AI / Infrastructure / DevOps / Review / Development / Architecture / Security / Data / Orchestration` 的 TOP-ready 全覆盖

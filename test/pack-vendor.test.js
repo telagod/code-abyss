@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { rmSafe } = require('../bin/lib/utils');
 
 const {
   syncPackVendor,
@@ -20,7 +21,7 @@ describe('pack vendor providers', () => {
   });
 
   afterEach(() => {
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    rmSafe(tmpDir);
   });
 
   function writeManifest(name, upstream) {
@@ -65,11 +66,14 @@ describe('pack vendor providers', () => {
 
   test('syncPackVendor 支持 archive provider', () => {
     const sourceDir = path.join(tmpDir, 'archive-source');
-    const archivePath = path.join(tmpDir, 'archive-source.tgz');
+    const archivePath = path.join(tmpDir, 'archive-source.zip');
     fs.mkdirSync(sourceDir, { recursive: true });
     fs.writeFileSync(path.join(sourceDir, 'README.md'), 'archive source\n');
-    spawnSync('tar', ['-czf', archivePath, '-C', sourceDir, '.'], { encoding: 'utf8' });
-    writeManifest('archive-pack', { provider: 'archive', path: 'archive-source.tgz' });
+    const zipResult = process.platform === 'win32'
+      ? spawnSync('powershell', ['-NoProfile', '-Command', `Compress-Archive -Path '${sourceDir}\\*' -DestinationPath '${archivePath}' -Force`], { encoding: 'utf8' })
+      : spawnSync('zip', ['-rq', archivePath, '.'], { cwd: sourceDir, encoding: 'utf8' });
+    expect(zipResult.status).toBe(0);
+    writeManifest('archive-pack', { provider: 'archive', path: 'archive-source.zip' });
 
     const report = syncPackVendor(tmpDir, 'archive-pack');
     const status = getPackVendorStatus(tmpDir, 'archive-pack');

@@ -251,6 +251,76 @@
       ]
     },
     {
+      "skill": "verify-chart-spec",
+      "kind": "tool",
+      "priority": 89,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-chart-spec",
+          "chart spec check",
+          "g2 spec validation",
+          "chart validation",
+          "图表规范校验",
+          "图表校验",
+          "g2 校验",
+          "G2规范检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "chart-spec-audit",
+        "g2-spec-check",
+        "图表规范审计"
+      ]
+    },
+    {
+      "skill": "verify-s2-config",
+      "kind": "tool",
+      "priority": 88,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-s2-config",
+          "s2 config check",
+          "pivot table validation",
+          "s2 validation",
+          "S2配置校验",
+          "透视表配置校验",
+          "S2校验",
+          "SheetComponent 检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "s2-config-audit",
+        "pivot-config-check",
+        "S2配置审计"
+      ]
+    },
+    {
       "skill": "investigate",
       "kind": "workflow",
       "priority": 88,
@@ -787,6 +857,85 @@
       "aliases": [
         "coding",
         "开发"
+      ]
+    },
+    {
+      "skill": "chart-visualization",
+      "kind": "domain",
+      "priority": 77,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "chart",
+          "chart visualization",
+          "data visualization",
+          "g2",
+          "antv g2",
+          "s2",
+          "pivot table",
+          "cross table",
+          "infographic",
+          "narrative text visualization",
+          "t8",
+          "图表",
+          "数据可视化",
+          "图表生成",
+          "透视表",
+          "交叉表",
+          "信息图",
+          "叙事可视化",
+          "阈值线",
+          "参考线",
+          "区间高亮",
+          "游标线",
+          "共享提示",
+          "图片标注",
+          "图标散点"
+        ],
+        "negative-keywords": [
+          "ui layout",
+          "pure visual polish",
+          "ux copywriting",
+          "纯视觉润色",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "frontend-design"
+      ],
+      "auto-chain": [],
+      "expert-modules": [
+        "chart-visualization-g2-spec-guardrails",
+        "chart-visualization-g2-chart-selection",
+        "chart-visualization-g2-mark-and-transform-basics",
+        "chart-visualization-g2-interaction-and-tooltips",
+        "chart-visualization-s2-sheet-model-and-config",
+        "chart-visualization-s2-framework-bindings",
+        "chart-visualization-chart-image-api",
+        "chart-visualization-icon-retrieval-api",
+        "chart-visualization-infographic-dsl",
+        "chart-visualization-narrative-t8",
+        "chart-visualization-g2-components-and-layout",
+        "chart-visualization-g2-data-scales-and-coordinates",
+        "chart-visualization-g2-annotations-and-reference-marks",
+        "chart-visualization-g2-shared-tooltip-and-navigation",
+        "chart-visualization-s2-advanced-table-features",
+        "chart-visualization-s2-customization-and-extensions"
+      ],
+      "aliases": [
+        "data-visualization",
+        "图表可视化"
       ]
     },
     {

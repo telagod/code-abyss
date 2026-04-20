@@ -2,10 +2,10 @@
 
 ## Summary
 
-- TOP-ready: 58
+- TOP-ready: 74
 - strong-but-not-top: 0
 - thin: 0
-- total rated capability modules: 58
+- total rated capability modules: 74
 
 ## Interpretation
 
@@ -16,11 +16,11 @@
 ## Current Verdict
 
 The routed capability surface no longer has obviously thin modules.
-In this snapshot, all rated modules are TOP-ready; iteration focus shifts to drift prevention and quality recalibration.
+In this snapshot, all rated modules are TOP-ready; iteration focus shifts to drift prevention, validation depth, and chart-domain regression control.
 
 ## Next Batch
 
-- `(none; all 58 rated modules are TOP-ready in this snapshot)`
+- `(none; all 74 rated modules are TOP-ready in this snapshot)`
 
 ## TOP-ready
 
@@ -82,6 +82,22 @@ In this snapshot, all rated modules are TOP-ready; iteration focus shifts to dri
 - `orchestration-work-decomposition`
 - `orchestration-dependency-and-integration`
 - `orchestration-status-and-handoffs`
+- `chart-visualization-g2-spec-guardrails`
+- `chart-visualization-g2-chart-selection`
+- `chart-visualization-g2-mark-and-transform-basics`
+- `chart-visualization-g2-interaction-and-tooltips`
+- `chart-visualization-g2-components-and-layout`
+- `chart-visualization-g2-data-scales-and-coordinates`
+- `chart-visualization-g2-annotations-and-reference-marks`
+- `chart-visualization-g2-shared-tooltip-and-navigation`
+- `chart-visualization-s2-sheet-model-and-config`
+- `chart-visualization-s2-framework-bindings`
+- `chart-visualization-s2-advanced-table-features`
+- `chart-visualization-s2-customization-and-extensions`
+- `chart-visualization-chart-image-api`
+- `chart-visualization-icon-retrieval-api`
+- `chart-visualization-infographic-dsl`
+- `chart-visualization-narrative-t8`
 
 ## Strong But Not Top
 

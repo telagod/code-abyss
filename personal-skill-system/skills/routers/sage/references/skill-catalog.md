@@ -12,6 +12,7 @@
 - `development`: implementation, refactor, debugging, Python engineering, optimization
 - `devops`: release gates, CI/CD, observability, operational readiness
 - `frontend-design`: IA, UX, accessibility, visual systems, style selection
+- `chart-visualization`: chart generation, G2/S2 visualization knowledge, infographic DSL, T8 narrative visualization
 - `infrastructure`: topology, IaC, GitOps, runtime control, tenancy, platform ops
 - `mobile`: lifecycle, offline behavior, permissions, client constraints
 - `orchestration`: decomposition, sequencing, ownership, integration, handoff
@@ -41,6 +42,8 @@
 - `verify-change`: diff-aware change review and doc-sync checks
 - `verify-quality`: code-shape and maintainability checks
 - `verify-security`: rule-based security scan and boundary checks
+- `verify-chart-spec`: heuristic G2 chart-spec validation and anti-pattern detection
+- `verify-s2-config`: heuristic S2 config validation for dataCfg, SheetComponent, and lifecycle wiring
 - `verify-skill-system`: skill-bundle integrity, registry coverage, and route-map contract checks
 
 ## Guards
@@ -144,6 +147,25 @@ The generated machine-readable layer mirrors this through:
 - ownership and write boundaries
 - dependency and integration
 - status and handoffs
+
+### Chart-visualization modules
+
+- G2 spec guardrails
+- G2 chart selection
+- G2 mark and transform basics
+- G2 interaction and tooltips
+- G2 components and layout
+- G2 data, scales, and coordinates
+- G2 annotations and reference marks
+- G2 shared tooltip and navigation
+- S2 sheet model and config
+- S2 framework bindings
+- S2 advanced table features
+- S2 customization and extensions
+- chart image API
+- icon retrieval API
+- infographic DSL
+- narrative T8
 
 ## Use Strategy
 

@@ -256,13 +256,13 @@ If the goal is to move closer to the original tool strength, the next iteration 
 
 **涓枃**
 
-- 璇勫垎鏇存柊锛歍OP-ready=58, strong-but-not-top=0, 	hin=0, 	otal=58
+- 璇勫垎鏇存柊锛歍OP-ready=74, strong-but-not-top=0, 	hin=0, 	otal=74
 - 鏈疆鏅嬪崌鑼冨洿锛欰I / Infrastructure / DevOps / Review / Development / Architecture / Security / Data / Orchestration
 - 涓嬩竴姝ヨ仛鐒︼細(褰撳墠蹇収鏃犲緟鏅嬪崌妯″潡锛涜浆涓烘紓绉绘不鐞嗐€佸洖褰掓牎楠屼笌鍛ㄦ湡鎬у鏍?
 
 **English**
 
-- Ratings now: TOP-ready=58, strong-but-not-top=0, thin=0, total=58
+- Ratings now: TOP-ready=74, strong-but-not-top=0, thin=0, total=74
 - Promotion focus in this round: AI / Infrastructure / DevOps / Review / Development / Architecture / Security / Data / Orchestration
 - Next focus: (none for promotion in current snapshot; focus shifts to drift control and periodic recalibration)
 
@@ -276,6 +276,6 @@ If the goal is to move closer to the original tool strength, the next iteration 
 
 ### 8.4 Final Closure Snapshot
 
-- all 58 routed capability modules are currently rated TOP-ready
+- all 74 routed capability modules are currently rated TOP-ready
 - strong-but-not-top and thin are both zero in this snapshot
 - next iteration should prioritize drift checks, route regression, and periodic recalibration instead of promotion
