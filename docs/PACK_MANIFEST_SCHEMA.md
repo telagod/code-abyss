@@ -1,8 +1,12 @@
 # Pack Manifest Schema
 
-`packs/<name>/manifest.json` is the minimum contract for third-party packs.
+> 适用对象：新增或维护 `packs/<name>/manifest.json` 的维护者
 
-## Required top-level fields
+## 这份文档解决什么问题
+
+当你要新增一个第三方 pack，或者调整某个 pack 在不同 host 下的安装 / 卸载行为时，需要知道 manifest 应该长什么样、哪些字段是强约束、哪些字段只是扩展信息。
+
+## 最小可用示例
 
 ```json
 {
@@ -12,11 +16,23 @@
 }
 ```
 
-- `name`: must match the directory name under `packs/`
-- `description`: non-empty human-readable summary
-- `hosts`: per-host install metadata
+这三个字段缺一不可：
 
-## Optional top-level fields
+- `name`
+- `description`
+- `hosts`
+
+## 顶层字段
+
+### 必填字段
+
+| 字段 | 说明 |
+| --- | --- |
+| `name` | 必须与 `packs/<name>/` 目录名一致 |
+| `description` | 非空、给人看的摘要 |
+| `hosts` | 每个 host 的安装契约 |
+
+### 可选字段
 
 ```json
 {
@@ -26,7 +42,8 @@
   },
   "projectDefaults": {
     "claude": "optional",
-    "codex": "required"
+    "codex": "required",
+    "gemini": "optional"
   },
   "upstream": {
     "provider": "git",
@@ -37,15 +54,31 @@
 }
 ```
 
-- `reporting.label`: human-facing name used in install/uninstall output
-- `reporting.artifactPrefix`: prefix used for report artifact filenames
-- `projectDefaults.<host>`: `required|optional`
-- `upstream`: required only for packs that support `source=pinned` or vendor sync
-- `upstream.provider`: `git | local-dir | archive`
+#### `reporting`
 
-## Host contract
+- `label`：安装 / 卸载输出里展示的人类可读名称
+- `artifactPrefix`：report artifact 的文件名前缀
 
-Each host block may define `files`, `uninstall`, and host-specific runtime metadata.
+#### `projectDefaults`
+
+定义如果项目没有显式修改 lock，某个 host 默认如何对待这个 pack：
+
+- `required`
+- `optional`
+
+#### `upstream`
+
+当 pack 支持 `source=pinned` 或 vendor sync 时，需要声明 upstream。
+
+## `hosts` 块
+
+每个 host block 可以包含：
+
+- `files`
+- `uninstall`
+- host-specific runtime metadata
+
+示例：
 
 ```json
 {
@@ -68,112 +101,106 @@ Each host block may define `files`, `uninstall`, and host-specific runtime metad
 }
 ```
 
-### `files`
+## `files`
 
-Used by the main installer for bundled/core packs.
+`files` 用于描述“安装时要从仓库复制哪些静态文件”。
 
-- `src`: repo-relative source path
-- `dest`: destination path relative to the selected root
-- `root`: one of `claude|codex|agents`
+每个条目都需要：
 
-### `uninstall`
+- `src`：仓库内源路径
+- `dest`：目标根目录下的目标路径
+- `root`：`claude | codex | agents | gemini`
 
-Used by `node bin/packs.js uninstall <pack>`.
+## `uninstall`
 
-- `runtimeRoot.root`: install root name (`claude|codex|agents|gemini`)
-- `runtimeRoot.path`: runtime directory to remove
-- `commandRoot`: optional command directory root for command cleanup
-- `commandExtension`: optional command filename suffix, defaults to `.md`
-- `commandsFromRuntime`: if true, derive command names from subdirectories under `runtimeRoot`
-- `commandAliases`: optional extra command names to delete
+`uninstall` 用于 `node bin/packs.js uninstall <pack>`。
 
-## Source modes
+### 必要字段
 
-`packs.lock` can reference a pack with:
+- `runtimeRoot.root`
+- `runtimeRoot.path`
 
-- `pinned`: use `upstream.repo + upstream.commit`
-- `local`: use `.code-abyss/vendor/<pack>` or explicit env override
-- `disabled`: keep the declaration but skip installation
+### 常见可选字段
 
-If a pack wants `pinned` or `local`, it should declare `upstream`.
+- `commandRoot`
+- `commandExtension`
+- `commandsFromRuntime`
+- `commandAliases`
 
-### Upstream providers
+### 语义说明
 
-- `git`: requires `repo` and `commit`
-- `local-dir`: requires `path`
-- `archive`: requires `path` to a local tar/zip archive
+- `runtimeRoot`：要删除的 runtime 根目录
+- `commandRoot`：要额外清理的命令目录
+- `commandsFromRuntime=true`：命令名可从 runtime 子目录自动推导
+- `commandAliases`：额外需要删除的历史命令名
 
-Additional providers can be registered by dropping CommonJS modules into:
+## source mode 与 upstream provider
+
+`packs.lock` 可以把某个 pack 指向：
+
+- `pinned`
+- `local`
+- `disabled`
+
+如果要支持 `pinned` 或 `local`，manifest 应声明 `upstream`。
+
+### 当前支持的 provider
+
+- `git`
+- `local-dir`
+- `archive`
+
+额外 provider 可通过以下目录扩展：
 
 - `.code-abyss/vendor-providers/`
 - `vendor-providers/`
 
-Each provider module must export:
+provider module 需要导出：
 
 - `name`
 - `validate(upstream)`
 - `sync(ctx)`
 - `status(ctx)`
 
-## Reporting contract
+## Reporting 合约
 
-Pack-aware operations write JSON reports to `.code-abyss/reports/`.
+pack 相关操作会向 `.code-abyss/reports/` 写入 JSON artifact。
 
-- Install reports are written by the main installer and include `pack_reports`
-- `packs uninstall <pack>` writes a dedicated uninstall report
-- `reporting.artifactPrefix` controls report filename prefixes for future tooling
+- 主安装流程会把 pack 结果写进 install report 的 `pack_reports`
+- `packs uninstall <pack>` 会写独立 uninstall report
+- `reporting.artifactPrefix` 决定后续工具如何归类这些 artifact
 
-## Validation rules
+## 当前校验规则
 
-Current validation enforces:
+现有校验至少会检查：
 
-- `name`, `description`, `hosts` must exist
-- only known hosts are allowed
-- each `files[]` entry must include `src`, `dest`, `root`
-- each `uninstall.runtimeRoot` must include `root`, `path`
-- `reporting.label` and `reporting.artifactPrefix` must be strings when present
+- 顶层 `name` / `description` / `hosts` 是否存在
+- host 名是否属于已知集合
+- `files[]` 是否包含 `src` / `dest` / `root`
+- `uninstall.runtimeRoot` 是否包含 `root` / `path`
+- `reporting.label` / `artifactPrefix` 类型是否合法
 
-## Minimal third-party example
+## 新增一个 pack 的最短路径
 
-```json
-{
-  "name": "acme-pack",
-  "description": "Acme internal workflow pack.",
-  "reporting": {
-    "label": "Acme Pack",
-    "artifactPrefix": "acme-pack"
-  },
-  "projectDefaults": {
-    "claude": "optional",
-    "codex": "optional",
-    "gemini": "optional"
-  },
-  "upstream": {
-    "repo": "https://github.com/acme/acme-pack.git",
-    "commit": "0123456789abcdef",
-    "version": "0.1.0"
-  },
-  "hosts": {
-    "claude": {
-      "uninstall": {
-        "runtimeRoot": { "root": "claude", "path": "skills/acme-pack" },
-        "commandRoot": { "root": "claude", "path": "commands" },
-        "commandsFromRuntime": true
-      }
-    },
-    "codex": {
-      "uninstall": {
-        "runtimeRoot": { "root": "agents", "path": "skills/acme-pack" }
-      }
-    },
-    "gemini": {
-      "uninstall": {
-        "runtimeRoot": { "root": "gemini", "path": "skills/acme-pack" },
-        "commandRoot": { "root": "gemini", "path": "commands" },
-        "commandExtension": ".toml",
-        "commandsFromRuntime": true
-      }
-    }
-  }
-}
+1. 创建 `packs/<name>/manifest.json`
+2. 先写最小顶层字段
+3. 为需要支持的 host 补 `files` 或 `uninstall`
+4. 如果要支持 `pinned` / vendor，同步补 `upstream`
+5. 运行：
+
+```bash
+npm run packs:check
+npm test -- --runInBand test/pack-registry.test.js test/packs-cli.test.js
 ```
+
+## 常见错误
+
+- `name` 与目录名不一致
+- 只写了 `projectDefaults`，却忘了写 `hosts`
+- 声明 `source=pinned`，却没有 `upstream`
+- 只定义安装，不定义卸载，导致 pack 生命周期不闭环
+
+## 相关文档
+
+- [PACK_SYSTEM.md](./PACK_SYSTEM.md)
+- [PACKS_LOCK_SCHEMA.md](./PACKS_LOCK_SCHEMA.md)
