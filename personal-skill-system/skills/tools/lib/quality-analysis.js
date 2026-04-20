@@ -116,9 +116,23 @@ function analyzeLanguageSpecificQuality(rel, text, lines) {
       if (/catch\s*\([^)]*\)\s*\{\s*\}/.test(line)) {
         issues.push({ severity: 'warning', file: rel, line_number: index + 1, message: 'empty catch block hides failures' });
       }
+      if (/\.forEach\s*\(\s*async\b/.test(line)) {
+        issues.push({ severity: 'warning', file: rel, line_number: index + 1, message: 'async work inside forEach is easy to mis-sequence; prefer for...of or Promise.all' });
+      }
+      if (/\buseEffect\s*\(\s*async\b/.test(line)) {
+        issues.push({ severity: 'warning', file: rel, line_number: index + 1, message: 'useEffect should not be declared async directly; wrap async work inside' });
+      }
+      if (/new\s+Promise\s*\(\s*async\b/.test(line)) {
+        issues.push({ severity: 'warning', file: rel, line_number: index + 1, message: 'async Promise executor hides rejection flow and usually indicates a design smell' });
+      }
     });
     if ((ext === '.ts' || ext === '.tsx') && /:\s*any\b|<any>/.test(text)) {
-      issues.push({ severity: 'info', file: rel, message: 'explicit any type weakens local contracts' });
+      const anyCount = (text.match(/:\s*any\b|<any>/g) || []).length;
+      issues.push({
+        severity: anyCount >= 3 ? 'warning' : 'info',
+        file: rel,
+        message: anyCount >= 3 ? `heavy use of explicit any (${anyCount}) weakens local contracts` : 'explicit any type weakens local contracts'
+      });
     }
   }
 

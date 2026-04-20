@@ -984,6 +984,14 @@
       "aliases": [
         "ui-design",
         "前端设计"
+      ],
+      "expert-modules": [
+        "frontend-design-information-architecture-and-interaction",
+        "frontend-design-information-architecture",
+        "frontend-design-interaction-patterns",
+        "frontend-design-hierarchy-and-visual-systems",
+        "frontend-design-motion-and-state-transitions",
+        "frontend-design-responsive-and-implementation-constraints"
       ]
     },
     {
@@ -1301,6 +1309,15 @@
       "aliases": [
         "mobile-dev",
         "移动开发"
+      ],
+      "expert-modules": [
+        "mobile-lifecycle-and-state",
+        "mobile-lifecycle-and-interruption",
+        "mobile-offline-sync-and-conflict",
+        "mobile-permission-and-privacy-boundaries",
+        "mobile-battery-and-performance-budget",
+        "mobile-native-bridge-and-platform-boundaries",
+        "mobile-release-and-observability"
       ]
     },
     {
@@ -1338,6 +1355,11 @@
       "aliases": [
         "soft-ui",
         "粘土风"
+      ],
+      "expert-modules": [
+        "claymorphism-surface-and-shadow-system",
+        "claymorphism-component-recipes",
+        "claymorphism-accessibility-and-responsive-constraints"
       ]
     },
     {
@@ -1375,6 +1397,11 @@
       "aliases": [
         "frosted-ui",
         "玻璃拟态"
+      ],
+      "expert-modules": [
+        "glassmorphism-layering-and-contrast",
+        "glassmorphism-component-recipes",
+        "glassmorphism-accessibility-and-responsive-constraints"
       ]
     },
     {
@@ -1414,6 +1441,11 @@
       "aliases": [
         "apple-liquid-glass",
         "液态玻璃"
+      ],
+      "expert-modules": [
+        "liquid-glass-depth-and-motion-language",
+        "liquid-glass-component-recipes",
+        "liquid-glass-fallback-contrast-and-legibility"
       ]
     },
     {
@@ -1451,6 +1483,11 @@
       "aliases": [
         "brutalist-style",
         "新粗野主义"
+      ],
+      "expert-modules": [
+        "neubrutalism-graphic-hierarchy-and-tokens",
+        "neubrutalism-component-recipes",
+        "neubrutalism-accessibility-and-density-controls"
       ]
     },
     {

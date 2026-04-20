@@ -44,6 +44,16 @@ aliases: [ui-design, 前端设计]
   Read when the work touches hierarchy, typography, contrast, spacing, or accessibility.
 - `references/variant-selection-and-performance.md`
   Read when choosing among design variants or balancing aesthetics against performance constraints.
+- `references/expert-information-architecture.md`
+  Read when a weak layout must be turned into a clear hierarchy and navigation system.
+- `references/expert-interaction-patterns.md`
+  Read when the main failure is unclear actions, state transitions, or feedback loops.
+- `references/expert-hierarchy-and-visual-systems.md`
+  Read when typography, spacing, grouping, and emphasis determine whether the interface works.
+- `references/expert-motion-and-state-transitions.md`
+  Read when motion should explain state, reduce ambiguity, or improve continuity across views.
+- `references/expert-responsive-and-implementation-constraints.md`
+  Read when responsive behavior, rendering cost, or implementation constraints should shape the design.
 - `references/expert-operating-principles.md`
   Read when the design task needs top-tier hierarchy, interaction, accessibility, and visual-direction judgement.
 
@@ -51,3 +61,11 @@ aliases: [ui-design, 前端设计]
 
 - implementation-heavy UI changes -> `development`
 - larger system constraint discussion -> `architecture`
+
+## Output Expectations
+
+- hierarchy map
+- interaction stance
+- accessibility risks
+- responsive behavior
+- implementation constraints

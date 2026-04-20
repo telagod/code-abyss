@@ -134,6 +134,49 @@ const SECURITY_RULES = [
     extensions: ['.py', '.js', '.ts'],
     pattern: /verify_signature\s*:\s*False|ignoreExpiration\s*:\s*true|ignoreExpiration\s*=\s*True/i,
     message: 'token verification appears weakened or disabled'
+  },
+  {
+    id: 'express-cors-open',
+    severity: 'medium',
+    category: 'boundary',
+    extensions: ['.js', '.ts'],
+    pattern: /\bcors\s*\(\s*\)/i,
+    message: 'open CORS middleware configuration may be broader than intended'
+  }
+];
+
+const SECURITY_FLOW_RULES = [
+  {
+    id: 'source-to-exec',
+    severity: 'critical',
+    category: 'execution',
+    source: /\b(req|request)\.(body|query|params|headers)|\b(userInput|input|argv|process\.argv)\b/i,
+    sink: /\b(exec|spawn|spawnSync|system|popen|subprocess\.(run|call|Popen))\b/i,
+    message: 'untrusted input and command-execution primitives appear in the same file; review command-injection path'
+  },
+  {
+    id: 'source-to-filesystem',
+    severity: 'high',
+    category: 'path',
+    source: /\b(req|request)\.(body|query|params)|\b(userPath|userFile|pathParam|fileParam|input)\b/i,
+    sink: /\b(readFile|writeFile|sendFile|open|fs\.)\b/i,
+    message: 'untrusted path-like input and filesystem operations appear in the same file; review traversal and overwrite risk'
+  },
+  {
+    id: 'source-to-remote-fetch',
+    severity: 'high',
+    category: 'network',
+    source: /\b(req|request)\.(body|query|params)|\b(userUrl|url|targetUrl|input)\b/i,
+    sink: /\b(fetch|axios\.(get|post|put|delete)|requests\.(get|post|put|delete)|urlopen)\b/i,
+    message: 'untrusted URL-like input and outbound fetch logic appear in the same file; review SSRF boundaries'
+  },
+  {
+    id: 'source-to-html-sink',
+    severity: 'high',
+    category: 'xss',
+    source: /\b(req|request)\.(body|query|params)|\b(userHtml|userContent|content|html)\b/i,
+    sink: /\.innerHTML\s*=|dangerouslySetInnerHTML|document\.write\s*\(/i,
+    message: 'untrusted content and HTML sink logic appear in the same file; review XSS handling and sanitization'
   }
 ];
 
@@ -148,6 +191,13 @@ function isMeaningfulSecurityLine(line, pattern) {
   if (trimmed.startsWith('#') || trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) return false;
   if (pattern.excludePattern && pattern.excludePattern.test(line)) return false;
   return pattern.pattern.test(line);
+}
+
+function firstMatchingLine(lines, regex) {
+  for (let index = 0; index < lines.length; index += 1) {
+    if (regex.test(lines[index])) return index + 1;
+  }
+  return 0;
 }
 
 function analyzeSecurity(targetDir, options = {}) {
@@ -174,6 +224,18 @@ function analyzeSecurity(targetDir, options = {}) {
           message: pattern.message
         });
       }
+    }
+
+    for (const flow of SECURITY_FLOW_RULES) {
+      if (!flow.source.test(text) || !flow.sink.test(text)) continue;
+      const line_number = firstMatchingLine(lines, flow.sink) || firstMatchingLine(lines, flow.source) || 1;
+      findings.push({
+        severity: flow.severity,
+        file: rel,
+        line_number,
+        category: flow.category,
+        message: flow.message
+      });
     }
   }
 

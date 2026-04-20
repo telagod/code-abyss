@@ -6,6 +6,16 @@ const { classifyPath, listChangedFiles } = require('./runtime');
 
 const CODE_EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx', '.py', '.go', '.java', '.rs', '.c', '.cpp', '.h']);
 const TEST_PATTERNS = ['test_', '_test.', '.test.', 'spec_', '_spec.', '/tests/', '/test/', '/__tests__/'];
+const MODULE_MARKERS = [
+  'README.md',
+  'DESIGN.md',
+  'package.json',
+  'pyproject.toml',
+  'go.mod',
+  'Cargo.toml',
+  'pom.xml',
+  'manifest.json'
+];
 const CHANGE_SENSITIVE_PATTERNS = [
   { label: 'auth', pattern: /(auth|login|token|session|permission|rbac|oauth|jwt)/i },
   { label: 'database', pattern: /(migrat|schema|model|sql|query|repository|dao)/i },
@@ -38,9 +48,9 @@ function findModuleFor(relPath, targetDir) {
 
   for (let i = parts.length - 1; i >= 1; i -= 1) {
     const candidate = parts.slice(0, i).join('/');
-    const readme = path.join(targetDir, candidate, 'README.md');
-    const design = path.join(targetDir, candidate, 'DESIGN.md');
-    if (fs.existsSync(readme) || fs.existsSync(design)) return candidate;
+    if (MODULE_MARKERS.some(marker => fs.existsSync(path.join(targetDir, candidate, marker)))) {
+      return candidate;
+    }
   }
   return parts[0];
 }
@@ -104,12 +114,15 @@ function classifySensitiveChangeSurface(files) {
 
 function buildChangeRisk(changeSet, counts, modules, sensitiveAreas) {
   let score = 0;
+  const changeKinds = summarizeChangeKinds(changeSet.entries);
 
   if (changeSet.files.length >= 12) score += 2;
   if (changeSet.files.length >= 25) score += 2;
   if ((counts.code || 0) >= 5) score += 2;
   if ((counts.config || 0) > 0) score += 2;
   if (modules.length >= 3) score += 2;
+  if ((changeKinds.deleted || 0) > 0) score += 2;
+  if ((changeKinds.renamed || 0) > 0) score += 1;
 
   for (const area of sensitiveAreas) {
     if (area === 'auth' || area === 'execution' || area === 'security') score += 3;
@@ -125,6 +138,7 @@ function buildChangeRisk(changeSet, counts, modules, sensitiveAreas) {
   if ((counts.code || 0) > 0) recommendedChecks.push('targeted tests');
   if ((counts.code || 0) > 0 && modules.length >= 2) recommendedChecks.push('review');
   if ((counts.config || 0) > 0 || level === 'high' || level === 'critical') recommendedChecks.push('ship');
+  if ((changeKinds.deleted || 0) > 0 || (changeKinds.renamed || 0) > 0) recommendedChecks.push('review');
   if (sensitiveAreas.some(area => ['auth', 'execution', 'security'].includes(area))) {
     recommendedChecks.push('verify-security');
   }
@@ -136,6 +150,20 @@ function buildChangeRisk(changeSet, counts, modules, sensitiveAreas) {
     sensitiveAreas,
     recommendedChecks: unique(recommendedChecks)
   };
+}
+
+function summarizeChangeKinds(entries) {
+  const summary = { added: 0, modified: 0, deleted: 0, renamed: 0 };
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    if (entry.operation && summary[entry.operation] != null) {
+      summary[entry.operation] += 1;
+    }
+  }
+  return summary;
+}
+
+function findOperationEntries(entries, predicate) {
+  return (Array.isArray(entries) ? entries : []).filter(predicate);
 }
 
 function resolveAnalyzeChangeOptions(modeOrOptions, maybeOptions) {
@@ -157,6 +185,7 @@ function analyzeChange(targetDir, modeOrOptions, maybeOptions = {}) {
   const changeSet = listChangedFiles(targetDir, options.mode, { changedFiles: options.changedFiles });
   const counts = { code: 0, doc: 0, test: 0, config: 0, asset: 0, other: 0 };
   const findings = [];
+  const changeKinds = summarizeChangeKinds(changeSet.entries);
 
   for (const file of changeSet.files) {
     const kind = classifyPath(file);
@@ -184,6 +213,9 @@ function analyzeChange(targetDir, modeOrOptions, maybeOptions = {}) {
   if (counts.code > 0 && counts.test === 0) {
     findings.push({ severity: 'warning', message: 'code changed but no test files changed' });
   }
+  if (changeKinds.deleted > 0 && counts.test === 0) {
+    findings.push({ severity: 'warning', message: 'files were deleted but no replacement tests or docs were detected in scope' });
+  }
   if (counts.code > 0 && counts.doc === 0) {
     findings.push({ severity: 'info', message: 'code changed but no documentation files changed' });
   }
@@ -195,9 +227,24 @@ function analyzeChange(targetDir, modeOrOptions, maybeOptions = {}) {
   findings.push(...docSync.issues);
   const sensitiveAreas = classifySensitiveChangeSurface(changeSet.files);
   const riskSummary = buildChangeRisk(changeSet, counts, docSync.modules, sensitiveAreas);
+  const deletedTests = findOperationEntries(changeSet.entries, entry => entry.operation === 'deleted' && isTestPath(entry.file));
+  const renamedPublicApi = findOperationEntries(
+    changeSet.entries,
+    entry => entry.operation === 'renamed' && /(api|handler|controller|route|graphql|rpc)/i.test(entry.file)
+  );
+  const deletedConfig = findOperationEntries(changeSet.entries, entry => entry.operation === 'deleted' && classifyPath(entry.file) === 'config');
 
   if (docSync.modules.length >= 3) {
     findings.push({ severity: 'warning', message: `change spans ${docSync.modules.length} modules; integration risk is elevated` });
+  }
+  if (deletedTests.length > 0) {
+    findings.push({ severity: 'warning', message: `${deletedTests.length} test-like files were deleted; confirm replacement coverage exists` });
+  }
+  if (renamedPublicApi.length > 0) {
+    findings.push({ severity: 'warning', message: `${renamedPublicApi.length} public API path(s) were renamed; compatibility and caller impact should be reviewed` });
+  }
+  if (deletedConfig.length > 0) {
+    findings.push({ severity: 'warning', message: `${deletedConfig.length} config file(s) were removed; rollback and environment assumptions should be reviewed` });
   }
   if (sensitiveAreas.length > 0) {
     findings.push({ severity: riskSummary.level === 'critical' || riskSummary.level === 'high' ? 'warning' : 'info', message: `sensitive change surface detected: ${sensitiveAreas.join(', ')}` });
@@ -213,9 +260,11 @@ function analyzeChange(targetDir, modeOrOptions, maybeOptions = {}) {
     summary: `Analyzed ${changeSet.files.length} changed files from ${changeSet.source}.`,
     findings,
     changedFiles: changeSet.files.slice(0, 100),
+    changeKinds,
     counts,
     affectedModules: docSync.modules,
     moduleDetails: docSync.moduleDetails,
+    changedEntries: (changeSet.entries || []).slice(0, 100),
     riskSummary,
     nextSteps: [
       'review affected modules',

@@ -42,5 +42,16 @@ Prefer:
 
 - `references/layering-and-contrast.md`
   Read when arranging translucent panes, text contrast, and surface stacking.
+- `references/component-recipes.md`
+  Read when converting the style into nav, modal, panel, card, and control recipes.
+- `references/accessibility-and-responsive-constraints.md`
+  Read when translucency risks legibility, focus visibility, or mobile usability.
 - `references/performance-and-fallbacks.md`
   Read when blur, transparency, or mobile cost becomes the main constraint.
+
+## Output Expectations
+
+- layering rules
+- component recipes
+- contrast and focus constraints
+- performance fallbacks

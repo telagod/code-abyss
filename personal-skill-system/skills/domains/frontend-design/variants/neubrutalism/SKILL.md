@@ -43,5 +43,16 @@ Prefer:
 
 - `references/graphic-hierarchy-and-tokens.md`
   Read when setting border weight, color blocks, and punchy component hierarchy.
+- `references/component-recipes.md`
+  Read when applying the style to cards, buttons, forms, alerts, and navigation consistently.
+- `references/accessibility-and-density-controls.md`
+  Read when boldness starts to reduce readability, spacing, or responsive fit.
 - `references/restraint-and-responsive-behavior.md`
   Read when the style risks becoming noisy, childish, or cramped on smaller screens.
+
+## Output Expectations
+
+- hierarchy tokens
+- component recipes
+- density controls
+- responsive restraint rules

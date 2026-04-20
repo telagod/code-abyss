@@ -1,5 +1,20 @@
 # PERSONAL_SKILL_SYSTEM README
 
+## 2026-04-20 Status Update
+
+Read these files before trusting any older blanket "all TOP-ready" claim:
+
+- `docs/CAPABILITY_MODULE_RATINGS.md`
+- `registry/capability-ratings.generated.json`
+- `docs/SKILL_TOP_LEVEL_AUDIT_2026-04-20.md`
+- `docs/SKILL_TOP_LEVEL_UPGRADE_BACKLOG_2026-04-20.md`
+
+Important distinction:
+
+- capability modules are currently rated `99 / 0 / 0`
+- whole-skill status is currently `33 / 0 / 0`
+- this snapshot has no remaining non-top skill under the current weak-model-uplift audit frame
+
 ## 1. 鏈疆鏀瑰姩鎬昏锛堜腑鑻卞弻璇Е鍙戣ˉ鍏級
 
 鏈疆宸插皢 `PERSONAL_SKILL_SYSTEM` 涓墍鏈変細褰卞搷瑙﹀彂鍒ゅ畾鐨勫叧閿潰缁熶竴涓轰腑鑻卞弻璇細

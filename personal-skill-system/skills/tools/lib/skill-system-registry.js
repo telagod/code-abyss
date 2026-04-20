@@ -56,6 +56,55 @@ function validateModuleGroups(targetDir, registryPath, registryData, registryNam
   };
 }
 
+function validateCapabilityRatings(targetDir, skillRecords, moduleNames, findings) {
+  const ratingsPath = path.join(targetDir, 'registry', 'capability-ratings.generated.json');
+  const ratings = parseJsonFile(ratingsPath);
+  if (ratings.error) {
+    findings.push({ severity: 'warning', file: rel(targetDir, ratingsPath), message: `capability ratings parse failed: ${ratings.error}` });
+    return { ratingsPath, ratedModules: new Set() };
+  }
+
+  const data = ratings.data || {};
+  const buckets = data['rating-buckets'] || {};
+  const ratedModules = new Set();
+  for (const bucketName of ['top-ready', 'strong-but-not-top', 'thin']) {
+    for (const moduleId of Array.isArray(buckets[bucketName]) ? buckets[bucketName] : []) {
+      if (ratedModules.has(moduleId)) {
+        findings.push({ severity: 'error', file: rel(targetDir, ratingsPath), message: `capability module '${moduleId}' is duplicated across rating buckets` });
+        continue;
+      }
+      ratedModules.add(moduleId);
+      if (!moduleNames.has(moduleId)) {
+        findings.push({ severity: 'error', file: rel(targetDir, ratingsPath), message: `capability ratings reference unknown module '${moduleId}'` });
+      }
+    }
+  }
+
+  for (const moduleId of moduleNames) {
+    if (!ratedModules.has(moduleId)) {
+      findings.push({ severity: 'warning', file: rel(targetDir, ratingsPath), message: `capability module '${moduleId}' is missing from capability ratings` });
+    }
+  }
+
+  const counts = data.counts || {};
+  if (Number(counts.total || 0) !== ratedModules.size) {
+    findings.push({ severity: 'warning', file: rel(targetDir, ratingsPath), message: `capability ratings total (${counts.total || 0}) does not match rated module count (${ratedModules.size})` });
+  }
+
+  const skillSummary = data['skill-level-summary'];
+  if (skillSummary && skillSummary.counts) {
+    const totalSkills = Number(skillSummary.counts['total-skills-rated'] || 0);
+    if (totalSkills !== skillRecords.length) {
+      findings.push({ severity: 'warning', file: rel(targetDir, ratingsPath), message: `skill-level-summary total (${totalSkills}) does not match registry skill count (${skillRecords.length})` });
+    }
+  }
+
+  return {
+    ratingsPath,
+    ratedModules
+  };
+}
+
 function validateGeneratedMetadata(targetDir, skillRecords, findings) {
   const registryPath = path.join(targetDir, 'registry', 'registry.generated.json');
   const routeMapPath = path.join(targetDir, 'registry', 'route-map.generated.json');
@@ -77,6 +126,7 @@ function validateGeneratedMetadata(targetDir, skillRecords, findings) {
 
   const { registrySkills, registryNames } = validateRegistryEntries(targetDir, registryPath, registry.data, skillRecords, findings);
   const { moduleGroups, moduleNames } = validateModuleGroups(targetDir, registryPath, registry.data, registryNames, findings);
+  const capabilityRatings = validateCapabilityRatings(targetDir, skillRecords, moduleNames, findings);
   const routes = validateRouteMap(targetDir, routeMapPath, routeMap.data, registryNames, skillRecords, moduleNames, findings, rel);
   const fixtures = validateRouteFixtures(targetDir, routeFixturesPath, routeFixtures.data, routeMap.data, registryNames, findings, rel);
 
@@ -84,6 +134,7 @@ function validateGeneratedMetadata(targetDir, skillRecords, findings) {
     registrySkills,
     moduleGroups,
     moduleNames,
+    capabilityRatings,
     routes,
     fixtures
   };

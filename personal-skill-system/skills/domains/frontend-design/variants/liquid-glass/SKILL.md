@@ -42,5 +42,16 @@ Prefer:
 
 - `references/depth-and-motion-language.md`
   Read when tuning premium motion, depth cues, and surface choreography.
+- `references/component-recipes.md`
+  Read when the style must become a consistent card, navigation, modal, and control system.
+- `references/fallback-contrast-and-legibility.md`
+  Read when premium translucency starts hurting readability or touch ergonomics.
 - `references/precision-and-device-constraints.md`
   Read when balancing polish against legibility, responsiveness, and device constraints.
+
+## Output Expectations
+
+- motion and depth rules
+- component recipes
+- legibility constraints
+- device-aware fallbacks

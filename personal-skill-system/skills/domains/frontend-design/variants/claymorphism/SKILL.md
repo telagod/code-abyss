@@ -42,5 +42,16 @@ Prefer:
 
 - `references/surface-and-shadow-system.md`
   Read when building the visual token system for puffy surfaces, inner shadows, and depth.
+- `references/component-recipes.md`
+  Read when turning the style into cards, buttons, inputs, panels, and layout primitives.
+- `references/accessibility-and-responsive-constraints.md`
+  Read when softness starts to hurt contrast, touch targets, or small-screen legibility.
 - `references/fallbacks-and-misuse.md`
   Read when the style starts feeling muddy, low-contrast, or too heavy on constrained devices.
+
+## Output Expectations
+
+- token rules
+- component recipes
+- contrast constraints
+- responsive fallbacks

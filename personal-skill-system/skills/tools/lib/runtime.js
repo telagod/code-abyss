@@ -234,6 +234,52 @@ function normalizeChangedPath(raw) {
   return (renameParts[renameParts.length - 1] || value).replace(/\\/g, '/');
 }
 
+function normalizeChangeOperation(rawStatus) {
+  const status = String(rawStatus || '').trim().toUpperCase();
+  if (!status) return 'modified';
+  if (status.includes('?') || status.startsWith('A')) return 'added';
+  if (status.startsWith('D')) return 'deleted';
+  if (status.startsWith('R') || status.startsWith('C')) return 'renamed';
+  if (status.startsWith('M')) return 'modified';
+  return 'modified';
+}
+
+function parseStatusLine(line) {
+  const raw = String(line || '');
+  if (!raw.trim()) return null;
+  const status = raw.slice(0, 2);
+  const payload = raw.slice(3).trim();
+  if (!payload) return null;
+
+  const renameParts = payload.split(/\s+->\s+/).map(part => part.trim()).filter(Boolean);
+  const previousPath = renameParts.length > 1 ? normalizeChangedPath(renameParts[0]) : '';
+  const file = normalizeChangedPath(renameParts[renameParts.length - 1] || payload);
+
+  return {
+    status: status.trim() || 'M',
+    operation: normalizeChangeOperation(status),
+    file,
+    previousPath
+  };
+}
+
+function parseNameStatusLine(line) {
+  const raw = String(line || '').trim();
+  if (!raw) return null;
+  const parts = raw.split(/\t+/).map(item => item.trim()).filter(Boolean);
+  if (parts.length < 2) return null;
+  const status = parts[0];
+  const file = normalizeChangedPath(parts[parts.length - 1]);
+  const previousPath = parts.length > 2 ? normalizeChangedPath(parts[1]) : '';
+
+  return {
+    status,
+    operation: normalizeChangeOperation(status),
+    file,
+    previousPath
+  };
+}
+
 function normalizeExternalChangedFiles(baseDir, targetDir, files) {
   const normalized = [];
   const seen = new Set();
@@ -293,6 +339,40 @@ function filterFilesToTarget(repoRoot, targetDir, files) {
   return scoped;
 }
 
+function filterEntriesToTarget(repoRoot, targetDir, entries) {
+  const target = path.resolve(targetDir);
+  const scoped = [];
+  const seen = new Set();
+
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const abs = path.resolve(repoRoot, entry.file || '');
+    if (!(abs === target || abs.startsWith(target + path.sep))) continue;
+
+    const relFile = normalizeChangedPath(path.relative(target, abs).split(path.sep).join('/'));
+    if (!relFile) continue;
+
+    let relPrevious = '';
+    if (entry.previousPath) {
+      const prevAbs = path.resolve(repoRoot, entry.previousPath);
+      if (prevAbs === target || prevAbs.startsWith(target + path.sep)) {
+        relPrevious = normalizeChangedPath(path.relative(target, prevAbs).split(path.sep).join('/'));
+      }
+    }
+
+    const dedupeKey = [entry.operation, relPrevious, relFile].join('|');
+    if (seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+    scoped.push({
+      status: entry.status,
+      operation: entry.operation,
+      file: relFile,
+      previousPath: relPrevious
+    });
+  }
+
+  return scoped;
+}
+
 function listChangedFiles(startDir, mode, options = {}) {
   const scopedTarget = path.resolve(startDir);
   const root = findGitRoot(scopedTarget);
@@ -300,9 +380,16 @@ function listChangedFiles(startDir, mode, options = {}) {
 
   const explicitChangedFiles = normalizeExternalChangedFiles(baseDir, scopedTarget, options.changedFiles);
   if (explicitChangedFiles.length > 0) {
+    const entries = explicitChangedFiles.map(file => ({
+      status: 'M',
+      operation: 'modified',
+      file,
+      previousPath: ''
+    }));
     return {
       root: baseDir,
       files: filterFilesToTarget(baseDir, scopedTarget, explicitChangedFiles),
+      entries: filterEntriesToTarget(baseDir, scopedTarget, entries),
       source: 'external-arg'
     };
   }
@@ -311,43 +398,69 @@ function listChangedFiles(startDir, mode, options = {}) {
 
   if (!root) {
     if (envChangedFiles.length > 0) {
+      const entries = envChangedFiles.map(file => ({
+        status: 'M',
+        operation: 'modified',
+        file,
+        previousPath: ''
+      }));
       return {
         root: baseDir,
         files: filterFilesToTarget(baseDir, scopedTarget, envChangedFiles),
+        entries: filterEntriesToTarget(baseDir, scopedTarget, entries),
         source: 'external-env-no-git'
       };
     }
-    return { root: scopedTarget, files: [], source: 'no-git' };
+    return { root: scopedTarget, files: [], entries: [], source: 'no-git' };
   }
 
   let result;
   if (mode === 'staged') {
-    result = runGit(['diff', '--name-only', '--cached'], root);
+    result = runGit(['diff', '--name-status', '--cached', '-M'], root);
   } else if (mode === 'committed') {
-    result = runGit(['show', '--name-only', '--pretty=', 'HEAD'], root);
+    result = runGit(['show', '--name-status', '--pretty=', '--find-renames', 'HEAD'], root);
   } else {
-    result = runGit(['status', '--porcelain'], root);
+    result = runGit(['status', '--porcelain=1', '--untracked-files=all'], root);
     if (result.status === 0) {
-      const files = result.stdout.split(/\r?\n/).filter(Boolean).map(line => line.slice(3).trim()).filter(Boolean);
-      return { root, files: filterFilesToTarget(root, scopedTarget, files), source: 'git-status' };
+      const rawEntries = result.stdout.split(/\r?\n/).map(parseStatusLine).filter(Boolean);
+      const entries = filterEntriesToTarget(root, scopedTarget, rawEntries);
+      return {
+        root,
+        files: entries.map(entry => entry.file),
+        entries,
+        source: 'git-status'
+      };
     }
   }
 
   if (result.status !== 0) {
     if (isGitPermissionError(result) && envChangedFiles.length > 0) {
+      const entries = envChangedFiles.map(file => ({
+        status: 'M',
+        operation: 'modified',
+        file,
+        previousPath: ''
+      }));
       return {
         root,
         files: filterFilesToTarget(root, scopedTarget, envChangedFiles),
+        entries: filterEntriesToTarget(root, scopedTarget, entries),
         source: 'external-env-git-eperm'
       };
     }
     if (isGitPermissionError(result)) {
-      return { root, files: [], source: 'git-permission-denied', errorCode: result.error.code };
+      return { root, files: [], entries: [], source: 'git-permission-denied', errorCode: result.error.code };
     }
-    return { root, files: [], source: 'git-failed' };
+    return { root, files: [], entries: [], source: 'git-failed' };
   }
-  const files = result.stdout.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  return { root, files: filterFilesToTarget(root, scopedTarget, files), source: 'git-diff' };
+  const rawEntries = result.stdout.split(/\r?\n/).map(parseNameStatusLine).filter(Boolean);
+  const entries = filterEntriesToTarget(root, scopedTarget, rawEntries);
+  return {
+    root,
+    files: entries.map(entry => entry.file),
+    entries,
+    source: 'git-diff'
+  };
 }
 
 module.exports = {

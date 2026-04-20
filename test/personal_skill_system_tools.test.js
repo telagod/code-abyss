@@ -11,7 +11,7 @@ const { analyzeSkillSystem } = require('../personal-skill-system/skills/tools/li
 const { analyzeChange, classifySensitiveChangeSurface, buildChangeRisk } = require('../personal-skill-system/skills/tools/lib/change-analysis');
 const { analyzeChartSpec } = require('../personal-skill-system/skills/tools/lib/chart-spec-analysis');
 const { analyzeS2Config } = require('../personal-skill-system/skills/tools/lib/s2-config-analysis');
-const { evaluatePreCommit } = require('../personal-skill-system/skills/tools/lib/analyzers');
+const { evaluatePreCommit, evaluatePreMerge } = require('../personal-skill-system/skills/tools/lib/analyzers');
 
 describe('personal skill system tool runtime', () => {
   let tmpDir;
@@ -28,9 +28,28 @@ describe('personal skill system tool runtime', () => {
     const report = generateDocs(tmpDir, { write: false });
 
     expect(report.preview['README.md']).toContain('## Public Surface');
+    expect(report.preview['README.md']).toContain('## Runtime Signals');
     expect(report.preview['README.md']).toContain('## Verification');
+    expect(report.preview['DESIGN.md']).toContain('## Runtime Boundary');
     expect(report.preview['DESIGN.md']).toContain('## Dependencies');
     expect(report.preview['DESIGN.md']).toContain('## Failure Modes');
+  });
+
+  test('generateDocs detects languages and entry candidates from the target module', () => {
+    const entry = path.join(tmpDir, 'src', 'app.ts');
+    const testFile = path.join(tmpDir, 'test', 'app.test.ts');
+    const config = path.join(tmpDir, 'package.json');
+    fs.mkdirSync(path.dirname(entry), { recursive: true });
+    fs.mkdirSync(path.dirname(testFile), { recursive: true });
+    fs.writeFileSync(entry, 'export const app = true;\n');
+    fs.writeFileSync(testFile, 'test("ok", () => expect(true).toBe(true));\n');
+    fs.writeFileSync(config, '{"name":"demo"}\n');
+
+    const report = generateDocs(tmpDir, { write: false });
+
+    expect(report.signals.languages).toContain('JavaScript/TypeScript');
+    expect(report.preview['README.md']).toContain('code files detected: 1');
+    expect(report.preview['README.md']).toContain('test files detected: 1');
   });
 
   test('analyzeQuality detects python-specific maintainability smells', () => {
@@ -51,6 +70,29 @@ describe('personal skill system tool runtime', () => {
     expect(messages).toContain('bare except clause hides unexpected failures');
   });
 
+  test('analyzeQuality detects async JS and TS contract smells', () => {
+    const sample = path.join(tmpDir, 'ui.tsx');
+    fs.writeFileSync(sample, [
+      'useEffect(async () => {',
+      '  await load();',
+      '}, []);',
+      "items.forEach(async item => await save(item));",
+      'const x: any = data;',
+      'const y: any = other;',
+      'const z: any = third;',
+      'new Promise(async (resolve) => { resolve(await load()); });',
+      ''
+    ].join('\n'));
+
+    const report = analyzeQuality(tmpDir, {});
+    const messages = report.issues.map(item => item.message);
+
+    expect(messages).toContain('useEffect should not be declared async directly; wrap async work inside');
+    expect(messages).toContain('async work inside forEach is easy to mis-sequence; prefer for...of or Promise.all');
+    expect(messages).toContain('async Promise executor hides rejection flow and usually indicates a design smell');
+    expect(messages).toContain('heavy use of explicit any (3) weakens local contracts');
+  });
+
   test('analyzeSecurity detects unsafe deserialization and tls bypass', () => {
     const py = path.join(tmpDir, 'loader.py');
     const js = path.join(tmpDir, 'client.js');
@@ -62,6 +104,25 @@ describe('personal skill system tool runtime', () => {
 
     expect(messages).toContain('yaml.load may deserialize unsafe input');
     expect(messages).toContain('TLS verification appears disabled');
+  });
+
+  test('analyzeSecurity links untrusted input to dangerous sinks in one file', () => {
+    const sample = path.join(tmpDir, 'handler.js');
+    fs.writeFileSync(sample, [
+      'app.get("/run", (req, res) => {',
+      '  exec(req.query.cmd);',
+      '  fs.readFile(req.query.path, () => {});',
+      '  fetch(req.query.url);',
+      '});',
+      ''
+    ].join('\n'));
+
+    const report = analyzeSecurity(tmpDir, {});
+    const messages = report.findings.map(item => item.message);
+
+    expect(messages).toContain('untrusted input and command-execution primitives appear in the same file; review command-injection path');
+    expect(messages).toContain('untrusted path-like input and filesystem operations appear in the same file; review traversal and overwrite risk');
+    expect(messages).toContain('untrusted URL-like input and outbound fetch logic appear in the same file; review SSRF boundaries');
   });
 
   test('change risk helpers flag auth and config surfaces with stronger checks', () => {
@@ -643,6 +704,17 @@ describe('personal skill system tool runtime', () => {
     expect(report.findings.map(item => item.message)).toContain('using externally supplied changed files from --changed-files');
   });
 
+  test('analyzeChange normalizes rename-style changed files and exposes change kinds', () => {
+    const changedCode = path.join(tmpDir, 'src', 'new-name.js');
+    fs.mkdirSync(path.dirname(changedCode), { recursive: true });
+    fs.writeFileSync(changedCode, 'module.exports = 3;\n');
+
+    const report = analyzeChange(tmpDir, { mode: 'working', changedFiles: ['src/old-name.js -> src/new-name.js'] });
+
+    expect(report.changedFiles).toContain('src/new-name.js');
+    expect(report.changeKinds.modified).toBe(1);
+  });
+
   test('analyzeChange uses env fallback when git repo is absent', () => {
     const changedCode = path.join(tmpDir, 'src', 'env-app.js');
     const prev = process.env.PSS_CHANGED_FILES;
@@ -660,5 +732,24 @@ describe('personal skill system tool runtime', () => {
       if (prev === undefined) delete process.env.PSS_CHANGED_FILES;
       else process.env.PSS_CHANGED_FILES = prev;
     }
+  });
+
+  test('pre-merge gate scopes security blockers to changed files when provided', () => {
+    const changedCode = path.join(tmpDir, 'src', 'safe.js');
+    const changedTest = path.join(tmpDir, 'src', 'safe.test.js');
+    const changedReadme = path.join(tmpDir, 'README.md');
+    const legacyRisk = path.join(tmpDir, 'legacy', 'danger.js');
+    fs.mkdirSync(path.dirname(changedCode), { recursive: true });
+    fs.mkdirSync(path.dirname(legacyRisk), { recursive: true });
+    fs.writeFileSync(changedCode, 'export const ok = true;\n');
+    fs.writeFileSync(changedTest, 'test("ok", () => expect(true).toBe(true));\n');
+    fs.writeFileSync(changedReadme, '# module\n');
+    fs.writeFileSync(legacyRisk, 'exec(req.query.cmd);\n');
+
+    const report = evaluatePreMerge(tmpDir, { changedFiles: ['src/safe.js', 'src/safe.test.js', 'README.md'] });
+
+    expect(report.status).toBe('pass');
+    expect(report.detail.securityFindingsInChangedFiles).toBe(0);
+    expect(report.detail.securityWarningsOutsideChangedFiles).toBeGreaterThan(0);
   });
 });

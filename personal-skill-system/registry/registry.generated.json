@@ -507,6 +507,167 @@
       ]
     },
     {
+      "host-skill": "frontend-design",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "frontend-design-information-architecture-and-interaction",
+          "path": "skills/domains/frontend-design/references/information-architecture-and-interaction.md",
+          "capability": "Define information hierarchy, screen structure, and action priority before visual polish."
+        },
+        {
+          "id": "frontend-design-information-architecture",
+          "path": "skills/domains/frontend-design/references/expert-information-architecture.md",
+          "capability": "Shape navigation, hierarchy, and user decision flow around product goals."
+        },
+        {
+          "id": "frontend-design-interaction-patterns",
+          "path": "skills/domains/frontend-design/references/expert-interaction-patterns.md",
+          "capability": "Choose interaction patterns, feedback loops, and action priority with clarity."
+        },
+        {
+          "id": "frontend-design-hierarchy-and-visual-systems",
+          "path": "skills/domains/frontend-design/references/expert-hierarchy-and-visual-systems.md",
+          "capability": "Control typography, spacing, grouping, and emphasis as a coherent design system."
+        },
+        {
+          "id": "frontend-design-motion-and-state-transitions",
+          "path": "skills/domains/frontend-design/references/expert-motion-and-state-transitions.md",
+          "capability": "Use motion and state transitions to reduce ambiguity and preserve continuity."
+        },
+        {
+          "id": "frontend-design-responsive-and-implementation-constraints",
+          "path": "skills/domains/frontend-design/references/expert-responsive-and-implementation-constraints.md",
+          "capability": "Adapt hierarchy and component behavior to responsive and implementation constraints."
+        }
+      ]
+    },
+    {
+      "host-skill": "mobile",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "mobile-lifecycle-and-state",
+          "path": "skills/domains/mobile/references/app-lifecycle-and-state.md",
+          "capability": "Model app lifecycle, navigation state, and restore behavior on mobile clients."
+        },
+        {
+          "id": "mobile-lifecycle-and-interruption",
+          "path": "skills/domains/mobile/references/expert-lifecycle-and-interruption.md",
+          "capability": "Design interruption-safe flows across backgrounding, resume, and process death."
+        },
+        {
+          "id": "mobile-offline-sync-and-conflict",
+          "path": "skills/domains/mobile/references/expert-offline-sync-and-conflict.md",
+          "capability": "Define offline, queueing, sync, and conflict behavior explicitly."
+        },
+        {
+          "id": "mobile-permission-and-privacy-boundaries",
+          "path": "skills/domains/mobile/references/expert-permission-and-privacy-boundaries.md",
+          "capability": "Shape permission timing, privacy boundaries, and local data retention safely."
+        },
+        {
+          "id": "mobile-battery-and-performance-budget",
+          "path": "skills/domains/mobile/references/expert-battery-and-performance-budget.md",
+          "capability": "Reason about battery, memory, and performance budgets for mobile features."
+        },
+        {
+          "id": "mobile-native-bridge-and-platform-boundaries",
+          "path": "skills/domains/mobile/references/expert-native-bridge-and-platform-boundaries.md",
+          "capability": "Decide where cross-platform abstractions should stop and native ownership begins."
+        },
+        {
+          "id": "mobile-release-and-observability",
+          "path": "skills/domains/mobile/references/expert-mobile-release-and-observability.md",
+          "capability": "Plan mobile rollout, crash visibility, and release-safe observability."
+        }
+      ]
+    },
+    {
+      "host-skill": "claymorphism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "claymorphism-surface-and-shadow-system",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/surface-and-shadow-system.md",
+          "capability": "Define claymorphism surface depth, radius, and layered soft-shadow rules."
+        },
+        {
+          "id": "claymorphism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/component-recipes.md",
+          "capability": "Apply claymorphism consistently to cards, inputs, panels, and controls."
+        },
+        {
+          "id": "claymorphism-accessibility-and-responsive-constraints",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/accessibility-and-responsive-constraints.md",
+          "capability": "Keep claymorphism legible, touch-friendly, and responsive under real constraints."
+        }
+      ]
+    },
+    {
+      "host-skill": "glassmorphism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "glassmorphism-layering-and-contrast",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/layering-and-contrast.md",
+          "capability": "Use translucent layering and contrast without losing orientation or readability."
+        },
+        {
+          "id": "glassmorphism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/component-recipes.md",
+          "capability": "Turn glassmorphism into repeatable navigation, modal, card, and control patterns."
+        },
+        {
+          "id": "glassmorphism-accessibility-and-responsive-constraints",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/accessibility-and-responsive-constraints.md",
+          "capability": "Balance translucency against focus visibility, mobile clarity, and accessibility."
+        }
+      ]
+    },
+    {
+      "host-skill": "liquid-glass",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "liquid-glass-depth-and-motion-language",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/depth-and-motion-language.md",
+          "capability": "Define premium liquid-glass depth and motion language with restraint."
+        },
+        {
+          "id": "liquid-glass-component-recipes",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/component-recipes.md",
+          "capability": "Apply liquid-glass style consistently across cards, chrome, modals, and controls."
+        },
+        {
+          "id": "liquid-glass-fallback-contrast-and-legibility",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/fallback-contrast-and-legibility.md",
+          "capability": "Preserve liquid-glass readability and device fit when premium translucency is under strain."
+        }
+      ]
+    },
+    {
+      "host-skill": "neubrutalism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "neubrutalism-graphic-hierarchy-and-tokens",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/graphic-hierarchy-and-tokens.md",
+          "capability": "Build neubrutalist hierarchy through border weight, color blocks, and graphic tokens."
+        },
+        {
+          "id": "neubrutalism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/component-recipes.md",
+          "capability": "Turn neubrutalism into coherent card, alert, form, and navigation recipes."
+        },
+        {
+          "id": "neubrutalism-accessibility-and-density-controls",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/accessibility-and-density-controls.md",
+          "capability": "Control density, legibility, and responsive behavior without losing graphic intent."
+        }
+      ]
+    },
+    {
       "host-skill": "ai",
       "host-kind": "domain",
       "modules": [

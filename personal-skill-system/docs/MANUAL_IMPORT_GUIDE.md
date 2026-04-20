@@ -4,6 +4,16 @@
 
 `personal-skill-system/` is a portable skill bundle.
 
+## Newcomer Fast Entry
+
+If you are onboarding this system for the first time, start here first:
+
+- `docs/NEWCOMER_OPTIMAL_CALLING_GUIDE.md`
+- `docs/TEAM_ONBOARDING_ONE_PAGER.md`
+- `docs/ANTV_INTEGRATION_VERDICT_2026-04-20.md`
+
+Then return to this guide for import shape and host-specific strategy.
+
 You can use it in three ways:
 
 1. copy the whole folder as your private skill repository
