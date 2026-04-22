@@ -1,0 +1,14 @@
+﻿{
+  "schema_version": 1,
+  "rubric_id": "route-correctness.v1",
+  "dimension": "route_correctness",
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "anchors": {
+    "0": "wrong route and no recovery",
+    "3": "partially correct route or weak justification",
+    "5": "correct route with explicit, defensible reasoning"
+  }
+}

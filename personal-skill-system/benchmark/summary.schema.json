@@ -1,0 +1,293 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "personal-skill-system/benchmark/summary.schema.json",
+  "title": "Personal Skill System Benchmark Summary",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "benchmark_root",
+    "status",
+    "run_count",
+    "run_index",
+    "comparison_views"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 2
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "benchmark_root": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "ok",
+        "partial"
+      ]
+    },
+    "run_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "run_index": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/runEntry"
+      }
+    },
+    "comparison_views": {
+      "type": "object",
+      "required": [
+        "base_vs_base_plus_skills",
+        "base_plus_skills_vs_stronger_model"
+      ],
+      "properties": {
+        "base_vs_base_plus_skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/comparisonEntry"
+          }
+        },
+        "base_plus_skills_vs_stronger_model": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/comparisonEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "runEntry": {
+      "type": "object",
+      "required": [
+        "run_id",
+        "path",
+        "host",
+        "model",
+        "variant",
+        "status",
+        "created_at",
+        "files"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "incomplete"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_counts": {
+          "$ref": "#/$defs/taskCounts"
+        },
+        "averages": {
+          "$ref": "#/$defs/scoreAverages"
+        },
+        "failure_breakdown": {
+          "$ref": "#/$defs/failureBreakdown"
+        },
+        "files": {
+          "type": "object",
+          "required": [
+            "run_meta",
+            "scorecard",
+            "results_ndjson",
+            "notes"
+          ],
+          "properties": {
+            "run_meta": {
+              "type": "boolean"
+            },
+            "scorecard": {
+              "type": "boolean"
+            },
+            "results_ndjson": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "comparisonEntry": {
+      "type": "object",
+      "required": [
+        "host",
+        "model",
+        "left_run_id",
+        "right_run_id",
+        "delta",
+        "notes"
+      ],
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "left_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "right_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delta": {
+          "$ref": "#/$defs/scoreAverages"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "taskCounts": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "total",
+        "scored",
+        "failed"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scored": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "scoreAverages": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "route_correctness",
+        "reasoning_quality",
+        "validation_completeness",
+        "final_correctness",
+        "risk_handling_quality"
+      ],
+      "properties": {
+        "route_correctness": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "reasoning_quality": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "validation_completeness": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "final_correctness": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "risk_handling_quality": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "failureBreakdown": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "route",
+        "depth",
+        "tool",
+        "host",
+        "none"
+      ],
+      "properties": {
+        "route": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tool": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "host": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "none": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,59 @@
+﻿{
+  "schema_version": 1,
+  "rubric_id": "reasoning-quality.v1",
+  "dimension": "reasoning_quality",
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "evidence_fields": [
+    "prompt",
+    "deliverable_expected",
+    "risk_focus",
+    "scoring_notes.quality"
+  ],
+  "anchors": {
+    "0": {
+      "label": "reasoning-fail",
+      "criteria": "Reasoning is incoherent or contradicts task constraints."
+    },
+    "1": {
+      "label": "reasoning-weak",
+      "criteria": "Mostly generic statements; key constraints are ignored."
+    },
+    "2": {
+      "label": "reasoning-partial",
+      "criteria": "Some relevant logic exists but major tradeoffs or assumptions are missing."
+    },
+    "3": {
+      "label": "reasoning-acceptable",
+      "criteria": "Coherent baseline reasoning with incomplete tradeoff depth."
+    },
+    "4": {
+      "label": "reasoning-strong",
+      "criteria": "Reasoning maps constraints to decisions and names key tradeoffs."
+    },
+    "5": {
+      "label": "reasoning-excellent",
+      "criteria": "Reasoning is constraint-complete, tradeoff-defended, and anticipates edge/failure conditions."
+    }
+  },
+  "decision_checks": [
+    "Are business/system/technical constraints explicitly mapped?",
+    "Are alternatives compared with rationale?",
+    "Are key assumptions and edge conditions named?"
+  ],
+  "verbosity_policy": {
+    "length_neutral": true,
+    "must_not_reward": [
+      "Long output without added evidence",
+      "Rephrasing of prompt as pseudo-analysis",
+      "Style polish without stronger decision logic"
+    ]
+  },
+  "anti_patterns": [
+    "Checklist dump without task-specific reasoning",
+    "Binary recommendation without tradeoff context",
+    "Overconfident claims without assumption disclosure"
+  ]
+}

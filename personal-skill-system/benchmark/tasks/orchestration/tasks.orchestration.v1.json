@@ -1,0 +1,293 @@
+[
+  {
+    "task_id": "orchestration-001",
+    "domain": "orchestration",
+    "intent_type": "explicit",
+    "prompt": "Use orchestration skill: split a monorepo refactor into 4 parallel workers with disjoint write scopes, ownership boundaries, and integration checkpoints.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "multi-agent"
+    ],
+    "risk_focus": [
+      "write-scope collisions",
+      "integration deadlocks",
+      "duplicated effort across workers"
+    ],
+    "deliverable_expected": [
+      "Task decomposition matrix with file ownership",
+      "Parallel execution plan and dependency graph",
+      "Integration sequence with conflict resolution policy"
+    ],
+    "validation_expected": [
+      "No overlapping write ownership without explicit coordination",
+      "Critical path and sidecar tasks are distinguished",
+      "Handoff contract is explicit for each worker"
+    ],
+    "scoring_notes": {
+      "route": "Direct orchestration/multi-agent decomposition request.",
+      "quality": "High score gives actionable ownership and integration mechanics."
+    }
+  },
+  {
+    "task_id": "orchestration-002",
+    "domain": "orchestration",
+    "intent_type": "implicit",
+    "prompt": "Two agents repeatedly edit the same files and undo each other. Define ownership correction protocol and re-planning strategy without stopping delivery.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "review"
+    ],
+    "risk_focus": [
+      "merge thrash",
+      "reverted progress",
+      "unclear authority during conflict"
+    ],
+    "deliverable_expected": [
+      "Conflict triage and ownership reassignment procedure",
+      "Write-boundary rules to prevent overlap",
+      "Escalation path for unresolved contention"
+    ],
+    "validation_expected": [
+      "Protocol can be applied within one iteration cycle",
+      "Ownership changes are auditable",
+      "Conflict recurrence signals are defined"
+    ],
+    "scoring_notes": {
+      "route": "Problem is coordination failure, not code correctness alone.",
+      "quality": "High score resolves contention with explicit control policy."
+    }
+  },
+  {
+    "task_id": "orchestration-003",
+    "domain": "orchestration",
+    "intent_type": "explicit",
+    "prompt": "Design delegation policy that decides what must stay on critical path locally vs what can run in background workers for a release hardening sprint.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "risk_focus": [
+      "delegating blockers",
+      "idle waiting on non-critical tasks",
+      "parallelism without value"
+    ],
+    "deliverable_expected": [
+      "Critical-path identification method",
+      "Delegation decision criteria with examples",
+      "Execution timeline showing parallel sidecar tasks"
+    ],
+    "validation_expected": [
+      "Blocking tasks are retained locally when needed",
+      "Parallel tasks materially advance final outcome",
+      "Wait policy avoids busy polling"
+    ],
+    "scoring_notes": {
+      "route": "Explicit orchestration decision-framework task.",
+      "quality": "High score demonstrates pragmatic throughput gains with controlled risk."
+    }
+  },
+  {
+    "task_id": "orchestration-004",
+    "domain": "orchestration",
+    "intent_type": "implicit",
+    "prompt": "Build a handoff protocol for long-running tasks so each worker returns structured status, changed files, blockers, and confidence.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [],
+    "risk_focus": [
+      "opaque progress reporting",
+      "missing integration metadata",
+      "lost context between iterations"
+    ],
+    "deliverable_expected": [
+      "Structured status schema for worker updates",
+      "Required handoff fields and acceptance rules",
+      "Escalation flags for low-confidence outcomes"
+    ],
+    "validation_expected": [
+      "Handoffs are machine-parseable and human-readable",
+      "Changed-file ownership is always included",
+      "Blockers and assumptions are explicitly surfaced"
+    ],
+    "scoring_notes": {
+      "route": "State and handoff control is core orchestration mechanics.",
+      "quality": "High score defines enforceable status contracts, not narrative summaries."
+    }
+  },
+  {
+    "task_id": "orchestration-005",
+    "domain": "orchestration",
+    "intent_type": "ambiguous",
+    "prompt": "During incident response, we need parallel root-cause probes while one lead keeps decision authority. Define coordination model and communication cadence.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "devops",
+      "investigate"
+    ],
+    "risk_focus": [
+      "conflicting incident actions",
+      "signal fragmentation",
+      "slow convergence on decision"
+    ],
+    "deliverable_expected": [
+      "Probe parallelization plan with single decision channel",
+      "Role assignment for lead, explorers, and implementers",
+      "Cadence and escalation rules for incident updates"
+    ],
+    "validation_expected": [
+      "Decision authority remains unambiguous",
+      "Probe outputs are comparable and time-bounded",
+      "Stop criteria for ineffective probes are defined"
+    ],
+    "scoring_notes": {
+      "route": "Incident context exists, but requested output is coordination design.",
+      "quality": "High score balances speed and command clarity."
+    }
+  },
+  {
+    "task_id": "orchestration-006",
+    "domain": "orchestration",
+    "intent_type": "ambiguous",
+    "prompt": "Plan browser QA plus code fixes in parallel: one track collects repro evidence while another ships bounded patches. Prevent duplicate bug work.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "qa",
+      "review"
+    ],
+    "risk_focus": [
+      "duplicate fix attempts",
+      "stale repro data",
+      "integration mismatch between QA and patch streams"
+    ],
+    "deliverable_expected": [
+      "Parallel lane design for QA evidence and code fixes",
+      "Bug ownership registry and dedupe rules",
+      "Integration checkpoints for repro-to-fix closure"
+    ],
+    "validation_expected": [
+      "Each bug has one owner at a time",
+      "QA evidence references exact patch context",
+      "Closure requires repro retest after fix"
+    ],
+    "scoring_notes": {
+      "route": "Cross-functional concurrency planning is orchestration-first.",
+      "quality": "High score defines concrete dedupe and closure mechanics."
+    }
+  },
+  {
+    "task_id": "orchestration-007",
+    "domain": "orchestration",
+    "intent_type": "implicit",
+    "prompt": "Create dependency-aware execution order for eight subtasks where two tasks produce shared libraries consumed by four downstream tasks.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "architecture"
+    ],
+    "risk_focus": [
+      "dependency inversion errors",
+      "downstream stalls",
+      "integration breakage from premature starts"
+    ],
+    "deliverable_expected": [
+      "Dependency DAG and runnable phase plan",
+      "Parallelization windows by dependency tier",
+      "Readiness criteria for downstream start"
+    ],
+    "validation_expected": [
+      "Ordering respects true dependency constraints",
+      "Parallel stages maximize throughput without risk inflation",
+      "Contingency path exists for delayed upstream tasks"
+    ],
+    "scoring_notes": {
+      "route": "Core ask is dependency scheduling and coordination.",
+      "quality": "High score avoids naive serial or unsafe fully-parallel planning."
+    }
+  },
+  {
+    "task_id": "orchestration-008",
+    "domain": "orchestration",
+    "intent_type": "explicit",
+    "prompt": "Use orchestration skill to define wait/interrupt policy for sub-agents so the main thread only blocks on critical-path dependencies.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "multi-agent"
+    ],
+    "risk_focus": [
+      "busy wait loops",
+      "late interrupts causing wasted work",
+      "critical-path starvation"
+    ],
+    "deliverable_expected": [
+      "Wait policy with blocking criteria",
+      "Interrupt rules and safe redirect conditions",
+      "Main-thread work policy while agents run"
+    ],
+    "validation_expected": [
+      "Critical-path stalls are minimized",
+      "Interrupt usage is justified and bounded",
+      "Policy can be applied consistently across tasks"
+    ],
+    "scoring_notes": {
+      "route": "Explicit control-flow orchestration request.",
+      "quality": "High score provides precise decision triggers for wait vs continue."
+    }
+  },
+  {
+    "task_id": "orchestration-009",
+    "domain": "orchestration",
+    "intent_type": "implicit",
+    "prompt": "A long-running feature effort keeps losing context across sessions. Define checkpoint format and resume protocol that preserves decisions and pending risks.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "checkpoint"
+    ],
+    "risk_focus": [
+      "decision drift",
+      "repeated discovery work",
+      "forgotten unresolved risks"
+    ],
+    "deliverable_expected": [
+      "Checkpoint schema for state, decisions, and open risks",
+      "Resume workflow with validation gates",
+      "Pruning policy for stale context"
+    ],
+    "validation_expected": [
+      "Resumed sessions reconstruct critical context quickly",
+      "Open risks remain visible and owned",
+      "Checkpoint integrity is verifiable"
+    ],
+    "scoring_notes": {
+      "route": "Session continuity and state handoff are orchestration concerns.",
+      "quality": "High score enables reliable resume without context loss."
+    }
+  },
+  {
+    "task_id": "orchestration-010",
+    "domain": "orchestration",
+    "intent_type": "ambiguous",
+    "prompt": "Design a coordination plan for three worker agents implementing disjoint patches while a fourth agent runs regression checks concurrently.",
+    "route_expected": "orchestration",
+    "route_allowed_alternates": [
+      "multi-agent",
+      "review"
+    ],
+    "risk_focus": [
+      "regression check lag",
+      "patch integration conflicts",
+      "ownership confusion during verification failures"
+    ],
+    "deliverable_expected": [
+      "Worker-to-verifier interaction protocol",
+      "Patch merge order and conflict fallback",
+      "Gate criteria for final integration"
+    ],
+    "validation_expected": [
+      "Verifier results map to patch owners unambiguously",
+      "Failed checks trigger targeted rework path",
+      "Final integration preserves disjoint ownership assumptions"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with multi-agent workflow, but orchestration policy is primary artifact.",
+      "quality": "High score provides operationally executable coordination and gating."
+    }
+  }
+]

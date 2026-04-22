@@ -1,0 +1,291 @@
+[
+  {
+    "task_id": "chart-001",
+    "domain": "chart-visualization",
+    "intent_type": "explicit",
+    "prompt": "Use chart-visualization skill to produce a valid G2 line chart spec for monthly revenue by region with legend filter and shared tooltip.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "verify-chart-spec"
+    ],
+    "risk_focus": [
+      "invalid mark encode bindings",
+      "tooltip misconfiguration",
+      "legend-filter interaction mismatch"
+    ],
+    "deliverable_expected": [
+      "Runnable G2 spec with correct mark/data/encode wiring",
+      "Legend and tooltip interaction configuration",
+      "Short note on why chosen channels fit the task"
+    ],
+    "validation_expected": [
+      "Spec passes verify-chart-spec style checks",
+      "Multi-series encoding does not collapse dimensions",
+      "Tooltip readability and value mapping are correct"
+    ],
+    "scoring_notes": {
+      "route": "Explicit chart skill invocation and spec generation request.",
+      "quality": "High score yields syntactically and semantically valid chart config."
+    }
+  },
+  {
+    "task_id": "chart-002",
+    "domain": "chart-visualization",
+    "intent_type": "explicit",
+    "prompt": "Run verify-chart-spec style audit on a broken spec that uses rangeY without encode, then return corrected spec and finding rationale.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "verify-chart-spec"
+    ],
+    "risk_focus": [
+      "range mark misuse",
+      "silent invalid specs",
+      "incorrect remediation advice"
+    ],
+    "deliverable_expected": [
+      "Structured finding list for spec violations",
+      "Corrected spec snippet with fixed bindings",
+      "Reasoned explanation of each fix"
+    ],
+    "validation_expected": [
+      "Each finding maps to a concrete spec field",
+      "Remediation resolves root issue, not symptom",
+      "Final spec is validator-friendly"
+    ],
+    "scoring_notes": {
+      "route": "Chart-specific validation and remediation is core chart workflow.",
+      "quality": "High score provides accurate diagnosis and executable corrected spec."
+    }
+  },
+  {
+    "task_id": "chart-003",
+    "domain": "chart-visualization",
+    "intent_type": "implicit",
+    "prompt": "A product dashboard uses stacked bars for highly skewed distributions and hides outliers. Propose a more truthful chart design and provide implementation-ready config.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "frontend-design"
+    ],
+    "risk_focus": [
+      "misleading visual encoding",
+      "outlier suppression",
+      "decision errors from chart distortion"
+    ],
+    "deliverable_expected": [
+      "Recommended mark/transform changes with rationale",
+      "Updated chart config for skew-aware representation",
+      "Annotation strategy for outlier communication"
+    ],
+    "validation_expected": [
+      "Encoding choice aligns with distribution characteristics",
+      "Outlier handling is explicit and auditable",
+      "Spec remains valid under chart config rules"
+    ],
+    "scoring_notes": {
+      "route": "Primary issue is visualization correctness and chart semantics.",
+      "quality": "High score improves truthfulness, not only aesthetics."
+    }
+  },
+  {
+    "task_id": "chart-004",
+    "domain": "chart-visualization",
+    "intent_type": "implicit",
+    "prompt": "S2 pivot table freezes on large data because dimensions and value fields are configured inconsistently. Produce corrected dataCfg/options and explain tradeoffs.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "verify-s2-config"
+    ],
+    "risk_focus": [
+      "invalid S2 field shape",
+      "runtime freeze from misconfig",
+      "pagination misuse"
+    ],
+    "deliverable_expected": [
+      "Corrected S2 dataCfg and options config",
+      "Field-shape explanation for rows/columns/values",
+      "Performance-oriented option choices"
+    ],
+    "validation_expected": [
+      "Config passes verify-s2-config style checks",
+      "Pagination and interaction settings are coherent",
+      "Large-data behavior assumptions are explicit"
+    ],
+    "scoring_notes": {
+      "route": "S2 configuration repair is chart-visualization specialization.",
+      "quality": "High score gives runnable config and clear constraints."
+    }
+  },
+  {
+    "task_id": "chart-005",
+    "domain": "chart-visualization",
+    "intent_type": "ambiguous",
+    "prompt": "Need a narrative KPI story that combines G2 trend chart, anomaly callouts, and icon assets for executive weekly briefing. Define concrete chart+asset plan.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "frontend-design"
+    ],
+    "risk_focus": [
+      "storytelling without data rigor",
+      "invalid annotation usage",
+      "visual clutter hiding key signal"
+    ],
+    "deliverable_expected": [
+      "Chart narrative sequence with chart type per story beat",
+      "G2 annotation/tooltip plan for anomalies",
+      "Icon asset integration rules tied to semantics"
+    ],
+    "validation_expected": [
+      "Narrative preserves quantitative integrity",
+      "Chart config choices are implementable in G2/S2 stack",
+      "Accessibility and readability constraints are considered"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with design, but asks for chart-specific narrative and config decisions.",
+      "quality": "High score couples narrative clarity with implementation realism."
+    }
+  },
+  {
+    "task_id": "chart-006",
+    "domain": "chart-visualization",
+    "intent_type": "explicit",
+    "prompt": "Use chart-visualization to create chart-image API payloads for: line trend, donut breakdown, and heatmap risk matrix, each with correct render params.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [],
+    "risk_focus": [
+      "invalid render payload shape",
+      "mismatched chart options",
+      "image generation failures in pipeline"
+    ],
+    "deliverable_expected": [
+      "Three valid chart-image payload examples",
+      "Payload-level parameter explanation",
+      "Error-handling expectations for render failures"
+    ],
+    "validation_expected": [
+      "Payload fields satisfy API contract",
+      "Chart types align with provided data structures",
+      "Generated output assumptions are testable"
+    ],
+    "scoring_notes": {
+      "route": "Explicit chart-image integration task under chart domain.",
+      "quality": "High score provides payloads that are directly executable."
+    }
+  },
+  {
+    "task_id": "chart-007",
+    "domain": "chart-visualization",
+    "intent_type": "implicit",
+    "prompt": "A multi-view G2 dashboard misuses chartIndex and shared tooltip causing cross-panel confusion. Produce corrected composition and interaction config.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "verify-chart-spec"
+    ],
+    "risk_focus": [
+      "chartIndex mis-binding",
+      "tooltip cross-view leakage",
+      "incorrect interaction coupling"
+    ],
+    "deliverable_expected": [
+      "Corrected multi-view composition config",
+      "chartIndex and tooltip wiring rationale",
+      "Interaction constraints for stable navigation"
+    ],
+    "validation_expected": [
+      "No invalid chartIndex references remain",
+      "Shared tooltip operates on intended scope only",
+      "Spec remains valid under verifier rules"
+    ],
+    "scoring_notes": {
+      "route": "Issue is advanced G2 composition correctness.",
+      "quality": "High score resolves multi-view semantics, not only syntax."
+    }
+  },
+  {
+    "task_id": "chart-008",
+    "domain": "chart-visualization",
+    "intent_type": "ambiguous",
+    "prompt": "Product asks for a map-style performance monitor with drill-down and table detail panel. Choose between G2 geo composition and S2 table pairing, then propose implementation.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "architecture",
+      "frontend-design"
+    ],
+    "risk_focus": [
+      "wrong chart/interaction fit",
+      "drill-down state inconsistency",
+      "table/chart mismatch"
+    ],
+    "deliverable_expected": [
+      "Chart/table pairing decision with tradeoff reasoning",
+      "Drill-down interaction and state model",
+      "Implementation scaffold for chosen approach"
+    ],
+    "validation_expected": [
+      "Choice is justified by task and data semantics",
+      "Drill-down behavior is reproducible and bounded",
+      "State sync between chart and table is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous product framing, but decision center is chart-system selection and config.",
+      "quality": "High score avoids generic dashboard talk and commits to executable design."
+    }
+  },
+  {
+    "task_id": "chart-009",
+    "domain": "chart-visualization",
+    "intent_type": "implicit",
+    "prompt": "Audit five existing specs for chart anti-patterns (wrong channels, misleading normalization, invalid annotations) and output a prioritized remediation backlog.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "review"
+    ],
+    "risk_focus": [
+      "silent visualization bugs",
+      "misleading normalized values",
+      "annotation misinterpretation"
+    ],
+    "deliverable_expected": [
+      "Spec-by-spec findings with severity",
+      "Remediation backlog ordered by business impact",
+      "Common pattern library of recurring mistakes"
+    ],
+    "validation_expected": [
+      "Findings map to concrete spec fields",
+      "Severity reflects decision impact not cosmetic issues",
+      "Recommended fixes are implementable"
+    ],
+    "scoring_notes": {
+      "route": "This is chart QA/audit rather than generic code review.",
+      "quality": "High score identifies high-impact misrepresentation risks first."
+    }
+  },
+  {
+    "task_id": "chart-010",
+    "domain": "chart-visualization",
+    "intent_type": "explicit",
+    "prompt": "Use chart-visualization skill to design a benchmark task that differentiates shallow chart styling from true spec correctness and interaction validity.",
+    "route_expected": "chart-visualization",
+    "route_allowed_alternates": [
+      "ai"
+    ],
+    "risk_focus": [
+      "style-over-correctness scoring",
+      "validator bypass by pretty output",
+      "missing interaction correctness checks"
+    ],
+    "deliverable_expected": [
+      "Task definition with expected route and deliverable",
+      "Scoring anchors for spec correctness and interaction validity",
+      "Failure cases for common chart anti-patterns"
+    ],
+    "validation_expected": [
+      "Task can penalize cosmetic but invalid outputs",
+      "Validation criteria are reproducible",
+      "Failure attribution supports route/depth/tool categories"
+    ],
+    "scoring_notes": {
+      "route": "Explicit chart benchmarking quality task.",
+      "quality": "High score makes correctness objectively measurable."
+    }
+  }
+]

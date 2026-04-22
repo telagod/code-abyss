@@ -1,0 +1,51 @@
+﻿{
+  "schema_version": 1,
+  "rubric_id": "route-correctness.v1",
+  "dimension": "route_correctness",
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "evidence_fields": [
+    "route_expected",
+    "route_allowed_alternates",
+    "scoring_notes.route",
+    "intent_type"
+  ],
+  "anchors": {
+    "0": {
+      "label": "route-fail",
+      "criteria": "Wrong route with no recovery or rationale."
+    },
+    "1": {
+      "label": "route-weak",
+      "criteria": "Mostly wrong route; rationale is absent or invalid."
+    },
+    "2": {
+      "label": "route-partial",
+      "criteria": "Touches relevant route but does not commit correctly for dominant intent."
+    },
+    "3": {
+      "label": "route-acceptable",
+      "criteria": "Acceptable route or alternate route chosen with minimal rationale."
+    },
+    "4": {
+      "label": "route-strong",
+      "criteria": "Correct route selected with clear reasoning for prompt intent and boundaries."
+    },
+    "5": {
+      "label": "route-excellent",
+      "criteria": "Correct route with explicit ambiguity handling and defensible rejection of nearby false-positive routes."
+    }
+  },
+  "decision_checks": [
+    "Was explicit invocation respected?",
+    "Does chosen route match dominant task artifact?",
+    "If ambiguous, is alternate-route rejection explained?"
+  ],
+  "anti_patterns": [
+    "Choosing route by keyword coincidence without intent analysis",
+    "Ignoring explicit invocation in prompt",
+    "Overfitting to adjacent domain symptom instead of core task"
+  ]
+}

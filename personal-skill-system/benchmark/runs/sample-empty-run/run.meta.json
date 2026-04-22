@@ -1,0 +1,11 @@
+﻿{
+  "schema_version": 1,
+  "run_id": "run-20260422T000000Z-codex-gpt-5.4-scaffold",
+  "created_at": "2026-04-22T00:00:00Z",
+  "host": "codex",
+  "model": "gpt-5.4",
+  "variant": "scaffold",
+  "task_set_version": "v0-placeholder",
+  "rubric_version": "v0-placeholder",
+  "notes": "Placeholder run metadata created by CARD-M1-001"
+}

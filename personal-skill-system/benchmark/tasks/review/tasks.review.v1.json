@@ -1,0 +1,237 @@
+[
+  {
+    "task_id": "review-001",
+    "domain": "review",
+    "intent_type": "explicit",
+    "prompt": "Use review workflow on this payment retry PR. Return findings ordered by severity before any summary.",
+    "route_expected": "review",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Severity-ordered findings list",
+      "File/line references and risk explanation",
+      "Open questions and validation gaps"
+    ],
+    "validation_expected": [
+      "Findings-first structure is respected",
+      "Security/correctness issues are prioritized over style",
+      "Residual risk is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Direct review invocation.",
+      "quality": "High score requires actionable findings, not generic commentary."
+    }
+  },
+  {
+    "task_id": "review-002",
+    "domain": "review",
+    "intent_type": "implicit",
+    "prompt": "Before merge, assess this diff for behavior regressions, trust-boundary breakage, and missing test coverage. Keep summary brief after findings.",
+    "route_expected": "review",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Ordered findings grouped by severity",
+      "Test-surface gaps tied to changed contracts",
+      "Merge-readiness judgement with rationale"
+    ],
+    "validation_expected": [
+      "Changed-surface mapping is present",
+      "Risk statements include concrete scenarios",
+      "Approval/no-approval bar is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Classic pre-merge review intent.",
+      "quality": "High score demonstrates contract-aware, evidence-backed review."
+    }
+  },
+  {
+    "task_id": "review-003",
+    "domain": "review",
+    "intent_type": "ambiguous",
+    "prompt": "Run verify-change style risk thinking, but provide a human reviewer judgement for release readiness on this diff.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "verify-change"
+    ],
+    "deliverable_expected": [
+      "Human-readable findings with severity and impact",
+      "Release readiness verdict and blockers",
+      "Rollback or watch-window concerns"
+    ],
+    "validation_expected": [
+      "Tool-like risk categories are translated into reviewer judgement",
+      "No blind dependence on warning counts",
+      "Operational risk is included"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with verify-change, but expected output is reviewer decision narrative.",
+      "quality": "High score reconciles structured risk and human judgement."
+    }
+  },
+  {
+    "task_id": "review-004",
+    "domain": "review",
+    "intent_type": "ambiguous",
+    "prompt": "This auth patch may have security issues. Perform code review and decide whether it is safe to merge now.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "verify-security"
+    ],
+    "deliverable_expected": [
+      "Security and correctness findings in severity order",
+      "Merge decision with blocking conditions",
+      "Required follow-up validation"
+    ],
+    "validation_expected": [
+      "Exploit or misuse path is named for serious security findings",
+      "Review output is decision-oriented",
+      "Unknowns are documented"
+    ],
+    "scoring_notes": {
+      "route": "Security concern present, but task asks for reviewer merge decision.",
+      "quality": "High score combines security depth with review approval bar."
+    }
+  },
+  {
+    "task_id": "review-005",
+    "domain": "review",
+    "intent_type": "implicit",
+    "prompt": "A 12-line config diff enables a destructive flag in production. Evaluate blast radius, rollback posture, and whether merge should be blocked.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "deliverable_expected": [
+      "Risk-ranked findings focused on config blast radius",
+      "Block/allow recommendation with rationale",
+      "Rollback readiness assessment"
+    ],
+    "validation_expected": [
+      "Small diff size does not suppress high-severity risk",
+      "Operational constraints are considered",
+      "Decision owner and watch conditions are clear"
+    ],
+    "scoring_notes": {
+      "route": "Pre-merge risk judgement is review core.",
+      "quality": "High score catches high-impact config drift despite tiny diff."
+    }
+  },
+  {
+    "task_id": "review-006",
+    "domain": "review",
+    "intent_type": "explicit",
+    "prompt": "Use review skill and output findings with file:line references for this API error-handling refactor.",
+    "route_expected": "review",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Findings list with file:line anchors",
+      "Risk explanation per finding",
+      "Residual testing uncertainty list"
+    ],
+    "validation_expected": [
+      "References are specific and actionable",
+      "Behavioral regressions are prioritized",
+      "No style-only noise drowns major issues"
+    ],
+    "scoring_notes": {
+      "route": "Explicit review invocation and output format request.",
+      "quality": "High score includes precise localization and impact clarity."
+    }
+  },
+  {
+    "task_id": "review-007",
+    "domain": "review",
+    "intent_type": "implicit",
+    "prompt": "Evaluate whether new integration tests are realistic or mock theater for a message-driven workflow rewrite.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "development"
+    ],
+    "deliverable_expected": [
+      "Assessment of changed-surface test adequacy",
+      "Gaps in fixture realism and isolation strategy",
+      "Minimum extra proof required before approval"
+    ],
+    "validation_expected": [
+      "Test assertions are checked against changed contracts",
+      "Mock fidelity risks are explicitly called out",
+      "Approval decision reflects evidence sufficiency"
+    ],
+    "scoring_notes": {
+      "route": "Test-surface judgement is review-specific work.",
+      "quality": "High score distinguishes shallow coverage from real evidence."
+    }
+  },
+  {
+    "task_id": "review-008",
+    "domain": "review",
+    "intent_type": "ambiguous",
+    "prompt": "A recurring incident got another fix PR. Review whether the patch truly prevents recurrence or only closes the current symptom.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "investigate"
+    ],
+    "deliverable_expected": [
+      "Findings on recurrence risk and prevention quality",
+      "Governance-level follow-up actions and owners",
+      "Merge readiness judgement"
+    ],
+    "validation_expected": [
+      "Cause model and regression prevention are evaluated",
+      "Repeat-failure class is addressed, not only local patch",
+      "Residual recurrence risk is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Incident context exists, but requested artifact is review governance judgement.",
+      "quality": "High score ties approval to recurrence controls, not optimism."
+    }
+  },
+  {
+    "task_id": "review-009",
+    "domain": "review",
+    "intent_type": "implicit",
+    "prompt": "Large rename-only PR claims no behavior changes. Review for hidden contract drift, path-sensitive logic changes, and missed tests.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "verify-change"
+    ],
+    "deliverable_expected": [
+      "Findings about rename-risk and compatibility drift",
+      "Changed-surface test requirements",
+      "Risk acceptance or block recommendation"
+    ],
+    "validation_expected": [
+      "Rename operations are treated as potential semantic risk",
+      "Contract-level impacts are checked",
+      "Decision includes confidence and uncertainty"
+    ],
+    "scoring_notes": {
+      "route": "Diff interpretation and risk judgement are review concerns.",
+      "quality": "High score avoids false safety from rename-only assumptions."
+    }
+  },
+  {
+    "task_id": "review-010",
+    "domain": "review",
+    "intent_type": "ambiguous",
+    "prompt": "Pre-release review for a zero-downtime schema migration: decide if evidence is enough to merge, including rollback commands and watch-window signals.",
+    "route_expected": "review",
+    "route_allowed_alternates": [
+      "devops",
+      "architecture"
+    ],
+    "deliverable_expected": [
+      "Severity-ordered release-readiness findings",
+      "Rollback posture classification (fast/constrained/forward-fix)",
+      "Clear go/no-go recommendation"
+    ],
+    "validation_expected": [
+      "Operational evidence (alerts/runbook/watchpoints) is evaluated",
+      "Data/schema compatibility risk is considered",
+      "Decision states unresolved unknowns"
+    ],
+    "scoring_notes": {
+      "route": "Cross-domain release concern, but explicit ask is reviewer approval judgement.",
+      "quality": "High score couples technical risk with release decision clarity."
+    }
+  }
+]

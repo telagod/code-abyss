@@ -1,0 +1,11 @@
+﻿{
+  "task_id": "development-001",
+  "domain": "development",
+  "prompt": "<benchmark prompt>",
+  "route_expected": "development",
+  "deliverable_expected": "<explicit output contract>",
+  "scoring_notes": {
+    "route": "What route should win and why",
+    "quality": "What a high-quality answer must contain"
+  }
+}
