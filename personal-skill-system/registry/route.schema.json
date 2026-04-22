@@ -142,6 +142,96 @@
             "items": {
               "type": "string"
             }
+          },
+          "rationale": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "primary-intent",
+              "why-this-route",
+              "wins-when"
+            ],
+            "properties": {
+              "primary-intent": {
+                "type": "string"
+              },
+              "why-this-route": {
+                "type": "string"
+              },
+              "wins-when": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "avoid-when": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "boundary-notes": {
+                "type": "string"
+              }
+            }
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "minimum-score",
+              "strong-score",
+              "very-strong-score",
+              "requires-fallback-below-minimum"
+            ],
+            "properties": {
+              "minimum-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "strong-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "very-strong-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "requires-fallback-below-minimum": {
+                "type": "boolean"
+              }
+            }
+          },
+          "fallback": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "clarify-question",
+              "default-action"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "ask-one-question",
+                  "do-not-auto-route",
+                  "direct-route"
+                ]
+              },
+              "clarify-question": {
+                "type": "string"
+              },
+              "default-action": {
+                "type": "string"
+              },
+              "safe-skill": {
+                "type": "string"
+              }
+            }
           }
         }
       }

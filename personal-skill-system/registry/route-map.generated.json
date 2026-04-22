@@ -69,7 +69,46 @@
       "aliases": [
         "skill-system",
         "技能系统演进"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "skill-system evolution and governance changes",
+        "why-this-route": "skill-evolution should win when prompt intent aligns with skill-system evolution and governance changes and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "skill system",
+          "skill architecture",
+          "skill-evolution",
+          "route map",
+          "registry",
+          "pack strategy",
+          "template design",
+          "portability",
+          "skill-system",
+          "技能系统演进"
+        ],
+        "avoid-when": [
+          "ordinary feature",
+          "普通功能开发",
+          "cluster sizing",
+          "集群容量规划",
+          "single bug",
+          "单点缺陷",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use for skill bundle, route map, registry, template, and portability work; ordinary product coding should route to development/bugfix/investigate. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use skill-evolution or development as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "development"
+      }
     },
     {
       "skill": "verify-security",
@@ -106,7 +145,36 @@
         "vs",
         "security-audit",
         "安全校验"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-security is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-security",
+          "security scan",
+          "vulnerability scan",
+          "安全扫描",
+          "漏洞扫描",
+          "安全校验",
+          "security check",
+          "vulnerability review",
+          "vs",
+          "security-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-security?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-change",
@@ -142,7 +210,36 @@
         "vc",
         "change-audit",
         "变更审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-change is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-change",
+          "diff analysis",
+          "change audit",
+          "变更校验",
+          "差异分析",
+          "变更审计",
+          "change review",
+          "diff review",
+          "vc",
+          "change-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-change?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-module",
@@ -176,7 +273,35 @@
       "aliases": [
         "module-audit",
         "模块审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-module is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-module",
+          "module audit",
+          "module completeness",
+          "模块校验",
+          "模块审计",
+          "模块完整性",
+          "module check",
+          "模块检查",
+          "module-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-module?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-quality",
@@ -213,7 +338,36 @@
         "vq",
         "quality-audit",
         "质量审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-quality is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-quality",
+          "quality scan",
+          "complexity scan",
+          "code smell",
+          "质量校验",
+          "复杂度扫描",
+          "代码异味",
+          "quality check",
+          "vq",
+          "quality-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-quality?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-skill-system",
@@ -248,7 +402,36 @@
       "aliases": [
         "skill-system-audit",
         "技能系统审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-skill-system is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-skill-system",
+          "skill system audit",
+          "registry audit",
+          "route map audit",
+          "技能系统校验",
+          "注册表审计",
+          "路由图审计",
+          "skill audit",
+          "skill-system-audit",
+          "技能系统审计"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-skill-system?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-chart-spec",
@@ -283,7 +466,36 @@
         "chart-spec-audit",
         "g2-spec-check",
         "图表规范审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-chart-spec is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-chart-spec",
+          "chart spec check",
+          "g2 spec validation",
+          "chart validation",
+          "图表规范校验",
+          "图表校验",
+          "g2 校验",
+          "G2规范检查",
+          "chart-spec-audit",
+          "g2-spec-check"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-chart-spec?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "verify-s2-config",
@@ -318,7 +530,36 @@
         "s2-config-audit",
         "pivot-config-check",
         "S2配置审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-s2-config is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-s2-config",
+          "s2 config check",
+          "pivot table validation",
+          "s2 validation",
+          "S2配置校验",
+          "透视表配置校验",
+          "S2校验",
+          "SheetComponent 检查",
+          "s2-config-audit",
+          "pivot-config-check"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-s2-config?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "investigate",
@@ -363,7 +604,44 @@
       "aliases": [
         "debug-investigate",
         "故障排查"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "root-cause-first incident/debug workflow",
+        "why-this-route": "investigate should win when prompt intent aligns with root-cause-first incident/debug workflow and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "investigate",
+          "debug",
+          "why broken",
+          "root cause",
+          "排查",
+          "调试",
+          "为什么坏了",
+          "根因分析",
+          "debug-investigate",
+          "故障排查"
+        ],
+        "avoid-when": [
+          "known fix",
+          "已知修复",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use investigate when cause is uncertain and evidence gathering is required; if defect and fix are already known, prefer bugfix. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use investigate or bugfix as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "bugfix"
+      }
     },
     {
       "skill": "pre-commit-gate",
@@ -395,7 +673,33 @@
       "aliases": [
         "commit-gate",
         "提交门禁"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "pre-commit policy gate enforcement",
+        "why-this-route": "pre-commit-gate is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "pre-commit",
+          "commit gate",
+          "提交前检查",
+          "提交门禁",
+          "pre commit check",
+          "提交检查",
+          "commit-gate"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Guard route is explicit-only and should not override ordinary execution routes unless user asks for gate checks. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of pre-commit-gate?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     },
     {
       "skill": "bugfix",
@@ -446,7 +750,44 @@
       "aliases": [
         "fix-bug",
         "缺陷修复"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "minimal safe repair after cause is known",
+        "why-this-route": "bugfix should win when prompt intent aligns with minimal safe repair after cause is known and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "fix",
+          "bug",
+          "error",
+          "regression",
+          "修复",
+          "缺陷",
+          "报错",
+          "回归",
+          "fix-bug",
+          "缺陷修复"
+        ],
+        "avoid-when": [
+          "brainstorm",
+          "头脑风暴",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use bugfix for known-fix repair paths; if root cause is still unknown, prefer investigate; if request is findings-first assessment, prefer review. Declared conflicts: review, investigate."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use bugfix or investigate as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "investigate"
+      }
     },
     {
       "skill": "review",
@@ -498,7 +839,42 @@
       "aliases": [
         "code-review",
         "代码评审"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "findings-first human risk review",
+        "why-this-route": "review should win when prompt intent aligns with findings-first human risk review and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "review",
+          "code review",
+          "audit the change",
+          "评审",
+          "代码审查",
+          "变更审计",
+          "code walkthrough",
+          "change review",
+          "code-review",
+          "代码评审"
+        ],
+        "avoid-when": [
+          "directly implement",
+          "直接实现",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use review for findings-first human judgement; for deterministic scanner-style checks, prefer verify-change/verify-quality/verify-security/verify-chart-spec/verify-s2-config. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 48,
+        "strong-score": 63,
+        "very-strong-score": 76,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use review or verify-change as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "verify-change"
+      }
     },
     {
       "skill": "architecture-decision",
@@ -550,7 +926,40 @@
       "aliases": [
         "arch-decision",
         "架构决策"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "tradeoff-heavy architecture decision framing",
+        "why-this-route": "architecture-decision should win when prompt intent aligns with tradeoff-heavy architecture decision framing and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "architecture decision",
+          "tradeoff",
+          "migration plan",
+          "adr",
+          "架构决策",
+          "方案权衡",
+          "迁移方案",
+          "技术决策",
+          "arch-decision"
+        ],
+        "avoid-when": [
+          "small local fix",
+          "小范围修复",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should architecture-decision be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "security",
@@ -605,7 +1014,42 @@
       "aliases": [
         "sec",
         "安全审计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "trust-boundary and exploitability-driven security judgement",
+        "why-this-route": "security should win when prompt intent aligns with trust-boundary and exploitability-driven security judgement and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "security",
+          "audit",
+          "vulnerability",
+          "auth",
+          "secrets",
+          "安全",
+          "审计",
+          "漏洞",
+          "sec",
+          "安全审计"
+        ],
+        "avoid-when": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer security when exploit path, trust boundaries, auth, secrets, or attack resilience dominate; if focus is pipeline operations without security threat framing, devops may be adjacent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use security or devops as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "devops"
+      }
     },
     {
       "skill": "multi-agent",
@@ -647,7 +1091,40 @@
       "aliases": [
         "parallel-agents",
         "多Agent协同"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "active parallel delegation with owned write boundaries",
+        "why-this-route": "multi-agent should win when prompt intent aligns with active parallel delegation with owned write boundaries and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "multi-agent",
+          "parallel",
+          "delegation",
+          "parallelize",
+          "多Agent",
+          "并行",
+          "任务委派",
+          "并行化",
+          "parallel-agents",
+          "多Agent协同"
+        ],
+        "avoid-when": [
+          "single-file tweak",
+          "单文件微调"
+        ],
+        "boundary-notes": "Use multi-agent only when explicit parallel delegation and ownership boundaries are required; conceptual planning without active delegation should prefer orchestration. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use multi-agent or orchestration as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "orchestration"
+      }
     },
     {
       "skill": "ship",
@@ -693,7 +1170,42 @@
       "aliases": [
         "release-flow",
         "发布流程"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "release readiness and deployment workflow",
+        "why-this-route": "ship should win when prompt intent aligns with release readiness and deployment workflow and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ship",
+          "release",
+          "deploy",
+          "merge",
+          "发布",
+          "上线",
+          "部署",
+          "合并",
+          "release-flow",
+          "发布流程"
+        ],
+        "avoid-when": [
+          "discuss only",
+          "仅讨论",
+          "review-only",
+          "仅评审"
+        ],
+        "boundary-notes": "Use ship for release workflow execution; if task is only pre-merge blocking decision without release workflow, pre-merge-gate may be adjacent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use ship or pre-merge-gate as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "pre-merge-gate"
+      }
     },
     {
       "skill": "gen-docs",
@@ -736,7 +1248,40 @@
       "aliases": [
         "doc-generator",
         "文档生成"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "deterministic documentation scaffold generation",
+        "why-this-route": "gen-docs should win when prompt intent aligns with deterministic documentation scaffold generation and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "gen-docs",
+          "generate docs",
+          "doc scaffold",
+          "readme scaffold",
+          "design scaffold",
+          "生成文档",
+          "文档脚手架",
+          "生成README",
+          "doc-generator",
+          "文档生成"
+        ],
+        "avoid-when": [
+          "review-only",
+          "仅评审"
+        ],
+        "boundary-notes": "Use gen-docs for scaffold generation; structural validation belongs to verify-module. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 40,
+        "strong-score": 55,
+        "very-strong-score": 68,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use gen-docs or verify-module as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "verify-module"
+      }
     },
     {
       "skill": "architecture",
@@ -798,7 +1343,42 @@
       "aliases": [
         "system-design",
         "系统设计"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "system-shape and boundary architecture decisions",
+        "why-this-route": "architecture should win when prompt intent aligns with system-shape and boundary architecture decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "architecture",
+          "system design",
+          "api boundary",
+          "data flow",
+          "queue",
+          "cache",
+          "migration",
+          "api",
+          "system-design",
+          "系统设计"
+        ],
+        "avoid-when": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer architecture for service boundaries, data flow, cache/queue, migration, and HA tradeoffs; if the task is UI interaction or visual hierarchy only, prefer frontend-design. Declared conflicts: frontend-design."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use architecture or frontend-design as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "frontend-design"
+      }
     },
     {
       "skill": "development",
@@ -857,7 +1437,41 @@
       "aliases": [
         "coding",
         "开发"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "implementation and refactor execution",
+        "why-this-route": "development should win when prompt intent aligns with implementation and refactor execution and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "development",
+          "coding",
+          "implement",
+          "refactor",
+          "code",
+          "开发",
+          "编码",
+          "代码实现"
+        ],
+        "avoid-when": [
+          "penetration test",
+          "渗透测试",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should development be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "chart-visualization",
@@ -936,7 +1550,43 @@
       "aliases": [
         "data-visualization",
         "图表可视化"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "chart semantics/spec/config correctness for G2/S2/T8 flows",
+        "why-this-route": "chart-visualization should win when prompt intent aligns with chart semantics/spec/config correctness for G2/S2/T8 flows and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "chart",
+          "chart visualization",
+          "data visualization",
+          "g2",
+          "antv g2",
+          "s2",
+          "pivot table",
+          "cross table",
+          "data-visualization",
+          "图表可视化"
+        ],
+        "avoid-when": [
+          "ui layout",
+          "pure visual polish",
+          "ux copywriting",
+          "纯视觉润色",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer chart-visualization for G2/S2/spec semantics and validation; if request is pure UI aesthetics/layout without data semantics, frontend-design may be adjacent. Declared conflicts: frontend-design."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use chart-visualization or frontend-design as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "frontend-design"
+      }
     },
     {
       "skill": "frontend-design",
@@ -992,7 +1642,41 @@
         "frontend-design-hierarchy-and-visual-systems",
         "frontend-design-motion-and-state-transitions",
         "frontend-design-responsive-and-implementation-constraints"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "UI/UX interaction and visual-system design",
+        "why-this-route": "frontend-design should win when prompt intent aligns with UI/UX interaction and visual-system design and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ui",
+          "ux",
+          "frontend design",
+          "component design",
+          "accessibility",
+          "前端设计",
+          "界面设计",
+          "用户体验",
+          "ui-design"
+        ],
+        "avoid-when": [
+          "sql",
+          "SQL查询",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Prefer frontend-design for UI/UX/accessibility/visual hierarchy; if dominant ask is API boundary, migration, queue, or cache strategy, prefer architecture. Declared conflicts: architecture."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use frontend-design or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
     },
     {
       "skill": "infrastructure",
@@ -1047,7 +1731,42 @@
       "aliases": [
         "platform-infra",
         "平台基础设施"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "runtime topology, IaC, tenancy, and platform controls",
+        "why-this-route": "infrastructure should win when prompt intent aligns with runtime topology, IaC, tenancy, and platform controls and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "kubernetes",
+          "terraform",
+          "gitops",
+          "infra",
+          "cluster",
+          "k8s",
+          "基础设施",
+          "云原生",
+          "platform-infra",
+          "平台基础设施"
+        ],
+        "avoid-when": [
+          "ux",
+          "用户体验",
+          "component design",
+          "组件设计"
+        ],
+        "boundary-notes": "Prefer infrastructure for cluster/IaC/runtime policy/tenancy operations; service-boundary and business-system design belongs to architecture. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use infrastructure or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
     },
     {
       "skill": "data-engineering",
@@ -1104,7 +1823,44 @@
       "aliases": [
         "data-pipeline",
         "数据管道"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "pipeline/stream/data-contract engineering decisions",
+        "why-this-route": "data-engineering should win when prompt intent aligns with pipeline/stream/data-contract engineering decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "etl",
+          "stream processing",
+          "flink",
+          "dbt",
+          "data pipeline",
+          "streaming",
+          "kafka",
+          "数据工程",
+          "data-pipeline",
+          "数据管道"
+        ],
+        "avoid-when": [
+          "ui",
+          "界面设计",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer data-engineering for ETL/streaming/contracts/reconciliation; UI and visual styling requests should route elsewhere. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use data-engineering or infrastructure as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "infrastructure"
+      }
     },
     {
       "skill": "devops",
@@ -1159,7 +1915,42 @@
       "aliases": [
         "devops-flow",
         "运维流程"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "release pipeline, observability, and operational readiness controls",
+        "why-this-route": "devops should win when prompt intent aligns with release pipeline, observability, and operational readiness controls and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "devops",
+          "ci",
+          "cd",
+          "pipeline",
+          "observability",
+          "release gate",
+          "deploy",
+          "运维",
+          "devops-flow",
+          "运维流程"
+        ],
+        "avoid-when": [
+          "pure product design",
+          "纯产品设计",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Prefer devops for CI/CD, rollout gates, observability, and runbook operations; if exploitability and trust-boundary abuse dominate, prefer security. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use devops or security as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "security"
+      }
     },
     {
       "skill": "ai",
@@ -1215,7 +2006,38 @@
       "aliases": [
         "llm",
         "大模型"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "LLM/RAG/agent design and evaluation decisions",
+        "why-this-route": "ai should win when prompt intent aligns with LLM/RAG/agent design and evaluation decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ai",
+          "llm",
+          "prompt",
+          "rag",
+          "agent",
+          "eval",
+          "人工智能",
+          "大模型"
+        ],
+        "avoid-when": [
+          "cluster sizing",
+          "集群容量规划"
+        ],
+        "boundary-notes": "Prefer ai for prompt/eval/RAG/agent-loop/guardrail decisions; general cluster sizing or infra topology should route to infrastructure. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use ai or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
     },
     {
       "skill": "orchestration",
@@ -1266,7 +2088,43 @@
       "aliases": [
         "workflow-orchestration",
         "任务编排"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "task decomposition and integration coordination strategy",
+        "why-this-route": "orchestration should win when prompt intent aligns with task decomposition and integration coordination strategy and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "orchestration",
+          "coordination",
+          "task decomposition",
+          "workflow coordination",
+          "decomposition",
+          "workflow",
+          "编排",
+          "协同",
+          "workflow-orchestration",
+          "任务编排"
+        ],
+        "avoid-when": [
+          "single file bug",
+          "单文件缺陷",
+          "database design",
+          "数据库设计",
+          "single-file bug"
+        ],
+        "boundary-notes": "Use orchestration for decomposition, dependency, and coordination strategy; if active parallel delegation with owned write scopes is requested, prefer multi-agent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use orchestration or multi-agent as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "multi-agent"
+      }
     },
     {
       "skill": "mobile",
@@ -1318,7 +2176,42 @@
         "mobile-battery-and-performance-budget",
         "mobile-native-bridge-and-platform-boundaries",
         "mobile-release-and-observability"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "mobile lifecycle, offline, and platform-boundary constraints",
+        "why-this-route": "mobile should win when prompt intent aligns with mobile lifecycle, offline, and platform-boundary constraints and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ios",
+          "android",
+          "react native",
+          "flutter",
+          "mobile",
+          "移动端",
+          "iOS开发",
+          "Android开发",
+          "mobile-dev",
+          "移动开发"
+        ],
+        "avoid-when": [
+          "kubernetes",
+          "Kubernetes集群",
+          "etl",
+          "数据管道"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use mobile or development as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "development"
+      }
     },
     {
       "skill": "claymorphism",
@@ -1360,7 +2253,38 @@
         "claymorphism-surface-and-shadow-system",
         "claymorphism-component-recipes",
         "claymorphism-accessibility-and-responsive-constraints"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "claymorphism style-system application",
+        "why-this-route": "claymorphism should win when prompt intent aligns with claymorphism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "claymorphism",
+          "soft ui",
+          "粘土风",
+          "软拟态",
+          "soft neumorphism",
+          "软拟物",
+          "soft-ui"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should claymorphism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "glassmorphism",
@@ -1402,7 +2326,38 @@
         "glassmorphism-layering-and-contrast",
         "glassmorphism-component-recipes",
         "glassmorphism-accessibility-and-responsive-constraints"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "glassmorphism style-system application",
+        "why-this-route": "glassmorphism should win when prompt intent aligns with glassmorphism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "glassmorphism",
+          "frosted glass",
+          "玻璃拟态",
+          "毛玻璃",
+          "glass style",
+          "玻璃风格",
+          "frosted-ui"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should glassmorphism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "liquid-glass",
@@ -1446,7 +2401,40 @@
         "liquid-glass-depth-and-motion-language",
         "liquid-glass-component-recipes",
         "liquid-glass-fallback-contrast-and-legibility"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "liquid-glass style-system application",
+        "why-this-route": "liquid-glass should win when prompt intent aligns with liquid-glass style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "liquid-glass",
+          "apple glass",
+          "liquid interface",
+          "液态玻璃",
+          "苹果玻璃",
+          "液态界面",
+          "liquid style",
+          "液态风格",
+          "apple-liquid-glass"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should liquid-glass be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "neubrutalism",
@@ -1488,7 +2476,38 @@
         "neubrutalism-graphic-hierarchy-and-tokens",
         "neubrutalism-component-recipes",
         "neubrutalism-accessibility-and-density-controls"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "neubrutalism style-system application",
+        "why-this-route": "neubrutalism should win when prompt intent aligns with neubrutalism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "neubrutalism",
+          "brutalist ui",
+          "新粗野主义",
+          "粗野风界面",
+          "brutal style",
+          "粗野风格",
+          "brutalist-style"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should neubrutalism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
     },
     {
       "skill": "pre-merge-gate",
@@ -1523,7 +2542,35 @@
       "aliases": [
         "merge-gate",
         "合并门禁"
-      ]
+      ],
+      "rationale": {
+        "primary-intent": "pre-merge release gate enforcement",
+        "why-this-route": "pre-merge-gate is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "pre-merge",
+          "merge gate",
+          "release gate",
+          "合并前检查",
+          "合并门禁",
+          "发布门禁",
+          "merge check",
+          "合并检查",
+          "merge-gate"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Guard route is explicit-only and should not replace normal design/implementation routing unless merge gate is requested. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of pre-merge-gate?",
+        "default-action": "wait-for-explicit-invocation"
+      }
     }
   ]
 }

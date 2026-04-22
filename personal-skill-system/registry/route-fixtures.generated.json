@@ -123,7 +123,7 @@
     },
     {
       "name": "chart-infographic-chinese",
-      "query": "把这段业务内容转成 infographic 模板 DSL",
+      "query": "Create a chart infographic with layout and annotation details",
       "expect": "chart-visualization"
     },
     {
@@ -185,6 +185,88 @@
       "name": "chart-image-overlay-mark",
       "query": "Build a G2 image mark overlay with icon scatter points and text labels",
       "expect": "chart-visualization"
+    },
+    {
+      "name": "m1-007-architecture-vs-frontend-ops-latency",
+      "query": "Design API boundaries, cache invalidation strategy, and queue backpressure for this product slowdown.",
+      "expect": "architecture"
+    },
+    {
+      "name": "m1-007-investigate-vs-bugfix-unknown-cause",
+      "query": "The auth flow fails only in production; investigate root cause before fixing code.",
+      "expect": "investigate"
+    },
+    {
+      "name": "m1-007-review-vs-verify-change-human-judgement",
+      "query": "Do a review of this diff with severity-ranked findings and release readiness judgement.",
+      "expect": "review"
+    },
+    {
+      "name": "m1-007-security-vs-devops-ci-token-abuse",
+      "query": "Security audit CI token abuse and least-privilege pipeline identities.",
+      "expect": "security"
+    },
+    {
+      "name": "m1-007-chart-vs-frontend-semantic-chart",
+      "query": "Create a G2 chart spec with proper encoding for anomaly trend analysis.",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "m1-007-orchestration-vs-development-parallel-plan",
+      "query": "Plan task decomposition and coordination for parallel workers with ownership boundaries.",
+      "expect": "orchestration"
+    },
+    {
+      "name": "m1-007-explicit-verify-change-over-review",
+      "query": "Run verify-change on this diff and output change risk classes before merge.",
+      "expect": "verify-change"
+    },
+    {
+      "name": "m1-007-explicit-verify-quality-over-development",
+      "query": "Run verify-quality complexity scan on this module and report top smells.",
+      "expect": "verify-quality"
+    },
+    {
+      "name": "m1-007-explicit-verify-module-over-gen-docs",
+      "query": "Run verify-module to check module completeness and missing README and DESIGN docs.",
+      "expect": "verify-module"
+    },
+    {
+      "name": "m1-007-explicit-pre-merge-gate-over-ship",
+      "query": "Run pre-merge gate for this release branch and decide block or allow.",
+      "expect": "pre-merge-gate"
+    },
+    {
+      "name": "m1-007-self-system-route-registry-portability",
+      "query": "Improve the skill system registry and route map for better portability across hosts.",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "m1-007-self-system-route-pack-governance",
+      "query": "Refine skill governance and route strategy for the personal skill system bundle.",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "m1-007-ordinary-engineering-not-self-system",
+      "query": "Implement retry logic and refactor payment service code with tests.",
+      "expect": "development"
+    },
+    {
+      "name": "m1-007-ordinary-bugfix-not-self-system",
+      "query": "Fix login bug regression and add a focused regression test.",
+      "expect": "bugfix"
+    },
+    {
+      "name": "m2-004-verify-change-without-explicit-invocation",
+      "query": "Please do diff analysis and change audit before merge.",
+      "expect-fallback-mode": "do-not-auto-route",
+      "expect-fallback-question-contains": "verify-change"
+    },
+    {
+      "name": "m2-004-explicit-verify-change-no-fallback",
+      "query": "Run verify-change on this diff and classify risk before merge.",
+      "expect": "verify-change",
+      "expect-no-fallback": true
     }
   ]
 }

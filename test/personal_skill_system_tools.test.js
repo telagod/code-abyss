@@ -12,6 +12,12 @@ const { analyzeChange, classifySensitiveChangeSurface, buildChangeRisk } = requi
 const { analyzeChartSpec } = require('../personal-skill-system/skills/tools/lib/chart-spec-analysis');
 const { analyzeS2Config } = require('../personal-skill-system/skills/tools/lib/s2-config-analysis');
 const { evaluatePreCommit, evaluatePreMerge } = require('../personal-skill-system/skills/tools/lib/analyzers');
+const {
+  chooseRouteFromFixtures,
+  explainRouteSelection,
+  generateRouteCandidates,
+  selectBestRouteCandidate
+} = require('../personal-skill-system/skills/tools/lib/skill-system-routing');
 
 describe('personal skill system tool runtime', () => {
   let tmpDir;
@@ -151,6 +157,253 @@ describe('personal skill system tool runtime', () => {
     expect(report.status).toBe('pass');
     expect(report.metrics.skillFiles).toBeGreaterThan(0);
     expect(report.metrics.routeFixtures).toBeGreaterThan(0);
+  });
+
+  test('routing library returns ranked candidates with explainable reasons', () => {
+    const routeMap = {
+      'default-threshold': 40,
+      scoring: {
+        'exact-match': 100,
+        'alias-match': 80,
+        'keyword-hit': 8,
+        'negative-hit': -12,
+        'namespace-hit': 10,
+        'host-unsupported': -100
+      },
+      routes: [
+        {
+          skill: 'review',
+          kind: 'workflow',
+          priority: 90,
+          activation: {
+            'trigger-keywords': ['review', 'code review'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': false
+          },
+          aliases: []
+        },
+        {
+          skill: 'verify-change',
+          kind: 'tool',
+          priority: 50,
+          rationale: {
+            'wins-when': ['verify-change', 'diff analysis']
+          },
+          confidence: {
+            'minimum-score': 65,
+            'strong-score': 80,
+            'very-strong-score': 93,
+            'requires-fallback-below-minimum': true
+          },
+          fallback: {
+            mode: 'do-not-auto-route',
+            'clarify-question': 'Do you want explicit invocation of verify-change?',
+            'default-action': 'wait-for-explicit-invocation'
+          },
+          activation: {
+            'trigger-keywords': ['verify-change', 'diff analysis'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': true
+          },
+          aliases: ['vc']
+        },
+        {
+          skill: 'development',
+          kind: 'domain',
+          priority: 60,
+          activation: {
+            'trigger-keywords': ['implement', 'refactor'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': false
+          },
+          aliases: []
+        }
+      ]
+    };
+
+    const query = 'Run verify-change on this diff and then provide review notes';
+    const candidates = generateRouteCandidates(query, routeMap);
+    const best = selectBestRouteCandidate(candidates, routeMap);
+    const explanation = explainRouteSelection(query, routeMap);
+
+    expect(candidates.length).toBe(3);
+    expect(candidates[0]).toHaveProperty('scoreBreakdown');
+    expect(candidates[0]).toHaveProperty('rerankScore');
+    expect(candidates[0]).toHaveProperty('confidenceAssessment');
+    expect(candidates[0]).toHaveProperty('reason');
+    expect(explanation.rankedCandidates[0]).toHaveProperty('matched');
+    expect(explanation.rankedCandidates[0]).toHaveProperty('semantic');
+    expect(explanation.rankedCandidates[0]).toHaveProperty('confidence');
+    expect(best.selectedSkill).toBe('verify-change');
+    expect(explanation.selectionReason).toContain('explicit invocation precedence');
+    expect(explanation.fallback.required).toBe(false);
+  });
+
+  test('chooseRouteFromFixtures keeps compatibility while exposing explicit precedence', () => {
+    const routeMap = {
+      'default-threshold': 40,
+      scoring: {
+        'exact-match': 100,
+        'alias-match': 80,
+        'keyword-hit': 8,
+        'negative-hit': -12,
+        'namespace-hit': 10,
+        'host-unsupported': -100
+      },
+      routes: [
+        {
+          skill: 'review',
+          kind: 'workflow',
+          priority: 250,
+          activation: {
+            'trigger-keywords': ['review'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': false
+          },
+          aliases: []
+        },
+        {
+          skill: 'verify-quality',
+          kind: 'tool',
+          priority: 20,
+          activation: {
+            'trigger-keywords': ['verify-quality', 'quality scan'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': true
+          },
+          aliases: []
+        }
+      ]
+    };
+
+    expect(chooseRouteFromFixtures('Run verify-quality and then do a review summary', routeMap)).toBe('verify-quality');
+    expect(chooseRouteFromFixtures('No known skill signal appears in this prompt', routeMap)).toBeNull();
+  });
+
+  test('routing library uses confidence threshold to trigger single-question fallback for mixed intent', () => {
+    const routeMap = {
+      'default-threshold': 40,
+      scoring: {
+        'exact-match': 100,
+        'alias-match': 80,
+        'keyword-hit': 8,
+        'negative-hit': -12
+      },
+      routes: [
+        {
+          skill: 'architecture',
+          kind: 'domain',
+          priority: 80,
+          activation: {
+            'intent-tags': ['design'],
+            'trigger-keywords': ['architecture', 'service boundary'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': false
+          },
+          aliases: ['system-design'],
+          'conflicts-with': ['frontend-design'],
+          rationale: {
+            'wins-when': ['architecture', 'service boundary', 'migration'],
+            'avoid-when': ['ui polish', 'visual style']
+          },
+          confidence: {
+            'minimum-score': 101,
+            'strong-score': 102,
+            'very-strong-score': 103,
+            'requires-fallback-below-minimum': true
+          },
+          fallback: {
+            mode: 'ask-one-question',
+            'clarify-question': 'Should this route use architecture or frontend-design as the primary skill for this request?',
+            'default-action': 'route-to-highest-score-after-clarification',
+            'safe-skill': 'frontend-design'
+          }
+        },
+        {
+          skill: 'frontend-design',
+          kind: 'domain',
+          priority: 79,
+          activation: {
+            'intent-tags': ['design'],
+            'trigger-keywords': ['frontend', 'ui', 'ux'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': false
+          },
+          aliases: ['ui-design'],
+          'conflicts-with': ['architecture'],
+          rationale: {
+            'wins-when': ['frontend', 'ui', 'ux', 'component design'],
+            'avoid-when': ['database schema', 'api migration']
+          },
+          confidence: {
+            'minimum-score': 101,
+            'strong-score': 102,
+            'very-strong-score': 103,
+            'requires-fallback-below-minimum': true
+          },
+          fallback: {
+            mode: 'ask-one-question',
+            'clarify-question': 'Should this route use frontend-design or architecture as the primary skill for this request?',
+            'default-action': 'route-to-highest-score-after-clarification',
+            'safe-skill': 'architecture'
+          }
+        }
+      ]
+    };
+
+    const explanation = explainRouteSelection('Need service boundary planning and ui polish in the same request', routeMap);
+
+    expect(explanation.selectedSkill).toBeNull();
+    expect(explanation.fallback.required).toBe(true);
+    expect(explanation.fallback.mode).toBe('ask-one-question');
+    expect(explanation.confidence.score).toBeLessThan(explanation.confidence.minimumScore);
+  });
+
+  test('routing library triggers do-not-auto-route fallback for explicit-only validator signals', () => {
+    const routeMap = {
+      'default-threshold': 40,
+      scoring: {
+        'exact-match': 100,
+        'alias-match': 80,
+        'keyword-hit': 8,
+        'negative-hit': -12
+      },
+      routes: [
+        {
+          skill: 'verify-change',
+          kind: 'tool',
+          priority: 90,
+          activation: {
+            'intent-tags': ['validate'],
+            'trigger-keywords': ['diff analysis', 'change audit'],
+            'negative-keywords': [],
+            'requires-explicit-invocation': true
+          },
+          aliases: ['vc'],
+          rationale: {
+            'wins-when': ['diff analysis', 'change audit']
+          },
+          confidence: {
+            'minimum-score': 65,
+            'strong-score': 80,
+            'very-strong-score': 93,
+            'requires-fallback-below-minimum': true
+          },
+          fallback: {
+            mode: 'do-not-auto-route',
+            'clarify-question': 'Do you want explicit invocation of verify-change?',
+            'default-action': 'wait-for-explicit-invocation'
+          }
+        }
+      ]
+    };
+
+    const explanation = explainRouteSelection('Please do diff analysis and change audit before merge', routeMap);
+
+    expect(explanation.selectedSkill).toBeNull();
+    expect(explanation.fallback.required).toBe(true);
+    expect(explanation.fallback.mode).toBe('do-not-auto-route');
+    expect(explanation.fallback.clarifyQuestion).toContain('explicit invocation');
   });
 
   test('analyzeChartSpec catches core G2 misuse patterns', () => {
