@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gen Docs"
-  short_description: "文档生成器"
-  default_prompt: "Read ~/.agents/skills/tools/gen-docs/SKILL.md, then run: node ~/.agents/skills/run_skill.js gen-docs $ARGUMENTS"

@@ -6,7 +6,7 @@ const { collectSkills } = require('./lib/skill-registry');
 function resolveSkillsDir() {
   return process.env.SAGE_SKILLS_DIR
     ? path.resolve(process.env.SAGE_SKILLS_DIR)
-    : path.join(__dirname, '..', 'skills');
+    : path.join(__dirname, '..', 'personal-skill-system', 'skills');
 }
 
 function main() {

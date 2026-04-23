@@ -1,4 +1,0 @@
-interface:
-  display_name: "Verify Change"
-  short_description: "变更校验关卡"
-  default_prompt: "Read ~/.agents/skills/tools/verify-change/SKILL.md, then run: node ~/.agents/skills/run_skill.js verify-change $ARGUMENTS"

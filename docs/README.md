@@ -21,7 +21,7 @@
 
 1. [ONBOARDING.md](./ONBOARDING.md)
 2. [SKILL_AUTHORING.md](./SKILL_AUTHORING.md)
-3. `skills/**/SKILL.md`
+3. `personal-skill-system/skills/**/SKILL.md`
 
 ### 要新增或调整 pack
 

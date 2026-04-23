@@ -10,15 +10,21 @@
       "files": [
         { "src": "config/CLAUDE.md", "dest": "CLAUDE.md", "root": "claude" },
         { "src": "output-styles", "dest": "output-styles", "root": "claude" },
-        { "src": "skills", "dest": "skills", "root": "claude" },
+        { "src": "personal-skill-system/skills", "dest": "skills", "root": "claude" },
         { "src": "bin/lib", "dest": "bin/lib", "root": "claude" }
       ]
     },
     "codex": {
       "files": [
         { "src": "config/instruction.md", "dest": "instruction.md", "root": "codex" },
-        { "src": "skills", "dest": "skills", "root": "codex" },
+        { "src": "personal-skill-system/skills", "dest": "skills", "root": "codex" },
         { "src": "bin/lib", "dest": "bin/lib", "root": "codex" }
+      ]
+    },
+    "gemini": {
+      "files": [
+        { "src": "personal-skill-system/skills", "dest": "skills", "root": "gemini" },
+        { "src": "bin/lib", "dest": "bin/lib", "root": "gemini" }
       ]
     }
   }

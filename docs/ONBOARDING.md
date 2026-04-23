@@ -56,7 +56,7 @@ node bin/install.js --list-personas
 | `bin/lib/style-registry.js` | 查 style / persona registry 与 runtime guidance |
 | `packs/*/manifest.json` | 查某个 pack 的 host 安装契约 |
 | `.code-abyss/packs.lock.json` | 查当前项目启用了哪些 pack |
-| `skills/**/SKILL.md` | 查 skill 的权威元数据 |
+| `personal-skill-system/skills/**/SKILL.md` | 查 skill 的权威元数据（source） |
 | `test/install-smoke.test.js` | 查安装行为的事实回归 |
 | `test/docs-drift.test.js` | 查哪些文档口径已经被防漂移约束 |
 
@@ -92,7 +92,7 @@ HOME="$tmp_home" USERPROFILE="$tmp_home" node bin/install.js --target codex -y
 
 ### 改一个 skill
 
-1. 找到 `skills/<category>/<name>/SKILL.md`
+1. 找到 `personal-skill-system/skills/<category>/<name>/SKILL.md`
 2. 如果是脚本型 skill，检查 `scripts/*.js` 是否只有一个入口
 3. 跑：
 
@@ -150,8 +150,8 @@ npm test -- --runInBand test/docs-drift.test.js
 
 - `config.toml`
 - `instruction.md`
-- `skills/`
-- `~/.agents/skills/` 下的外部 pack runtime
+- `~/.agents/skills/`（runtime 主入口，含外部 pack runtime）
+- `~/.codex/skills/`（core skills 兼容镜像，非主入口）
 
 ### 2. pack manifest 和 packs.lock 的关系
 

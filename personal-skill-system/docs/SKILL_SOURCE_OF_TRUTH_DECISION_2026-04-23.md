@@ -4,7 +4,7 @@
 
 `personal-skill-system/skills/` is the authoritative skill source.
 
-Root `skills/` is a distribution mirror or compatibility surface, not the place where skill truth should be edited first.
+Root `skills/` is a repo-local legacy compatibility surface, not the place where skill truth should be edited first and not part of the shipped package path under the direct-source cutover.
 
 `top_developer/` is raw source material. It should not be exposed as default user-invocable skills until its useful material is split into task-shaped capability modules and validated.
 
@@ -22,7 +22,7 @@ For this repository, that means:
 | `personal-skill-system/skills/**/references/*` | Authoritative expert depth and workflow detail. |
 | `personal-skill-system/skills/**/scripts/*` | Authoritative deterministic tool runtime. |
 | `personal-skill-system/registry/*.generated.json` | Generated or synchronized metadata. |
-| root `skills/` | Distribution mirror or compatibility copy. |
+| root `skills/` | Repo-local legacy copy; not a shipped source of truth. |
 | `top_developer/` | Raw source material, not direct distribution truth. |
 | `package.json` `files` | Packaging policy, not skill truth. |
 | `packs/*/manifest.json` | Host file placement policy, not skill truth. |
@@ -40,8 +40,9 @@ For this repository, that means:
 | Rule | Requirement |
 |---|---|
 | Edit first | New skill work starts in `personal-skill-system/skills`. |
-| Mirror later | Root `skills/` is updated only by an explicit mirror/generation step or by a card that declares it as write scope. |
-| Validate both | Distribution checks must prove root/package content matches the authoritative source. |
+| Direct ship | Host runtime `skills/` are installed from `personal-skill-system/skills` through pack policy. |
+| Legacy root | Root `skills/` may remain in-repo temporarily, but it must not drive package shipping or host installation. |
+| Validate package policy | Distribution checks must prove package files and pack manifests point to the authoritative source. |
 | Generated metadata | Registry, route-map, fixtures, and ratings must not become parallel hand-maintained truth. |
 | Raw overlays | `top_developer/` stays raw until split, normalized, routed, tested, and benchmarked. |
 
@@ -55,6 +56,15 @@ personal-skill-system/registry/      # generated/synchronized metadata
 personal-skill-system/benchmark/     # proof and evaluation
 skills/                              # generated or checked distribution mirror
 top_developer/                       # raw source archive / extraction input
+```
+
+Current direct-source cutover:
+
+```text
+package.json files -> personal-skill-system/
+packs/abyss host skills src -> personal-skill-system/skills
+runtime ~/.{claude,codex,gemini}/skills -> installed from authoritative source
+root skills/ -> repo-local legacy only
 ```
 
 ## Immediate Implementation Cards
@@ -73,4 +83,3 @@ top_developer/                       # raw source archive / extraction input
 - Do not copy all raw `top_developer/` skills into the shipped skill tree.
 - Do not make root `skills/` a second editable system.
 - Do not claim all shipped skills are absolute top-tier until benchmark and host evidence exists.
-

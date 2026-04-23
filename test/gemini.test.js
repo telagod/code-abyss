@@ -28,7 +28,7 @@ describe('gemini adapter', () => {
 
   test('getGeminiCoreFiles: 返回 Gemini 核心映射', () => {
     expect(getGeminiCoreFiles()).toEqual([
-      { src: 'skills', dest: 'skills', root: 'gemini' },
+      { src: 'personal-skill-system/skills', dest: 'skills', root: 'gemini' },
       { src: 'bin/lib', dest: 'bin/lib', root: 'gemini' },
     ]);
   });
