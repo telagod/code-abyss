@@ -22,6 +22,7 @@ Deeper orchestration can be expanded in later cards.
 - `tasks/`: gold task sets by domain
 - `rubrics/`: scoring definitions
 - `runs/`: immutable run artifacts
+- `model-reviews/`: model-level project diagnoses, not benchmark task runs
 - `summary.schema.json`: JSON schema for summary artifact
 - `summary.generated.json`: machine-readable aggregate generated from `runs/`
 - `scripts/generate-summary.js`: summary runner stub
@@ -123,3 +124,12 @@ Future cards add:
 - domain task content (`CARD-M1-003`, `CARD-M1-004`)
 - rubric pack details (`CARD-M1-005`)
 - richer summary automation and CI integration (follow-up after `CARD-M1-002`)
+
+## Model Review Records
+
+Model reviews are stored separately from scored task runs:
+
+- `benchmark/model-reviews/`
+
+Use model reviews for project diagnoses such as GLM, GPT-5.4, Claude, or Gemini review passes.
+Use benchmark runs only for scored task execution.

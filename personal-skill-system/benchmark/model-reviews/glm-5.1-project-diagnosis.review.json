@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "review_id": "glm-5.1-project-diagnosis-2026-04-22",
+  "model": "glm-5.1",
+  "date": "2026-04-22",
+  "source_doc": "personal-skill-system/docs/glm-5.1-project-diagnosis.md",
+  "scope": "code-abyss repo-level distribution and skill-system maturity",
+  "verdict": "Directionally correct for the repo-level distributed product; incomplete because the stronger 33-skill personal-skill-system exists but is not yet the distributed source of truth.",
+  "confirmed_findings": [
+    {
+      "claim": "Root skills tree has only 21 SKILL.md files.",
+      "evidence": ["local count: skills=21"],
+      "impact": "Root distribution is incomplete compared with the portable skill system."
+    },
+    {
+      "claim": "personal-skill-system has a fuller skill tree.",
+      "evidence": ["local count: personal-skill-system/skills=33", "verify-skill-system status=pass"],
+      "impact": "The stronger system exists but is not yet the root distribution truth."
+    },
+    {
+      "claim": "Workflows, guards, full router, and verify-skill-system are missing from root skills.",
+      "evidence": ["root skills inventory", "personal-skill-system skills inventory"],
+      "impact": "The shipped root skill surface lacks orchestration and safety gates."
+    },
+    {
+      "claim": "Gemini is missing from packs/abyss/manifest.json.",
+      "evidence": ["manifest hosts include claude and codex only"],
+      "impact": "Pack single-source host policy is incomplete."
+    },
+    {
+      "claim": "package.json description is stale.",
+      "evidence": ["package.json still references a stale 56-skill claim"],
+      "impact": "Distribution docs and metadata can mislead users."
+    },
+    {
+      "claim": "install.js is still too large and mixes responsibilities.",
+      "evidence": ["bin/install.js has over 1000 lines"],
+      "impact": "Installer maintainability and unit-testability remain weak."
+    }
+  ],
+  "corrected_findings": [
+    {
+      "claim": "The project has no mature skill system.",
+      "evidence": ["personal-skill-system verifies 33 skills, 99 capability modules, and 32 routes"],
+      "impact": "The real issue is source-of-truth and distribution alignment, not total absence of maturity."
+    },
+    {
+      "claim": "The 32 installed skills are the only real system.",
+      "evidence": ["local current portable system has 33 skills"],
+      "impact": "Counts must be refreshed before being used as release claims."
+    }
+  ],
+  "action_cards": [
+    "CARD-P0-001",
+    "CARD-P0-002",
+    "CARD-P0-004",
+    "CARD-P0-005",
+    "CARD-P0-006",
+    "CARD-P0-016",
+    "CARD-P0-017",
+    "CARD-P0-023",
+    "CARD-P1-011",
+    "CARD-P1-012",
+    "CARD-P2-001",
+    "CARD-P2-007"
+  ],
+  "confidence": "high",
+  "status": "imported",
+  "notes": [
+    "This is a model review record, not a benchmark run.",
+    "All confirmed findings must still be implemented through task cards."
+  ]
+}
+

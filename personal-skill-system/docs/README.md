@@ -1,5 +1,16 @@
 # PERSONAL_SKILL_SYSTEM README
 
+## 2026-04-23 Execution Plan
+
+Read this before starting the next top-tier upgrade pass:
+
+- `docs/PERSONAL_SKILL_SYSTEM_TOP_TIER_EXECUTION_PLAN_2026-04-23.md`
+- `docs/SKILL_SOURCE_OF_TRUTH_DECISION_2026-04-23.md`
+- `docs/TOP_DEVELOPER_PROMOTION_DECISION_2026-04-23.md`
+- `docs/LOCAL_CI_SMOKE_POLICY_2026-04-23.md`
+- `docs/MULTI_MODEL_EVALUATION_PROTOCOL_2026-04-23.md`
+- `docs/archive/RECORDS_ARCHIVE_INDEX_2026-04-23.md`
+
 ## 2026-04-20 Status Update
 
 Read these files before trusting any older blanket "all TOP-ready" claim:
