@@ -1,0 +1,55 @@
+﻿{
+  "schema_version": 1,
+  "rubric_id": "validation-quality.v1",
+  "dimension": "validation_completeness",
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "evidence_fields": [
+    "validation_expected",
+    "deliverable_expected",
+    "risk_focus"
+  ],
+  "anchors": {
+    "0": {
+      "label": "validation-fail",
+      "criteria": "No meaningful validation evidence for claims."
+    },
+    "1": {
+      "label": "validation-weak",
+      "criteria": "Validation is mentioned but non-reproducible or irrelevant to risk."
+    },
+    "2": {
+      "label": "validation-partial",
+      "criteria": "Some checks exist but critical risk paths remain unvalidated."
+    },
+    "3": {
+      "label": "validation-acceptable",
+      "criteria": "Core checks are present but depth/coverage gaps remain."
+    },
+    "4": {
+      "label": "validation-strong",
+      "criteria": "Validation covers primary risk paths with reproducible evidence."
+    },
+    "5": {
+      "label": "validation-excellent",
+      "criteria": "Validation is risk-prioritized, reproducible, and includes edge/failure-path checks plus residual-risk statement."
+    }
+  },
+  "decision_checks": [
+    "Do checks map to declared risk_focus?",
+    "Is evidence reproducible (commands/tests/tool outputs)?",
+    "Are residual risks and unknowns explicitly stated?"
+  ],
+  "required_signal_types": [
+    "behavior proof",
+    "risk-path proof",
+    "regression/side-effect check"
+  ],
+  "anti_patterns": [
+    "'tests passed' with no changed-surface mapping",
+    "Validation claims without commands, fixtures, or outputs",
+    "Ignoring failure-path validation when risk is high"
+  ]
+}

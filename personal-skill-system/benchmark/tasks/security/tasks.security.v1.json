@@ -1,0 +1,294 @@
+[
+  {
+    "task_id": "security-001",
+    "domain": "security",
+    "intent_type": "explicit",
+    "prompt": "Use security skill to build a trust-boundary map for a payment platform where public API, internal gRPC, and partner webhooks share identity tokens.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "architecture"
+    ],
+    "risk_focus": [
+      "token replay across boundaries",
+      "implicit trust between internal services",
+      "partner webhook abuse"
+    ],
+    "deliverable_expected": [
+      "Asset and trust-zone map with entry points and sinks",
+      "Top exploit paths with blast radius judgement",
+      "Control stack with prevention and containment layers"
+    ],
+    "validation_expected": [
+      "Authn/authz boundary assumptions are explicit",
+      "Compromise scenario includes detection and recovery actions",
+      "Residual risks are ranked and owned"
+    ],
+    "scoring_notes": {
+      "route": "Explicit security architecture judgement request.",
+      "quality": "High score requires concrete exploit paths and layered controls, not checklist-only output."
+    }
+  },
+  {
+    "task_id": "security-002",
+    "domain": "security",
+    "intent_type": "explicit",
+    "prompt": "As security reviewer, define supply-chain controls for a monorepo using npm and pip, including provenance, signature policy, and CI gate behavior.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "risk_focus": [
+      "dependency poisoning",
+      "transitive package takeover",
+      "CI bypass of signed artifacts"
+    ],
+    "deliverable_expected": [
+      "Supply-chain threat model and attack surface table",
+      "Policy set for artifact provenance and signature verification",
+      "CI/CD gate design with fail-open/fail-closed rationale"
+    ],
+    "validation_expected": [
+      "Control coverage maps to realistic attack paths",
+      "Exception process and expiry policy are explicit",
+      "Operational ownership for policy violations is defined"
+    ],
+    "scoring_notes": {
+      "route": "Security governance and dependency trust are core security tasks.",
+      "quality": "High score links policy controls to concrete compromise scenarios."
+    }
+  },
+  {
+    "task_id": "security-003",
+    "domain": "security",
+    "intent_type": "implicit",
+    "prompt": "File upload service unzips user archives and invokes image conversion binaries. Provide exploit-path analysis and a remediation plan with minimal product disruption.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "verify-security"
+    ],
+    "risk_focus": [
+      "path traversal",
+      "command injection",
+      "malicious archive payloads"
+    ],
+    "deliverable_expected": [
+      "Source-to-sink exploit chain explanation",
+      "Prioritized remediation steps with risk reduction order",
+      "Safety controls for temporary containment"
+    ],
+    "validation_expected": [
+      "Mitigations are mapped to each sink class",
+      "False-safe assumptions are called out",
+      "Verification plan includes abuse-case tests"
+    ],
+    "scoring_notes": {
+      "route": "No explicit skill name, but exploit-path analysis is security-first.",
+      "quality": "High score distinguishes immediate containment from durable fixes."
+    }
+  },
+  {
+    "task_id": "security-004",
+    "domain": "security",
+    "intent_type": "implicit",
+    "prompt": "Kubernetes workloads still use long-lived cloud access keys in env vars. Design migration to workload identity with zero-downtime rotation and rollback posture.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "infrastructure"
+    ],
+    "risk_focus": [
+      "credential exfiltration",
+      "stale key persistence",
+      "privilege escalation via shared secrets"
+    ],
+    "deliverable_expected": [
+      "Identity migration phases with trust-boundary impacts",
+      "Secret rotation and revocation workflow",
+      "Rollback-safe transition controls"
+    ],
+    "validation_expected": [
+      "Least-privilege delta is measurable per phase",
+      "Emergency revocation path is executable",
+      "Break-glass controls are constrained and auditable"
+    ],
+    "scoring_notes": {
+      "route": "Workload identity risk framing is security depth, not generic infra tuning.",
+      "quality": "High score includes migration sequencing and failure handling."
+    }
+  },
+  {
+    "task_id": "security-005",
+    "domain": "security",
+    "intent_type": "ambiguous",
+    "prompt": "Run verify-security style thinking on this auth PR, but decide if merge must be blocked now and what evidence is still missing.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "review",
+      "verify-security"
+    ],
+    "risk_focus": [
+      "authz bypass",
+      "token scope drift",
+      "insufficient test proof for critical path"
+    ],
+    "deliverable_expected": [
+      "Security findings prioritized by exploitability",
+      "Merge block/allow recommendation with rationale",
+      "Minimum additional evidence required"
+    ],
+    "validation_expected": [
+      "Critical findings include attack scenario",
+      "Decision threshold is explicit",
+      "Unknowns and compensating controls are documented"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with review/tooling, but requested decision centers on security exploitability.",
+      "quality": "High score merges tool evidence with human risk judgement."
+    }
+  },
+  {
+    "task_id": "security-006",
+    "domain": "security",
+    "intent_type": "ambiguous",
+    "prompt": "CI pipeline leaked deploy tokens twice this quarter. Propose abuse-resistant release-boundary controls and incident response improvements.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "risk_focus": [
+      "token theft in CI logs/artifacts",
+      "privilege overreach in pipeline actors",
+      "slow containment after leakage"
+    ],
+    "deliverable_expected": [
+      "Threat model for CI identity and token paths",
+      "Boundary hardening controls for release actions",
+      "Detection-to-recovery runbook improvements"
+    ],
+    "validation_expected": [
+      "Controls map to known leak vectors",
+      "Revocation and rotation timing targets are stated",
+      "Incident drill criteria are defined"
+    ],
+    "scoring_notes": {
+      "route": "Release mechanics exist, but compromise resistance is security-dominant.",
+      "quality": "High score avoids purely process language and defines enforceable controls."
+    }
+  },
+  {
+    "task_id": "security-007",
+    "domain": "security",
+    "intent_type": "implicit",
+    "prompt": "A multi-tenant GraphQL API has repeated IDOR-like data leakage reports. Design authz boundary controls and verification strategy across resolvers.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "development"
+    ],
+    "risk_focus": [
+      "object-level authorization gaps",
+      "tenant boundary leakage",
+      "resolver-level inconsistent checks"
+    ],
+    "deliverable_expected": [
+      "Authz model and boundary enforcement points",
+      "Resolver policy pattern and inheritance rules",
+      "Targeted abuse-case verification suite"
+    ],
+    "validation_expected": [
+      "Tenant isolation assertions are explicit",
+      "Negative tests cover cross-tenant access attempts",
+      "Bypass surface from cached/derived fields is addressed"
+    ],
+    "scoring_notes": {
+      "route": "Primary work is authz security model, not just code cleanup.",
+      "quality": "High score includes policy consistency and abuse-proof validation."
+    }
+  },
+  {
+    "task_id": "security-008",
+    "domain": "security",
+    "intent_type": "explicit",
+    "prompt": "Use security skill to define credential-compromise response for service-to-service mTLS and API keys, including containment and trust re-establishment criteria.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "risk_focus": [
+      "credential replay",
+      "incomplete revocation",
+      "premature trust restoration"
+    ],
+    "deliverable_expected": [
+      "Compromise response flow with decision gates",
+      "Key/cert rotation sequence and dependencies",
+      "Trust re-establishment evidence checklist"
+    ],
+    "validation_expected": [
+      "Containment actions can be executed under degraded conditions",
+      "Recovery does not skip forensic checkpoints",
+      "Runbook ownership and timing SLOs are explicit"
+    ],
+    "scoring_notes": {
+      "route": "Explicit incident-response security task.",
+      "quality": "High score includes operationally feasible containment and recovery proof."
+    }
+  },
+  {
+    "task_id": "security-009",
+    "domain": "security",
+    "intent_type": "ambiguous",
+    "prompt": "SAST is clean but pentest found an SSRF-to-metadata exfiltration chain. Explain why static scans missed it and prioritize fixes by exploitability.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "verify-security",
+      "review"
+    ],
+    "risk_focus": [
+      "SSRF metadata access",
+      "tool blind spots",
+      "mis-prioritized remediation"
+    ],
+    "deliverable_expected": [
+      "Attack chain narrative from entry to impact",
+      "Detection gap analysis (tool and process)",
+      "Exploitability-weighted remediation backlog"
+    ],
+    "validation_expected": [
+      "Fix ordering reflects blast radius and ease of abuse",
+      "Compensating controls for interim period are included",
+      "Future detection improvements are specified"
+    ],
+    "scoring_notes": {
+      "route": "Prompt asks for exploitability-first security judgement over tooling output.",
+      "quality": "High score separates scan coverage limits from real-world risk."
+    }
+  },
+  {
+    "task_id": "security-010",
+    "domain": "security",
+    "intent_type": "implicit",
+    "prompt": "RBAC wildcards accumulated across teams and now violate least-privilege posture. Design governance model for role review, exception expiry, and drift detection.",
+    "route_expected": "security",
+    "route_allowed_alternates": [
+      "infrastructure"
+    ],
+    "risk_focus": [
+      "privilege creep",
+      "orphaned exceptions",
+      "silent authorization drift"
+    ],
+    "deliverable_expected": [
+      "Role governance policy and review cadence",
+      "Exception workflow with owner and expiry semantics",
+      "Drift detection and escalation pipeline"
+    ],
+    "validation_expected": [
+      "Least-privilege targets are measurable",
+      "Policy exceptions cannot become permanent by default",
+      "Drift alerts map to actionable remediation"
+    ],
+    "scoring_notes": {
+      "route": "Authorization governance is security depth work.",
+      "quality": "High score includes enforceable policy loops, not only recommendations."
+    }
+  }
+]

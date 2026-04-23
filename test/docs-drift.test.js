@@ -27,4 +27,18 @@ describe('docs drift guard', () => {
     expect(design).not.toContain('Codex 安装时会按所选 style 动态生成');
     expect(design).toContain('skills-only');
   });
+
+  test('docs 路径口径不再把 root skills/ 当作权威来源', () => {
+    const readme = fs.readFileSync(path.join(projectRoot, 'README.md'), 'utf8');
+    const design = fs.readFileSync(path.join(projectRoot, 'DESIGN.md'), 'utf8');
+    const onboarding = fs.readFileSync(path.join(projectRoot, 'docs', 'ONBOARDING.md'), 'utf8');
+    const docsReadme = fs.readFileSync(path.join(projectRoot, 'docs', 'README.md'), 'utf8');
+    const skillAuthoring = fs.readFileSync(path.join(projectRoot, 'docs', 'SKILL_AUTHORING.md'), 'utf8');
+    const corpus = [readme, design, onboarding, docsReadme, skillAuthoring].join('\n');
+
+    expect(corpus).not.toContain('`skills/**/SKILL.md`');
+    expect(corpus).not.toContain('`skills/<category>/<name>/SKILL.md`');
+    expect(corpus).not.toContain('`skills/<category>/<skill-name>/SKILL.md`');
+    expect(corpus).toContain('`personal-skill-system/skills/**/SKILL.md`');
+  });
 });

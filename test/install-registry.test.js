@@ -118,6 +118,17 @@ describe('skill registry', () => {
     expect(frontendDesign.allowedTools).toEqual(['Read']);
   });
 
+  test('collectSkills 从 permissions 回落到 allowedTools', () => {
+    makeSkill(
+      'tools/verify-skill-system',
+      'name: verify-skill-system\ndescription: verify bundle\nuser-invocable: true\npermissions: [Read, Glob, Bash]',
+      true
+    );
+
+    const skills = collectSkills(tmpDir);
+    expect(skills[0].allowedTools).toEqual(['Read', 'Glob', 'Bash']);
+  });
+
   test('collectInvocableSkills 只返回 user-invocable skills', () => {
     makeSkill('tools/gen-docs', 'name: gen-docs\ndescription: docs\nuser-invocable: true', true);
     makeSkill('domains/frontend-design', 'name: frontend-design\ndescription: design\nuser-invocable: false', false);
@@ -258,16 +269,17 @@ describe('scanInvocableSkills', () => {
   });
 
   test('扫描真实 skills 目录', () => {
-    const realSkillsDir = path.join(__dirname, '..', 'skills');
+    const realSkillsDir = path.join(__dirname, '..', 'personal-skill-system', 'skills');
     if (!fs.existsSync(realSkillsDir)) return;
 
     const results = scanInvocableSkills(realSkillsDir);
-    expect(results.length).toBeGreaterThanOrEqual(6);
+    expect(results.length).toBeGreaterThanOrEqual(20);
 
     const names = results.map(r => r.name);
     expect(names).toContain('gen-docs');
     expect(names).toContain('verify-module');
     expect(names).toContain('frontend-design');
+    expect(names).toContain('review');
   });
 });
 

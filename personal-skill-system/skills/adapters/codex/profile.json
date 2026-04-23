@@ -1,0 +1,15 @@
+{
+  "host": "codex",
+  "manual_import": "copy whole skill directories when possible",
+  "preferred_layers": [
+    "routers",
+    "domains",
+    "workflows",
+    "tools",
+    "guards"
+  ],
+  "notes": [
+    "SKILL.md standalone import works well for router/domain/workflow layers.",
+    "Tool and guard layers should keep scripts beside SKILL.md."
+  ]
+}

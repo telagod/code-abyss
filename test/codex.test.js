@@ -69,7 +69,7 @@ describe('codex adapter', () => {
   test('getCodexCoreFiles: 仅包含 codex 所需核心文件', () => {
     expect(getCodexCoreFiles()).toEqual([
       { src: 'config/instruction.md', dest: 'instruction.md', root: 'codex' },
-      { src: 'skills', dest: 'skills', root: 'codex' },
+      { src: 'personal-skill-system/skills', dest: 'skills', root: 'codex' },
       { src: 'bin/lib', dest: 'bin/lib', root: 'codex' },
     ]);
   });

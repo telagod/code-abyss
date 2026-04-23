@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Personal Skill System Model Review",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_id",
+    "model",
+    "date",
+    "scope",
+    "verdict",
+    "confirmed_findings",
+    "corrected_findings",
+    "action_cards",
+    "confidence",
+    "status"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "review_id": { "type": "string" },
+    "model": { "type": "string" },
+    "date": { "type": "string" },
+    "source_doc": { "type": "string" },
+    "scope": { "type": "string" },
+    "verdict": { "type": "string" },
+    "confirmed_findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "corrected_findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "action_cards": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["imported", "pending", "superseded", "rejected"]
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "required": ["claim", "evidence", "impact"],
+      "properties": {
+        "claim": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "impact": { "type": "string" }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,146 @@
+# Capability Module Ratings
+
+## Scope
+
+This file rates **capability modules**, not whole skills.
+
+## Summary
+
+- TOP-ready modules: 99
+- strong-but-not-top modules: 0
+- thin modules: 0
+- total rated capability modules: 99
+
+## Skill-Level Cross-Check
+
+- top-level enough now: 33
+- strong uplift, but not top yet: 0
+- useful overlay, not top-level alone: 0
+
+After the latest uplift round, every currently registered host skill is rated top-level enough under the weak-model-uplift standard.
+
+## Interpretation
+
+- TOP-ready: sharp enough to stand as an expert judgement module inside a routed skill
+- strong-but-not-top: useful and structurally sound, but still worth deeper sharpening
+- thin: too compressed for the importance of the judgement task
+
+## Current Verdict
+
+- all 99 registered capability modules are TOP-ready
+- all 33 registered host skills are now rated top-level enough
+- next work shifts from catching up to drift control and periodic recalibration
+
+## Next Batch
+
+- `(none; the current bundle is fully promoted in this snapshot)`
+
+## TOP-ready
+
+- `architecture-requirements-and-constraints`
+- `architecture-pattern-selection`
+- `architecture-middleware-evolution`
+- `architecture-reliability-and-ha`
+- `architecture-performance-architecture`
+- `architecture-security-architecture`
+- `architecture-platform-governance`
+- `architecture-decision-framing`
+- `architecture-option-scoring`
+- `architecture-migration-and-rollback`
+- `architecture-org-and-ownership-tradeoffs`
+- `development-python-design-and-types`
+- `development-python-concurrency`
+- `development-python-memory-and-runtime`
+- `development-query-shape-and-orm`
+- `development-transactions-pagination-and-write-paths`
+- `development-bottleneck-diagnosis`
+- `development-batching-caching-and-concurrency`
+- `development-config-and-runtime-boundaries`
+- `development-observability-and-shutdown`
+- `review-findings-and-severity`
+- `review-test-surface-mapping`
+- `review-mocks-fixtures-and-isolation`
+- `review-ci-signal-quality`
+- `review-release-readiness-and-rollback`
+- `review-git-and-pr-discipline`
+- `review-cause-model-and-proof`
+- `review-recurrence-prevention-and-defect-governance`
+- `devops-release-gate-design`
+- `devops-rollback-and-release-operations`
+- `devops-signal-design-and-instrumentation`
+- `devops-alerts-runbooks-and-diagnosis`
+- `infrastructure-control-plane-and-tenancy`
+- `infrastructure-cluster-shape-and-environment-strategy`
+- `infrastructure-traffic-governance-and-mesh-adoption`
+- `infrastructure-runtime-policy-and-identity-plane`
+- `infrastructure-failover-topology-and-consistency`
+- `infrastructure-dr-exercises-and-recovery-operations`
+- `security-authn-authz-boundaries`
+- `security-secret-lifecycle-and-rotation`
+- `security-layered-controls-and-trust-zones`
+- `security-detection-response-and-recovery`
+- `chart-visualization-g2-spec-guardrails`
+- `chart-visualization-g2-chart-selection`
+- `chart-visualization-g2-mark-and-transform-basics`
+- `chart-visualization-g2-interaction-and-tooltips`
+- `chart-visualization-s2-sheet-model-and-config`
+- `chart-visualization-s2-framework-bindings`
+- `chart-visualization-chart-image-api`
+- `chart-visualization-icon-retrieval-api`
+- `chart-visualization-infographic-dsl`
+- `chart-visualization-narrative-t8`
+- `chart-visualization-g2-components-and-layout`
+- `chart-visualization-g2-data-scales-and-coordinates`
+- `chart-visualization-g2-annotations-and-reference-marks`
+- `chart-visualization-g2-shared-tooltip-and-navigation`
+- `chart-visualization-s2-advanced-table-features`
+- `chart-visualization-s2-customization-and-extensions`
+- `frontend-design-information-architecture-and-interaction`
+- `frontend-design-information-architecture`
+- `frontend-design-interaction-patterns`
+- `frontend-design-hierarchy-and-visual-systems`
+- `frontend-design-motion-and-state-transitions`
+- `frontend-design-responsive-and-implementation-constraints`
+- `mobile-lifecycle-and-state`
+- `mobile-lifecycle-and-interruption`
+- `mobile-offline-sync-and-conflict`
+- `mobile-permission-and-privacy-boundaries`
+- `mobile-battery-and-performance-budget`
+- `mobile-native-bridge-and-platform-boundaries`
+- `mobile-release-and-observability`
+- `claymorphism-surface-and-shadow-system`
+- `claymorphism-component-recipes`
+- `claymorphism-accessibility-and-responsive-constraints`
+- `glassmorphism-layering-and-contrast`
+- `glassmorphism-component-recipes`
+- `glassmorphism-accessibility-and-responsive-constraints`
+- `liquid-glass-depth-and-motion-language`
+- `liquid-glass-component-recipes`
+- `liquid-glass-fallback-contrast-and-legibility`
+- `neubrutalism-graphic-hierarchy-and-tokens`
+- `neubrutalism-component-recipes`
+- `neubrutalism-accessibility-and-density-controls`
+- `ai-task-definition`
+- `ai-eval-design-and-acceptance`
+- `ai-retrieval-objective-and-corpus-shaping`
+- `ai-chunking-ranking-and-grounding`
+- `ai-tool-authority-and-boundaries`
+- `ai-agent-loop-and-state-control`
+- `ai-guardrail-policy-and-fallbacks`
+- `ai-latency-cost-and-reliability`
+- `data-product-framing`
+- `data-batch-and-orchestration`
+- `data-streaming-and-state`
+- `data-contracts-quality-and-reconciliation`
+- `orchestration-work-decomposition`
+- `orchestration-ownership-and-write-boundaries`
+- `orchestration-dependency-and-integration`
+- `orchestration-status-and-handoffs`
+
+## Strong But Not Top
+
+- `(none in this snapshot)`
+
+## Thin
+
+- `(none in this snapshot)`

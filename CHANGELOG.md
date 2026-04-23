@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.3] - 2026-04-19
+
+### Added
+- 新增 `verify-change` 受限环境回退能力：
+  - `--changed-files` 参数（支持逗号/分号/换行与 `@file`）
+  - 环境变量回退：`PSS_CHANGED_FILES` / `CODEX_CHANGED_FILES` / `CHANGED_FILES`
+  - 明确识别 `git-permission-denied (EPERM)` 场景
+- 新增 gate 变更集判定语义：`pre-commit-gate` / `pre-merge-gate` 仅对“changed files 命中的 warning”阻断。
+- 新增/补强多批 capability module 深度参考内容（AI / Infrastructure / DevOps / Review / Development / Architecture / Security / Data / Orchestration）。
+
+### Changed
+- `pre-* gate` 从“全仓质量 warning 即阻断”调整为“变更集命中 warning 才阻断”，历史质量债转为报告项。
+- `verify-change` changed file 输出统一为 target-relative 路径，降低 module/doc-sync 误判。
+- `personal-skill-system/docs` 主文档同步收敛到统一口径：
+  - `README.md`
+  - `ITERATION_HANDOFF.md`
+  - `CAPABILITY_MODULE_RATINGS.md`
+- `registry/capability-ratings.generated.json` 完成最终评级快照同步，`next-batch` 置空（当前快照无待晋升模块）。
+
+### Fixed
+- 修复 `capability-ratings.generated.json` BOM 导致的 Node `JSON.parse` 失败问题（统一为 UTF-8 无 BOM）。
+- 修复若干 handoff 文本段落中的收官数字与焦点描述不一致问题，确保 `58/0/0` 快照一致。
+
+### Capability Snapshot
+- TOP-ready: **58**
+- strong-but-not-top: **0**
+- thin: **0**
+- total rated capability modules: **58**
+
+### Verification
+- `node personal-skill-system/skills/tools/verify-skill-system/scripts/run.js --target personal-skill-system --json`
+  - `status: pass`
+  - `capabilityModules: 58`
+  - `routeEntries: 29`
+- Node JSON parse check:
+  - `capability-ratings.generated.json` parse ok
+
+### Suggested Commit Grouping (Release Packaging)
+1. `feat(pss-tooling): gate changed-file blocking and verify-change fallback chain`
+2. `feat(pss-capabilities): deepen AI/infra/devops/review modules`
+3. `feat(pss-capabilities): deepen development/architecture modules`
+4. `feat(pss-capabilities): deepen security/data/orchestration modules and close TOP-ready backlog`
+5. `docs(pss): sync README, ITERATION_HANDOFF, capability ratings and release notes`
+
 ## [2.0.9] - 2026-04-13
 
 ### Fixed

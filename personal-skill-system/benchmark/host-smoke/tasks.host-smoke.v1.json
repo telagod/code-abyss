@@ -1,0 +1,155 @@
+﻿{
+  "schema_version": 1,
+  "task_set_id": "host-smoke.v1",
+  "scope": "personal-skill-system",
+  "hosts": [
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "tasks": [
+    {
+      "task_id": "HSM-001",
+      "name": "Explicit Review Route",
+      "dimension": "routing",
+      "intent_type": "explicit",
+      "prompt": "Use review to assess this diff and return findings first ordered by severity with file:line references.",
+      "route_expected": "review",
+      "route_allowed_alternates": [],
+      "expected_tools": [],
+      "pass_criteria": [
+        "Selected route is review",
+        "Output starts with findings before summary",
+        "Contains location-aware risk items"
+      ],
+      "failure_type_on_fail": "route"
+    },
+    {
+      "task_id": "HSM-002",
+      "name": "Architecture vs Frontend Mixed Intent",
+      "dimension": "routing",
+      "intent_type": "ambiguous",
+      "prompt": "Frontend pages are slow, but causes include API fan-out, cache invalidation, and search lag. Propose cross-layer redesign.",
+      "route_expected": "architecture",
+      "route_allowed_alternates": [
+        "frontend-design"
+      ],
+      "expected_tools": [],
+      "pass_criteria": [
+        "Route prefers architecture for system-shape redesign",
+        "Rationale explains rejection of frontend-only route"
+      ],
+      "failure_type_on_fail": "route"
+    },
+    {
+      "task_id": "HSM-003",
+      "name": "Self-System Route",
+      "dimension": "routing",
+      "intent_type": "implicit",
+      "prompt": "Improve the skill-system route map and registry portability, and preserve stable public route surface.",
+      "route_expected": "skill-evolution",
+      "route_allowed_alternates": [],
+      "expected_tools": [],
+      "pass_criteria": [
+        "Route selects skill-evolution",
+        "Output focuses on bundle evolution rather than product-feature coding"
+      ],
+      "failure_type_on_fail": "route"
+    },
+    {
+      "task_id": "HSM-004",
+      "name": "verify-skill-system Invocation",
+      "dimension": "tool_invocation",
+      "intent_type": "explicit",
+      "prompt": "Run verify-skill-system on personal-skill-system and return JSON summary.",
+      "route_expected": "verify-skill-system",
+      "route_allowed_alternates": [],
+      "expected_tools": [
+        "verify-skill-system"
+      ],
+      "pass_criteria": [
+        "Tool is actually invoked",
+        "Result includes status and metrics object",
+        "Target path references personal-skill-system"
+      ],
+      "failure_type_on_fail": "tool"
+    },
+    {
+      "task_id": "HSM-005",
+      "name": "verify-chart-spec Invocation",
+      "dimension": "tool_invocation",
+      "intent_type": "explicit",
+      "prompt": "Run verify-chart-spec on an intentionally invalid G2 spec using rangeY without required encode fields.",
+      "route_expected": "verify-chart-spec",
+      "route_allowed_alternates": [
+        "chart-visualization"
+      ],
+      "expected_tools": [
+        "verify-chart-spec"
+      ],
+      "pass_criteria": [
+        "Tool invocation occurs",
+        "Invalid spec issue is flagged with actionable finding",
+        "Failure reason maps to spec field misuse"
+      ],
+      "failure_type_on_fail": "tool"
+    },
+    {
+      "task_id": "HSM-006",
+      "name": "verify-s2-config Invocation",
+      "dimension": "tool_invocation",
+      "intent_type": "explicit",
+      "prompt": "Run verify-s2-config on an invalid SheetComponent config missing required field shapes.",
+      "route_expected": "verify-s2-config",
+      "route_allowed_alternates": [
+        "chart-visualization"
+      ],
+      "expected_tools": [
+        "verify-s2-config"
+      ],
+      "pass_criteria": [
+        "Tool invocation occurs",
+        "Invalid S2 field-shape issue is detected",
+        "Output identifies configuration correction direction"
+      ],
+      "failure_type_on_fail": "tool"
+    },
+    {
+      "task_id": "HSM-007",
+      "name": "Path Portability Guard",
+      "dimension": "portability",
+      "intent_type": "explicit",
+      "prompt": "Implement a minimal docs-only change under personal-skill-system/docs and report absolute path references in final output.",
+      "route_expected": "development",
+      "route_allowed_alternates": [
+        "review"
+      ],
+      "expected_tools": [],
+      "pass_criteria": [
+        "Actions stay within declared repository scope",
+        "No host-specific private path assumptions leak into logic",
+        "File references are reproducible from workspace root"
+      ],
+      "failure_type_on_fail": "host"
+    },
+    {
+      "task_id": "HSM-008",
+      "name": "Auto-Chain Behavior Visibility",
+      "dimension": "portability",
+      "intent_type": "implicit",
+      "prompt": "Use skill-evolution for a self-system change and report the downstream validation chain that should run.",
+      "route_expected": "skill-evolution",
+      "route_allowed_alternates": [],
+      "expected_tools": [
+        "verify-skill-system",
+        "verify-change",
+        "verify-quality"
+      ],
+      "pass_criteria": [
+        "Declared auto-chain is surfaced or executed with explicit status",
+        "Missing chain elements are reported, not silently dropped"
+      ],
+      "failure_type_on_fail": "host"
+    }
+  ]
+}

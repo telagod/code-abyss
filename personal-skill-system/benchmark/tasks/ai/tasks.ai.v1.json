@@ -1,0 +1,290 @@
+[
+  {
+    "task_id": "ai-001",
+    "domain": "ai",
+    "intent_type": "explicit",
+    "prompt": "Use ai skill to design a RAG objective for policy QA where wrong answers have compliance impact. Define corpus shaping, retrieval filters, and grounding policy.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [],
+    "risk_focus": [
+      "hallucinated policy claims",
+      "stale corpus usage",
+      "unverifiable answer grounding"
+    ],
+    "deliverable_expected": [
+      "Retrieval objective and corpus boundary definition",
+      "Chunking/ranking/filtering strategy tied to task intent",
+      "Grounding and citation policy with fallback behavior"
+    ],
+    "validation_expected": [
+      "Failure modes are mapped to retrieval controls",
+      "Acceptance criteria distinguish correct vs plausible-but-wrong answers",
+      "Corpus freshness assumptions are explicit"
+    ],
+    "scoring_notes": {
+      "route": "Direct AI system design request.",
+      "quality": "High score ties retrieval design to compliance risk, not generic RAG advice."
+    }
+  },
+  {
+    "task_id": "ai-002",
+    "domain": "ai",
+    "intent_type": "explicit",
+    "prompt": "As ai architect, define tool authority boundaries for an agent that can run CI, edit files, and request deploy actions.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "orchestration"
+    ],
+    "risk_focus": [
+      "over-privileged tool access",
+      "unsafe action chaining",
+      "insufficient confirmation gates"
+    ],
+    "deliverable_expected": [
+      "Tool permission matrix by task class",
+      "Escalation and confirmation policy for risky actions",
+      "Fallback behavior when tool confidence is low"
+    ],
+    "validation_expected": [
+      "Policy blocks unsafe autonomous escalation",
+      "Least-authority defaults are explicit",
+      "Audit trail fields for tool actions are defined"
+    ],
+    "scoring_notes": {
+      "route": "Tool authority boundary design is core AI agent governance.",
+      "quality": "High score includes concrete allow/deny semantics and fallback paths."
+    }
+  },
+  {
+    "task_id": "ai-003",
+    "domain": "ai",
+    "intent_type": "implicit",
+    "prompt": "Support bot answers are fluent but frequently incorrect on edge cases. Define an eval framework that catches high-risk failures before release.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "review"
+    ],
+    "risk_focus": [
+      "benchmark theater",
+      "edge-case blind spots",
+      "false confidence from aggregate scores"
+    ],
+    "deliverable_expected": [
+      "Task-shaped eval set design (explicit/implicit/ambiguous)",
+      "Pass/fail thresholds by failure severity",
+      "Failure taxonomy separating route/depth/tool/host causes"
+    ],
+    "validation_expected": [
+      "Eval criteria are defined before result reading",
+      "High-risk failure classes have blocking thresholds",
+      "Manual adjudication triggers are specified"
+    ],
+    "scoring_notes": {
+      "route": "Model quality and eval design are AI-depth topics.",
+      "quality": "High score avoids vague metric selection and defines actionable gates."
+    }
+  },
+  {
+    "task_id": "ai-004",
+    "domain": "ai",
+    "intent_type": "implicit",
+    "prompt": "Long-context assistant is missing critical evidence due to context overload. Propose context packing and retrieval ranking strategy for decision-critical prompts.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [],
+    "risk_focus": [
+      "signal dilution in context window",
+      "irrelevant chunk dominance",
+      "missed decisive evidence"
+    ],
+    "deliverable_expected": [
+      "Context budget policy by task type",
+      "Ranking and dedupe strategy for evidence selection",
+      "Instruction/evidence separation pattern"
+    ],
+    "validation_expected": [
+      "Context composition can be inspected and audited",
+      "Critical-evidence recall metric is defined",
+      "Failure fallback for low-recall retrieval is included"
+    ],
+    "scoring_notes": {
+      "route": "Prompt targets retrieval and context engineering behavior.",
+      "quality": "High score links packing choices to measurable recall/precision outcomes."
+    }
+  },
+  {
+    "task_id": "ai-005",
+    "domain": "ai",
+    "intent_type": "ambiguous",
+    "prompt": "Need an agent workflow that asks exactly one clarification on low confidence and otherwise proceeds with deterministic tool steps. Define policy and control loop.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "orchestration",
+      "skill-evolution"
+    ],
+    "risk_focus": [
+      "loop runaway",
+      "premature action on low confidence",
+      "over-questioning user"
+    ],
+    "deliverable_expected": [
+      "Confidence gating policy with one-question fallback",
+      "Agent loop state transitions and stop conditions",
+      "Tool invocation constraints under uncertainty"
+    ],
+    "validation_expected": [
+      "Fallback path is deterministic and bounded",
+      "State progression is observable",
+      "Policy prevents repeated clarification loops"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with orchestration, but core is agent decision/control policy.",
+      "quality": "High score defines precise control-loop semantics and confidence thresholds."
+    }
+  },
+  {
+    "task_id": "ai-006",
+    "domain": "ai",
+    "intent_type": "implicit",
+    "prompt": "Design a latency-cost-reliability model cascade for customer support: cheap model first, escalate when risk or uncertainty crosses threshold.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "architecture"
+    ],
+    "risk_focus": [
+      "cost blowups",
+      "quality collapse on cheap tier",
+      "unsafe responses under uncertainty"
+    ],
+    "deliverable_expected": [
+      "Routing policy for model tiers by task risk",
+      "Escalation triggers and confidence signals",
+      "Budget guardrails and reliability targets"
+    ],
+    "validation_expected": [
+      "Tradeoff assumptions are quantified",
+      "Fallback behavior under degraded provider conditions is explicit",
+      "SLA/SLO coupling with model policy is clear"
+    ],
+    "scoring_notes": {
+      "route": "Model policy optimization is AI system behavior.",
+      "quality": "High score avoids hand-wavy cost claims and defines enforceable thresholds."
+    }
+  },
+  {
+    "task_id": "ai-007",
+    "domain": "ai",
+    "intent_type": "ambiguous",
+    "prompt": "Prompt injection in retrieved docs is causing unsafe tool suggestions. Define guardrails that preserve utility while blocking poisoned context effects.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "security"
+    ],
+    "risk_focus": [
+      "prompt injection via retrieval",
+      "tool misuse from poisoned instructions",
+      "over-blocking legitimate context"
+    ],
+    "deliverable_expected": [
+      "Injection threat model for retrieval-to-action path",
+      "Guardrail policy (strip, quarantine, reject, require confirmation)",
+      "Utility-preserving fallback for ambiguous context"
+    ],
+    "validation_expected": [
+      "Guardrails are tested against adversarial and benign samples",
+      "False-positive/false-negative tradeoff is explicit",
+      "Tool authority checks remain independent from content trust"
+    ],
+    "scoring_notes": {
+      "route": "Security-adjacent, but the core is AI guardrail and context-policy design.",
+      "quality": "High score balances safety and task completion utility."
+    }
+  },
+  {
+    "task_id": "ai-008",
+    "domain": "ai",
+    "intent_type": "explicit",
+    "prompt": "Use ai skill: define acceptance rubric for generated implementation plans so shallow verbosity does not score as success.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "review"
+    ],
+    "risk_focus": [
+      "verbosity gaming",
+      "unclear correctness bar",
+      "missing validation discipline"
+    ],
+    "deliverable_expected": [
+      "Rubric dimensions and scoring anchors",
+      "Failure classes that trigger automatic rejection",
+      "Evaluator guidance for borderline cases"
+    ],
+    "validation_expected": [
+      "Rubric distinguishes correctness from style polish",
+      "Validation completeness has explicit weight",
+      "Risk handling quality is measurable"
+    ],
+    "scoring_notes": {
+      "route": "Prompt-engineering/eval quality governance is an AI capability.",
+      "quality": "High score gives criteria that are hard to game."
+    }
+  },
+  {
+    "task_id": "ai-009",
+    "domain": "ai",
+    "intent_type": "implicit",
+    "prompt": "Design weak-model uplift benchmark protocol that can attribute failures to route error, depth gap, tool gap, or host issue.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "skill-evolution"
+    ],
+    "risk_focus": [
+      "mis-attributed failures",
+      "non-reproducible runs",
+      "biased task selection"
+    ],
+    "deliverable_expected": [
+      "Benchmark attribution taxonomy and data contract",
+      "Run metadata requirements for reproducibility",
+      "Adjudication rules for mixed-cause failures"
+    ],
+    "validation_expected": [
+      "Attribution categories are mutually useful and operational",
+      "Protocol supports reruns without hidden context",
+      "Manual review checkpoints are defined"
+    ],
+    "scoring_notes": {
+      "route": "Uplift measurement design sits inside AI/eval system work.",
+      "quality": "High score defines practical attribution mechanics, not just categories."
+    }
+  },
+  {
+    "task_id": "ai-010",
+    "domain": "ai",
+    "intent_type": "ambiguous",
+    "prompt": "Build policy for when an agent should stop autonomous execution and hand control back to a human during code/security tasks.",
+    "route_expected": "ai",
+    "route_allowed_alternates": [
+      "orchestration",
+      "security"
+    ],
+    "risk_focus": [
+      "unsafe autonomy in high-risk contexts",
+      "late human escalation",
+      "unclear stop conditions"
+    ],
+    "deliverable_expected": [
+      "Human-handoff trigger policy by risk tier",
+      "Decision state model for stop/continue/escalate",
+      "Audit fields for escalation rationale"
+    ],
+    "validation_expected": [
+      "Stop conditions are deterministic where possible",
+      "Policy handles conflicting signals without deadlock",
+      "Escalation path preserves context for human reviewer"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous with orchestration/security, but core is agent authority and control policy.",
+      "quality": "High score balances safety with execution continuity."
+    }
+  }
+]

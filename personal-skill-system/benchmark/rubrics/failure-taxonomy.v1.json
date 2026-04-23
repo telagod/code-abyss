@@ -1,0 +1,70 @@
+﻿{
+  "schema_version": 1,
+  "taxonomy_id": "failure-taxonomy.v1",
+  "classes": {
+    "route": {
+      "definition": "Primary failure is wrong route selection or unresolved route ambiguity.",
+      "signals": [
+        "Chosen skill conflicts with task's dominant intent",
+        "Explicit invocation override was ignored",
+        "No defensible route rationale for ambiguous prompt"
+      ],
+      "non_signals": [
+        "Minor formatting issues",
+        "Correct route with weak execution details"
+      ]
+    },
+    "depth": {
+      "definition": "Route is acceptable but domain judgement is too generic or misses key constraints.",
+      "signals": [
+        "Tradeoff-heavy task answered with generic advice",
+        "Misses task-critical domain constraints",
+        "Cannot justify choice under competing options"
+      ],
+      "non_signals": [
+        "Wrong route",
+        "Tool output corruption"
+      ]
+    },
+    "tool": {
+      "definition": "Deterministic validation/tool usage is missing, inaccurate, or misinterpreted.",
+      "signals": [
+        "Required validation omitted or incorrect",
+        "Tool result contradicts claim but not addressed",
+        "Validation evidence is fabricated or non-reproducible"
+      ],
+      "non_signals": [
+        "Purely conceptual tasks with no required validation"
+      ]
+    },
+    "host": {
+      "definition": "Host/runtime capability divergence blocks expected behavior despite sound reasoning.",
+      "signals": [
+        "Host lacks required tool/connector capability",
+        "Same workflow behaves differently across supported hosts",
+        "Output quality depends on undocumented host-specific assumption"
+      ],
+      "non_signals": [
+        "General reasoning mistakes",
+        "Missing task fields"
+      ]
+    },
+    "none": {
+      "definition": "No dominant failure class.",
+      "signals": [
+        "Task outcome meets route, reasoning, validation, and correctness bars"
+      ]
+    }
+  },
+  "classification_order": [
+    "route",
+    "tool",
+    "depth",
+    "host",
+    "none"
+  ],
+  "notes": [
+    "Pick one dominant class per task result.",
+    "If multiple classes appear, use the earliest class in classification_order that best explains failure." 
+  ]
+}

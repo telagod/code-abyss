@@ -29,7 +29,7 @@
     "config/",
     "output-styles/",
     "packs/",
-    "skills/",
+    "personal-skill-system/",
     "LICENSE",
     "README.md"
   ],
@@ -39,6 +39,7 @@
   "scripts": {
     "test": "jest",
     "verify:skills": "node bin/verify-skills-contract.js",
+    "verify:skill-system": "node personal-skill-system/skills/tools/verify-skill-system/scripts/run.js --target personal-skill-system && node bin/verify-skill-distribution.js",
     "packs:init": "node bin/packs.js init",
     "packs:bootstrap": "node bin/packs.js bootstrap",
     "packs:update": "node bin/packs.js update",

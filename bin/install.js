@@ -15,6 +15,7 @@ if (parseInt(process.versions.node) < parseInt(MIN_NODE)) {
   process.exit(1);
 }
 const PKG_ROOT = fs.realpathSync(path.join(__dirname, '..'));
+const AUTHORITATIVE_SKILLS_DIR = path.join(PKG_ROOT, 'personal-skill-system', 'skills');
 const { shouldSkip, copyRecursive, rmSafe, deepMergeNew, printMergeLog, formatActionableError } =
   require(path.join(__dirname, 'lib', 'utils.js'));
 const {
@@ -280,9 +281,21 @@ const GEMINI_COMMAND_TARGET = {
 };
 
 function getSkillPath(skillRoot, skillRelPath) {
-  return skillRelPath
-    ? `${skillRoot}/${skillRelPath}/SKILL.md`
+  const normalizedRelPath = skillRelPath
+    ? String(skillRelPath).split(path.sep).join('/')
+    : '';
+  return normalizedRelPath
+    ? `${skillRoot}/${normalizedRelPath}/SKILL.md`
     : `${skillRoot}/SKILL.md`;
+}
+
+function getSkillScriptPath(skillRoot, skillRelPath) {
+  const normalizedRelPath = skillRelPath
+    ? String(skillRelPath).split(path.sep).join('/')
+    : '';
+  return normalizedRelPath
+    ? `${skillRoot}/${normalizedRelPath}/scripts/run.js`
+    : `${skillRoot}/scripts/run.js`;
 }
 
 function buildCommandFrontmatter(skill) {
@@ -311,7 +324,7 @@ function buildClaudeCommandSpec(skill) {
     allowedTools,
     relPath: skill.relPath,
     runtimeType,
-    scriptRunner: `node ${CLAUDE_COMMAND_TARGET.skillRoot}/run_skill.js ${skill.name} $ARGUMENTS`,
+    scriptRunner: `node ${getSkillScriptPath(CLAUDE_COMMAND_TARGET.skillRoot, skill.relPath)} $ARGUMENTS`,
     skillPath: getSkillPath(CLAUDE_COMMAND_TARGET.skillRoot, skill.relPath),
   };
 }
@@ -356,7 +369,7 @@ function buildGeminiCommandSpec(skill) {
     description: skill.description || '',
     relPath: skill.relPath,
     runtimeType,
-    scriptRunner: `node ${GEMINI_COMMAND_TARGET.skillRoot}/run_skill.js ${skill.name}`,
+    scriptRunner: `node ${getSkillScriptPath(GEMINI_COMMAND_TARGET.skillRoot, skill.relPath)}`,
     skillPath: getSkillPath(GEMINI_COMMAND_TARGET.skillRoot, skill.relPath),
   };
 }
@@ -679,7 +692,7 @@ function installCore(tgt, selectedStyle, selectedPersona, packPlan) {
 
   // 为目标 CLI 自动生成 user-invocable artifacts
   if (tgt === 'claude') {
-    const skillsSrc = path.join(PKG_ROOT, 'skills');
+    const skillsSrc = AUTHORITATIVE_SKILLS_DIR;
     installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
     if (packPlan.selected.includes('gstack')) {
       const sourceMode = (packPlan.sources && packPlan.sources.gstack) || 'pinned';
@@ -744,7 +757,7 @@ function installCore(tgt, selectedStyle, selectedPersona, packPlan) {
       });
     }
   } else if (tgt === 'gemini') {
-    const skillsSrc = path.join(PKG_ROOT, 'skills');
+    const skillsSrc = AUTHORITATIVE_SKILLS_DIR;
     installGeneratedGeminiCommands(skillsSrc, targetDir, backupDir, manifest);
     installGeminiContext(targetDir, backupDir, manifest, selectedStyle);
     if (packPlan.selected.includes('gstack')) {

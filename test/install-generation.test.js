@@ -30,7 +30,7 @@ describe('generateCommandContent', () => {
     expect(content).toContain('不要在步骤间停顿');
     expect(content).toContain('不要停顿');
     expect(content).toContain('~/.claude/skills/tools/gen-docs/SKILL.md');
-    expect(content).toContain('node ~/.claude/skills/run_skill.js gen-docs $ARGUMENTS');
+    expect(content).toContain('node ~/.claude/skills/tools/gen-docs/scripts/run.js $ARGUMENTS');
   });
 
   test('无脚本的 skill: 知识库模式', () => {
@@ -45,7 +45,7 @@ describe('generateCommandContent', () => {
     expect(content).toContain('allowed-tools: Read');
     expect(content).toContain('读取以下秘典');
     expect(content).toContain('~/.claude/skills/domains/frontend-design/SKILL.md');
-    expect(content).not.toContain('run_skill.js');
+    expect(content).not.toContain('/scripts/run.js');
     expect(content).not.toContain('一气呵成');
   });
 
@@ -169,12 +169,12 @@ describe('installGeneratedCommands', () => {
     const content = fs.readFileSync(path.join(targetDir, 'commands', 'gen-docs.md'), 'utf8');
     expect(content).toMatch(/^---\n/);
     expect(content).toContain('一气呵成');
-    expect(content).toContain('run_skill.js gen-docs');
+    expect(content).toContain('tools/gen-docs/scripts/run.js');
   });
 });
 
 describe('斜杠命令回归防护', () => {
-  const realSkillsDir = path.join(__dirname, '..', 'skills');
+  const realSkillsDir = path.join(__dirname, '..', 'personal-skill-system', 'skills');
   const skillsExist = fs.existsSync(realSkillsDir);
   const describeIf = skillsExist ? describe : describe.skip;
 
@@ -186,7 +186,7 @@ describe('斜杠命令回归防护', () => {
     });
 
     test('至少存在 6 个 user-invocable skill', () => {
-      expect(invocableSkills.length).toBeGreaterThanOrEqual(6);
+      expect(invocableSkills.length).toBeGreaterThanOrEqual(20);
     });
 
     test('所有 user-invocable skill 的 SKILL.md 路径必须真实存在', () => {
@@ -220,19 +220,19 @@ describe('斜杠命令回归防护', () => {
       invocableSkills = scanInvocableSkills(realSkillsDir);
     });
 
-    test('有脚本的 skill 的 command 必须包含正确的 run_skill.js 调用', () => {
+    test('有脚本的 skill 的 command 必须包含正确的 scripts/run.js 调用', () => {
       const errors = [];
 
       invocableSkills
         .filter(s => s.hasScripts)
         .forEach((skill) => {
           const content = generateCommandContent(skill.meta, skill.relPath, skill.runtimeType);
-          const expectedCall = `run_skill.js ${skill.name} $ARGUMENTS`;
+          const expectedCall = `${skill.relPath.split(path.sep).join('/')}/scripts/run.js $ARGUMENTS`;
           if (!content.includes(expectedCall)) {
             errors.push({
               name: skill.name,
               expected: expectedCall,
-              issue: 'run_skill.js 调用缺失或格式错误',
+              issue: 'scripts/run.js 调用缺失或格式错误',
             });
           }
 
@@ -251,32 +251,38 @@ describe('斜杠命令回归防护', () => {
       expect(errors).toEqual([]);
     });
 
-    test('无脚本的 skill 不应引用 run_skill.js', () => {
+    test('无脚本的 skill 不应引用 scripts/run.js', () => {
       invocableSkills
         .filter(s => !s.hasScripts)
         .forEach((skill) => {
           const content = generateCommandContent(skill.meta, skill.relPath, skill.runtimeType);
-          expect(content).not.toContain('run_skill.js');
+          expect(content).not.toContain('/scripts/run.js');
         });
     });
   });
 
   describeIf('Codex skill metadata 路径一致性', () => {
     test('openai.yaml 默认提示词指向 ~/.agents/skills', () => {
-      const metadataFiles = [
-        'tools/gen-docs/agents/openai.yaml',
-        'tools/verify-security/agents/openai.yaml',
-        'tools/verify-module/agents/openai.yaml',
-        'tools/verify-change/agents/openai.yaml',
-        'tools/verify-quality/agents/openai.yaml',
-        'domains/frontend-design/agents/openai.yaml',
-      ];
+      const offenders = [];
+      const stack = [realSkillsDir];
 
-      metadataFiles.forEach((relPath) => {
-        const content = fs.readFileSync(path.join(realSkillsDir, relPath), 'utf8');
-        expect(content).toContain('~/.agents/skills/');
-        expect(content).not.toContain('~/.codex/skills/');
-      });
+      while (stack.length > 0) {
+        const current = stack.pop();
+        fs.readdirSync(current, { withFileTypes: true }).forEach((entry) => {
+          const full = path.join(current, entry.name);
+          if (entry.isDirectory()) {
+            stack.push(full);
+            return;
+          }
+          if (!/\.(md|json|js|yaml|yml|toml)$/i.test(entry.name)) return;
+          const content = fs.readFileSync(full, 'utf8');
+          if (content.includes('~/.codex/skills/') || content.includes('run_skill.js')) {
+            offenders.push(path.relative(realSkillsDir, full));
+          }
+        });
+      }
+
+      expect(offenders).toEqual([]);
     });
   });
 

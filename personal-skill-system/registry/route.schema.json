@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-abyss.local/personal-skill-system/route.schema.json",
+  "title": "Portable Personal Skill Route Map Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema-version",
+    "router",
+    "default-threshold",
+    "scoring",
+    "routes"
+  ],
+  "properties": {
+    "schema-version": {
+      "type": "integer",
+      "const": 1
+    },
+    "router": {
+      "type": "string"
+    },
+    "default-threshold": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact-match",
+        "alias-match",
+        "keyword-hit",
+        "negative-hit",
+        "namespace-hit",
+        "host-unsupported"
+      ],
+      "properties": {
+        "exact-match": {
+          "type": "integer"
+        },
+        "alias-match": {
+          "type": "integer"
+        },
+        "keyword-hit": {
+          "type": "integer"
+        },
+        "negative-hit": {
+          "type": "integer"
+        },
+        "namespace-hit": {
+          "type": "integer"
+        },
+        "host-unsupported": {
+          "type": "integer"
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "skill",
+          "kind",
+          "priority",
+          "supported-hosts",
+          "activation"
+        ],
+        "properties": {
+          "skill": {
+            "type": "string"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kind": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "supported-hosts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "activation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "intent-tags",
+              "trigger-keywords",
+              "negative-keywords"
+            ],
+            "properties": {
+              "intent-tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "trigger-keywords": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "negative-keywords": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "requires-explicit-invocation": {
+                "type": "boolean"
+              }
+            }
+          },
+          "conflicts-with": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "auto-chain": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "expert-modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rationale": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "primary-intent",
+              "why-this-route",
+              "wins-when"
+            ],
+            "properties": {
+              "primary-intent": {
+                "type": "string"
+              },
+              "why-this-route": {
+                "type": "string"
+              },
+              "wins-when": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "avoid-when": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "boundary-notes": {
+                "type": "string"
+              }
+            }
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "minimum-score",
+              "strong-score",
+              "very-strong-score",
+              "requires-fallback-below-minimum"
+            ],
+            "properties": {
+              "minimum-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "strong-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "very-strong-score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "requires-fallback-below-minimum": {
+                "type": "boolean"
+              }
+            }
+          },
+          "fallback": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "clarify-question",
+              "default-action"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "ask-one-question",
+                  "do-not-auto-route",
+                  "direct-route"
+                ]
+              },
+              "clarify-question": {
+                "type": "string"
+              },
+              "default-action": {
+                "type": "string"
+              },
+              "safe-skill": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

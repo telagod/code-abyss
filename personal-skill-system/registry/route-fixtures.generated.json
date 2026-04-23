@@ -1,0 +1,272 @@
+{
+  "schema-version": 1,
+  "cases": [
+    {
+      "name": "self-system-routing",
+      "query": "Improve the skill system route map and registry portability",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "architecture-vs-frontend",
+      "query": "Design service boundaries, queue migration, and cache strategy for this system",
+      "expect": "architecture"
+    },
+    {
+      "name": "frontend-experience",
+      "query": "Improve ui accessibility and component design for this frontend flow",
+      "expect": "frontend-design"
+    },
+    {
+      "name": "investigate-before-fix",
+      "query": "Debug why broken auth flow regressed and find the root cause",
+      "expect": "investigate"
+    },
+    {
+      "name": "known-bugfix",
+      "query": "Fix this bug regression in the login code",
+      "expect": "bugfix"
+    },
+    {
+      "name": "parallel-work",
+      "query": "Create a parallel multi-agent delegation plan for this refactor",
+      "expect": "multi-agent"
+    },
+    {
+      "name": "explicit-security-scan",
+      "query": "Run verify-security as a vulnerability scan on this module",
+      "expect": "verify-security"
+    },
+    {
+      "name": "self-system-routing-zh",
+      "query": "改进技能系统的路由图与注册表可移植性",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "architecture-vs-frontend-zh",
+      "query": "为系统设计服务边界、队列迁移和缓存策略",
+      "expect": "architecture"
+    },
+    {
+      "name": "frontend-experience-zh",
+      "query": "提升这个前端流程的无障碍和组件设计体验",
+      "expect": "frontend-design"
+    },
+    {
+      "name": "investigate-before-fix-zh",
+      "query": "排查认证流程为什么坏了并定位根因",
+      "expect": "investigate"
+    },
+    {
+      "name": "known-bugfix-zh",
+      "query": "修复登录代码中的回归缺陷和报错",
+      "expect": "bugfix"
+    },
+    {
+      "name": "parallel-work-zh",
+      "query": "为这个重构制定 multi-agent 并行 delegation 任务委派计划",
+      "expect": "multi-agent"
+    },
+    {
+      "name": "explicit-security-scan-zh",
+      "query": "对这个模块执行 verify-security 进行漏洞扫描",
+      "expect": "verify-security"
+    },
+    {
+      "name": "explicit-chart-spec-scan",
+      "query": "Run verify-chart-spec on this G2 chart code and tell me if the spec is invalid",
+      "expect": "verify-chart-spec"
+    },
+    {
+      "name": "explicit-chart-spec-scan-zh",
+      "query": "对这段 G2 图表代码执行 verify-chart-spec 做规范校验",
+      "expect": "verify-chart-spec"
+    },
+    {
+      "name": "explicit-s2-config-scan",
+      "query": "Run verify-s2-config on this SheetComponent and S2 dataCfg",
+      "expect": "verify-s2-config"
+    },
+    {
+      "name": "explicit-s2-config-scan-zh",
+      "query": "对这段 SheetComponent 和 S2 dataCfg 执行 verify-s2-config 做配置校验",
+      "expect": "verify-s2-config"
+    },
+    {
+      "name": "review-alias-zh",
+      "query": "请执行代码评审并给出风险清单",
+      "expect": "review"
+    },
+    {
+      "name": "ship-alias-zh",
+      "query": "按照发布流程执行上线",
+      "expect": "ship"
+    },
+    {
+      "name": "bugfix-alias-zh",
+      "query": "尽快做缺陷修复并验证",
+      "expect": "bugfix"
+    },
+    {
+      "name": "chart-g2-english",
+      "query": "Generate a G2 line chart for monthly revenue trend with tooltip and legend filter",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-g2-chinese",
+      "query": "请根据销售数据生成图表，使用 G2 折线图并配置 tooltip",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-s2-pivot-chinese",
+      "query": "用 AntV S2 做透视表，配置 rows columns values 并给出示例",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-infographic-chinese",
+      "query": "Create a chart infographic with layout and annotation details",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-t8-english",
+      "query": "Create a T8 narrative text visualization report from this dataset",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-icon-chinese",
+      "query": "检索信息图图标并返回 SVG 内容用于图表注释",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-heatmap-english",
+      "query": "Build a G2 heatmap with time scale and tooltip for this dataset",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-treemap-chinese",
+      "query": "根据层级销售数据生成 treemap 图表并解释 G2 配置",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-s2-custom-cell-english",
+      "query": "Customize an AntV S2 data cell with icons and custom rendering in React",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-s2-pagination-chinese",
+      "query": "S2 透视表分页、tooltip 和冻结表头应该怎么配置",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-annotation-target-line-chinese",
+      "query": "给这张 G2 图加 lineY 阈值线和 rangeY 区间高亮",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-shared-tooltip-dashboard-chinese",
+      "query": "为多序列 G2 仪表盘配置共享 tooltip 和 chartIndex 游标线",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-image-overlay-mark-chinese",
+      "query": "用 G2 image mark 做图标散点和图片标注覆盖层",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-annotation-target-line",
+      "query": "Add a lineY target line and rangeY threshold band to this G2 chart",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-shared-tooltip-dashboard",
+      "query": "Configure shared tooltip and chartIndex for a multi-series G2 dashboard",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "chart-image-overlay-mark",
+      "query": "Build a G2 image mark overlay with icon scatter points and text labels",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "m1-007-architecture-vs-frontend-ops-latency",
+      "query": "Design API boundaries, cache invalidation strategy, and queue backpressure for this product slowdown.",
+      "expect": "architecture"
+    },
+    {
+      "name": "m1-007-investigate-vs-bugfix-unknown-cause",
+      "query": "The auth flow fails only in production; investigate root cause before fixing code.",
+      "expect": "investigate"
+    },
+    {
+      "name": "m1-007-review-vs-verify-change-human-judgement",
+      "query": "Do a review of this diff with severity-ranked findings and release readiness judgement.",
+      "expect": "review"
+    },
+    {
+      "name": "m1-007-security-vs-devops-ci-token-abuse",
+      "query": "Security audit CI token abuse and least-privilege pipeline identities.",
+      "expect": "security"
+    },
+    {
+      "name": "m1-007-chart-vs-frontend-semantic-chart",
+      "query": "Create a G2 chart spec with proper encoding for anomaly trend analysis.",
+      "expect": "chart-visualization"
+    },
+    {
+      "name": "m1-007-orchestration-vs-development-parallel-plan",
+      "query": "Plan task decomposition and coordination for parallel workers with ownership boundaries.",
+      "expect": "orchestration"
+    },
+    {
+      "name": "m1-007-explicit-verify-change-over-review",
+      "query": "Run verify-change on this diff and output change risk classes before merge.",
+      "expect": "verify-change"
+    },
+    {
+      "name": "m1-007-explicit-verify-quality-over-development",
+      "query": "Run verify-quality complexity scan on this module and report top smells.",
+      "expect": "verify-quality"
+    },
+    {
+      "name": "m1-007-explicit-verify-module-over-gen-docs",
+      "query": "Run verify-module to check module completeness and missing README and DESIGN docs.",
+      "expect": "verify-module"
+    },
+    {
+      "name": "m1-007-explicit-pre-merge-gate-over-ship",
+      "query": "Run pre-merge gate for this release branch and decide block or allow.",
+      "expect": "pre-merge-gate"
+    },
+    {
+      "name": "m1-007-self-system-route-registry-portability",
+      "query": "Improve the skill system registry and route map for better portability across hosts.",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "m1-007-self-system-route-pack-governance",
+      "query": "Refine skill governance and route strategy for the personal skill system bundle.",
+      "expect": "skill-evolution"
+    },
+    {
+      "name": "m1-007-ordinary-engineering-not-self-system",
+      "query": "Implement retry logic and refactor payment service code with tests.",
+      "expect": "development"
+    },
+    {
+      "name": "m1-007-ordinary-bugfix-not-self-system",
+      "query": "Fix login bug regression and add a focused regression test.",
+      "expect": "bugfix"
+    },
+    {
+      "name": "m2-004-verify-change-without-explicit-invocation",
+      "query": "Please do diff analysis and change audit before merge.",
+      "expect-fallback-mode": "do-not-auto-route",
+      "expect-fallback-question-contains": "verify-change"
+    },
+    {
+      "name": "m2-004-explicit-verify-change-no-fallback",
+      "query": "Run verify-change on this diff and classify risk before merge.",
+      "expect": "verify-change",
+      "expect-no-fallback": true
+    }
+  ]
+}

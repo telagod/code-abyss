@@ -2,6 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { getPackHostFiles } = require(path.join(__dirname, '..', 'lib', 'pack-registry.js'));
+
+const PROJECT_ROOT = path.join(__dirname, '..', '..');
 
 const GEMINI_SETTINGS_TEMPLATE = {
   theme: 'GitHub',
@@ -11,10 +14,7 @@ const GEMINI_SETTINGS_TEMPLATE = {
 };
 
 function getGeminiCoreFiles() {
-  return [
-    { src: 'skills', dest: 'skills', root: 'gemini' },
-    { src: 'bin/lib', dest: 'bin/lib', root: 'gemini' },
-  ];
+  return getPackHostFiles(PROJECT_ROOT, 'abyss', 'gemini');
 }
 
 function detectGeminiAuth({

@@ -1,0 +1,2576 @@
+{
+  "schema-version": 1,
+  "router": "sage",
+  "default-threshold": 40,
+  "scoring": {
+    "exact-match": 100,
+    "alias-match": 80,
+    "keyword-hit": 8,
+    "negative-hit": -12,
+    "namespace-hit": 10,
+    "host-unsupported": -100
+  },
+  "routes": [
+    {
+      "skill": "skill-evolution",
+      "kind": "workflow",
+      "priority": 91,
+      "namespace": "system",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "execute",
+          "design"
+        ],
+        "trigger-keywords": [
+          "skill system",
+          "skill architecture",
+          "skill-evolution",
+          "route map",
+          "registry",
+          "pack strategy",
+          "template design",
+          "portability",
+          "personal skill system",
+          "personal skill",
+          "技能系统",
+          "技能演进",
+          "技能架构",
+          "路由图",
+          "可移植性",
+          "个人技能体系",
+          "skill governance",
+          "route strategy",
+          "技能治理",
+          "路由策略"
+        ],
+        "negative-keywords": [
+          "ordinary feature",
+          "普通功能开发",
+          "cluster sizing",
+          "集群容量规划",
+          "single bug",
+          "单点缺陷",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-skill-system",
+        "verify-change",
+        "verify-quality"
+      ],
+      "aliases": [
+        "skill-system",
+        "技能系统演进"
+      ],
+      "rationale": {
+        "primary-intent": "skill-system evolution and governance changes",
+        "why-this-route": "skill-evolution should win when prompt intent aligns with skill-system evolution and governance changes and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "skill system",
+          "skill architecture",
+          "skill-evolution",
+          "route map",
+          "registry",
+          "pack strategy",
+          "template design",
+          "portability",
+          "skill-system",
+          "技能系统演进"
+        ],
+        "avoid-when": [
+          "ordinary feature",
+          "普通功能开发",
+          "cluster sizing",
+          "集群容量规划",
+          "single bug",
+          "单点缺陷",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use for skill bundle, route map, registry, template, and portability work; ordinary product coding should route to development/bugfix/investigate. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use skill-evolution or development as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "development"
+      }
+    },
+    {
+      "skill": "verify-security",
+      "kind": "tool",
+      "priority": 91,
+      "namespace": "security",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-security",
+          "security scan",
+          "vulnerability scan",
+          "安全扫描",
+          "漏洞扫描",
+          "安全校验",
+          "security check",
+          "vulnerability review",
+          "安全体检",
+          "漏洞审查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "vs",
+        "security-audit",
+        "安全校验"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-security is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-security",
+          "security scan",
+          "vulnerability scan",
+          "安全扫描",
+          "漏洞扫描",
+          "安全校验",
+          "security check",
+          "vulnerability review",
+          "vs",
+          "security-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-security?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-change",
+      "kind": "tool",
+      "priority": 90,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-change",
+          "diff analysis",
+          "change audit",
+          "变更校验",
+          "差异分析",
+          "变更审计",
+          "change review",
+          "diff review",
+          "改动审查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "vc",
+        "change-audit",
+        "变更审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-change is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-change",
+          "diff analysis",
+          "change audit",
+          "变更校验",
+          "差异分析",
+          "变更审计",
+          "change review",
+          "diff review",
+          "vc",
+          "change-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-change?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-module",
+      "kind": "tool",
+      "priority": 89,
+      "namespace": "documentation",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-module",
+          "module audit",
+          "module completeness",
+          "模块校验",
+          "模块审计",
+          "模块完整性",
+          "module check",
+          "模块检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "module-audit",
+        "模块审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-module is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-module",
+          "module audit",
+          "module completeness",
+          "模块校验",
+          "模块审计",
+          "模块完整性",
+          "module check",
+          "模块检查",
+          "module-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-module?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-quality",
+      "kind": "tool",
+      "priority": 89,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-quality",
+          "quality scan",
+          "complexity scan",
+          "code smell",
+          "质量校验",
+          "复杂度扫描",
+          "代码异味",
+          "quality check",
+          "code quality check",
+          "代码质量检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "vq",
+        "quality-audit",
+        "质量审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-quality is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-quality",
+          "quality scan",
+          "complexity scan",
+          "code smell",
+          "质量校验",
+          "复杂度扫描",
+          "代码异味",
+          "quality check",
+          "vq",
+          "quality-audit"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-quality?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-skill-system",
+      "kind": "tool",
+      "priority": 89,
+      "namespace": "system",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-skill-system",
+          "skill system audit",
+          "registry audit",
+          "route map audit",
+          "技能系统校验",
+          "注册表审计",
+          "路由图审计",
+          "skill audit",
+          "技能体检"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "skill-system-audit",
+        "技能系统审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-skill-system is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-skill-system",
+          "skill system audit",
+          "registry audit",
+          "route map audit",
+          "技能系统校验",
+          "注册表审计",
+          "路由图审计",
+          "skill audit",
+          "skill-system-audit",
+          "技能系统审计"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-skill-system?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-chart-spec",
+      "kind": "tool",
+      "priority": 89,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-chart-spec",
+          "chart spec check",
+          "g2 spec validation",
+          "chart validation",
+          "图表规范校验",
+          "图表校验",
+          "g2 校验",
+          "G2规范检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "chart-spec-audit",
+        "g2-spec-check",
+        "图表规范审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-chart-spec is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-chart-spec",
+          "chart spec check",
+          "g2 spec validation",
+          "chart validation",
+          "图表规范校验",
+          "图表校验",
+          "g2 校验",
+          "G2规范检查",
+          "chart-spec-audit",
+          "g2-spec-check"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-chart-spec?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "verify-s2-config",
+      "kind": "tool",
+      "priority": 88,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "verify-s2-config",
+          "s2 config check",
+          "pivot table validation",
+          "s2 validation",
+          "S2配置校验",
+          "透视表配置校验",
+          "S2校验",
+          "SheetComponent 检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "s2-config-audit",
+        "pivot-config-check",
+        "S2配置审计"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic validation/tool execution",
+        "why-this-route": "verify-s2-config is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "verify-s2-config",
+          "s2 config check",
+          "pivot table validation",
+          "s2 validation",
+          "S2配置校验",
+          "透视表配置校验",
+          "S2校验",
+          "SheetComponent 检查",
+          "s2-config-audit",
+          "pivot-config-check"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of verify-s2-config?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "investigate",
+      "kind": "workflow",
+      "priority": 88,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "execute"
+        ],
+        "trigger-keywords": [
+          "investigate",
+          "debug",
+          "why broken",
+          "root cause",
+          "排查",
+          "调试",
+          "为什么坏了",
+          "根因分析",
+          "incident investigation",
+          "issue triage",
+          "故障定位",
+          "问题排查"
+        ],
+        "negative-keywords": [
+          "known fix",
+          "已知修复",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "debug-investigate",
+        "故障排查"
+      ],
+      "rationale": {
+        "primary-intent": "root-cause-first incident/debug workflow",
+        "why-this-route": "investigate should win when prompt intent aligns with root-cause-first incident/debug workflow and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "investigate",
+          "debug",
+          "why broken",
+          "root cause",
+          "排查",
+          "调试",
+          "为什么坏了",
+          "根因分析",
+          "debug-investigate",
+          "故障排查"
+        ],
+        "avoid-when": [
+          "known fix",
+          "已知修复",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use investigate when cause is uncertain and evidence gathering is required; if defect and fix are already known, prefer bugfix. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use investigate or bugfix as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "bugfix"
+      }
+    },
+    {
+      "skill": "pre-commit-gate",
+      "kind": "guard",
+      "priority": 88,
+      "namespace": "guard",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "pre-commit",
+          "commit gate",
+          "提交前检查",
+          "提交门禁",
+          "pre commit check",
+          "提交检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "commit-gate",
+        "提交门禁"
+      ],
+      "rationale": {
+        "primary-intent": "pre-commit policy gate enforcement",
+        "why-this-route": "pre-commit-gate is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "pre-commit",
+          "commit gate",
+          "提交前检查",
+          "提交门禁",
+          "pre commit check",
+          "提交检查",
+          "commit-gate"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Guard route is explicit-only and should not override ordinary execution routes unless user asks for gate checks. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of pre-commit-gate?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    },
+    {
+      "skill": "bugfix",
+      "kind": "workflow",
+      "priority": 87,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "execute"
+        ],
+        "trigger-keywords": [
+          "fix",
+          "bug",
+          "error",
+          "regression",
+          "修复",
+          "缺陷",
+          "报错",
+          "回归",
+          "bug fix",
+          "hotfix",
+          "修bug",
+          "故障修复"
+        ],
+        "negative-keywords": [
+          "brainstorm",
+          "头脑风暴",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "review",
+        "investigate"
+      ],
+      "auto-chain": [
+        "verify-quality",
+        "verify-security"
+      ],
+      "aliases": [
+        "fix-bug",
+        "缺陷修复"
+      ],
+      "rationale": {
+        "primary-intent": "minimal safe repair after cause is known",
+        "why-this-route": "bugfix should win when prompt intent aligns with minimal safe repair after cause is known and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "fix",
+          "bug",
+          "error",
+          "regression",
+          "修复",
+          "缺陷",
+          "报错",
+          "回归",
+          "fix-bug",
+          "缺陷修复"
+        ],
+        "avoid-when": [
+          "brainstorm",
+          "头脑风暴",
+          "review-only",
+          "仅评审",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use bugfix for known-fix repair paths; if root cause is still unknown, prefer investigate; if request is findings-first assessment, prefer review. Declared conflicts: review, investigate."
+      },
+      "confidence": {
+        "minimum-score": 47,
+        "strong-score": 62,
+        "very-strong-score": 75,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use bugfix or investigate as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "investigate"
+      }
+    },
+    {
+      "skill": "review",
+      "kind": "workflow",
+      "priority": 86,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate"
+        ],
+        "trigger-keywords": [
+          "review",
+          "code review",
+          "audit the change",
+          "评审",
+          "代码审查",
+          "变更审计",
+          "code walkthrough",
+          "change review",
+          "代码走查"
+        ],
+        "negative-keywords": [
+          "directly implement",
+          "直接实现",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-change"
+      ],
+      "expert-modules": [
+        "review-findings-and-severity",
+        "review-test-surface-mapping",
+        "review-mocks-fixtures-and-isolation",
+        "review-ci-signal-quality",
+        "review-release-readiness-and-rollback",
+        "review-git-and-pr-discipline",
+        "review-cause-model-and-proof",
+        "review-recurrence-prevention-and-defect-governance"
+      ],
+      "aliases": [
+        "code-review",
+        "代码评审"
+      ],
+      "rationale": {
+        "primary-intent": "findings-first human risk review",
+        "why-this-route": "review should win when prompt intent aligns with findings-first human risk review and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "review",
+          "code review",
+          "audit the change",
+          "评审",
+          "代码审查",
+          "变更审计",
+          "code walkthrough",
+          "change review",
+          "code-review",
+          "代码评审"
+        ],
+        "avoid-when": [
+          "directly implement",
+          "直接实现",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Use review for findings-first human judgement; for deterministic scanner-style checks, prefer verify-change/verify-quality/verify-security/verify-chart-spec/verify-s2-config. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 48,
+        "strong-score": 63,
+        "very-strong-score": 76,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use review or verify-change as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "verify-change"
+      }
+    },
+    {
+      "skill": "architecture-decision",
+      "kind": "workflow",
+      "priority": 84,
+      "namespace": "architecture",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "architecture decision",
+          "tradeoff",
+          "migration plan",
+          "adr",
+          "架构决策",
+          "方案权衡",
+          "迁移方案",
+          "技术决策",
+          "tech selection",
+          "architecture selection",
+          "技术选型",
+          "架构选型"
+        ],
+        "negative-keywords": [
+          "small local fix",
+          "小范围修复",
+          "database design",
+          "数据库设计"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-change"
+      ],
+      "expert-modules": [
+        "architecture-decision-framing",
+        "architecture-option-scoring",
+        "architecture-migration-and-rollback",
+        "architecture-org-and-ownership-tradeoffs"
+      ],
+      "aliases": [
+        "arch-decision",
+        "架构决策"
+      ],
+      "rationale": {
+        "primary-intent": "tradeoff-heavy architecture decision framing",
+        "why-this-route": "architecture-decision should win when prompt intent aligns with tradeoff-heavy architecture decision framing and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "architecture decision",
+          "tradeoff",
+          "migration plan",
+          "adr",
+          "架构决策",
+          "方案权衡",
+          "迁移方案",
+          "技术决策",
+          "arch-decision"
+        ],
+        "avoid-when": [
+          "small local fix",
+          "小范围修复",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should architecture-decision be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "security",
+      "kind": "domain",
+      "priority": 84,
+      "namespace": "security",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "validate",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "security",
+          "audit",
+          "vulnerability",
+          "auth",
+          "secrets",
+          "安全",
+          "审计",
+          "漏洞",
+          "认证",
+          "密钥",
+          "offense defense",
+          "hardening",
+          "攻防",
+          "安全加固"
+        ],
+        "negative-keywords": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-security"
+      ],
+      "expert-modules": [
+        "security-authn-authz-boundaries",
+        "security-secret-lifecycle-and-rotation",
+        "security-layered-controls-and-trust-zones",
+        "security-detection-response-and-recovery"
+      ],
+      "aliases": [
+        "sec",
+        "安全审计"
+      ],
+      "rationale": {
+        "primary-intent": "trust-boundary and exploitability-driven security judgement",
+        "why-this-route": "security should win when prompt intent aligns with trust-boundary and exploitability-driven security judgement and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "security",
+          "audit",
+          "vulnerability",
+          "auth",
+          "secrets",
+          "安全",
+          "审计",
+          "漏洞",
+          "sec",
+          "安全审计"
+        ],
+        "avoid-when": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer security when exploit path, trust boundaries, auth, secrets, or attack resilience dominate; if focus is pipeline operations without security threat framing, devops may be adjacent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use security or devops as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "devops"
+      }
+    },
+    {
+      "skill": "multi-agent",
+      "kind": "workflow",
+      "priority": 83,
+      "namespace": "orchestration",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "orchestrate",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "multi-agent",
+          "parallel",
+          "delegation",
+          "parallelize",
+          "多Agent",
+          "并行",
+          "任务委派",
+          "并行化",
+          "multi agent",
+          "parallel delegation",
+          "多智能体",
+          "并发委派"
+        ],
+        "negative-keywords": [
+          "single-file tweak",
+          "单文件微调"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "parallel-agents",
+        "多Agent协同"
+      ],
+      "rationale": {
+        "primary-intent": "active parallel delegation with owned write boundaries",
+        "why-this-route": "multi-agent should win when prompt intent aligns with active parallel delegation with owned write boundaries and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "multi-agent",
+          "parallel",
+          "delegation",
+          "parallelize",
+          "多Agent",
+          "并行",
+          "任务委派",
+          "并行化",
+          "parallel-agents",
+          "多Agent协同"
+        ],
+        "avoid-when": [
+          "single-file tweak",
+          "单文件微调"
+        ],
+        "boundary-notes": "Use multi-agent only when explicit parallel delegation and ownership boundaries are required; conceptual planning without active delegation should prefer orchestration. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use multi-agent or orchestration as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "orchestration"
+      }
+    },
+    {
+      "skill": "ship",
+      "kind": "workflow",
+      "priority": 82,
+      "namespace": "release",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "release",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "ship",
+          "release",
+          "deploy",
+          "merge",
+          "发布",
+          "上线",
+          "部署",
+          "合并",
+          "go live",
+          "production release",
+          "上线发布"
+        ],
+        "negative-keywords": [
+          "discuss only",
+          "仅讨论",
+          "review-only",
+          "仅评审"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-change",
+        "pre-merge-gate"
+      ],
+      "aliases": [
+        "release-flow",
+        "发布流程"
+      ],
+      "rationale": {
+        "primary-intent": "release readiness and deployment workflow",
+        "why-this-route": "ship should win when prompt intent aligns with release readiness and deployment workflow and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ship",
+          "release",
+          "deploy",
+          "merge",
+          "发布",
+          "上线",
+          "部署",
+          "合并",
+          "release-flow",
+          "发布流程"
+        ],
+        "avoid-when": [
+          "discuss only",
+          "仅讨论",
+          "review-only",
+          "仅评审"
+        ],
+        "boundary-notes": "Use ship for release workflow execution; if task is only pre-merge blocking decision without release workflow, pre-merge-gate may be adjacent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 45,
+        "strong-score": 60,
+        "very-strong-score": 73,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use ship or pre-merge-gate as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "pre-merge-gate"
+      }
+    },
+    {
+      "skill": "gen-docs",
+      "kind": "tool",
+      "priority": 81,
+      "namespace": "documentation",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "execute"
+        ],
+        "trigger-keywords": [
+          "gen-docs",
+          "generate docs",
+          "doc scaffold",
+          "readme scaffold",
+          "design scaffold",
+          "生成文档",
+          "文档脚手架",
+          "生成README",
+          "生成DESIGN",
+          "docs generator",
+          "文档生成器",
+          "README骨架"
+        ],
+        "negative-keywords": [
+          "review-only",
+          "仅评审"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [
+        "verify-module"
+      ],
+      "aliases": [
+        "doc-generator",
+        "文档生成"
+      ],
+      "rationale": {
+        "primary-intent": "deterministic documentation scaffold generation",
+        "why-this-route": "gen-docs should win when prompt intent aligns with deterministic documentation scaffold generation and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "gen-docs",
+          "generate docs",
+          "doc scaffold",
+          "readme scaffold",
+          "design scaffold",
+          "生成文档",
+          "文档脚手架",
+          "生成README",
+          "doc-generator",
+          "文档生成"
+        ],
+        "avoid-when": [
+          "review-only",
+          "仅评审"
+        ],
+        "boundary-notes": "Use gen-docs for scaffold generation; structural validation belongs to verify-module. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 40,
+        "strong-score": 55,
+        "very-strong-score": 68,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use gen-docs or verify-module as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "verify-module"
+      }
+    },
+    {
+      "skill": "architecture",
+      "kind": "domain",
+      "priority": 80,
+      "namespace": "architecture",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design"
+        ],
+        "trigger-keywords": [
+          "architecture",
+          "system design",
+          "api boundary",
+          "data flow",
+          "queue",
+          "cache",
+          "migration",
+          "api",
+          "boundaries",
+          "架构",
+          "系统设计",
+          "接口设计",
+          "边界",
+          "迁移",
+          "数据流",
+          "technical architecture",
+          "system architecture",
+          "技术架构",
+          "系统架构"
+        ],
+        "negative-keywords": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "frontend-design"
+      ],
+      "auto-chain": [],
+      "expert-modules": [
+        "architecture-requirements-and-constraints",
+        "architecture-pattern-selection",
+        "architecture-middleware-evolution",
+        "architecture-reliability-and-ha",
+        "architecture-performance-architecture",
+        "architecture-security-architecture",
+        "architecture-platform-governance"
+      ],
+      "aliases": [
+        "system-design",
+        "系统设计"
+      ],
+      "rationale": {
+        "primary-intent": "system-shape and boundary architecture decisions",
+        "why-this-route": "architecture should win when prompt intent aligns with system-shape and boundary architecture decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "architecture",
+          "system design",
+          "api boundary",
+          "data flow",
+          "queue",
+          "cache",
+          "migration",
+          "api",
+          "system-design",
+          "系统设计"
+        ],
+        "avoid-when": [
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer architecture for service boundaries, data flow, cache/queue, migration, and HA tradeoffs; if the task is UI interaction or visual hierarchy only, prefer frontend-design. Declared conflicts: frontend-design."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use architecture or frontend-design as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "frontend-design"
+      }
+    },
+    {
+      "skill": "development",
+      "kind": "domain",
+      "priority": 76,
+      "namespace": "engineering",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "development",
+          "coding",
+          "implement",
+          "refactor",
+          "code",
+          "开发",
+          "编码",
+          "代码实现",
+          "重构",
+          "实现",
+          "software development",
+          "write code",
+          "编程开发",
+          "写代码"
+        ],
+        "negative-keywords": [
+          "penetration test",
+          "渗透测试",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "development-python-design-and-types",
+        "development-python-concurrency",
+        "development-python-memory-and-runtime",
+        "development-query-shape-and-orm",
+        "development-transactions-pagination-and-write-paths",
+        "development-bottleneck-diagnosis",
+        "development-batching-caching-and-concurrency",
+        "development-config-and-runtime-boundaries",
+        "development-observability-and-shutdown"
+      ],
+      "aliases": [
+        "coding",
+        "开发"
+      ],
+      "rationale": {
+        "primary-intent": "implementation and refactor execution",
+        "why-this-route": "development should win when prompt intent aligns with implementation and refactor execution and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "development",
+          "coding",
+          "implement",
+          "refactor",
+          "code",
+          "开发",
+          "编码",
+          "代码实现"
+        ],
+        "avoid-when": [
+          "penetration test",
+          "渗透测试",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should development be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "chart-visualization",
+      "kind": "domain",
+      "priority": 77,
+      "namespace": "visualization",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "chart",
+          "chart visualization",
+          "data visualization",
+          "g2",
+          "antv g2",
+          "s2",
+          "pivot table",
+          "cross table",
+          "infographic",
+          "narrative text visualization",
+          "t8",
+          "图表",
+          "数据可视化",
+          "图表生成",
+          "透视表",
+          "交叉表",
+          "信息图",
+          "叙事可视化",
+          "阈值线",
+          "参考线",
+          "区间高亮",
+          "游标线",
+          "共享提示",
+          "图片标注",
+          "图标散点"
+        ],
+        "negative-keywords": [
+          "ui layout",
+          "pure visual polish",
+          "ux copywriting",
+          "纯视觉润色",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "frontend-design"
+      ],
+      "auto-chain": [],
+      "expert-modules": [
+        "chart-visualization-g2-spec-guardrails",
+        "chart-visualization-g2-chart-selection",
+        "chart-visualization-g2-mark-and-transform-basics",
+        "chart-visualization-g2-interaction-and-tooltips",
+        "chart-visualization-s2-sheet-model-and-config",
+        "chart-visualization-s2-framework-bindings",
+        "chart-visualization-chart-image-api",
+        "chart-visualization-icon-retrieval-api",
+        "chart-visualization-infographic-dsl",
+        "chart-visualization-narrative-t8",
+        "chart-visualization-g2-components-and-layout",
+        "chart-visualization-g2-data-scales-and-coordinates",
+        "chart-visualization-g2-annotations-and-reference-marks",
+        "chart-visualization-g2-shared-tooltip-and-navigation",
+        "chart-visualization-s2-advanced-table-features",
+        "chart-visualization-s2-customization-and-extensions"
+      ],
+      "aliases": [
+        "data-visualization",
+        "图表可视化"
+      ],
+      "rationale": {
+        "primary-intent": "chart semantics/spec/config correctness for G2/S2/T8 flows",
+        "why-this-route": "chart-visualization should win when prompt intent aligns with chart semantics/spec/config correctness for G2/S2/T8 flows and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "chart",
+          "chart visualization",
+          "data visualization",
+          "g2",
+          "antv g2",
+          "s2",
+          "pivot table",
+          "cross table",
+          "data-visualization",
+          "图表可视化"
+        ],
+        "avoid-when": [
+          "ui layout",
+          "pure visual polish",
+          "ux copywriting",
+          "纯视觉润色",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer chart-visualization for G2/S2/spec semantics and validation; if request is pure UI aesthetics/layout without data semantics, frontend-design may be adjacent. Declared conflicts: frontend-design."
+      },
+      "confidence": {
+        "minimum-score": 43,
+        "strong-score": 58,
+        "very-strong-score": 71,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use chart-visualization or frontend-design as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "frontend-design"
+      }
+    },
+    {
+      "skill": "frontend-design",
+      "kind": "domain",
+      "priority": 75,
+      "namespace": "design",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design",
+          "knowledge"
+        ],
+        "trigger-keywords": [
+          "ui",
+          "ux",
+          "frontend design",
+          "component design",
+          "accessibility",
+          "前端设计",
+          "界面设计",
+          "用户体验",
+          "组件设计",
+          "无障碍",
+          "ui design",
+          "interaction design",
+          "UI设计",
+          "交互设计"
+        ],
+        "negative-keywords": [
+          "sql",
+          "SQL查询",
+          "database design",
+          "数据库设计"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [
+        "architecture"
+      ],
+      "auto-chain": [],
+      "aliases": [
+        "ui-design",
+        "前端设计"
+      ],
+      "expert-modules": [
+        "frontend-design-information-architecture-and-interaction",
+        "frontend-design-information-architecture",
+        "frontend-design-interaction-patterns",
+        "frontend-design-hierarchy-and-visual-systems",
+        "frontend-design-motion-and-state-transitions",
+        "frontend-design-responsive-and-implementation-constraints"
+      ],
+      "rationale": {
+        "primary-intent": "UI/UX interaction and visual-system design",
+        "why-this-route": "frontend-design should win when prompt intent aligns with UI/UX interaction and visual-system design and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ui",
+          "ux",
+          "frontend design",
+          "component design",
+          "accessibility",
+          "前端设计",
+          "界面设计",
+          "用户体验",
+          "ui-design"
+        ],
+        "avoid-when": [
+          "sql",
+          "SQL查询",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Prefer frontend-design for UI/UX/accessibility/visual hierarchy; if dominant ask is API boundary, migration, queue, or cache strategy, prefer architecture. Declared conflicts: architecture."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use frontend-design or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
+    },
+    {
+      "skill": "infrastructure",
+      "kind": "domain",
+      "priority": 74,
+      "namespace": "platform",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "kubernetes",
+          "terraform",
+          "gitops",
+          "infra",
+          "cluster",
+          "k8s",
+          "基础设施",
+          "云原生",
+          "集群",
+          "平台运维",
+          "kubernetes集群",
+          "infra architecture",
+          "cloud infrastructure",
+          "基础架构",
+          "云基础设施"
+        ],
+        "negative-keywords": [
+          "ux",
+          "用户体验",
+          "component design",
+          "组件设计"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "infrastructure-control-plane-and-tenancy",
+        "infrastructure-cluster-shape-and-environment-strategy",
+        "infrastructure-traffic-governance-and-mesh-adoption",
+        "infrastructure-runtime-policy-and-identity-plane",
+        "infrastructure-failover-topology-and-consistency",
+        "infrastructure-dr-exercises-and-recovery-operations"
+      ],
+      "aliases": [
+        "platform-infra",
+        "平台基础设施"
+      ],
+      "rationale": {
+        "primary-intent": "runtime topology, IaC, tenancy, and platform controls",
+        "why-this-route": "infrastructure should win when prompt intent aligns with runtime topology, IaC, tenancy, and platform controls and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "kubernetes",
+          "terraform",
+          "gitops",
+          "infra",
+          "cluster",
+          "k8s",
+          "基础设施",
+          "云原生",
+          "platform-infra",
+          "平台基础设施"
+        ],
+        "avoid-when": [
+          "ux",
+          "用户体验",
+          "component design",
+          "组件设计"
+        ],
+        "boundary-notes": "Prefer infrastructure for cluster/IaC/runtime policy/tenancy operations; service-boundary and business-system design belongs to architecture. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use infrastructure or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
+    },
+    {
+      "skill": "data-engineering",
+      "kind": "domain",
+      "priority": 73,
+      "namespace": "data",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "etl",
+          "stream processing",
+          "flink",
+          "dbt",
+          "data pipeline",
+          "streaming",
+          "kafka",
+          "数据工程",
+          "数据管道",
+          "流处理",
+          "实时计算",
+          "flink作业",
+          "数仓",
+          "data engineering",
+          "data modeling",
+          "数据开发",
+          "数据建模"
+        ],
+        "negative-keywords": [
+          "ui",
+          "界面设计",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "data-product-framing",
+        "data-batch-and-orchestration",
+        "data-streaming-and-state",
+        "data-contracts-quality-and-reconciliation"
+      ],
+      "aliases": [
+        "data-pipeline",
+        "数据管道"
+      ],
+      "rationale": {
+        "primary-intent": "pipeline/stream/data-contract engineering decisions",
+        "why-this-route": "data-engineering should win when prompt intent aligns with pipeline/stream/data-contract engineering decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "etl",
+          "stream processing",
+          "flink",
+          "dbt",
+          "data pipeline",
+          "streaming",
+          "kafka",
+          "数据工程",
+          "data-pipeline",
+          "数据管道"
+        ],
+        "avoid-when": [
+          "ui",
+          "界面设计",
+          "visual design",
+          "视觉设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Prefer data-engineering for ETL/streaming/contracts/reconciliation; UI and visual styling requests should route elsewhere. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use data-engineering or infrastructure as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "infrastructure"
+      }
+    },
+    {
+      "skill": "devops",
+      "kind": "domain",
+      "priority": 72,
+      "namespace": "release",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "execute"
+        ],
+        "trigger-keywords": [
+          "devops",
+          "ci",
+          "cd",
+          "pipeline",
+          "observability",
+          "release gate",
+          "deploy",
+          "运维",
+          "持续集成",
+          "持续交付",
+          "流水线",
+          "部署",
+          "可观测性",
+          "release pipeline",
+          "ci/cd",
+          "发布流水线",
+          "CI/CD"
+        ],
+        "negative-keywords": [
+          "pure product design",
+          "纯产品设计",
+          "database design",
+          "数据库设计"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "devops-release-gate-design",
+        "devops-rollback-and-release-operations",
+        "devops-signal-design-and-instrumentation",
+        "devops-alerts-runbooks-and-diagnosis"
+      ],
+      "aliases": [
+        "devops-flow",
+        "运维流程"
+      ],
+      "rationale": {
+        "primary-intent": "release pipeline, observability, and operational readiness controls",
+        "why-this-route": "devops should win when prompt intent aligns with release pipeline, observability, and operational readiness controls and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "devops",
+          "ci",
+          "cd",
+          "pipeline",
+          "observability",
+          "release gate",
+          "deploy",
+          "运维",
+          "devops-flow",
+          "运维流程"
+        ],
+        "avoid-when": [
+          "pure product design",
+          "纯产品设计",
+          "database design",
+          "数据库设计"
+        ],
+        "boundary-notes": "Prefer devops for CI/CD, rollout gates, observability, and runbook operations; if exploitability and trust-boundary abuse dominate, prefer security. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use devops or security as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "security"
+      }
+    },
+    {
+      "skill": "ai",
+      "kind": "domain",
+      "priority": 71,
+      "namespace": "ai",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design"
+        ],
+        "trigger-keywords": [
+          "ai",
+          "llm",
+          "prompt",
+          "rag",
+          "agent",
+          "eval",
+          "人工智能",
+          "大模型",
+          "提示词",
+          "检索增强",
+          "智能体",
+          "评测",
+          "model application",
+          "agent system",
+          "模型应用",
+          "智能体系统"
+        ],
+        "negative-keywords": [
+          "cluster sizing",
+          "集群容量规划"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "ai-task-definition",
+        "ai-eval-design-and-acceptance",
+        "ai-retrieval-objective-and-corpus-shaping",
+        "ai-chunking-ranking-and-grounding",
+        "ai-tool-authority-and-boundaries",
+        "ai-agent-loop-and-state-control",
+        "ai-guardrail-policy-and-fallbacks",
+        "ai-latency-cost-and-reliability"
+      ],
+      "aliases": [
+        "llm",
+        "大模型"
+      ],
+      "rationale": {
+        "primary-intent": "LLM/RAG/agent design and evaluation decisions",
+        "why-this-route": "ai should win when prompt intent aligns with LLM/RAG/agent design and evaluation decisions and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ai",
+          "llm",
+          "prompt",
+          "rag",
+          "agent",
+          "eval",
+          "人工智能",
+          "大模型"
+        ],
+        "avoid-when": [
+          "cluster sizing",
+          "集群容量规划"
+        ],
+        "boundary-notes": "Prefer ai for prompt/eval/RAG/agent-loop/guardrail decisions; general cluster sizing or infra topology should route to infrastructure. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use ai or architecture as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "architecture"
+      }
+    },
+    {
+      "skill": "orchestration",
+      "kind": "domain",
+      "priority": 70,
+      "namespace": "orchestration",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "orchestrate"
+        ],
+        "trigger-keywords": [
+          "orchestration",
+          "coordination",
+          "task decomposition",
+          "workflow coordination",
+          "decomposition",
+          "workflow",
+          "编排",
+          "协同",
+          "任务分解",
+          "工作流",
+          "workflow orchestration",
+          "协同编排"
+        ],
+        "negative-keywords": [
+          "single file bug",
+          "单文件缺陷",
+          "database design",
+          "数据库设计",
+          "single-file bug"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "expert-modules": [
+        "orchestration-work-decomposition",
+        "orchestration-ownership-and-write-boundaries",
+        "orchestration-dependency-and-integration",
+        "orchestration-status-and-handoffs"
+      ],
+      "aliases": [
+        "workflow-orchestration",
+        "任务编排"
+      ],
+      "rationale": {
+        "primary-intent": "task decomposition and integration coordination strategy",
+        "why-this-route": "orchestration should win when prompt intent aligns with task decomposition and integration coordination strategy and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "orchestration",
+          "coordination",
+          "task decomposition",
+          "workflow coordination",
+          "decomposition",
+          "workflow",
+          "编排",
+          "协同",
+          "workflow-orchestration",
+          "任务编排"
+        ],
+        "avoid-when": [
+          "single file bug",
+          "单文件缺陷",
+          "database design",
+          "数据库设计",
+          "single-file bug"
+        ],
+        "boundary-notes": "Use orchestration for decomposition, dependency, and coordination strategy; if active parallel delegation with owned write scopes is requested, prefer multi-agent. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use orchestration or multi-agent as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "multi-agent"
+      }
+    },
+    {
+      "skill": "mobile",
+      "kind": "domain",
+      "priority": 68,
+      "namespace": "client",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "knowledge",
+          "design"
+        ],
+        "trigger-keywords": [
+          "ios",
+          "android",
+          "react native",
+          "flutter",
+          "mobile",
+          "移动端",
+          "iOS开发",
+          "Android开发",
+          "跨平台移动",
+          "mobile app",
+          "移动开发"
+        ],
+        "negative-keywords": [
+          "kubernetes",
+          "Kubernetes集群",
+          "etl",
+          "数据管道"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "mobile-dev",
+        "移动开发"
+      ],
+      "expert-modules": [
+        "mobile-lifecycle-and-state",
+        "mobile-lifecycle-and-interruption",
+        "mobile-offline-sync-and-conflict",
+        "mobile-permission-and-privacy-boundaries",
+        "mobile-battery-and-performance-budget",
+        "mobile-native-bridge-and-platform-boundaries",
+        "mobile-release-and-observability"
+      ],
+      "rationale": {
+        "primary-intent": "mobile lifecycle, offline, and platform-boundary constraints",
+        "why-this-route": "mobile should win when prompt intent aligns with mobile lifecycle, offline, and platform-boundary constraints and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "ios",
+          "android",
+          "react native",
+          "flutter",
+          "mobile",
+          "移动端",
+          "iOS开发",
+          "Android开发",
+          "mobile-dev",
+          "移动开发"
+        ],
+        "avoid-when": [
+          "kubernetes",
+          "Kubernetes集群",
+          "etl",
+          "数据管道"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should this route use mobile or development as the primary skill for this request?",
+        "default-action": "route-to-highest-score-after-clarification",
+        "safe-skill": "development"
+      }
+    },
+    {
+      "skill": "claymorphism",
+      "kind": "domain",
+      "priority": 64,
+      "namespace": "design-variant",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design"
+        ],
+        "trigger-keywords": [
+          "claymorphism",
+          "soft ui",
+          "粘土风",
+          "软拟态",
+          "soft neumorphism",
+          "软拟物"
+        ],
+        "negative-keywords": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "soft-ui",
+        "粘土风"
+      ],
+      "expert-modules": [
+        "claymorphism-surface-and-shadow-system",
+        "claymorphism-component-recipes",
+        "claymorphism-accessibility-and-responsive-constraints"
+      ],
+      "rationale": {
+        "primary-intent": "claymorphism style-system application",
+        "why-this-route": "claymorphism should win when prompt intent aligns with claymorphism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "claymorphism",
+          "soft ui",
+          "粘土风",
+          "软拟态",
+          "soft neumorphism",
+          "软拟物",
+          "soft-ui"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should claymorphism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "glassmorphism",
+      "kind": "domain",
+      "priority": 64,
+      "namespace": "design-variant",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design"
+        ],
+        "trigger-keywords": [
+          "glassmorphism",
+          "frosted glass",
+          "玻璃拟态",
+          "毛玻璃",
+          "glass style",
+          "玻璃风格"
+        ],
+        "negative-keywords": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "frosted-ui",
+        "玻璃拟态"
+      ],
+      "expert-modules": [
+        "glassmorphism-layering-and-contrast",
+        "glassmorphism-component-recipes",
+        "glassmorphism-accessibility-and-responsive-constraints"
+      ],
+      "rationale": {
+        "primary-intent": "glassmorphism style-system application",
+        "why-this-route": "glassmorphism should win when prompt intent aligns with glassmorphism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "glassmorphism",
+          "frosted glass",
+          "玻璃拟态",
+          "毛玻璃",
+          "glass style",
+          "玻璃风格",
+          "frosted-ui"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should glassmorphism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "liquid-glass",
+      "kind": "domain",
+      "priority": 64,
+      "namespace": "design-variant",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design"
+        ],
+        "trigger-keywords": [
+          "liquid-glass",
+          "apple glass",
+          "liquid interface",
+          "液态玻璃",
+          "苹果玻璃",
+          "液态界面",
+          "liquid style",
+          "液态风格"
+        ],
+        "negative-keywords": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "apple-liquid-glass",
+        "液态玻璃"
+      ],
+      "expert-modules": [
+        "liquid-glass-depth-and-motion-language",
+        "liquid-glass-component-recipes",
+        "liquid-glass-fallback-contrast-and-legibility"
+      ],
+      "rationale": {
+        "primary-intent": "liquid-glass style-system application",
+        "why-this-route": "liquid-glass should win when prompt intent aligns with liquid-glass style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "liquid-glass",
+          "apple glass",
+          "liquid interface",
+          "液态玻璃",
+          "苹果玻璃",
+          "液态界面",
+          "liquid style",
+          "液态风格",
+          "apple-liquid-glass"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should liquid-glass be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "neubrutalism",
+      "kind": "domain",
+      "priority": 64,
+      "namespace": "design-variant",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "design"
+        ],
+        "trigger-keywords": [
+          "neubrutalism",
+          "brutalist ui",
+          "新粗野主义",
+          "粗野风界面",
+          "brutal style",
+          "粗野风格"
+        ],
+        "negative-keywords": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "requires-explicit-invocation": false
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "brutalist-style",
+        "新粗野主义"
+      ],
+      "expert-modules": [
+        "neubrutalism-graphic-hierarchy-and-tokens",
+        "neubrutalism-component-recipes",
+        "neubrutalism-accessibility-and-density-controls"
+      ],
+      "rationale": {
+        "primary-intent": "neubrutalism style-system application",
+        "why-this-route": "neubrutalism should win when prompt intent aligns with neubrutalism style-system application and positive route signals outweigh adjacent candidates.",
+        "wins-when": [
+          "neubrutalism",
+          "brutalist ui",
+          "新粗野主义",
+          "粗野风界面",
+          "brutal style",
+          "粗野风格",
+          "brutalist-style"
+        ],
+        "avoid-when": [
+          "api design",
+          "接口设计",
+          "ux",
+          "用户体验"
+        ],
+        "boundary-notes": "Apply one-question clarification when intent is mixed and adjacent routes are plausible. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 42,
+        "strong-score": 57,
+        "very-strong-score": 70,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "ask-one-question",
+        "clarify-question": "Should neubrutalism be treated as the primary route for this request?",
+        "default-action": "route-to-highest-score-after-clarification"
+      }
+    },
+    {
+      "skill": "pre-merge-gate",
+      "kind": "guard",
+      "priority": 92,
+      "namespace": "guard",
+      "supported-hosts": [
+        "codex",
+        "claude",
+        "gemini"
+      ],
+      "activation": {
+        "intent-tags": [
+          "validate",
+          "release"
+        ],
+        "trigger-keywords": [
+          "pre-merge",
+          "merge gate",
+          "release gate",
+          "合并前检查",
+          "合并门禁",
+          "发布门禁",
+          "merge check",
+          "合并检查"
+        ],
+        "negative-keywords": [],
+        "requires-explicit-invocation": true
+      },
+      "conflicts-with": [],
+      "auto-chain": [],
+      "aliases": [
+        "merge-gate",
+        "合并门禁"
+      ],
+      "rationale": {
+        "primary-intent": "pre-merge release gate enforcement",
+        "why-this-route": "pre-merge-gate is explicit-invocation-first; it should win only when explicitly requested or when deterministic validation intent is unambiguous.",
+        "wins-when": [
+          "pre-merge",
+          "merge gate",
+          "release gate",
+          "合并前检查",
+          "合并门禁",
+          "发布门禁",
+          "merge check",
+          "合并检查",
+          "merge-gate"
+        ],
+        "avoid-when": [],
+        "boundary-notes": "Guard route is explicit-only and should not replace normal design/implementation routing unless merge gate is requested. No declared conflicts-with entries."
+      },
+      "confidence": {
+        "minimum-score": 65,
+        "strong-score": 80,
+        "very-strong-score": 93,
+        "requires-fallback-below-minimum": true
+      },
+      "fallback": {
+        "mode": "do-not-auto-route",
+        "clarify-question": "Do you want explicit invocation of pre-merge-gate?",
+        "default-action": "wait-for-explicit-invocation"
+      }
+    }
+  ]
+}

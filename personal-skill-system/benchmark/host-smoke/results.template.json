@@ -1,0 +1,21 @@
+﻿{
+  "schema_version": 1,
+  "task_set_id": "host-smoke.v1",
+  "results": [
+    {
+      "host": "codex",
+      "run_utc": "2026-04-22T00:00:00Z",
+      "task_id": "HSM-001",
+      "route_selected": "review",
+      "route_expected": "review",
+      "tool_expected": [],
+      "tool_invoked": false,
+      "auto_chain_declared": [],
+      "auto_chain_observed": [],
+      "portability_status": "pass",
+      "status": "pass",
+      "failure_type": "none",
+      "notes": "template row"
+    }
+  ]
+}

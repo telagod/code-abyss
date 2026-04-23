@@ -1,0 +1,769 @@
+{
+  "schema-version": 1,
+  "skills": [
+    {
+      "name": "sage",
+      "kind": "router",
+      "path": "skills/routers/sage/SKILL.md"
+    },
+    {
+      "name": "ai",
+      "kind": "domain",
+      "path": "skills/domains/ai/SKILL.md"
+    },
+    {
+      "name": "architecture",
+      "kind": "domain",
+      "path": "skills/domains/architecture/SKILL.md"
+    },
+    {
+      "name": "data-engineering",
+      "kind": "domain",
+      "path": "skills/domains/data-engineering/SKILL.md"
+    },
+    {
+      "name": "development",
+      "kind": "domain",
+      "path": "skills/domains/development/SKILL.md"
+    },
+    {
+      "name": "devops",
+      "kind": "domain",
+      "path": "skills/domains/devops/SKILL.md"
+    },
+    {
+      "name": "frontend-design",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/SKILL.md"
+    },
+    {
+      "name": "infrastructure",
+      "kind": "domain",
+      "path": "skills/domains/infrastructure/SKILL.md"
+    },
+    {
+      "name": "mobile",
+      "kind": "domain",
+      "path": "skills/domains/mobile/SKILL.md"
+    },
+    {
+      "name": "orchestration",
+      "kind": "domain",
+      "path": "skills/domains/orchestration/SKILL.md"
+    },
+    {
+      "name": "security",
+      "kind": "domain",
+      "path": "skills/domains/security/SKILL.md"
+    },
+    {
+      "name": "chart-visualization",
+      "kind": "domain",
+      "path": "skills/domains/chart-visualization/SKILL.md"
+    },
+    {
+      "name": "claymorphism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/claymorphism/SKILL.md"
+    },
+    {
+      "name": "glassmorphism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/glassmorphism/SKILL.md"
+    },
+    {
+      "name": "liquid-glass",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/liquid-glass/SKILL.md"
+    },
+    {
+      "name": "neubrutalism",
+      "kind": "domain",
+      "path": "skills/domains/frontend-design/variants/neubrutalism/SKILL.md"
+    },
+    {
+      "name": "architecture-decision",
+      "kind": "workflow",
+      "path": "skills/workflows/architecture-decision/SKILL.md"
+    },
+    {
+      "name": "bugfix",
+      "kind": "workflow",
+      "path": "skills/workflows/bugfix/SKILL.md"
+    },
+    {
+      "name": "investigate",
+      "kind": "workflow",
+      "path": "skills/workflows/investigate/SKILL.md"
+    },
+    {
+      "name": "multi-agent",
+      "kind": "workflow",
+      "path": "skills/workflows/multi-agent/SKILL.md"
+    },
+    {
+      "name": "review",
+      "kind": "workflow",
+      "path": "skills/workflows/review/SKILL.md"
+    },
+    {
+      "name": "ship",
+      "kind": "workflow",
+      "path": "skills/workflows/ship/SKILL.md"
+    },
+    {
+      "name": "skill-evolution",
+      "kind": "workflow",
+      "path": "skills/workflows/skill-evolution/SKILL.md"
+    },
+    {
+      "name": "gen-docs",
+      "kind": "tool",
+      "path": "skills/tools/gen-docs/SKILL.md"
+    },
+    {
+      "name": "verify-change",
+      "kind": "tool",
+      "path": "skills/tools/verify-change/SKILL.md"
+    },
+    {
+      "name": "verify-module",
+      "kind": "tool",
+      "path": "skills/tools/verify-module/SKILL.md"
+    },
+    {
+      "name": "verify-quality",
+      "kind": "tool",
+      "path": "skills/tools/verify-quality/SKILL.md"
+    },
+    {
+      "name": "verify-security",
+      "kind": "tool",
+      "path": "skills/tools/verify-security/SKILL.md"
+    },
+    {
+      "name": "verify-chart-spec",
+      "kind": "tool",
+      "path": "skills/tools/verify-chart-spec/SKILL.md"
+    },
+    {
+      "name": "verify-s2-config",
+      "kind": "tool",
+      "path": "skills/tools/verify-s2-config/SKILL.md"
+    },
+    {
+      "name": "verify-skill-system",
+      "kind": "tool",
+      "path": "skills/tools/verify-skill-system/SKILL.md"
+    },
+    {
+      "name": "pre-commit-gate",
+      "kind": "guard",
+      "path": "skills/guards/pre-commit-gate/SKILL.md"
+    },
+    {
+      "name": "pre-merge-gate",
+      "kind": "guard",
+      "path": "skills/guards/pre-merge-gate/SKILL.md"
+    }
+  ],
+  "module-groups": [
+    {
+      "host-skill": "architecture",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "architecture-requirements-and-constraints",
+          "path": "skills/domains/architecture/references/expert-requirements-and-constraints.md",
+          "capability": "Frame business, system, and technical constraints before architecture choice."
+        },
+        {
+          "id": "architecture-pattern-selection",
+          "path": "skills/domains/architecture/references/expert-pattern-selection.md",
+          "capability": "Choose architectural shape with explicit pattern-fit judgement."
+        },
+        {
+          "id": "architecture-middleware-evolution",
+          "path": "skills/domains/architecture/references/expert-middleware-evolution.md",
+          "capability": "Reason about queue, cache, database, search, and observability evolution."
+        },
+        {
+          "id": "architecture-reliability-and-ha",
+          "path": "skills/domains/architecture/references/expert-reliability-and-ha.md",
+          "capability": "Design HA, DR, and failure controls with explicit reliability posture."
+        },
+        {
+          "id": "architecture-performance-architecture",
+          "path": "skills/domains/architecture/references/expert-performance-architecture.md",
+          "capability": "Treat latency, throughput, and saturation as architecture-level constraints."
+        },
+        {
+          "id": "architecture-security-architecture",
+          "path": "skills/domains/architecture/references/expert-security-architecture.md",
+          "capability": "Shape architecture around trust boundaries, auth, secrets, and auditability."
+        },
+        {
+          "id": "architecture-platform-governance",
+          "path": "skills/domains/architecture/references/expert-platform-governance.md",
+          "capability": "Cover ownership, observability, ADRs, and team-fit governance."
+        }
+      ]
+    },
+    {
+      "host-skill": "architecture-decision",
+      "host-kind": "workflow",
+      "modules": [
+        {
+          "id": "architecture-decision-framing",
+          "path": "skills/workflows/architecture-decision/references/expert-decision-framing.md",
+          "capability": "Force the true decision to be framed before comparing options."
+        },
+        {
+          "id": "architecture-option-scoring",
+          "path": "skills/workflows/architecture-decision/references/expert-option-scoring.md",
+          "capability": "Score candidate paths with explicit dimensions and weighting."
+        },
+        {
+          "id": "architecture-migration-and-rollback",
+          "path": "skills/workflows/architecture-decision/references/expert-migration-and-rollback.md",
+          "capability": "Design bridge periods, cutover, and rollback for risky decisions."
+        },
+        {
+          "id": "architecture-org-and-ownership-tradeoffs",
+          "path": "skills/workflows/architecture-decision/references/expert-org-and-ownership-tradeoffs.md",
+          "capability": "Price in team capability, ownership, and operational tax."
+        }
+      ]
+    },
+    {
+      "host-skill": "development",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "development-python-design-and-types",
+          "path": "skills/domains/development/references/expert-python-design-and-types.md",
+          "capability": "Improve Python code shape, boundaries, and type-driven clarity."
+        },
+        {
+          "id": "development-python-concurrency",
+          "path": "skills/domains/development/references/expert-python-concurrency.md",
+          "capability": "Choose the right Python concurrency model for the pressure."
+        },
+        {
+          "id": "development-python-memory-and-runtime",
+          "path": "skills/domains/development/references/expert-python-memory-and-runtime.md",
+          "capability": "Reason about object lifetime, memory pressure, and runtime behavior."
+        },
+        {
+          "id": "development-query-shape-and-orm",
+          "path": "skills/domains/development/references/expert-query-shape-and-orm.md",
+          "capability": "Diagnose query shape, ORM misuse, and N+1 behavior."
+        },
+        {
+          "id": "development-transactions-pagination-and-write-paths",
+          "path": "skills/domains/development/references/expert-transactions-pagination-and-write-paths.md",
+          "capability": "Design safer transaction scope, pagination, and write-path behavior."
+        },
+        {
+          "id": "development-bottleneck-diagnosis",
+          "path": "skills/domains/development/references/expert-bottleneck-diagnosis.md",
+          "capability": "Identify the dominant latency, throughput, or saturation bottleneck before changing code."
+        },
+        {
+          "id": "development-batching-caching-and-concurrency",
+          "path": "skills/domains/development/references/expert-batching-caching-and-concurrency.md",
+          "capability": "Use batching, cache, and bounded concurrency as first-class optimization levers."
+        },
+        {
+          "id": "development-config-and-runtime-boundaries",
+          "path": "skills/domains/development/references/expert-config-and-runtime-boundaries.md",
+          "capability": "Make runtime configuration and boundary assumptions explicit and safe."
+        },
+        {
+          "id": "development-observability-and-shutdown",
+          "path": "skills/domains/development/references/expert-observability-and-shutdown.md",
+          "capability": "Harden observability, health semantics, and shutdown behavior for production use."
+        }
+      ]
+    },
+    {
+      "host-skill": "review",
+      "host-kind": "workflow",
+      "modules": [
+        {
+          "id": "review-findings-and-severity",
+          "path": "skills/workflows/review/references/expert-findings-and-severity.md",
+          "capability": "Rank findings by actual risk and failure scenario."
+        },
+        {
+          "id": "review-test-surface-mapping",
+          "path": "skills/workflows/review/references/expert-test-surface-mapping.md",
+          "capability": "Map changed surface to the correct test layer and evidence burden."
+        },
+        {
+          "id": "review-mocks-fixtures-and-isolation",
+          "path": "skills/workflows/review/references/expert-mocks-fixtures-and-isolation.md",
+          "capability": "Judge whether mocks, fixtures, and isolation hide real risk."
+        },
+        {
+          "id": "review-ci-signal-quality",
+          "path": "skills/workflows/review/references/expert-ci-signal-quality.md",
+          "capability": "Judge whether CI produces trustworthy signal for the changed surface."
+        },
+        {
+          "id": "review-release-readiness-and-rollback",
+          "path": "skills/workflows/review/references/expert-release-readiness-and-rollback.md",
+          "capability": "Judge release readiness, rollout risk, and rollback posture."
+        },
+        {
+          "id": "review-git-and-pr-discipline",
+          "path": "skills/workflows/review/references/expert-git-and-pr-discipline.md",
+          "capability": "Judge PR scope, commit hygiene, and reviewability quality."
+        },
+        {
+          "id": "review-cause-model-and-proof",
+          "path": "skills/workflows/review/references/expert-cause-model-and-proof.md",
+          "capability": "Judge the strength of the cause model and supporting evidence."
+        },
+        {
+          "id": "review-recurrence-prevention-and-defect-governance",
+          "path": "skills/workflows/review/references/expert-recurrence-prevention-and-defect-governance.md",
+          "capability": "Judge recurrence prevention and defect-governance quality."
+        }
+      ]
+    },
+    {
+      "host-skill": "devops",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "devops-release-gate-design",
+          "path": "skills/domains/devops/references/expert-release-gate-design.md",
+          "capability": "Design release gates around blast radius and evidence depth."
+        },
+        {
+          "id": "devops-rollback-and-release-operations",
+          "path": "skills/domains/devops/references/expert-rollback-and-release-operations.md",
+          "capability": "Operate release, staged rollout, and rollback safely."
+        },
+        {
+          "id": "devops-signal-design-and-instrumentation",
+          "path": "skills/domains/devops/references/expert-signal-design-and-instrumentation.md",
+          "capability": "Design instrumentation and operational signal quality."
+        },
+        {
+          "id": "devops-alerts-runbooks-and-diagnosis",
+          "path": "skills/domains/devops/references/expert-alerts-runbooks-and-diagnosis.md",
+          "capability": "Improve alerts, runbooks, and diagnosis workflow."
+        }
+      ]
+    },
+    {
+      "host-skill": "infrastructure",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "infrastructure-control-plane-and-tenancy",
+          "path": "skills/domains/infrastructure/references/expert-control-plane-and-tenancy.md",
+          "capability": "Define control-plane ownership, shared risk, and tenancy boundaries."
+        },
+        {
+          "id": "infrastructure-cluster-shape-and-environment-strategy",
+          "path": "skills/domains/infrastructure/references/expert-cluster-shape-and-environment-strategy.md",
+          "capability": "Choose cluster count and environment strategy deliberately."
+        },
+        {
+          "id": "infrastructure-traffic-governance-and-mesh-adoption",
+          "path": "skills/domains/infrastructure/references/expert-traffic-governance-and-mesh-adoption.md",
+          "capability": "Judge whether traffic governance or mesh adoption is justified."
+        },
+        {
+          "id": "infrastructure-runtime-policy-and-identity-plane",
+          "path": "skills/domains/infrastructure/references/expert-runtime-policy-and-identity-plane.md",
+          "capability": "Design workload identity and runtime policy enforcement."
+        },
+        {
+          "id": "infrastructure-failover-topology-and-consistency",
+          "path": "skills/domains/infrastructure/references/expert-failover-topology-and-consistency.md",
+          "capability": "Reason about failover shape and consistency tradeoffs."
+        },
+        {
+          "id": "infrastructure-dr-exercises-and-recovery-operations",
+          "path": "skills/domains/infrastructure/references/expert-dr-exercises-and-recovery-operations.md",
+          "capability": "Operationalize DR through drills and recovery procedures."
+        }
+      ]
+    },
+    {
+      "host-skill": "security",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "security-authn-authz-boundaries",
+          "path": "skills/domains/security/references/expert-authn-authz-boundaries.md",
+          "capability": "Define authentication and authorization boundaries with least privilege."
+        },
+        {
+          "id": "security-secret-lifecycle-and-rotation",
+          "path": "skills/domains/security/references/expert-secret-lifecycle-and-rotation.md",
+          "capability": "Design secret creation, injection, rotation, and revocation lifecycle."
+        },
+        {
+          "id": "security-layered-controls-and-trust-zones",
+          "path": "skills/domains/security/references/expert-layered-controls-and-trust-zones.md",
+          "capability": "Design trust zones and independent defensive layers."
+        },
+        {
+          "id": "security-detection-response-and-recovery",
+          "path": "skills/domains/security/references/expert-detection-response-and-recovery.md",
+          "capability": "Design operator signal, response, and recovery after prevention fails."
+        }
+      ]
+    },
+    {
+      "host-skill": "chart-visualization",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "chart-visualization-g2-spec-guardrails",
+          "path": "skills/domains/chart-visualization/references/g2/g2-chart-system-guide.md",
+          "capability": "Generate G2 v5 chart specs with guardrails, valid transforms, and runnable structure."
+        },
+        {
+          "id": "chart-visualization-g2-chart-selection",
+          "path": "skills/domains/chart-visualization/references/g2/g2-concept-chart-selection.md",
+          "capability": "Choose chart types from data semantics before writing visual spec details."
+        },
+        {
+          "id": "chart-visualization-g2-mark-and-transform-basics",
+          "path": "skills/domains/chart-visualization/references/g2/g2-mark-interval-basic.md",
+          "capability": "Build common comparison and trend visuals with valid mark and transform placement."
+        },
+        {
+          "id": "chart-visualization-g2-interaction-and-tooltips",
+          "path": "skills/domains/chart-visualization/references/g2/g2-interaction-tooltip.md",
+          "capability": "Configure practical chart interactions and tooltip behavior for data exploration."
+        },
+        {
+          "id": "chart-visualization-s2-sheet-model-and-config",
+          "path": "skills/domains/chart-visualization/references/s2/00-overview.md",
+          "capability": "Design S2 sheet structure, terminology, and data flow for multidimensional analysis."
+        },
+        {
+          "id": "chart-visualization-s2-framework-bindings",
+          "path": "skills/domains/chart-visualization/references/s2/02-framework-bindings.md",
+          "capability": "Integrate S2 across React and Vue bindings with correct component and lifecycle usage."
+        },
+        {
+          "id": "chart-visualization-chart-image-api",
+          "path": "skills/domains/chart-visualization/references/render-api/chart-image-api-playbook.md",
+          "capability": "Use chart rendering API contracts to generate chart images from structured payloads."
+        },
+        {
+          "id": "chart-visualization-icon-retrieval-api",
+          "path": "skills/domains/chart-visualization/references/icon/icon-retrieval-api.md",
+          "capability": "Retrieve icon URLs and SVG payloads for visualization and infographic assets."
+        },
+        {
+          "id": "chart-visualization-infographic-dsl",
+          "path": "skills/domains/chart-visualization/references/infographic/infographic-dsl-playbook.md",
+          "capability": "Author AntV infographic DSL with template, data, and theme structures."
+        },
+        {
+          "id": "chart-visualization-narrative-t8",
+          "path": "skills/domains/chart-visualization/references/narrative-t8/t8-narrative-playbook.md",
+          "capability": "Compose T8 narrative text visualizations with entity annotations and report structure."
+        },
+        {
+          "id": "chart-visualization-g2-components-and-layout",
+          "path": "skills/domains/chart-visualization/references/g2/g2-reference-index-round2.md",
+          "capability": "Navigate G2 components, compositions, annotations, and layout choices across the expanded corpus."
+        },
+        {
+          "id": "chart-visualization-g2-data-scales-and-coordinates",
+          "path": "skills/domains/chart-visualization/references/g2/data/g2-data-fetch.md",
+          "capability": "Use G2 data sources, scales, and coordinate systems correctly when chart semantics depend on them."
+        },
+        {
+          "id": "chart-visualization-g2-annotations-and-reference-marks",
+          "path": "skills/domains/chart-visualization/references/g2/g2-annotation-playbook.md",
+          "capability": "Build threshold lines, range bands, text overlays, and image annotations with the correct G2 mark patterns."
+        },
+        {
+          "id": "chart-visualization-g2-shared-tooltip-and-navigation",
+          "path": "skills/domains/chart-visualization/references/g2/g2-tooltip-navigation-playbook.md",
+          "capability": "Configure shared tooltip, chartIndex, slider, scrollbar, and navigation interactions without mixing content and behavior layers."
+        },
+        {
+          "id": "chart-visualization-s2-advanced-table-features",
+          "path": "skills/domains/chart-visualization/references/s2/s2-reference-index-round2.md",
+          "capability": "Navigate pagination, tooltip, totals, frozen headers, and other advanced S2 table features."
+        },
+        {
+          "id": "chart-visualization-s2-customization-and-extensions",
+          "path": "skills/domains/chart-visualization/references/s2/examples/custom-cell-render.md",
+          "capability": "Customize S2 cells, theme, and embedded visuals when default table rendering is insufficient."
+        }
+      ]
+    },
+    {
+      "host-skill": "frontend-design",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "frontend-design-information-architecture-and-interaction",
+          "path": "skills/domains/frontend-design/references/information-architecture-and-interaction.md",
+          "capability": "Define information hierarchy, screen structure, and action priority before visual polish."
+        },
+        {
+          "id": "frontend-design-information-architecture",
+          "path": "skills/domains/frontend-design/references/expert-information-architecture.md",
+          "capability": "Shape navigation, hierarchy, and user decision flow around product goals."
+        },
+        {
+          "id": "frontend-design-interaction-patterns",
+          "path": "skills/domains/frontend-design/references/expert-interaction-patterns.md",
+          "capability": "Choose interaction patterns, feedback loops, and action priority with clarity."
+        },
+        {
+          "id": "frontend-design-hierarchy-and-visual-systems",
+          "path": "skills/domains/frontend-design/references/expert-hierarchy-and-visual-systems.md",
+          "capability": "Control typography, spacing, grouping, and emphasis as a coherent design system."
+        },
+        {
+          "id": "frontend-design-motion-and-state-transitions",
+          "path": "skills/domains/frontend-design/references/expert-motion-and-state-transitions.md",
+          "capability": "Use motion and state transitions to reduce ambiguity and preserve continuity."
+        },
+        {
+          "id": "frontend-design-responsive-and-implementation-constraints",
+          "path": "skills/domains/frontend-design/references/expert-responsive-and-implementation-constraints.md",
+          "capability": "Adapt hierarchy and component behavior to responsive and implementation constraints."
+        }
+      ]
+    },
+    {
+      "host-skill": "mobile",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "mobile-lifecycle-and-state",
+          "path": "skills/domains/mobile/references/app-lifecycle-and-state.md",
+          "capability": "Model app lifecycle, navigation state, and restore behavior on mobile clients."
+        },
+        {
+          "id": "mobile-lifecycle-and-interruption",
+          "path": "skills/domains/mobile/references/expert-lifecycle-and-interruption.md",
+          "capability": "Design interruption-safe flows across backgrounding, resume, and process death."
+        },
+        {
+          "id": "mobile-offline-sync-and-conflict",
+          "path": "skills/domains/mobile/references/expert-offline-sync-and-conflict.md",
+          "capability": "Define offline, queueing, sync, and conflict behavior explicitly."
+        },
+        {
+          "id": "mobile-permission-and-privacy-boundaries",
+          "path": "skills/domains/mobile/references/expert-permission-and-privacy-boundaries.md",
+          "capability": "Shape permission timing, privacy boundaries, and local data retention safely."
+        },
+        {
+          "id": "mobile-battery-and-performance-budget",
+          "path": "skills/domains/mobile/references/expert-battery-and-performance-budget.md",
+          "capability": "Reason about battery, memory, and performance budgets for mobile features."
+        },
+        {
+          "id": "mobile-native-bridge-and-platform-boundaries",
+          "path": "skills/domains/mobile/references/expert-native-bridge-and-platform-boundaries.md",
+          "capability": "Decide where cross-platform abstractions should stop and native ownership begins."
+        },
+        {
+          "id": "mobile-release-and-observability",
+          "path": "skills/domains/mobile/references/expert-mobile-release-and-observability.md",
+          "capability": "Plan mobile rollout, crash visibility, and release-safe observability."
+        }
+      ]
+    },
+    {
+      "host-skill": "claymorphism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "claymorphism-surface-and-shadow-system",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/surface-and-shadow-system.md",
+          "capability": "Define claymorphism surface depth, radius, and layered soft-shadow rules."
+        },
+        {
+          "id": "claymorphism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/component-recipes.md",
+          "capability": "Apply claymorphism consistently to cards, inputs, panels, and controls."
+        },
+        {
+          "id": "claymorphism-accessibility-and-responsive-constraints",
+          "path": "skills/domains/frontend-design/variants/claymorphism/references/accessibility-and-responsive-constraints.md",
+          "capability": "Keep claymorphism legible, touch-friendly, and responsive under real constraints."
+        }
+      ]
+    },
+    {
+      "host-skill": "glassmorphism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "glassmorphism-layering-and-contrast",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/layering-and-contrast.md",
+          "capability": "Use translucent layering and contrast without losing orientation or readability."
+        },
+        {
+          "id": "glassmorphism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/component-recipes.md",
+          "capability": "Turn glassmorphism into repeatable navigation, modal, card, and control patterns."
+        },
+        {
+          "id": "glassmorphism-accessibility-and-responsive-constraints",
+          "path": "skills/domains/frontend-design/variants/glassmorphism/references/accessibility-and-responsive-constraints.md",
+          "capability": "Balance translucency against focus visibility, mobile clarity, and accessibility."
+        }
+      ]
+    },
+    {
+      "host-skill": "liquid-glass",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "liquid-glass-depth-and-motion-language",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/depth-and-motion-language.md",
+          "capability": "Define premium liquid-glass depth and motion language with restraint."
+        },
+        {
+          "id": "liquid-glass-component-recipes",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/component-recipes.md",
+          "capability": "Apply liquid-glass style consistently across cards, chrome, modals, and controls."
+        },
+        {
+          "id": "liquid-glass-fallback-contrast-and-legibility",
+          "path": "skills/domains/frontend-design/variants/liquid-glass/references/fallback-contrast-and-legibility.md",
+          "capability": "Preserve liquid-glass readability and device fit when premium translucency is under strain."
+        }
+      ]
+    },
+    {
+      "host-skill": "neubrutalism",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "neubrutalism-graphic-hierarchy-and-tokens",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/graphic-hierarchy-and-tokens.md",
+          "capability": "Build neubrutalist hierarchy through border weight, color blocks, and graphic tokens."
+        },
+        {
+          "id": "neubrutalism-component-recipes",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/component-recipes.md",
+          "capability": "Turn neubrutalism into coherent card, alert, form, and navigation recipes."
+        },
+        {
+          "id": "neubrutalism-accessibility-and-density-controls",
+          "path": "skills/domains/frontend-design/variants/neubrutalism/references/accessibility-and-density-controls.md",
+          "capability": "Control density, legibility, and responsive behavior without losing graphic intent."
+        }
+      ]
+    },
+    {
+      "host-skill": "ai",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "ai-task-definition",
+          "path": "skills/domains/ai/references/expert-task-definition.md",
+          "capability": "Define the exact AI task before prompt or retrieval iteration."
+        },
+        {
+          "id": "ai-eval-design-and-acceptance",
+          "path": "skills/domains/ai/references/expert-eval-design-and-acceptance.md",
+          "capability": "Design evals and acceptance criteria around real failure classes."
+        },
+        {
+          "id": "ai-retrieval-objective-and-corpus-shaping",
+          "path": "skills/domains/ai/references/expert-retrieval-objective-and-corpus-shaping.md",
+          "capability": "Shape corpus boundaries and evidence intent before ranking."
+        },
+        {
+          "id": "ai-chunking-ranking-and-grounding",
+          "path": "skills/domains/ai/references/expert-chunking-ranking-and-grounding.md",
+          "capability": "Design chunking, ranking, and grounding strategy."
+        },
+        {
+          "id": "ai-tool-authority-and-boundaries",
+          "path": "skills/domains/ai/references/expert-tool-authority-and-boundaries.md",
+          "capability": "Bound tool-granted authority and mutation risk."
+        },
+        {
+          "id": "ai-agent-loop-and-state-control",
+          "path": "skills/domains/ai/references/expert-agent-loop-and-state-control.md",
+          "capability": "Control planner loops, hidden state, retries, and stop conditions."
+        },
+        {
+          "id": "ai-guardrail-policy-and-fallbacks",
+          "path": "skills/domains/ai/references/expert-guardrail-policy-and-fallbacks.md",
+          "capability": "Design guardrail policy, fallback, and abstention behavior."
+        },
+        {
+          "id": "ai-latency-cost-and-reliability",
+          "path": "skills/domains/ai/references/expert-latency-cost-and-reliability.md",
+          "capability": "Balance latency, cost, and reliability in AI systems."
+        }
+      ]
+    },
+    {
+      "host-skill": "data-engineering",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "data-product-framing",
+          "path": "skills/domains/data-engineering/references/expert-data-product-framing.md",
+          "capability": "Name the data product, source truth, and freshness target."
+        },
+        {
+          "id": "data-batch-and-orchestration",
+          "path": "skills/domains/data-engineering/references/expert-batch-and-orchestration.md",
+          "capability": "Design dependable scheduled or backfill-oriented data flows."
+        },
+        {
+          "id": "data-streaming-and-state",
+          "path": "skills/domains/data-engineering/references/expert-streaming-and-state.md",
+          "capability": "Design event-time, state, replay, and late-data behavior."
+        },
+        {
+          "id": "data-contracts-quality-and-reconciliation",
+          "path": "skills/domains/data-engineering/references/expert-contracts-quality-and-reconciliation.md",
+          "capability": "Control trust through contracts, quality gates, and reconciliation."
+        }
+      ]
+    },
+    {
+      "host-skill": "orchestration",
+      "host-kind": "domain",
+      "modules": [
+        {
+          "id": "orchestration-work-decomposition",
+          "path": "skills/domains/orchestration/references/expert-work-decomposition.md",
+          "capability": "Split large efforts by responsibility and stable deliverables."
+        },
+        {
+          "id": "orchestration-ownership-and-write-boundaries",
+          "path": "skills/domains/orchestration/references/expert-ownership-and-write-boundaries.md",
+          "capability": "Assign owners and write surfaces without hidden conflict."
+        },
+        {
+          "id": "orchestration-dependency-and-integration",
+          "path": "skills/domains/orchestration/references/expert-dependency-and-integration.md",
+          "capability": "Sequence work and define integration proof points."
+        },
+        {
+          "id": "orchestration-status-and-handoffs",
+          "path": "skills/domains/orchestration/references/expert-status-and-handoffs.md",
+          "capability": "Make handoffs, completion signals, and status reporting legible."
+        }
+      ]
+    }
+  ]
+}

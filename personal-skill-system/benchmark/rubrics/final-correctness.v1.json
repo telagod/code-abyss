@@ -1,0 +1,51 @@
+﻿{
+  "schema_version": 1,
+  "rubric_id": "final-correctness.v1",
+  "dimension": "final_correctness",
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "evidence_fields": [
+    "deliverable_expected",
+    "route_expected",
+    "validation_expected"
+  ],
+  "anchors": {
+    "0": {
+      "label": "correctness-fail",
+      "criteria": "Output does not solve the requested task or is dangerously wrong."
+    },
+    "1": {
+      "label": "correctness-weak",
+      "criteria": "Output partially addresses task but misses critical deliverable pieces."
+    },
+    "2": {
+      "label": "correctness-partial",
+      "criteria": "Core direction is plausible but important contract elements are missing."
+    },
+    "3": {
+      "label": "correctness-acceptable",
+      "criteria": "Delivers most required artifacts with moderate gaps or assumptions."
+    },
+    "4": {
+      "label": "correctness-strong",
+      "criteria": "Delivers required artifacts correctly with minor residual gaps."
+    },
+    "5": {
+      "label": "correctness-excellent",
+      "criteria": "Fully satisfies deliverable contract with clear boundaries, actionable output, and no critical omissions."
+    }
+  },
+  "decision_checks": [
+    "Are all deliverable_expected items addressed?",
+    "Is output actionable (not vague planning text)?",
+    "Are assumptions and boundaries explicit?"
+  ],
+  "anti_patterns": [
+    "High-level guidance without requested artifact",
+    "Correctness claims unsupported by task contract coverage",
+    "Output optimized for style over task completion"
+  ],
+  "shallow_success_rule": "If final_correctness >= 4 but validation_completeness <= 2, classify verdict as shallow-success (not well-validated-success)."
+}

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Verify Security"
-  short_description: "安全校验关卡"
-  default_prompt: "Read ~/.agents/skills/tools/verify-security/SKILL.md, then run: node ~/.agents/skills/run_skill.js verify-security $ARGUMENTS"

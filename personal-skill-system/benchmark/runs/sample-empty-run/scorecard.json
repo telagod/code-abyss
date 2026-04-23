@@ -1,0 +1,23 @@
+﻿{
+  "schema_version": 1,
+  "run_id": "run-20260422T000000Z-codex-gpt-5.4-scaffold",
+  "task_counts": {
+    "total": 0,
+    "scored": 0,
+    "failed": 0
+  },
+  "averages": {
+    "route_correctness": null,
+    "reasoning_quality": null,
+    "validation_completeness": null,
+    "final_correctness": null,
+    "risk_handling_quality": null
+  },
+  "failure_breakdown": {
+    "route": 0,
+    "depth": 0,
+    "tool": 0,
+    "host": 0,
+    "none": 0
+  }
+}

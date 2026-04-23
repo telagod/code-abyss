@@ -1,0 +1,236 @@
+[
+  {
+    "task_id": "development-001",
+    "domain": "development",
+    "intent_type": "explicit",
+    "prompt": "Use development skill: implement a TypeScript retry helper with bounded concurrency, jittered backoff, and deterministic unit tests.",
+    "route_expected": "development",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Code patch with bounded concurrency and cancellation handling",
+      "Unit tests for retry policy, cap, and edge cases",
+      "Short rationale for chosen defaults"
+    ],
+    "validation_expected": [
+      "Tests fail before and pass after change",
+      "No unbounded retry or hidden sync blocking",
+      "Error propagation contract is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Direct implementation request with explicit development invocation.",
+      "quality": "High score requires working code plus test proof, not pseudo-code."
+    }
+  },
+  {
+    "task_id": "development-002",
+    "domain": "development",
+    "intent_type": "implicit",
+    "prompt": "A Python worker leaks memory after three hours under burst load. Deliver a minimal patch and regression test strategy without broad refactor.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "investigate"
+    ],
+    "deliverable_expected": [
+      "Root-cause hypothesis tied to concrete code path",
+      "Minimal patch preserving existing behavior",
+      "Regression tests or reproducible probe"
+    ],
+    "validation_expected": [
+      "Leak symptom is reproduced or bounded",
+      "Patch scope is narrow and justified",
+      "Shutdown/runtime side effects are checked"
+    ],
+    "scoring_notes": {
+      "route": "Primary output is code fix with verification, not only investigation narrative.",
+      "quality": "High score demonstrates minimal-risk patch discipline."
+    }
+  },
+  {
+    "task_id": "development-003",
+    "domain": "development",
+    "intent_type": "implicit",
+    "prompt": "In a Go consumer, partition rebalance causes duplicate order processing. Implement idempotent handling and prove behavior with tests.",
+    "route_expected": "development",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Idempotency key/storage strategy in code",
+      "Concurrency-safe consumer flow update",
+      "Tests covering rebalance/duplicate scenarios"
+    ],
+    "validation_expected": [
+      "Duplicate processing is prevented in test evidence",
+      "Performance impact is acknowledged",
+      "Failure semantics are explicit"
+    ],
+    "scoring_notes": {
+      "route": "Concrete code implementation dominates.",
+      "quality": "High score covers race and replay edge cases."
+    }
+  },
+  {
+    "task_id": "development-004",
+    "domain": "development",
+    "intent_type": "implicit",
+    "prompt": "Java API pagination is unstable because OFFSET pagination with mutable sort causes missing/duplicate rows. Fix with cursor pagination while preserving backward compatibility.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "architecture"
+    ],
+    "deliverable_expected": [
+      "Code-level pagination implementation change",
+      "Compatibility handling for existing API clients",
+      "Tests for stable ordering and boundary conditions"
+    ],
+    "validation_expected": [
+      "Old and new API behavior is documented",
+      "Ordering invariants are tested",
+      "Regression risk to consumers is identified"
+    ],
+    "scoring_notes": {
+      "route": "Implementation and API contract maintenance are code tasks.",
+      "quality": "High score includes compatibility safety and clear tests."
+    }
+  },
+  {
+    "task_id": "development-005",
+    "domain": "development",
+    "intent_type": "ambiguous",
+    "prompt": "Auth flow regressed after a refactor. Diagnose root cause quickly, patch it, and provide proof the same class of bug will not return.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "investigate",
+      "bugfix"
+    ],
+    "deliverable_expected": [
+      "Root-cause trace to changed code path",
+      "Minimal corrective patch",
+      "Regression prevention evidence (test/assertion/guard)"
+    ],
+    "validation_expected": [
+      "Repro and fix verification are both present",
+      "Fix scope is constrained to defect class",
+      "Residual uncertainty is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous debugging surface, but required final artifact is working fix + proof.",
+      "quality": "High score avoids speculative root cause and demonstrates closure."
+    }
+  },
+  {
+    "task_id": "development-006",
+    "domain": "development",
+    "intent_type": "explicit",
+    "prompt": "Use development skill to refactor a Node module that currently performs side effects during import, and make it test-friendly without behavior drift.",
+    "route_expected": "development",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Refactor isolating side effects behind explicit entry points",
+      "Tests proving behavior parity",
+      "Migration notes for callers if needed"
+    ],
+    "validation_expected": [
+      "No import-time side effects remain",
+      "Contract-level behavior is preserved",
+      "Test surface maps to changed boundaries"
+    ],
+    "scoring_notes": {
+      "route": "Direct code refactor request.",
+      "quality": "High score demonstrates safe refactor discipline and measurable parity."
+    }
+  },
+  {
+    "task_id": "development-007",
+    "domain": "development",
+    "intent_type": "implicit",
+    "prompt": "Rust async service does not terminate cleanly under cancellation and timeout pressure. Implement graceful shutdown semantics and verify no task leaks.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "deliverable_expected": [
+      "Code changes for cancellation-aware shutdown",
+      "Timeout and cleanup policy in runtime path",
+      "Tests or probe script for leak-free shutdown"
+    ],
+    "validation_expected": [
+      "Task/resource leak conditions are checked",
+      "Shutdown ordering is deterministic",
+      "Failure behavior under timeout is explicit"
+    ],
+    "scoring_notes": {
+      "route": "Runtime code semantics, not infrastructure policy, is core work.",
+      "quality": "High score covers cancellation correctness and observability signals."
+    }
+  },
+  {
+    "task_id": "development-008",
+    "domain": "development",
+    "intent_type": "ambiguous",
+    "prompt": "We need a schema migration script and API compatibility adapter for a rolling deployment. Implement the code path and include rollback-safe guards.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "architecture",
+      "devops"
+    ],
+    "deliverable_expected": [
+      "Migration/adapter code changes",
+      "Backward compatibility and guard logic",
+      "Rollback safety checks in code/tests"
+    ],
+    "validation_expected": [
+      "Compatibility window is validated by tests or fixtures",
+      "Rollback assumptions are explicit in code path",
+      "Data integrity constraints are maintained"
+    ],
+    "scoring_notes": {
+      "route": "Cross-cutting context exists, but asked artifact is concrete code implementation.",
+      "quality": "High score includes defensive checks for rolling deployments."
+    }
+  },
+  {
+    "task_id": "development-009",
+    "domain": "development",
+    "intent_type": "implicit",
+    "prompt": "TypeScript service compiles, but runtime crashes on missing config fields. Add boundary validation and typed error handling with targeted tests.",
+    "route_expected": "development",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Runtime config validation at boundary",
+      "Typed error pathway and actionable messages",
+      "Tests for missing/invalid configuration"
+    ],
+    "validation_expected": [
+      "Runtime crash path is eliminated",
+      "Error contracts are explicit and test-covered",
+      "No accidental behavior regressions in healthy config path"
+    ],
+    "scoring_notes": {
+      "route": "Code-level boundary hardening with tests.",
+      "quality": "High score includes both type and runtime protection."
+    }
+  },
+  {
+    "task_id": "development-010",
+    "domain": "development",
+    "intent_type": "ambiguous",
+    "prompt": "Optimize a Python endpoint with p99 spikes: profile first, then implement the smallest high-impact code changes and prove latency improvement.",
+    "route_expected": "development",
+    "route_allowed_alternates": [
+      "architecture"
+    ],
+    "deliverable_expected": [
+      "Profiling evidence identifying bottleneck",
+      "Minimal code optimization patch",
+      "Before/after latency evidence"
+    ],
+    "validation_expected": [
+      "Optimization targets measured bottleneck, not guesswork",
+      "Correctness behavior is preserved",
+      "Performance claim is backed by reproducible measurement"
+    ],
+    "scoring_notes": {
+      "route": "Optimization includes design tradeoffs, but requested output is code change with proof.",
+      "quality": "High score ties optimizations to measured bottlenecks and safety checks."
+    }
+  }
+]

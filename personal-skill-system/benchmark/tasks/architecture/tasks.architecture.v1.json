@@ -1,0 +1,237 @@
+[
+  {
+    "task_id": "architecture-001",
+    "domain": "architecture",
+    "intent_type": "explicit",
+    "prompt": "Use architecture skill: design service boundaries for a multi-tenant billing platform moving from modular monolith to services. Include synchronous APIs, asynchronous events, and ownership boundaries.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Context and container-level architecture with bounded contexts",
+      "API/event contract boundaries with ownership notes",
+      "Phased migration plan with blast-radius controls"
+    ],
+    "validation_expected": [
+      "Failure-mode and dependency risk list",
+      "Rollback posture per migration phase",
+      "Capacity and SLO assumptions made explicit"
+    ],
+    "scoring_notes": {
+      "route": "Prompt explicitly requests architecture-level boundary design.",
+      "quality": "High score requires concrete boundaries, sequencing, and tradeoff defense."
+    }
+  },
+  {
+    "task_id": "architecture-002",
+    "domain": "architecture",
+    "intent_type": "explicit",
+    "prompt": "As architecture lead, write an ADR comparing saga orchestration vs 2PC for cross-service order and inventory consistency under partial failures.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "architecture-decision"
+    ],
+    "deliverable_expected": [
+      "Option matrix with constraints and assumptions",
+      "Decision recommendation and rejection rationale",
+      "Migration and rollback implications"
+    ],
+    "validation_expected": [
+      "Consistency, latency, and operability tradeoffs are quantified",
+      "Failure handling semantics are explicit",
+      "Decision can be audited later"
+    ],
+    "scoring_notes": {
+      "route": "Architecture decision framing is primary intent.",
+      "quality": "High score separates business consistency needs from technical mechanism bias."
+    }
+  },
+  {
+    "task_id": "architecture-003",
+    "domain": "architecture",
+    "intent_type": "implicit",
+    "prompt": "Checkout throughput dropped after traffic doubled. Current design has one shared database and lock contention. Propose a target architecture that restores p95 latency while preserving correctness.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Target architecture for write-path and read-path separation",
+      "Data consistency strategy for critical invariants",
+      "Incremental rollout sequence"
+    ],
+    "validation_expected": [
+      "Performance bottleneck model before design changes",
+      "Correctness risks and mitigation per step",
+      "Operational observability requirements"
+    ],
+    "scoring_notes": {
+      "route": "No explicit skill name, but system-shape redesign dominates.",
+      "quality": "High score avoids generic scaling tips and specifies architecture-level controls."
+    }
+  },
+  {
+    "task_id": "architecture-004",
+    "domain": "architecture",
+    "intent_type": "implicit",
+    "prompt": "Design a multi-region API architecture with p95 < 120ms and strict data residency (EU/US) while keeping a unified product experience.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [],
+    "deliverable_expected": [
+      "Region and tenancy topology",
+      "Control-plane/data-plane split",
+      "Traffic steering and failover strategy"
+    ],
+    "validation_expected": [
+      "Residency compliance boundaries are explicit",
+      "RPO/RTO and failover trigger rules are named",
+      "Cross-region consistency assumptions are documented"
+    ],
+    "scoring_notes": {
+      "route": "Constraint-heavy system design is architecture-first.",
+      "quality": "High score balances residency, latency, and resilience without hand-waving."
+    }
+  },
+  {
+    "task_id": "architecture-005",
+    "domain": "architecture",
+    "intent_type": "ambiguous",
+    "prompt": "Frontend teams complain about slow product pages, but root causes involve API fan-out, cache invalidation, and search index lag. Propose the cross-layer redesign.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "frontend-design"
+    ],
+    "deliverable_expected": [
+      "Cross-layer dependency map (edge, API, data)",
+      "Target architecture for cache, index, and request fan-out",
+      "Execution plan with ownership boundaries"
+    ],
+    "validation_expected": [
+      "Route rationale explains why architecture beats frontend-only treatment",
+      "Failure and staleness modes are addressed",
+      "Post-change measurement plan is included"
+    ],
+    "scoring_notes": {
+      "route": "Ambiguous UI symptom but dominant cause is backend/system architecture.",
+      "quality": "High score includes concrete invalidation and consistency strategy."
+    }
+  },
+  {
+    "task_id": "architecture-006",
+    "domain": "architecture",
+    "intent_type": "ambiguous",
+    "prompt": "Plan a token-format change that touches API gateway, mobile apps, and downstream services. We need canary rollout, compatibility windows, and rollback safety.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "devops"
+    ],
+    "deliverable_expected": [
+      "Compatibility architecture and versioning policy",
+      "Rollout topology (gateway, clients, services)",
+      "Rollback and kill-switch design"
+    ],
+    "validation_expected": [
+      "Backward-compatibility window is explicit",
+      "Rollback prerequisites and irreversible steps are named",
+      "Cross-client contract testing strategy exists"
+    ],
+    "scoring_notes": {
+      "route": "Release mechanics exist, but primary challenge is architecture compatibility design.",
+      "quality": "High score ties rollout stages to dependency graph and blast radius."
+    }
+  },
+  {
+    "task_id": "architecture-007",
+    "domain": "architecture",
+    "intent_type": "implicit",
+    "prompt": "Design the trust-boundary architecture for a B2B platform where customer-managed keys, workload identity, and partner webhooks all coexist.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "security"
+    ],
+    "deliverable_expected": [
+      "Trust-zone and identity boundary map",
+      "Secret and key-management architecture",
+      "Webhook ingress and containment model"
+    ],
+    "validation_expected": [
+      "Compromise scenarios and containment stance are included",
+      "Control-plane isolation assumptions are explicit",
+      "Auditability and rotation paths are stated"
+    ],
+    "scoring_notes": {
+      "route": "Architecture-level security shape, not only vulnerability scanning.",
+      "quality": "High score demonstrates layered controls and operational recovery paths."
+    }
+  },
+  {
+    "task_id": "architecture-008",
+    "domain": "architecture",
+    "intent_type": "explicit",
+    "prompt": "Use architecture skill to score migration options from managed queue vendor A to vendor B without downtime. Include dual-write risks and decommission criteria.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "architecture-decision"
+    ],
+    "deliverable_expected": [
+      "Option scoring matrix with weighted criteria",
+      "Migration architecture for dual-run period",
+      "Cutover and decommission criteria"
+    ],
+    "validation_expected": [
+      "Message ordering and idempotency risks are handled",
+      "Rollback trigger and data reconciliation plan are explicit",
+      "Decision rationale is reproducible"
+    ],
+    "scoring_notes": {
+      "route": "Direct architecture-decision style request.",
+      "quality": "High score avoids vendor-marketing bias and quantifies migration risk."
+    }
+  },
+  {
+    "task_id": "architecture-009",
+    "domain": "architecture",
+    "intent_type": "ambiguous",
+    "prompt": "Incidents show repeated timeout storms. Team asks for retry code fixes, but symptoms suggest topology and dependency coupling issues. Define the durable fix path.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "development",
+      "investigate"
+    ],
+    "deliverable_expected": [
+      "Dependency and saturation topology diagnosis",
+      "Architecture-level resilience controls (bulkhead, queueing, isolation)",
+      "Implementation ordering for code and platform changes"
+    ],
+    "validation_expected": [
+      "Root-cause framing distinguishes local code vs system design causes",
+      "Reliability SLO and alerting assumptions are explicit",
+      "Residual risk after rollout is stated"
+    ],
+    "scoring_notes": {
+      "route": "Prompt mentions code fixes, but durable solution requires architecture intervention.",
+      "quality": "High score connects timeout storms to coupling and capacity behavior."
+    }
+  },
+  {
+    "task_id": "architecture-010",
+    "domain": "architecture",
+    "intent_type": "implicit",
+    "prompt": "Create an exit architecture from a proprietary workflow engine so core business processes can run on portable components across cloud providers.",
+    "route_expected": "architecture",
+    "route_allowed_alternates": [
+      "infrastructure"
+    ],
+    "deliverable_expected": [
+      "Capability decomposition and portability boundaries",
+      "Target architecture with vendor-neutral interfaces",
+      "Transition plan with coexistence and rollback"
+    ],
+    "validation_expected": [
+      "Lock-in vectors are enumerated",
+      "Data/state migration risks are modeled",
+      "Operational ownership after migration is defined"
+    ],
+    "scoring_notes": {
+      "route": "Portability and system decomposition are architecture-first tasks.",
+      "quality": "High score includes coexistence strategy, not only target-state diagram."
+    }
+  }
+]

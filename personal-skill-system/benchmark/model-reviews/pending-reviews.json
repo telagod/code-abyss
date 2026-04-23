@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "pending_reviews": [
+    {
+      "review_id": "gpt-5.4-independent-top-tier-review",
+      "model": "gpt-5.4",
+      "status": "pending",
+      "purpose": "Adversarial review of top-tier claims, route boundaries, benchmark validity, and domain depth."
+    },
+    {
+      "review_id": "claude-skill-usability-review",
+      "model": "claude",
+      "status": "pending",
+      "purpose": "Skill usability, workflow clarity, and docs consistency review."
+    },
+    {
+      "review_id": "gemini-host-portability-review",
+      "model": "gemini",
+      "status": "pending",
+      "purpose": "Host/runtime portability and command behavior review."
+    }
+  ]
+}
+

@@ -1,0 +1,22 @@
+[
+  {"query": "我们公司要做个电商平台，日活预计10万，想从0开始设计整个系统架构，要求能支撑未来3年业务增长", "should_trigger": true},
+  {"query": "老板让我设计一个支持高并发的订单系统，每天可能有50万订单量，需要考虑微服务拆分", "should_trigger": true},
+  {"query": "我们要做一个实时聊天应用，用户量可能快速增长，帮我设计一下架构，要考虑扩展性", "should_trigger": true},
+  {"query": "技术团队只有5个人，想做个内部管理系统，需要什么架构设计吗？", "should_trigger": false},
+  {"query": "我的Python项目结构该怎么组织？有没有好的代码组织方式推荐？", "should_trigger": false},
+  {"query": "这段Python代码怎么写更Pythonic？能帮我优化一下吗？", "should_trigger": false},
+  {"query": "帮我review一下这个PR的代码质量和Git提交规范", "should_trigger": false},
+  {"query": "我们的系统查询很慢，帮我优化一下性能，从哪入手？", "should_trigger": false},
+  {"query": "当前用的是MySQL单库，数据量到500G了，想咨询一下数据库演进方案", "should_trigger": true},
+  {"query": "想设计一个数据中台架构，支持BI分析、实时报表、数据治理，应该怎么规划？", "should_trigger": true},
+  {"query": "帮我看看这个API接口设计是否合理，想听听架构师的意见", "should_trigger": true},
+  {"query": "准备拆微服务了，原来单体应用的订单模块应该怎么拆分？", "should_trigger": true},
+  {"query": "我们的Redis快打满了，想扩容但不知道选集群还是其他方案", "should_trigger": false},
+  {"query": "Kafka消息积压严重，消费者处理不过来，怎么优化？", "should_trigger": false},
+  {"query": "代码里有个循环嵌套5层，帮我重构一下提升性能", "should_trigger": false},
+  {"query": "这个数据表查询很慢，帮我分析一下慢的原因和优化思路", "should_trigger": false},
+  {"query": "我们创业项目刚开始，只有3个人，应该选什么技术栈和架构？", "should_trigger": true},
+  {"query": "设计一个支持千万级用户的社交媒体后端架构，需要考虑哪些关键点？", "should_trigger": true},
+  {"query": "公司要做数字化转型，需要重新设计技术架构，有哪些最佳实践？", "should_trigger": true},
+  {"query": "帮我评估一下这个架构方案是否合理，有什么风险点需要注意？", "should_trigger": true}
+]

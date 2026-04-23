@@ -1,0 +1,80 @@
+﻿{
+  "schema_version": 1,
+  "policy_id": "benchmark-scoring-policy.v1",
+  "dimensions": [
+    "route_correctness",
+    "reasoning_quality",
+    "validation_completeness",
+    "final_correctness"
+  ],
+  "weights": {
+    "route_correctness": 0.25,
+    "reasoning_quality": 0.25,
+    "validation_completeness": 0.25,
+    "final_correctness": 0.25
+  },
+  "scale": {
+    "min": 0,
+    "max": 5
+  },
+  "weighted_score_formula": "sum(dimension_score * weight)",
+  "gates": [
+    {
+      "name": "route_gate",
+      "when": "route_correctness <= 2",
+      "verdict": "route-fail"
+    },
+    {
+      "name": "shallow_success_gate",
+      "when": "final_correctness >= 4 and validation_completeness <= 2",
+      "verdict": "shallow-success"
+    },
+    {
+      "name": "well_validated_success_gate",
+      "when": "route_correctness >= 4 and final_correctness >= 4 and validation_completeness >= 4 and reasoning_quality >= 3",
+      "verdict": "well-validated-success"
+    }
+  ],
+  "default_verdict_bands": [
+    {
+      "name": "insufficient",
+      "range": [0, 2.49]
+    },
+    {
+      "name": "partial",
+      "range": [2.5, 3.49]
+    },
+    {
+      "name": "strong-but-needs-proof",
+      "range": [3.5, 4.19]
+    },
+    {
+      "name": "strong",
+      "range": [4.2, 5.0]
+    }
+  ],
+  "failure_classification": {
+    "source": "failure-taxonomy.v1.json",
+    "required": true,
+    "single_label_only": true
+  },
+  "anti_verbosity_rules": [
+    "No score increase for longer text without new evidence.",
+    "Do not infer validation from confidence language.",
+    "Prefer concrete proof and contract coverage over narrative polish."
+  ],
+  "result_record_template": {
+    "task_id": "<task id>",
+    "route_expected": "<expected route>",
+    "scores": {
+      "route_correctness": 0,
+      "reasoning_quality": 0,
+      "validation_completeness": 0,
+      "final_correctness": 0
+    },
+    "weighted_score": 0,
+    "verdict": "<band or gated verdict>",
+    "failure_type": "route|depth|tool|host|none",
+    "notes": "<short evidence-backed rationale>"
+  }
+}

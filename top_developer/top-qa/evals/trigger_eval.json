@@ -1,0 +1,22 @@
+[
+  {"query": "帮我review一下这个PR，检测代码质量问题、安全漏洞和Git规范", "should_trigger": true},
+  {"query": "这段代码有SQL注入风险吗？帮我检查一下并给出修复方案", "should_trigger": true},
+  {"query": "我们团队刚起步，想建立代码审查流程和规范，应该怎么做？", "should_trigger": true},
+  {"query": "帮我看看这个提交信息是否符合Conventional Commits规范", "should_trigger": true},
+  {"query": "这个Python项目的测试覆盖率有点低，帮我评估一下测试质量", "should_trigger": true},
+  {"query": "我们的CI/CD总是失败，帮我分析一下原因和优化方案", "should_trigger": true},
+  {"query": "这段代码的性能问题在哪里？需要怎么优化？", "should_trigger": false},
+  {"query": "帮我实现一个登录功能，需要用到哪些技术栈？", "should_trigger": false},
+  {"query": "这个接口的并发问题怎么解决？需要加锁吗？", "should_trigger": false},
+  {"query": "帮我review这个代码，找出潜在的竞态条件和线程安全问题", "should_trigger": true},
+  {"query": "我们的代码库有大量重复代码，帮我制定一个重构计划", "should_trigger": true},
+  {"query": "这段代码的单元测试应该怎么写？需要覆盖哪些场景？", "should_trigger": true},
+  {"query": "帮我检查一下这个函数是否有内存泄漏的风险", "should_trigger": true},
+  {"query": "我们的系统最近总是报500错误，帮我分析一下可能的原因", "should_trigger": false},
+  {"query": "这个Git分支策略是否合理？merge和rebase应该怎么选择？", "should_trigger": true},
+  {"query": "帮我评估一下这个API的设计是否合理，符合REST规范吗？", "should_trigger": true},
+  {"query": "这段代码的风格不太一致，帮我统一一下代码规范", "should_trigger": true},
+  {"query": "我们的系统要上线了，帮我制定一个发布检查清单", "should_trigger": true},
+  {"query": "这个缓存方案是否合理？需要考虑哪些问题？", "should_trigger": false},
+  {"query": "帮我review一下这个异常处理逻辑，是否有遗漏的错误情况？", "should_trigger": true}
+]

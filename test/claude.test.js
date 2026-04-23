@@ -40,7 +40,7 @@ describe('claude adapter', () => {
     expect(getClaudeCoreFiles()).toEqual([
       { src: 'config/CLAUDE.md', dest: 'CLAUDE.md', root: 'claude' },
       { src: 'output-styles', dest: 'output-styles', root: 'claude' },
-      { src: 'skills', dest: 'skills', root: 'claude' },
+      { src: 'personal-skill-system/skills', dest: 'skills', root: 'claude' },
       { src: 'bin/lib', dest: 'bin/lib', root: 'claude' },
     ]);
   });

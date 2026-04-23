@@ -17,6 +17,9 @@ function inferSkillKind(relPath) {
   const [head] = normalizedRelPath.split('/');
   if (head === 'tools') return 'tool';
   if (head === 'domains') return 'domain';
+  if (head === 'routers') return 'router';
+  if (head === 'workflows') return 'workflow';
+  if (head === 'guards') return 'guard';
   if (head === 'orchestration') return 'orchestration';
   return 'root';
 }
@@ -90,8 +93,13 @@ function normalizeSkillRecord(skillsDir, skillDir, meta) {
   }
 
   const userInvocable = normalizeBoolean(normalizedMeta['user-invocable']);
-  const allowedTools = normalizeAllowedTools(normalizedMeta['allowed-tools'], relPath);
-  const argumentHint = normalizedMeta['argument-hint'] || '';
+  const allowedTools = normalizeAllowedTools(
+    Object.prototype.hasOwnProperty.call(normalizedMeta, 'allowed-tools')
+      ? normalizedMeta['allowed-tools']
+      : normalizedMeta.permissions,
+    relPath
+  );
+  const argumentHint = normalizedMeta['argument-hint'] || normalizedMeta.argumentHint || '';
   const category = inferSkillKind(relPath);
   const runtimeType = scriptEntries.length === 1 ? 'scripted' : 'knowledge';
   const scriptPath = scriptEntries[0] || null;
