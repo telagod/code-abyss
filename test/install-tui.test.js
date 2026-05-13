@@ -8,12 +8,17 @@ const { spawn } = require('child_process');
 const projectRoot = path.join(__dirname, '..');
 const gstackFixture = path.join(__dirname, 'fixtures', 'gstack-codex-source');
 
-function runInteractiveInstall({ tmpHome, inputSteps, timeout = 8000 }) {
+function runInteractiveInstall({ tmpHome, steps, timeout = 30000, settleMs = 80 }) {
   return new Promise((resolve, reject) => {
+    const cleanEnv = { ...process.env };
+    delete cleanEnv.ANTHROPIC_API_KEY;
+    delete cleanEnv.ANTHROPIC_AUTH_TOKEN;
+    delete cleanEnv.ANTHROPIC_BASE_URL;
+
     const child = spawn(process.execPath, [path.join(projectRoot, 'bin', 'install.js')], {
       cwd: projectRoot,
       env: {
-        ...process.env,
+        ...cleanEnv,
         HOME: tmpHome,
         USERPROFILE: tmpHome,
         CODE_ABYSS_GSTACK_SOURCE: gstackFixture,
@@ -23,25 +28,49 @@ function runInteractiveInstall({ tmpHome, inputSteps, timeout = 8000 }) {
     let stdout = '';
     let stderr = '';
     let settled = false;
+    let stepIndex = 0;
+    let waitMarker = steps[0]?.waitFor || null;
 
-    child.stdout.on('data', chunk => { stdout += chunk.toString('utf8'); });
+    const fail = (message) => {
+      if (settled) return;
+      settled = true;
+      try { child.kill('SIGTERM'); } catch (_) { /* noop */ }
+      reject(new Error(`${message}\nstdout:\n${stdout}\nstderr:\n${stderr}`));
+    };
+
+    const advance = () => {
+      while (stepIndex < steps.length) {
+        const step = steps[stepIndex];
+        if (step.waitFor && !stdout.includes(step.waitFor)) {
+          waitMarker = step.waitFor;
+          return;
+        }
+        stepIndex += 1;
+        const pause = step.pauseBefore ?? settleMs;
+        const doWrite = () => { if (!settled) child.stdin.write(step.input); };
+        if (pause > 0) setTimeout(doWrite, pause); else doWrite();
+      }
+      waitMarker = null;
+    };
+
+    child.stdout.on('data', chunk => {
+      stdout += chunk.toString('utf8');
+      if (stepIndex < steps.length) advance();
+    });
     child.stderr.on('data', chunk => { stderr += chunk.toString('utf8'); });
 
-    const timers = inputSteps.map(({ delay, input }) => setTimeout(() => {
-      child.stdin.write(input);
-    }, delay));
     const killTimer = setTimeout(() => {
-      settled = true;
-      child.kill('SIGTERM');
-      reject(new Error(`interactive install timed out\nstdout:\n${stdout}\nstderr:\n${stderr}`));
+      const pending = waitMarker ? ` (waiting for marker: ${JSON.stringify(waitMarker)})` : '';
+      fail(`interactive install timed out at step ${stepIndex}/${steps.length}${pending}`);
     }, timeout);
 
     child.on('error', reject);
     child.on('close', (status) => {
-      timers.forEach(clearTimeout);
       clearTimeout(killTimer);
       if (!settled) resolve({ status, stdout, stderr });
     });
+
+    advance();
   });
 }
 
@@ -59,15 +88,16 @@ describe('interactive install TUI', () => {
   test('persona/style 使用 Tab 横向切换且只配置一次', async () => {
     const result = await runInteractiveInstall({
       tmpHome,
-      inputSteps: [
-        { delay: 300, input: ' ' },
-        { delay: 450, input: '\r' },
-        { delay: 650, input: '\r' },
-        { delay: 850, input: '\t' },
-        { delay: 1000, input: '\r' },
-        { delay: 1200, input: '\t' },
-        { delay: 1350, input: '\r' },
-        { delay: 1800, input: '\r' },
+      steps: [
+        { waitFor: '选择目标（可多选）', input: ' ' },
+        { input: '\r' },
+        { waitFor: '选择动作', input: '\r' },
+        { waitFor: '选择人格', input: '\t' },
+        { input: '\r' },
+        { waitFor: '选择输出风格', input: '\t' },
+        { input: '\r' },
+        { waitFor: '配置自定义 provider', input: 'n\r' },
+        { waitFor: '选择要安装的配置', input: '\r' },
       ],
     });
     const claudeDir = path.join(tmpHome, '.claude');
@@ -78,5 +108,5 @@ describe('interactive install TUI', () => {
     expect(result.stdout).toContain('tab/→ next');
     expect(claudeMd).toContain('文言小生');
     expect(settings.outputStyle).toBe('scholar-classic');
-  });
+  }, 45000);
 });
