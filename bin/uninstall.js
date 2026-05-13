@@ -65,10 +65,10 @@ console.log(`\n🗑️  卸载 Code Abyss v${manifest.version}...\n`);
   if (fs.existsSync(p)) {
     fs.rmSync(p, { recursive: true, force: true });
     console.log(`🗑️  删除: ${entryLabel(entry)}`);
-    if (typeof entry !== 'string' && entry.root !== manifest.target) {
-      const rootDir = path.join(os.homedir(), MANAGED_ROOTS[entry.root] || '');
-      pruneEmptyParents(path.dirname(p), rootDir);
-    }
+    const rootDir = typeof entry !== 'string'
+      ? path.join(os.homedir(), MANAGED_ROOTS[entry.root] || '')
+      : targetDir;
+    pruneEmptyParents(path.dirname(p), rootDir);
   }
 });
 

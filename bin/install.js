@@ -420,15 +420,13 @@ function runUninstall(tgt) {
     if (fs.existsSync(targetPath)) {
       rmSafe(targetPath);
       console.log(`  ${c.red('✘')} ${manifestLabel(entry, tgt)}`);
-      if (normalized.root !== tgt) {
-        let parent = path.dirname(targetPath);
-        while (parent !== installRoot && parent !== path.dirname(parent)) {
-          try {
-            if (fs.readdirSync(parent).length > 0) break;
-            fs.rmdirSync(parent);
-          } catch { break; }
-          parent = path.dirname(parent);
-        }
+      let parent = path.dirname(targetPath);
+      while (parent !== installRoot && parent !== path.dirname(parent)) {
+        try {
+          if (fs.readdirSync(parent).length > 0) break;
+          fs.rmdirSync(parent);
+        } catch { break; }
+        parent = path.dirname(parent);
       }
     }
   });
@@ -860,17 +858,46 @@ function installCore(tgt, selectedStyle, selectedPersona, packPlan) {
       warn(`跳过: ${src}`); return;
     }
 
-    if (fs.existsSync(destPath)) {
-      const backupPath = path.join(backupDir, rootName, dest);
-      rmSafe(backupPath);
-      copyRecursive(destPath, backupPath);
-      pushManifestEntry(manifest.backups, rootName, dest);
-      info(`备份: ${c.d(rootName === tgt ? dest : `${rootName}/${dest}`)}`);
+    let srcStat;
+    try { srcStat = fs.statSync(srcPath); } catch (e) {
+      warn(`无法读取源: ${srcPath}`); return;
     }
-    ok(rootName === tgt ? dest : `${rootName}/${dest}`);
-    rmSafe(destPath);
-    copyRecursive(srcPath, destPath);
-    pushManifestEntry(manifest.installed, rootName, dest);
+
+    if (srcStat.isDirectory()) {
+      let children;
+      try { children = fs.readdirSync(srcPath); } catch (e) {
+        warn(`无法读取目录: ${srcPath}`); return;
+      }
+      children.filter(child => !shouldSkip(child)).forEach(child => {
+        const childSrc = path.join(srcPath, child);
+        const childDest = path.join(destPath, child);
+        const childRelPath = path.posix.join(dest, child);
+
+        if (fs.existsSync(childDest)) {
+          const backupPath = path.join(backupDir, rootName, childRelPath);
+          rmSafe(backupPath);
+          copyRecursive(childDest, backupPath);
+          pushManifestEntry(manifest.backups, rootName, childRelPath);
+          info(`备份: ${c.d(rootName === tgt ? childRelPath : `${rootName}/${childRelPath}`)}`);
+        }
+        ok(rootName === tgt ? childRelPath : `${rootName}/${childRelPath}`);
+        rmSafe(childDest);
+        copyRecursive(childSrc, childDest);
+        pushManifestEntry(manifest.installed, rootName, childRelPath);
+      });
+    } else {
+      if (fs.existsSync(destPath)) {
+        const backupPath = path.join(backupDir, rootName, dest);
+        rmSafe(backupPath);
+        copyRecursive(destPath, backupPath);
+        pushManifestEntry(manifest.backups, rootName, dest);
+        info(`备份: ${c.d(rootName === tgt ? dest : `${rootName}/${dest}`)}`);
+      }
+      ok(rootName === tgt ? dest : `${rootName}/${dest}`);
+      rmSafe(destPath);
+      copyRecursive(srcPath, destPath);
+      pushManifestEntry(manifest.installed, rootName, dest);
+    }
   });
 
   pushPackReport(manifest, {
