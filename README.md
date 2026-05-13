@@ -97,6 +97,7 @@ Core skills are now routed automatically by context and are **not exposed as sla
 | Domain | Coverage |
 |--------|----------|
 | Security | Penetration testing, code audit, defense engineering, threat intelligence, vulnerability research |
+| Coff0xc Security Extensions | AppSec, cloud/DevSecOps, detection/IR, vulnerability lifecycle, identity/Zero Trust, authorized assessment, binary/mobile/IoT, blockchain, compliance, purple team, network/protocol security |
 | Architecture | API design, cloud-native, security architecture, messaging, caching |
 | Development | Python, TypeScript, Go, Rust, Java, C++, Shell |
 | DevOps | Git workflow, testing, database, observability, performance, cost optimization |

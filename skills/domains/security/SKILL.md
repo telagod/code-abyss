@@ -1,6 +1,6 @@
 ---
 name: security
-description: 安全工程参考索引。涵盖防御加固、安全测试、代码审计、威胁检测、应急响应、漏洞修复。用于授权安全评估和防御体系建设。当魔尊提到安全、渗透、攻防、红队、蓝队、漏洞时路由到此。
+description: 安全工程参考索引。涵盖防御加固、安全测试、代码审计、威胁检测、应急响应、漏洞修复、云原生安全、供应链安全、身份零信任、区块链安全、逆向/移动/IoT、协议安全、合规与威胁建模。用于授权安全评估和防御体系建设。当魔尊提到安全、渗透、攻防、红队、蓝队、漏洞、CVE、云安全、K8s、CI/CD、SIEM、YARA、Sigma、IAM、AD、区块链、智能合约、逆向、固件、工控、协议安全时路由到此。
 license: MIT
 user-invocable: false
 disable-model-invocation: false
@@ -22,6 +22,18 @@ disable-model-invocation: false
 | 蓝队防御 | [blue-team](blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
 | 威胁情报 | [threat-intel](threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
 | 漏洞研究 | [vuln-research](vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
+| Coff0xc 安全总索引 | [coff0xc-security-index](coff0xc-security-index.md) | 12 个授权防御安全能力域的路由 |
+| 应用安全 | [coff0xc-secure-code-appsec](coff0xc-secure-code-appsec.md) | Web/API/GraphQL/OAuth/浏览器/LLM AppSec |
+| 云与交付链安全 | [coff0xc-cloud-devsecops](coff0xc-cloud-devsecops.md) | 云、容器、K8s、CI/CD、供应链、密钥 |
+| 检测与响应 | [coff0xc-detection-response](coff0xc-detection-response.md) | SOC、SIEM、Sigma/YARA、IR、取证、恶意样本分诊 |
+| 漏洞生命周期 | [coff0xc-vulnerability-lifecycle](coff0xc-vulnerability-lifecycle.md) | CVE、补丁、优先级、授权验证、修复跟踪 |
+| 身份与零信任 | [coff0xc-identity-zero-trust](coff0xc-identity-zero-trust.md) | IAM、SSO、MFA、AD/Kerberos、PAM、权限收敛 |
+| 授权评估 | [coff0xc-authorized-assessment](coff0xc-authorized-assessment.md) | ROE、攻击面、红队防御化、控制验证 |
+| 逆向/移动/IoT | [coff0xc-binary-mobile-iot](coff0xc-binary-mobile-iot.md) | 二进制、移动、固件、硬件接口、ICS/OT、密码学 |
+| 区块链安全 | [coff0xc-blockchain-security](coff0xc-blockchain-security.md) | 智能合约、DeFi、Web3、多链审计 |
+| 合规与架构 | [coff0xc-compliance-architecture](coff0xc-compliance-architecture.md) | 威胁建模、控制项、DLP、隐私、合规证据 |
+| 紫队与欺骗防御 | [coff0xc-purple-deception](coff0xc-purple-deception.md) | ATT&CK、检测覆盖、演练闭环、蜜罐/欺骗 |
+| 网络与协议安全 | [coff0xc-network-protocol-security](coff0xc-network-protocol-security.md) | TLS/DNS/QUIC/HTTP、pcap、无线/BLE/RF、形式化 |
 
 ## 执行链
 
@@ -38,6 +50,8 @@ disable-model-invocation: false
 - 凭证、密钥、Token 一律使用占位符（`<REDACTED>`、`<TARGET-TOKEN>`）
 - 不生成针对特定未授权目标的定制攻击代码
 - 优先输出防御视角：每个攻击技术附带检测/缓解建议
+- Coff0xc 扩展文档默认只处理自有资产、明确授权资产、实验室、CTF、靶场、日志、配置、样本、代码审计、防御建设和报告写作。
+- 涉及云端写入、生产环境、凭据、远程 push/PR、CI/CD 权限或基础设施变更前，必须先确认范围和授权。
 
 ## 优先级
 
