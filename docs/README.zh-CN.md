@@ -228,4 +228,6 @@ npx code-abyss --uninstall openclaw
 
 ## 许可证
 
-[MIT](LICENSE)
+Code Abyss 使用 [MIT](../LICENSE) 许可证。
+
+Coff0xc 安全扩展包含改写自 `coffee-skill` 的 Apache-2.0 内容；见 [NOTICE.coff0xc-security.md](../NOTICE.coff0xc-security.md) 和 [THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt](../THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt)。

@@ -239,4 +239,6 @@ Restores backed-up configuration and removes all installed files.
 
 ## License
 
-[MIT](LICENSE)
+Code Abyss is licensed under [MIT](LICENSE).
+
+The Coff0xc Security Extensions include adapted Apache-2.0 material from `coffee-skill`; see [NOTICE.coff0xc-security.md](NOTICE.coff0xc-security.md) and [THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt](THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt).
