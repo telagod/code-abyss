@@ -95,6 +95,7 @@ npx code-abyss --list-styles    # 列出所有可用风格
 | 领域 | 覆盖范围 |
 |------|----------|
 | 安全 | 渗透测试、代码审计、防御工程、威胁情报、漏洞研究 |
+| Coff0xc 安全扩展 | AppSec、云/DevSecOps、检测响应、漏洞生命周期、身份零信任、授权评估、逆向/移动/IoT、区块链、合规架构、紫队、网络协议安全 |
 | 架构 | API 设计、云原生、安全架构、消息队列、缓存策略 |
 | 开发 | Python、TypeScript、Go、Rust、Java、C++、Shell |
 | DevOps | Git 工作流、测试、数据库、可观测性、性能、成本优化 |
@@ -227,4 +228,6 @@ npx code-abyss --uninstall openclaw
 
 ## 许可证
 
-[MIT](LICENSE)
+Code Abyss 使用 [MIT](../LICENSE) 许可证。
+
+Coff0xc 安全扩展包含改写自 `coffee-skill` 的 Apache-2.0 内容；见 [NOTICE.coff0xc-security.md](../NOTICE.coff0xc-security.md) 和 [THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt](../THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt)。
