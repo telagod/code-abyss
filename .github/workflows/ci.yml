@@ -162,3 +162,45 @@ jobs:
           test ! -e "$abyss_home/.gemini/GEMINI.md"
           test ! -e "$abyss_home/.gemini/skills"
           test ! -e "$abyss_home/.gemini/.sage-backup"
+
+  smoke-openclaw:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Pack npm tarball
+        shell: bash
+        run: npm pack
+      - name: Smoke install/uninstall OpenClaw target
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg_tgz="$(ls code-abyss-*.tgz | head -n 1)"
+          abyss_home="$RUNNER_TEMP/abyss-home"
+          rm -rf "$abyss_home"
+          mkdir -p "$abyss_home"
+
+          export HOME="$abyss_home"
+          export USERPROFILE="$abyss_home"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --target openclaw -y
+
+          test -d "$abyss_home/.openclaw/skills"
+          test -f "$abyss_home/.openclaw/workspace/AGENTS.md"
+          test -f "$abyss_home/.openclaw/workspace/SOUL.md"
+          test -f "$abyss_home/.openclaw/.sage-uninstall.js"
+          test ! -e "$abyss_home/.openclaw/commands"
+          test ! -e "$abyss_home/.openclaw/skills/gstack"
+
+          npx --yes --package "./$pkg_tgz" code-abyss --uninstall openclaw
+
+          test ! -e "$abyss_home/.openclaw/skills"
+          test ! -e "$abyss_home/.openclaw/.sage-backup"
