@@ -25,7 +25,7 @@
       { "id": "17", "type": "session-clock", "color": "brightBlack" }
     ]
   ],
-  "flexMode": "full-minus-40",
+  "flexMode": "full",
   "compactThreshold": 60,
   "colorLevel": 1,
   "inheritSeparatorColors": false,
