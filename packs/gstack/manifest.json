@@ -142,6 +142,42 @@
           ]
         }
       }
+    },
+    "openclaw": {
+      "autoInstall": true,
+      "sourceOverrideEnv": "CODE_ABYSS_GSTACK_SOURCE",
+      "runtimeDirs": [
+        "bin",
+        "browse",
+        "review",
+        "qa",
+        "design"
+      ],
+      "runtimeFiles": [
+        "ETHOS.md",
+        "VERSION",
+        "SKILL.md"
+      ],
+      "pathRewrites": [
+        [
+          "~/.claude/skills/gstack",
+          "~/.openclaw/skills/gstack"
+        ],
+        [
+          ".claude/skills/gstack",
+          ".openclaw/skills/gstack"
+        ],
+        [
+          ".claude/skills",
+          ".openclaw/skills"
+        ]
+      ],
+      "uninstall": {
+        "runtimeRoot": {
+          "root": "openclaw",
+          "path": "skills/gstack"
+        }
+      }
     }
   }
 }

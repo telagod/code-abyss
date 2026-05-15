@@ -18,6 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { installGstackPack } = require('../gstack/installer');
+
 function createInstallCore(deps) {
   const {
     HOME, PKG_ROOT, VERSION,
@@ -283,6 +285,29 @@ function createInstallCore(deps) {
 
       ok(`AGENTS.md ${c.d(`(OpenClaw workspace: ${workspaceDir})`)}`);
       ok(`SOUL.md ${c.d(`(动态生成: ${selectedPersona.slug} + ${selectedStyle.slug})`)}`);
+
+      // gstack 可选 pack（与 claude/codex/gemini 三家保持一致的调度语义）
+      if (packPlan.selected.includes('gstack')) {
+        const sourceMode = (packPlan.sources && packPlan.sources.gstack) || 'pinned';
+        const result = installGstackPack('openclaw', {
+          HOME, backupDir, manifest, info, ok, warn,
+          sourceMode, projectRoot: packPlan.root, fallback: true,
+        });
+        pushPackReport(manifest, {
+          pack: 'gstack', host: 'openclaw',
+          status: result.installed ? 'installed' : 'skipped',
+          source: resolveEffectivePackSource(sourceMode, result),
+          reason: result.reason || null,
+        });
+      } else if (packPlan.required.includes('gstack') || packPlan.optional.includes('gstack')) {
+        const sourceMode = (packPlan.sources && packPlan.sources.gstack) || 'pinned';
+        pushPackReport(manifest, {
+          pack: 'gstack', host: 'openclaw',
+          status: sourceMode === 'disabled' ? 'disabled' : 'skipped',
+          source: sourceMode,
+          reason: sourceMode === 'disabled' ? 'source-disabled' : `optional-policy-${packPlan.optionalPolicy || 'auto'}`,
+        });
+      }
     }
 
     let settingsPath = null;

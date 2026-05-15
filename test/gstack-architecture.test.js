@@ -3,8 +3,8 @@
 const { installGstackPack, STRATEGIES } = require('../bin/lib/gstack/installer');
 
 describe('bin/lib/gstack/installer', () => {
-  test('STRATEGIES 注册 claude/codex/gemini 三个 host', () => {
-    expect(Object.keys(STRATEGIES).sort()).toEqual(['claude', 'codex', 'gemini']);
+  test('STRATEGIES 注册 claude/codex/gemini/openclaw 四个 host', () => {
+    expect(Object.keys(STRATEGIES).sort()).toEqual(['claude', 'codex', 'gemini', 'openclaw']);
   });
 
   test('每个 strategy 都导出 installToHost 函数', () => {

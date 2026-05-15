@@ -13,6 +13,7 @@ const STRATEGIES = {
   claude: require('./strategies/claude'),
   codex: require('./strategies/codex'),
   gemini: require('./strategies/gemini'),
+  openclaw: require('./strategies/openclaw'),
 };
 
 function installGstackPack(hostName, options = {}) {
