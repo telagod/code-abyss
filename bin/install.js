@@ -100,6 +100,24 @@ const {
   buildGeminiPromptBody,
   generateGeminiCommandContent,
 } = require(path.join(__dirname, 'lib', 'lifecycle', 'command-generation.js'));
+const {
+  normalizeManifestEntry,
+  pushManifestEntry,
+  pushPackReport,
+  resolveEffectivePackSource,
+  manifestLabel,
+  createResolveManagedRootDir,
+  createBackupManagedPathIfExists,
+  createPruneLegacyCodexSettings,
+} = require(path.join(__dirname, 'lib', 'install-helpers.js'));
+
+const resolveManagedRootDir = createResolveManagedRootDir({ HOME, getManagedRootRelativeDir });
+const backupManagedPathIfExists = createBackupManagedPathIfExists({
+  resolveManagedRootDir, rmSafe, copyRecursive, info, c,
+});
+const pruneLegacyCodexSettings = createPruneLegacyCodexSettings({
+  resolveManagedRootDir, backupManagedPathIfExists, rmSafe, warn,
+});
 
 function formatPersonaTab(persona) {
   const icon = PERSONA_ICONS[persona.gender] || PERSONA_ICONS.other;
@@ -169,39 +187,6 @@ function detectGeminiAuth(settings) {
 
 function detectOpenClawEnvironment() {
   return detectOpenClawEnvironmentImpl({ HOME, warn });
-}
-
-function resolveManagedRootDir(tgt, rootName = tgt, runtimeRoots = null) {
-  if (runtimeRoots && runtimeRoots[rootName]) return runtimeRoots[rootName];
-  return path.join(HOME, getManagedRootRelativeDir(rootName));
-}
-
-function normalizeManifestEntry(entry, defaultRoot) {
-  if (typeof entry === 'string') return { root: defaultRoot, path: entry };
-  if (entry && typeof entry === 'object' && typeof entry.path === 'string') {
-    return { root: entry.root || defaultRoot, path: entry.path };
-  }
-  throw new Error('manifest 条目格式无效');
-}
-
-function pushManifestEntry(list, rootName, relPath) {
-  list.push({ root: rootName, path: relPath });
-}
-
-function pushPackReport(manifest, report) {
-  if (!manifest.pack_reports) manifest.pack_reports = [];
-  manifest.pack_reports.push(report);
-}
-
-function resolveEffectivePackSource(sourceMode, installResult) {
-  return (installResult && installResult.sourceMode) || sourceMode || 'pinned';
-}
-
-function manifestLabel(entry, defaultRoot) {
-  const normalized = normalizeManifestEntry(entry, defaultRoot);
-  return normalized.root === defaultRoot
-    ? normalized.path
-    : `${normalized.root}/${normalized.path}`;
 }
 
 // ── CLI 参数 ──
@@ -350,30 +335,6 @@ function installGeminiContext(targetDir, backupDir, manifest, selectedStyle) {
   ok(`${relPath} ${c.d(`(动态生成: ${selectedStyle.slug})`)}`);
 }
 
-
-function backupManagedPathIfExists(tgt, rootName, backupDir, relPath, manifest, runtimeRoots = null) {
-  const targetRoot = resolveManagedRootDir(tgt, rootName, runtimeRoots);
-  const targetPath = path.join(targetRoot, relPath);
-  if (!fs.existsSync(targetPath)) return false;
-
-  const backupPath = path.join(backupDir, rootName, relPath);
-  rmSafe(backupPath);
-  copyRecursive(targetPath, backupPath);
-  pushManifestEntry(manifest.backups, rootName, relPath);
-  info(`备份: ${c.d(rootName === tgt ? relPath : `${rootName}/${relPath}`)}`);
-  return true;
-}
-
-function pruneLegacyCodexSettings(tgt, backupDir, manifest) {
-  const relPath = 'settings.json';
-  const settingsPath = path.join(resolveManagedRootDir(tgt, 'codex'), relPath);
-  if (!fs.existsSync(settingsPath)) return null;
-
-  backupManagedPathIfExists(tgt, 'codex', backupDir, relPath, manifest);
-  rmSafe(settingsPath);
-  warn('移除 legacy settings.json（Codex 已改用 config.toml）');
-  return settingsPath;
-}
 
 function printStyleCatalog() {
   banner();
