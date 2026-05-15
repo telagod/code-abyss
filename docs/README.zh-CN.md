@@ -147,11 +147,11 @@ npx code-abyss --list-styles
 npx code-abyss --help
 
 # 校验工具（直接运行）
-node skills/tools/verify-security/scripts/security_scanner.js <路径>
-node skills/tools/verify-module/scripts/module_scanner.js <路径>
-node skills/tools/verify-change/scripts/change_analyzer.js --mode staged
-node skills/tools/verify-quality/scripts/quality_checker.js <路径>
-node skills/tools/gen-docs/scripts/doc_generator.js <路径>
+node skills/analyzing-security/scripts/security_scanner.js <路径>
+node skills/verifying-modules/scripts/module_scanner.js <路径>
+node skills/analyzing-changes/scripts/change_analyzer.js --mode staged
+node skills/checking-code-quality/scripts/quality_checker.js <路径>
+node skills/generating-docs/scripts/doc_generator.js <路径>
 ```
 
 ## Pack 系统

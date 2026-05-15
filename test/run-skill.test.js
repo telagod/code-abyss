@@ -39,12 +39,12 @@ describe('run_skill', () => {
   test('执行脚本型 skill 并透传参数', () => {
     const targetFile = path.join(tmpDir, 'args.json');
     makeSkill(
-      'tools/gen-docs',
-      'name: gen-docs\ndescription: docs\nuser-invocable: true',
+      'generating-docs',
+      'name: generating-docs\ndescription: docs\nuser-invocable: true',
       `const fs = require('fs'); fs.writeFileSync(${JSON.stringify(targetFile)}, JSON.stringify(process.argv.slice(2)));`
     );
 
-    const result = run(['gen-docs', './module', '--force']);
+    const result = run(['generating-docs', './module', '--force']);
 
     expect(result.status).toBe(0);
     expect(JSON.parse(fs.readFileSync(targetFile, 'utf8'))).toEqual(['./module', '--force']);
@@ -59,23 +59,23 @@ describe('run_skill', () => {
 
   test('无脚本 skill 返回明确错误', () => {
     makeSkill(
-      'domains/frontend-design',
-      'name: frontend-design\ndescription: design\nuser-invocable: true',
+      'designing-glassmorphism',
+      'name: designing-glassmorphism\ndescription: design\nuser-invocable: true',
       null
     );
 
-    const result = run(['frontend-design']);
+    const result = run(['designing-glassmorphism']);
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("runtimeType 不是 scripted");
-    expect(result.stderr).toContain(path.join('domains', 'frontend-design', 'SKILL.md'));
+    expect(result.stderr).toContain('designing-glassmorphism/SKILL.md');
   });
 
   test('等待锁释放后继续执行，不 busy wait 失效', async () => {
     const targetFile = path.join(tmpDir, 'lock-result.txt');
     makeSkill(
-      'tools/verify-quality',
-      'name: verify-quality\ndescription: quality\nuser-invocable: true',
+      'checking-code-quality',
+      'name: checking-code-quality\ndescription: quality\nuser-invocable: true',
       `const fs = require('fs'); fs.writeFileSync(${JSON.stringify(targetFile)}, 'done');`
     );
 
@@ -91,7 +91,7 @@ describe('run_skill', () => {
       detached: false,
     });
 
-    const result = run(['verify-quality', targetArg]);
+    const result = run(['checking-code-quality', targetArg]);
 
     await new Promise((resolve, reject) => {
       releaser.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(`releaser exited ${code}`))));

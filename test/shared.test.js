@@ -4,7 +4,7 @@ const path = require('path');
 const {
   parseCliArgs, buildReport, countBySeverity, hasFatal, SEP, DASH, ICONS
 } = require(path.join(
-  __dirname, '..', 'skills', 'tools', 'lib', 'shared.js'
+  __dirname, '..', 'skills', '_lib', 'shared.js'
 ));
 
 describe('parseCliArgs', () => {

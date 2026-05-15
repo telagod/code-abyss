@@ -97,7 +97,7 @@
 | ❄ 玄冰 | 镇魔之盾，护佑安宁 | 蓝队、告警、IOC、应急、取证、SIEM、EDR |
 | ⚡ 紫霄 | 攻守一体，方为大道 | 紫队、ATT&CK、TTP、检测验证、规则调优 |
 
-详细攻防技术见 `skills/domains/security/` 各秘典。
+详细攻防技术见 `skills/securing-systems/references/` 各秘典。
 
 ---
 
@@ -268,19 +268,19 @@ CLI 工具可能运行在沙箱环境中，每次执行前先感知约束：
 
 | 化身 | 秘典 | 触发场景 |
 |------|------|----------|
-| 🔥 赤焰 | `skills/domains/security/red-team.md` | 渗透、红队、exploit、C2、免杀、持久化 |
-| 🗡 破阵 | `skills/domains/security/pentest.md` | Web渗透、API安全、OWASP、SQLi、XSS、SSRF |
-| 🔬 验毒 | `skills/domains/security/code-audit.md` | 代码审计、危险函数、污点分析、sink |
-| 💀 噬魂 | `skills/domains/security/vuln-research.md` | 二进制、逆向、PWN、Fuzzing、栈溢出、堆溢出 |
-| ❄ 玄冰 | `skills/domains/security/blue-team.md` | 蓝队、告警、IOC、应急、取证、SIEM、EDR |
-| 👁 天眼 | `skills/domains/security/threat-intel.md` | OSINT、威胁情报、威胁建模、ATT&CK |
-| ⚡ 紫霄 | `skills/domains/security/` | 紫队、TTP、检测验证、规则调优 |
-| 📜 符箓 | `skills/domains/development/` | 语言开发任务 |
-| 🔮 丹鼎 | `skills/domains/ai/` | RAG、Agent、LLM |
-| 📎 文牍 | `skills/domains/office/` | Word、Excel、PPT、PDF、文档自动化 |
-| 🕸 天罗 | `skills/orchestration/multi-agent/SKILL.md` | TeamCreate、多Agent协同 |
-| 🏗 阵法 | `skills/domains/architecture/` | 架构、API、云原生、缓存、合规 |
-| 🔧 炼器 | `skills/domains/devops/` | Git、测试、数据库、性能、可观测性 |
+| 🔥 赤焰 | `skills/securing-systems/references/red-team.md` | 渗透、红队、exploit、C2、免杀、持久化 |
+| 🗡 破阵 | `skills/securing-systems/references/pentest.md` | Web渗透、API安全、OWASP、SQLi、XSS、SSRF |
+| 🔬 验毒 | `skills/securing-systems/references/code-audit.md` | 代码审计、危险函数、污点分析、sink |
+| 💀 噬魂 | `skills/securing-systems/references/vuln-research.md` | 二进制、逆向、PWN、Fuzzing、栈溢出、堆溢出 |
+| ❄ 玄冰 | `skills/securing-systems/references/blue-team.md` | 蓝队、告警、IOC、应急、取证、SIEM、EDR |
+| 👁 天眼 | `skills/securing-systems/references/threat-intel.md` | OSINT、威胁情报、威胁建模、ATT&CK |
+| ⚡ 紫霄 | `skills/securing-systems/references/` | 紫队、TTP、检测验证、规则调优 |
+| 📜 符箓 | `skills/developing-software/` | 语言开发任务 |
+| 🔮 丹鼎 | `skills/building-ai-systems/` | RAG、Agent、LLM |
+| 📎 文牍 | `skills/processing-docx/ etc.` | Word、Excel、PPT、PDF、文档自动化 |
+| 🕸 天罗 | `skills/coordinating-agents/SKILL.md` | TeamCreate、多Agent协同 |
+| 🏗 阵法 | `skills/designing-architectures/` | 架构、API、云原生、缓存、合规 |
+| 🔧 炼器 | `skills/automating-devops/` | Git、测试、数据库、性能、可观测性 |
 
 **校验关卡**（自动触发，不可跳过）：
 
@@ -296,7 +296,7 @@ CLI 工具可能运行在沙箱环境中，每次执行前先感知约束：
 
 ## 十六、多 Agent 协同
 
-详细协同规范见 `skills/orchestration/multi-agent/SKILL.md`（唯一权威定义）。
+详细协同规范见 `skills/coordinating-agents/SKILL.md`（唯一权威定义）。
 
 ### TeamCreate vs 单 Agent 决策树
 

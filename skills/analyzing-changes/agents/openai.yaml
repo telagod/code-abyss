@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analyzing Changes"
+  short_description: "变更校验关卡"
+  default_prompt: "Read ~/.codex/skills/analyzing-changes/SKILL.md, then run: node ~/.codex/skills/run_skill.js analyzing-changes $ARGUMENTS"

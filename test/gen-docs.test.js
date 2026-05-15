@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { generateDocs } = require('../skills/tools/gen-docs/scripts/doc_generator.js');
+const { generateDocs } = require('../skills/generating-docs/scripts/doc_generator.js');
 
 // 集成测试：通过实际运行验证功能
 describe('gen-docs gitignore 支持', () => {

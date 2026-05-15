@@ -14,37 +14,37 @@ const {
 describe('generateCommandContent', () => {
   test('有脚本的 skill: 包含一气呵成指令流', () => {
     const meta = {
-      name: 'gen-docs',
+      name: 'generating-docs',
       description: '文档生成器',
       argumentHint: '<模块路径> [--force]',
       allowedTools: 'Bash, Read, Write, Glob',
     };
-    const content = generateCommandContent(meta, 'tools/gen-docs', 'scripted');
+    const content = generateCommandContent(meta, 'generating-docs', 'scripted');
 
     expect(content).toMatch(/^---\n/);
-    expect(content).toContain('name: gen-docs');
+    expect(content).toContain('name: generating-docs');
     expect(content).toContain('description: "文档生成器"');
     expect(content).toContain('argument-hint: "<模块路径> [--force]"');
     expect(content).toContain('allowed-tools: Bash, Read, Write, Glob');
     expect(content).toContain('一气呵成');
     expect(content).toContain('不要在步骤间停顿');
     expect(content).toContain('不要停顿');
-    expect(content).toContain('~/.claude/skills/tools/gen-docs/SKILL.md');
-    expect(content).toContain('node ~/.claude/skills/run_skill.js gen-docs $ARGUMENTS');
+    expect(content).toContain('~/.claude/skills/generating-docs/SKILL.md');
+    expect(content).toContain('node ~/.claude/skills/run_skill.js generating-docs $ARGUMENTS');
   });
 
   test('无脚本的 skill: 知识库模式', () => {
     const meta = {
-      name: 'frontend-design',
+      name: 'designing-glassmorphism',
       description: '前端设计美学秘典',
       allowedTools: 'Read',
     };
-    const content = generateCommandContent(meta, 'domains/frontend-design', 'knowledge');
+    const content = generateCommandContent(meta, 'designing-glassmorphism', 'knowledge');
 
-    expect(content).toContain('name: frontend-design');
+    expect(content).toContain('name: designing-glassmorphism');
     expect(content).toContain('allowed-tools: Read');
     expect(content).toContain('读取以下技能文档');
-    expect(content).toContain('~/.claude/skills/domains/frontend-design/SKILL.md');
+    expect(content).toContain('~/.claude/skills/designing-glassmorphism/SKILL.md');
     expect(content).not.toContain('run_skill.js');
     expect(content).not.toContain('一气呵成');
   });
@@ -104,50 +104,50 @@ describe('installGeneratedCommands', () => {
     fs.mkdirSync(skillsSrc, { recursive: true });
     makeSkillDir(
       skillsSrc,
-      'tools/gen-docs',
-      'name: gen-docs\ndescription: gen docs\nuser-invocable: true',
+      'generating-docs',
+      'name: generating-docs\ndescription: gen docs\nuser-invocable: true',
       true
     );
     makeSkillDir(
       skillsSrc,
-      'tools/verify-module',
-      'name: verify-module\ndescription: verify module\nuser-invocable: true',
+      'verifying-modules',
+      'name: verifying-modules\ndescription: verify module\nuser-invocable: true',
       true
     );
 
     const count = installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
 
     expect(count).toBe(2);
-    expect(fs.existsSync(path.join(targetDir, 'commands', 'gen-docs.md'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'commands', 'verify-module.md'))).toBe(true);
-    expect(manifest.installed).toContainEqual({ root: 'claude', path: 'commands/gen-docs.md' });
-    expect(manifest.installed).toContainEqual({ root: 'claude', path: 'commands/verify-module.md' });
+    expect(fs.existsSync(path.join(targetDir, 'commands', 'generating-docs.md'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'commands', 'verifying-modules.md'))).toBe(true);
+    expect(manifest.installed).toContainEqual({ root: 'claude', path: 'commands/generating-docs.md' });
+    expect(manifest.installed).toContainEqual({ root: 'claude', path: 'commands/verifying-modules.md' });
   });
 
   test('已存在的 command 文件被备份', () => {
     const skillsSrc = path.join(tmpDir, 'skills');
     fs.mkdirSync(skillsSrc, { recursive: true });
-    makeSkillDir(skillsSrc, 'tools/gen-docs', 'name: gen-docs\ndescription: gen docs\nuser-invocable: true', true);
+    makeSkillDir(skillsSrc, 'generating-docs', 'name: generating-docs\ndescription: gen docs\nuser-invocable: true', true);
 
     const cmdsDir = path.join(targetDir, 'commands');
     fs.mkdirSync(cmdsDir, { recursive: true });
-    fs.writeFileSync(path.join(cmdsDir, 'gen-docs.md'), 'old content');
+    fs.writeFileSync(path.join(cmdsDir, 'generating-docs.md'), 'old content');
 
     installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
 
-    expect(fs.existsSync(path.join(backupDir, 'claude', 'commands', 'gen-docs.md'))).toBe(true);
-    expect(fs.readFileSync(path.join(backupDir, 'claude', 'commands', 'gen-docs.md'), 'utf8')).toBe('old content');
-    expect(manifest.backups).toContainEqual({ root: 'claude', path: 'commands/gen-docs.md' });
+    expect(fs.existsSync(path.join(backupDir, 'claude', 'commands', 'generating-docs.md'))).toBe(true);
+    expect(fs.readFileSync(path.join(backupDir, 'claude', 'commands', 'generating-docs.md'), 'utf8')).toBe('old content');
+    expect(manifest.backups).toContainEqual({ root: 'claude', path: 'commands/generating-docs.md' });
 
-    const newContent = fs.readFileSync(path.join(cmdsDir, 'gen-docs.md'), 'utf8');
-    expect(newContent).toContain('name: gen-docs');
+    const newContent = fs.readFileSync(path.join(cmdsDir, 'generating-docs.md'), 'utf8');
+    expect(newContent).toContain('name: generating-docs');
     expect(newContent).not.toBe('old content');
   });
 
   test('无 user-invocable skill 时返回 0', () => {
     const skillsSrc = path.join(tmpDir, 'skills');
     fs.mkdirSync(skillsSrc, { recursive: true });
-    makeSkillDir(skillsSrc, 'domains/security', 'name: security\ndescription: security\nuser-invocable: false', false);
+    makeSkillDir(skillsSrc, 'securing-systems', 'name: securing-systems\ndescription: security\nuser-invocable: false', false);
 
     const count = installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
     expect(count).toBe(0);
@@ -159,17 +159,17 @@ describe('installGeneratedCommands', () => {
     fs.mkdirSync(skillsSrc, { recursive: true });
     makeSkillDir(
       skillsSrc,
-      'tools/gen-docs',
-      'name: gen-docs\ndescription: gen docs\nuser-invocable: true\nargument-hint: <path>\nallowed-tools: Bash, Read',
+      'generating-docs',
+      'name: generating-docs\ndescription: gen docs\nuser-invocable: true\nargument-hint: <path>\nallowed-tools: Bash, Read',
       true
     );
 
     installGeneratedCommands(skillsSrc, targetDir, backupDir, manifest);
 
-    const content = fs.readFileSync(path.join(targetDir, 'commands', 'gen-docs.md'), 'utf8');
+    const content = fs.readFileSync(path.join(targetDir, 'commands', 'generating-docs.md'), 'utf8');
     expect(content).toMatch(/^---\n/);
     expect(content).toContain('一气呵成');
-    expect(content).toContain('run_skill.js gen-docs');
+    expect(content).toContain('run_skill.js generating-docs');
   });
 });
 
@@ -264,12 +264,11 @@ describe('斜杠命令回归防护', () => {
   describeIf('Codex skill metadata 路径一致性', () => {
     test('openai.yaml 默认提示词指向 ~/.codex/skills', () => {
       const metadataFiles = [
-        'tools/gen-docs/agents/openai.yaml',
-        'tools/verify-security/agents/openai.yaml',
-        'tools/verify-module/agents/openai.yaml',
-        'tools/verify-change/agents/openai.yaml',
-        'tools/verify-quality/agents/openai.yaml',
-        'domains/frontend-design/agents/openai.yaml',
+        'generating-docs/agents/openai.yaml',
+        'analyzing-security/agents/openai.yaml',
+        'verifying-modules/agents/openai.yaml',
+        'analyzing-changes/agents/openai.yaml',
+        'checking-code-quality/agents/openai.yaml',
       ];
 
       metadataFiles.forEach((relPath) => {

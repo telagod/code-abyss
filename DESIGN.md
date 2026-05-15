@@ -172,7 +172,7 @@ Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 C
 - 决策：npm 安装锁定主版本 `@1`；git 命令改用字符串拼接避免模板注入。
 - 取舍：锁定主版本而非精确版本，平衡安全与可维护性。
 
-#### 2. 共享库提取 (`skills/tools/lib/shared.js`)
+#### 2. 共享库提取 (`skills/_lib/shared.js`)
 
 - 问题：4 个 verify-* 脚本重复实现 CLI 解析和报告格式化（~30% 重复）。
 - 决策：提取 `parseCliArgs()`、`buildReport()`、`countBySeverity()`、`hasFatal()` 到共享库。

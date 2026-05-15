@@ -5,7 +5,7 @@ const {
   normalizePath, classifyFile, parsePorcelainLine,
   parseNameStatusLine, identifyModules
 } = require(path.join(
-  __dirname, '..', 'skills', 'tools', 'verify-change', 'scripts', 'change_analyzer.js'
+  __dirname, '..', 'skills', 'analyzing-changes', 'scripts', 'change_analyzer.js'
 ));
 
 describe('normalizePath', () => {

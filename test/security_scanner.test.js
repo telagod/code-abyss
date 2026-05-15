@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const { scanFile, SECURITY_RULES } = require(path.join(
-  __dirname, '..', 'skills', 'tools', 'verify-security', 'scripts', 'security_scanner.js'
+  __dirname, '..', 'skills', 'analyzing-security', 'scripts', 'security_scanner.js'
 ));
 
 describe('SECURITY_RULES', () => {

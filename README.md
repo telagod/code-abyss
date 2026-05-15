@@ -149,11 +149,11 @@ npx code-abyss --list-styles
 npx code-abyss --help
 
 # Verification tools (run directly)
-node skills/tools/verify-security/scripts/security_scanner.js <path>
-node skills/tools/verify-module/scripts/module_scanner.js <path>
-node skills/tools/verify-change/scripts/change_analyzer.js --mode staged
-node skills/tools/verify-quality/scripts/quality_checker.js <path>
-node skills/tools/gen-docs/scripts/doc_generator.js <path>
+node skills/analyzing-security/scripts/security_scanner.js <path>
+node skills/verifying-modules/scripts/module_scanner.js <path>
+node skills/analyzing-changes/scripts/change_analyzer.js --mode staged
+node skills/checking-code-quality/scripts/quality_checker.js <path>
+node skills/generating-docs/scripts/doc_generator.js <path>
 ```
 
 ## Pack System

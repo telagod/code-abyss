@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generating Docs"
+  short_description: "文档生成器"
+  default_prompt: "Read ~/.codex/skills/generating-docs/SKILL.md, then run: node ~/.codex/skills/run_skill.js generating-docs $ARGUMENTS"

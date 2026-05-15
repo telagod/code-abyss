@@ -1,0 +1,4 @@
+interface:
+  display_name: "Checking Code Quality"
+  short_description: "代码质量校验关卡"
+  default_prompt: "Read ~/.codex/skills/checking-code-quality/SKILL.md, then run: node ~/.codex/skills/run_skill.js checking-code-quality $ARGUMENTS"

@@ -29,9 +29,9 @@ Optional:
 ## Runtime inference
 
 - `category` is inferred from the directory prefix:
-  - `skills/tools/*` → `tool`
-  - `skills/domains/*` → `domain`
-  - `skills/orchestration/*` → `orchestration`
+  - scripted skills → `tool` (inferred by runtimeType)
+  - knowledge skills → `domain` (inferred by runtimeType)
+  - all skills now flat under `skills/<slug>/`
   - anything else → `root`
 - `runtimeType` is inferred from `scripts/*.js`
   - exactly one `.js` → `scripted`

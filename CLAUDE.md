@@ -21,11 +21,11 @@ node bin/install.js --list-styles        # List available output styles
 
 Running individual verify tools directly:
 ```bash
-node skills/tools/verify-security/scripts/security_scanner.js <path>
-node skills/tools/verify-module/scripts/module_scanner.js <path>
-node skills/tools/verify-change/scripts/change_analyzer.js --mode staged|working
-node skills/tools/verify-quality/scripts/quality_checker.js <path>
-node skills/tools/gen-docs/scripts/doc_generator.js <path>
+node skills/analyzing-security/scripts/security_scanner.js <path>
+node skills/verifying-modules/scripts/module_scanner.js <path>
+node skills/analyzing-changes/scripts/change_analyzer.js --mode staged|working
+node skills/checking-code-quality/scripts/quality_checker.js <path>
+node skills/generating-docs/scripts/doc_generator.js <path>
 ```
 
 Running a single test file:

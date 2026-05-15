@@ -30,8 +30,8 @@ describe('bin/lib/lifecycle/command-generation', () => {
       expect(getSkillPath('~/.claude/skills', '')).toBe('~/.claude/skills/SKILL.md');
     });
     test('normalizes path separators to /', () => {
-      expect(getSkillPath('~/.claude/skills', 'tools/verify-quality'))
-        .toBe('~/.claude/skills/tools/verify-quality/SKILL.md');
+      expect(getSkillPath('~/.claude/skills', 'checking-code-quality'))
+        .toBe('~/.claude/skills/checking-code-quality/SKILL.md');
     });
   });
 
@@ -73,10 +73,10 @@ describe('bin/lib/lifecycle/command-generation', () => {
   describe('buildClaudeCommandSpec', () => {
     test('builds spec with scriptRunner using $ARGUMENTS', () => {
       const spec = buildClaudeCommandSpec({
-        name: 'vq', description: 'd', relPath: 'tools/verify-quality',
+        name: 'vq', description: 'd', relPath: 'checking-code-quality',
       });
       expect(spec.scriptRunner).toContain('vq $ARGUMENTS');
-      expect(spec.skillPath).toBe('~/.claude/skills/tools/verify-quality/SKILL.md');
+      expect(spec.skillPath).toBe('~/.claude/skills/checking-code-quality/SKILL.md');
     });
   });
 
@@ -118,8 +118,8 @@ describe('bin/lib/lifecycle/command-generation', () => {
 
   describe('buildGeminiCommandSpec', () => {
     test('builds spec pointing to gemini skills root', () => {
-      const spec = buildGeminiCommandSpec({ name: 'vq', relPath: 'tools/verify-quality' });
-      expect(spec.skillPath).toBe('~/.gemini/skills/tools/verify-quality/SKILL.md');
+      const spec = buildGeminiCommandSpec({ name: 'vq', relPath: 'checking-code-quality' });
+      expect(spec.skillPath).toBe('~/.gemini/skills/checking-code-quality/SKILL.md');
       expect(spec.scriptRunner).toContain('~/.gemini/skills/run_skill.js vq');
     });
   });

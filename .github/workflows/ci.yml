@@ -24,10 +24,10 @@ jobs:
       - run: npm run verify:skills
       - run: npm run packs:check
       - run: npm run packs:vendor:sync -- --check
-      - run: node skills/tools/verify-change/scripts/change_analyzer.js --mode staged || node skills/tools/verify-change/scripts/change_analyzer.js --mode working
-      - run: node skills/tools/verify-module/scripts/module_scanner.js .
-      - run: node skills/tools/verify-quality/scripts/quality_checker.js .
-      - run: node skills/tools/verify-security/scripts/security_scanner.js . --exclude office
+      - run: node skills/analyzing-changes/scripts/change_analyzer.js --mode staged || node skills/analyzing-changes/scripts/change_analyzer.js --mode working
+      - run: node skills/verifying-modules/scripts/module_scanner.js .
+      - run: node skills/checking-code-quality/scripts/quality_checker.js .
+      - run: node skills/analyzing-security/scripts/security_scanner.js . --exclude office
 
   smoke-claude:
     runs-on: ${{ matrix.os }}

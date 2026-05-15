@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verifying Modules"
+  short_description: "模块完整性校验关卡"
+  default_prompt: "Read ~/.codex/skills/verifying-modules/SKILL.md, then run: node ~/.codex/skills/run_skill.js verifying-modules $ARGUMENTS"

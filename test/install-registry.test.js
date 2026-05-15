@@ -18,10 +18,10 @@ const { scanInvocableSkills } = require('../bin/install');
 
 describe('parseFrontmatter', () => {
   test('解析标准 frontmatter', () => {
-    const content = '---\nname: gen-docs\ndescription: 文档生成器\n---\n\n# Body';
+    const content = '---\nname: generating-docs\ndescription: 文档生成器\n---\n\n# Body';
     const meta = parseFrontmatter(content);
     expect(meta).not.toBeNull();
-    expect(meta.name).toBe('gen-docs');
+    expect(meta.name).toBe('generating-docs');
     expect(meta.description).toBe('文档生成器');
   });
 
@@ -87,56 +87,56 @@ describe('skill registry', () => {
 
   test('collectSkills 返回标准化 skill 记录', () => {
     makeSkill(
-      'tools/gen-docs',
-      'name: gen-docs\ndescription: docs\nuser-invocable: true\nallowed-tools: Bash, Read\nargument-hint: <path>',
+      'generating-docs',
+      'name: generating-docs\ndescription: docs\nuser-invocable: true\nallowed-tools: Bash, Read\nargument-hint: <path>',
       true
     );
-    makeSkill('domains/frontend-design', 'name: frontend-design\ndescription: design\nuser-invocable: false', false);
+    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: false', false);
 
     const skills = collectSkills(tmpDir);
     expect(skills).toHaveLength(2);
 
-    const genDocs = skills.find(s => s.name === 'gen-docs');
-    expect(genDocs.relPath).toBe(path.join('tools', 'gen-docs'));
+    const genDocs = skills.find(s => s.name === 'generating-docs');
+    expect(genDocs.relPath).toBe(path.join('generating-docs'));
     expect(genDocs.category).toBe('tool');
     expect(genDocs.userInvocable).toBe(true);
     expect(genDocs.allowedTools).toEqual(['Bash', 'Read']);
     expect(genDocs.argumentHint).toBe('<path>');
     expect(genDocs.runtimeType).toBe('scripted');
     expect(genDocs.hasScripts).toBe(true);
-    expect(genDocs.scriptPath).toBe(path.join(tmpDir, 'tools', 'gen-docs', 'scripts', 'run.js'));
-    expect(genDocs.skillPath).toBe(path.join(tmpDir, 'tools', 'gen-docs', 'SKILL.md'));
+    expect(genDocs.scriptPath).toBe(path.join(tmpDir, 'generating-docs', 'scripts', 'run.js'));
+    expect(genDocs.skillPath).toBe(path.join(tmpDir, 'generating-docs', 'SKILL.md'));
     expect(genDocs.meta['user-invocable']).toBe('true');
     expect(genDocs.kind).toBeUndefined();
     expect(genDocs['user-invocable']).toBeUndefined();
     expect(genDocs['allowed-tools']).toBeUndefined();
     expect(genDocs['argument-hint']).toBeUndefined();
 
-    const frontendDesign = skills.find(s => s.name === 'frontend-design');
+    const frontendDesign = skills.find(s => s.name === 'designing-glassmorphism');
     expect(frontendDesign.category).toBe('domain');
     expect(frontendDesign.runtimeType).toBe('knowledge');
     expect(frontendDesign.allowedTools).toEqual(['Read']);
   });
 
   test('collectInvocableSkills 只返回 user-invocable skills', () => {
-    makeSkill('tools/gen-docs', 'name: gen-docs\ndescription: docs\nuser-invocable: true', true);
-    makeSkill('domains/frontend-design', 'name: frontend-design\ndescription: design\nuser-invocable: false', false);
+    makeSkill('generating-docs', 'name: generating-docs\ndescription: docs\nuser-invocable: true', true);
+    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: false', false);
 
     const skills = collectInvocableSkills(tmpDir);
-    expect(skills.map(s => s.name)).toEqual(['gen-docs']);
+    expect(skills.map(s => s.name)).toEqual(['generating-docs']);
   });
 
   test('resolveExecutableSkillScript 区分缺失与无脚本', () => {
-    makeSkill('tools/gen-docs', 'name: gen-docs\ndescription: docs\nuser-invocable: true', true);
-    makeSkill('domains/frontend-design', 'name: frontend-design\ndescription: design\nuser-invocable: true', false);
+    makeSkill('generating-docs', 'name: generating-docs\ndescription: docs\nuser-invocable: true', true);
+    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: true', false);
 
-    const ok = resolveExecutableSkillScript(tmpDir, 'gen-docs');
+    const ok = resolveExecutableSkillScript(tmpDir, 'generating-docs');
     expect(ok.reason).toBeNull();
-    expect(ok.scriptPath).toContain(path.join('tools', 'gen-docs', 'scripts', 'run.js'));
+    expect(ok.scriptPath).toContain(path.join('generating-docs', 'scripts', 'run.js'));
 
-    const noScript = resolveExecutableSkillScript(tmpDir, 'frontend-design');
+    const noScript = resolveExecutableSkillScript(tmpDir, 'designing-glassmorphism');
     expect(noScript.reason).toBe('no-script');
-    expect(noScript.skill.name).toBe('frontend-design');
+    expect(noScript.skill.name).toBe('designing-glassmorphism');
     expect(noScript.scriptPath).toBeNull();
 
     const missing = resolveExecutableSkillScript(tmpDir, 'missing');
@@ -145,7 +145,7 @@ describe('skill registry', () => {
   });
 
   test('collectSkills 在 frontmatter 缺失时立即失败', () => {
-    const dir = path.join(tmpDir, 'tools', 'broken');
+    const dir = path.join(tmpDir, 'broken');
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, 'SKILL.md'), '# missing frontmatter');
 
@@ -153,31 +153,31 @@ describe('skill registry', () => {
   });
 
   test('collectSkills 在 frontmatter 行格式错误时立即失败', () => {
-    makeSkill('tools/broken', 'name: broken\ndescription: bad\nuser-invocable: true\ninvalid line', false);
+    makeSkill('broken', 'name: broken\ndescription: bad\nuser-invocable: true\ninvalid line', false);
     expect(() => collectSkills(tmpDir)).toThrow(/frontmatter 第 4 行格式无效/);
   });
 
   test('collectSkills 拒绝缺少必填字段', () => {
-    makeSkill('tools/no-name', 'description: docs\nuser-invocable: true', false);
+    makeSkill('no-name', 'description: docs\nuser-invocable: true', false);
     expect(() => collectSkills(tmpDir)).toThrow(/缺少必填 frontmatter 字段 'name'/);
 
     resetTmpDir();
-    makeSkill('tools/no-description', 'name: no-description\nuser-invocable: true', false);
+    makeSkill('no-description', 'name: no-description\nuser-invocable: true', false);
     expect(() => collectSkills(tmpDir)).toThrow(/缺少必填 frontmatter 字段 'description'/);
 
     resetTmpDir();
-    makeSkill('tools/no-flag', 'name: no-flag\ndescription: docs', false);
+    makeSkill('no-flag', 'name: no-flag\ndescription: docs', false);
     expect(() => collectSkills(tmpDir)).toThrow(/缺少必填 frontmatter 字段 'user-invocable'/);
   });
 
   test('collectSkills 拒绝非法 name slug', () => {
-    makeSkill('tools/bad-name', 'name: Bad_Name\ndescription: docs\nuser-invocable: true', false);
+    makeSkill('bad-name', 'name: Bad_Name\ndescription: docs\nuser-invocable: true', false);
     expect(() => collectSkills(tmpDir)).toThrow(/name 必须是 kebab-case slug/);
   });
 
   test('collectSkills 拒绝非法 allowed-tools', () => {
     makeSkill(
-      'tools/bad-tools',
+      'bad-tools',
       'name: bad-tools\ndescription: docs\nuser-invocable: true\nallowed-tools: Bash, bad-tool',
       false
     );
@@ -185,14 +185,14 @@ describe('skill registry', () => {
   });
 
   test('collectSkills 拒绝重复 skill name', () => {
-    makeSkill('tools/one', 'name: duplicate\ndescription: docs\nuser-invocable: true', false);
-    makeSkill('domains/two', 'name: duplicate\ndescription: docs\nuser-invocable: false', false);
+    makeSkill('one', 'name: duplicate\ndescription: docs\nuser-invocable: true', false);
+    makeSkill('duplicate-two', 'name: duplicate\ndescription: docs\nuser-invocable: false', false);
     expect(() => collectSkills(tmpDir)).toThrow(/重复的 skill name 'duplicate'/);
   });
 
   test('collectSkills 拒绝多个脚本入口', () => {
-    makeSkill('tools/multi-script', 'name: multi-script\ndescription: docs\nuser-invocable: true', true, 'a.js');
-    const scriptsDir = path.join(tmpDir, 'tools', 'multi-script', 'scripts');
+    makeSkill('multi-script', 'name: multi-script\ndescription: docs\nuser-invocable: true', true, 'a.js');
+    const scriptsDir = path.join(tmpDir, 'multi-script', 'scripts');
     fs.writeFileSync(path.join(scriptsDir, 'b.js'), '// noop');
     expect(() => collectSkills(tmpDir)).toThrow(/只能有一个 \.js 入口/);
   });
@@ -221,19 +221,19 @@ describe('scanInvocableSkills', () => {
   }
 
   test('仅返回 user-invocable: true 的 skill', () => {
-    makeSkill('tools/gen-docs', 'name: gen-docs\ndescription: gen docs\nuser-invocable: true', true);
-    makeSkill('tools/verify-module', 'name: verify-module\ndescription: verify module\nuser-invocable: true', true);
-    makeSkill('domains/security', 'name: security\ndescription: security\nuser-invocable: false', false);
+    makeSkill('generating-docs', 'name: generating-docs\ndescription: gen docs\nuser-invocable: true', true);
+    makeSkill('verifying-modules', 'name: verifying-modules\ndescription: verify module\nuser-invocable: true', true);
+    makeSkill('securing-systems', 'name: securing-systems\ndescription: security\nuser-invocable: false', false);
 
     const results = scanInvocableSkills(tmpDir);
     expect(results.length).toBe(2);
     const names = results.map(r => r.name).sort();
-    expect(names).toEqual(['gen-docs', 'verify-module']);
+    expect(names).toEqual(['generating-docs', 'verifying-modules']);
   });
 
   test('正确检测 hasScripts', () => {
-    makeSkill('tools/with-script', 'name: with-script\ndescription: with script\nuser-invocable: true', true);
-    makeSkill('domains/no-script', 'name: no-script\ndescription: no script\nuser-invocable: true', false);
+    makeSkill('with-script', 'name: with-script\ndescription: with script\nuser-invocable: true', true);
+    makeSkill('no-script-skill', 'name: no-script\ndescription: no script\nuser-invocable: true', false);
 
     const results = scanInvocableSkills(tmpDir);
     const withScript = results.find(r => r.name === 'with-script');
@@ -243,9 +243,9 @@ describe('scanInvocableSkills', () => {
   });
 
   test('返回正确的 relPath', () => {
-    makeSkill('tools/gen-docs', 'name: gen-docs\ndescription: gen docs\nuser-invocable: true', true);
+    makeSkill('generating-docs', 'name: generating-docs\ndescription: gen docs\nuser-invocable: true', true);
     const results = scanInvocableSkills(tmpDir);
-    expect(results[0].relPath).toBe(path.join('tools', 'gen-docs'));
+    expect(results[0].relPath).toBe(path.join('generating-docs'));
   });
 
   test('空目录返回空数组', () => {
@@ -253,7 +253,7 @@ describe('scanInvocableSkills', () => {
   });
 
   test('缺少必填 name 字段时报错', () => {
-    makeSkill('tools/no-name', 'user-invocable: true\ndescription: no name field', false);
+    makeSkill('no-name', 'user-invocable: true\ndescription: no name field', false);
     expect(() => scanInvocableSkills(tmpDir)).toThrow("缺少必填 frontmatter 字段 'name'");
   });
 

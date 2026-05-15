@@ -12,16 +12,9 @@ function normalizeBoolean(value) {
   return String(value).toLowerCase() === 'true';
 }
 
-function inferSkillKind(relPath) {
-  const normalizedRelPath = relPath.split(path.sep).join('/');
-  const [head] = normalizedRelPath.split('/');
-  if (head === 'tools') return 'tool';
-  if (head === 'domains') return 'domain';
-  if (head === 'routers') return 'router';
-  if (head === 'workflows') return 'workflow';
-  if (head === 'guards') return 'guard';
-  if (head === 'orchestration') return 'orchestration';
-  return 'root';
+function inferSkillKind(relPath, runtimeType) {
+  if (runtimeType === 'scripted') return 'tool';
+  return 'domain';
 }
 
 function listScriptEntries(skillDir) {
@@ -100,8 +93,8 @@ function normalizeSkillRecord(skillsDir, skillDir, meta) {
     relPath
   );
   const argumentHint = normalizedMeta['argument-hint'] || normalizedMeta.argumentHint || '';
-  const category = inferSkillKind(relPath);
   const runtimeType = scriptEntries.length === 1 ? 'scripted' : 'knowledge';
+  const category = inferSkillKind(relPath, runtimeType);
   const scriptPath = scriptEntries[0] || null;
   const skillPath = path.join(skillDir, 'SKILL.md');
 
