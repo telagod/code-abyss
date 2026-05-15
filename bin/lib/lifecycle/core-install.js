@@ -36,6 +36,27 @@ function createInstallCore(deps) {
     step, ok, warn, info, fail, c,
   } = deps;
 
+  // 老路径自动迁移（θ 去人格化）：v3 把 .sage-* 改为 .code-abyss-*
+  // 在 install 开始时检测旧路径并 silently rename，用户无感知。
+  function migrateLegacyPaths(targetDir, infoFn) {
+    const oldBackup = path.join(targetDir, '.sage-backup');
+    const newBackup = path.join(targetDir, '.code-abyss-backup');
+    if (fs.existsSync(oldBackup) && !fs.existsSync(newBackup)) {
+      fs.renameSync(oldBackup, newBackup);
+      if (infoFn) infoFn('迁移: .sage-backup → .code-abyss-backup');
+    }
+
+    const oldUninstall = path.join(targetDir, '.sage-uninstall.js');
+    const newUninstall = path.join(targetDir, '.code-abyss-uninstall.js');
+    if (fs.existsSync(oldUninstall)) {
+      // 老脚本会被新版覆盖；先删，让 install 流程末尾正确写入新路径
+      try { fs.unlinkSync(oldUninstall); } catch { /* idempotent */ }
+      if (!fs.existsSync(newUninstall) && infoFn) {
+        infoFn('迁移: .sage-uninstall.js → .code-abyss-uninstall.js');
+      }
+    }
+  }
+
   function installGeneratedArtifacts(skillsSrcDir, targetDir, backupDir, manifest) {
     const skills = collectInvocableSkills(skillsSrcDir);
     if (skills.length === 0) return 0;
@@ -129,7 +150,12 @@ function createInstallCore(deps) {
       }
       : null;
     const targetDir = resolveManagedRootDir(tgt, tgt, runtimeRoots);
-    const backupDir = path.join(targetDir, '.sage-backup');
+
+    // 老路径自动迁移：v3 把 .sage-* 重命名为 .code-abyss-* 以去人格化（θ）
+    // 检测旧路径，silently rename — 用户无感知
+    migrateLegacyPaths(targetDir, info);
+
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     const manifestPath = path.join(backupDir, 'manifest.json');
 
     const installSummary = tgt === 'codex'
@@ -372,7 +398,7 @@ function createInstallCore(deps) {
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 
     const uSrc = path.join(PKG_ROOT, 'bin', 'uninstall.js');
-    const uDest = path.join(targetDir, '.sage-uninstall.js');
+    const uDest = path.join(targetDir, '.code-abyss-uninstall.js');
     if (fs.existsSync(uSrc)) { fs.copyFileSync(uSrc, uDest); fs.chmodSync(uDest, '755'); }
 
     return { targetDir, settingsPath, settings, manifest, manifestPath, packPlan };

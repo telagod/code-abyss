@@ -43,7 +43,11 @@ function runUninstall(tgt, deps) {
   }
 
   const targetDir = resolveManagedRootDir(tgt);
-  const backupDir = path.join(targetDir, '.sage-backup');
+
+  // 优先读新路径；找不到时回退老路径（兼容 v2.x 老用户的 .sage-backup）
+  const newBackupDir = path.join(targetDir, '.code-abyss-backup');
+  const legacyBackupDir = path.join(targetDir, '.sage-backup');
+  const backupDir = fs.existsSync(newBackupDir) ? newBackupDir : legacyBackupDir;
   const manifestPath = path.join(backupDir, 'manifest.json');
 
   const result = readManifestSafe(manifestPath);
@@ -82,9 +86,11 @@ function runUninstall(tgt, deps) {
 
   executeUninstall(targetDir, manifest, backupDir);
 
-  // 清理 .sage-uninstall.js 自身（仅当存在时）— idempotent
-  const us = path.join(targetDir, '.sage-uninstall.js');
-  if (fs.existsSync(us)) fs.unlinkSync(us);
+  // 清理 .code-abyss-uninstall.js 或老的 .sage-uninstall.js 自身 — idempotent
+  ['.code-abyss-uninstall.js', '.sage-uninstall.js'].forEach((name) => {
+    const p = path.join(targetDir, name);
+    if (fs.existsSync(p)) fs.unlinkSync(p);
+  });
 
   console.log('');
   ok(c.b('卸载完成\n'));

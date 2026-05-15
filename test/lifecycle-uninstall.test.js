@@ -55,7 +55,7 @@ describe('bin/lib/lifecycle/uninstall', () => {
   test('aborts on incompatible manifest_version', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
       manifest_version: 99, version: '99.0.0', target: 'claude',
@@ -68,7 +68,7 @@ describe('bin/lib/lifecycle/uninstall', () => {
   test('aborts on unreadable manifest', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     fs.writeFileSync(path.join(backupDir, 'manifest.json'), '{ malformed json');
     const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
@@ -78,7 +78,7 @@ describe('bin/lib/lifecycle/uninstall', () => {
   test('removes installed files and restores backups', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
 
     fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), 'installed');
@@ -100,25 +100,25 @@ describe('bin/lib/lifecycle/uninstall', () => {
     expect(fs.existsSync(backupDir)).toBe(false);
   });
 
-  test('removes .sage-uninstall.js after rollback', () => {
+  test('removes .code-abyss-uninstall.js after rollback', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
-    fs.writeFileSync(path.join(targetDir, '.sage-uninstall.js'), '// shim');
+    fs.writeFileSync(path.join(targetDir, '.code-abyss-uninstall.js'), '// shim');
     fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
       manifest_version: 2, version: '2.1.11', target: 'claude',
       installed: [], backups: [],
     }));
     const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
     runUninstall('claude', deps);
-    expect(fs.existsSync(path.join(targetDir, '.sage-uninstall.js'))).toBe(false);
+    expect(fs.existsSync(path.join(targetDir, '.code-abyss-uninstall.js'))).toBe(false);
   });
 
   test('idempotent: installed file already deleted skips silently', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     // 故意不创建 CLAUDE.md，模拟用户已经手动删了
     fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
@@ -135,7 +135,7 @@ describe('bin/lib/lifecycle/uninstall', () => {
   test('idempotent: backup file already restored/missing skips silently', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     fs.mkdirSync(path.join(backupDir, 'claude'), { recursive: true });
     // 故意不创建 settings.json backup，模拟用户已手动删了
@@ -152,7 +152,7 @@ describe('bin/lib/lifecycle/uninstall', () => {
   test('idempotent: 双次卸载不报错', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
-    const backupDir = path.join(targetDir, '.sage-backup');
+    const backupDir = path.join(targetDir, '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), 'installed');
     fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({

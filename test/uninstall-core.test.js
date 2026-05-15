@@ -120,7 +120,7 @@ describe('bin/lib/uninstall-core', () => {
     test('删 installed + 恢复 backups + 清 backupDir', () => {
       const home = tmp('exec');
       const targetDir = path.join(home, '.claude');
-      const backupDir = path.join(targetDir, '.sage-backup');
+      const backupDir = path.join(targetDir, '.code-abyss-backup');
       fs.mkdirSync(backupDir, { recursive: true });
 
       fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), 'installed');
@@ -157,7 +157,7 @@ describe('bin/lib/uninstall-core', () => {
     test('idempotent: installed 文件不存在时 silently skip', () => {
       const home = tmp('idem-installed');
       const targetDir = path.join(home, '.claude');
-      const backupDir = path.join(targetDir, '.sage-backup');
+      const backupDir = path.join(targetDir, '.code-abyss-backup');
       fs.mkdirSync(backupDir, { recursive: true });
 
       const removedLabels = [];
@@ -181,7 +181,7 @@ describe('bin/lib/uninstall-core', () => {
     test('idempotent: backup 文件不存在时 silently skip', () => {
       const home = tmp('idem-backup');
       const targetDir = path.join(home, '.claude');
-      const backupDir = path.join(targetDir, '.sage-backup');
+      const backupDir = path.join(targetDir, '.code-abyss-backup');
       fs.mkdirSync(backupDir, { recursive: true });
 
       const restoredLabels = [];

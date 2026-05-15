@@ -43,7 +43,7 @@ describe('generateCommandContent', () => {
 
     expect(content).toContain('name: frontend-design');
     expect(content).toContain('allowed-tools: Read');
-    expect(content).toContain('读取以下秘典');
+    expect(content).toContain('读取以下技能文档');
     expect(content).toContain('~/.claude/skills/domains/frontend-design/SKILL.md');
     expect(content).not.toContain('run_skill.js');
     expect(content).not.toContain('一气呵成');

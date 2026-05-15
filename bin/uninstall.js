@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // bin/uninstall.js
-// 独立卸载脚本：被 install 流程复制为 ~/.{target}/.sage-uninstall.js，
+// 独立卸载脚本：被 install 流程复制为 ~/.{target}/.code-abyss-uninstall.js，
 // 用户即使卸了 npm 包也能跑此脚本完成卸载。
 //
 // 共享逻辑见 bin/lib/uninstall-core.js（npm 包入口走 lifecycle/uninstall.js
@@ -21,7 +21,11 @@ const path = require('path');
 const os = require('os');
 
 const targetDir = path.dirname(__filename);
-const backupDir = path.join(targetDir, '.sage-backup');
+
+// 兼容 v2.x 的 .sage-backup 老路径 — 优先新路径，找不到回退
+const newBackupDir = path.join(targetDir, '.code-abyss-backup');
+const legacyBackupDir = path.join(targetDir, '.sage-backup');
+const backupDir = fs.existsSync(newBackupDir) ? newBackupDir : legacyBackupDir;
 const manifestPath = path.join(backupDir, 'manifest.json');
 
 const SUPPORTED_MANIFEST_VERSION = 2;

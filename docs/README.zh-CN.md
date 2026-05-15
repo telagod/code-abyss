@@ -116,21 +116,21 @@ npx code-abyss --list-styles    # 列出所有可用风格
 ├── commands/*.md    (可选命令)     ├── skills/          (领域技能)
 ├── skills/          (领域技能)     ├── bin/lib/          (运行时库)
 ├── bin/lib/         (运行时库)     ├── config.toml      (推荐配置)
-├── settings.json    (配置)         └── .sage-uninstall.js
-└── .sage-uninstall.js
+├── settings.json    (配置)         └── .code-abyss-uninstall.js
+└── .code-abyss-uninstall.js
 ~/.gemini/
 ├── GEMINI.md        (人格 + 风格)
 ├── commands/*.toml  (可选命令)
 ├── skills/          (领域技能)
 ├── settings.json    (配置)
-└── .sage-uninstall.js
+└── .code-abyss-uninstall.js
 ~/.openclaw/                      <workspace>/
 ├── openclaw.json   (可选)        ├── AGENTS.md       (规则 / 路由)
 ├── skills/         (共享技能)    └── SOUL.md         (人格 + 风格)
-└── .sage-uninstall.js
+└── .code-abyss-uninstall.js
 ```
 
-所有安装文件记录在 `.sage-backup/manifest.json` 中，卸载时自动恢复原有状态。
+所有安装文件记录在 `.code-abyss-backup/manifest.json` 中，卸载时自动恢复原有状态。
 
 ## 命令参考
 

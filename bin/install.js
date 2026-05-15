@@ -375,7 +375,7 @@ async function main() {
     message: '选择动作',
     choices: [
       { name: `${c.grn('+')} Install / Update`, value: 'install', description: '安装或覆盖更新所选目标' },
-      { name: `${c.red('−')} Remove`, value: 'remove', description: '按 .sage-backup/manifest.json 卸载并恢复备份' },
+      { name: `${c.red('−')} Remove`, value: 'remove', description: '按 .code-abyss-backup/manifest.json 卸载并恢复备份' },
     ],
   });
 

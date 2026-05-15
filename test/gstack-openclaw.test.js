@@ -27,7 +27,7 @@ describe('bin/lib/gstack/strategies/openclaw', () => {
 describe('installGstackPack(openclaw, ...)', () => {
   test('安装到 ~/.openclaw/skills/gstack 且不写 commands', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-openclaw-'));
-    const backupDir = path.join(tmpHome, '.openclaw', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.openclaw', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     const manifest = { installed: [], backups: [] };
 
@@ -63,7 +63,7 @@ describe('installGstackPack(openclaw, ...)', () => {
 
   test('source=disabled 时跳过，不写入文件', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-openclaw-disabled-'));
-    const backupDir = path.join(tmpHome, '.openclaw', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.openclaw', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     const manifest = { installed: [], backups: [] };
 

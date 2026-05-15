@@ -55,7 +55,7 @@ describe('claude install smoke', () => {
     expect(fs.existsSync(path.join(claudeDir, 'commands', 'review.md'))).toBe(false);
     expect(fs.existsSync(path.join(claudeDir, 'skills', 'gstack'))).toBe(false);
     expect(fs.existsSync(path.join(claudeDir, 'settings.json'))).toBe(true);
-    expect(fs.existsSync(path.join(claudeDir, '.sage-uninstall.js'))).toBe(true);
+    expect(fs.existsSync(path.join(claudeDir, '.code-abyss-uninstall.js'))).toBe(true);
   });
 
   test('安装 Claude 时支持 --style 切换 outputStyle', () => {
@@ -185,7 +185,7 @@ describe('gemini install smoke', () => {
     expect(fs.existsSync(path.join(geminiDir, 'commands', 'review.toml'))).toBe(false);
     expect(fs.existsSync(path.join(geminiDir, 'skills', 'gstack'))).toBe(false);
     expect(fs.existsSync(path.join(geminiDir, 'settings.json'))).toBe(true);
-    expect(fs.existsSync(path.join(geminiDir, '.sage-uninstall.js'))).toBe(true);
+    expect(fs.existsSync(path.join(geminiDir, '.code-abyss-uninstall.js'))).toBe(true);
   });
 
   test('安装 Gemini 时支持 --style 切换 GEMINI.md', () => {
@@ -230,7 +230,7 @@ describe('openclaw install smoke', () => {
     expect(fs.existsSync(path.join(rootDir, 'skills'))).toBe(true);
     expect(fs.existsSync(path.join(workspaceDir, 'AGENTS.md'))).toBe(true);
     expect(fs.existsSync(path.join(workspaceDir, 'SOUL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(rootDir, '.sage-uninstall.js'))).toBe(true);
+    expect(fs.existsSync(path.join(rootDir, '.code-abyss-uninstall.js'))).toBe(true);
     expect(fs.existsSync(path.join(rootDir, 'commands'))).toBe(false);
   });
 

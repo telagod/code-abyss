@@ -111,7 +111,7 @@ describe('bin/lib/install-helpers', () => {
       fs.mkdirSync(targetRoot, { recursive: true });
       fs.writeFileSync(path.join(targetRoot, 'CLAUDE.md'), 'user-content');
 
-      const backupDir = path.join(home, '.sage-backup');
+      const backupDir = path.join(home, '.code-abyss-backup');
       fs.mkdirSync(backupDir, { recursive: true });
 
       const fn = createBackupManagedPathIfExists({

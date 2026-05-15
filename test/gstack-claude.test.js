@@ -33,7 +33,7 @@ describe('gstack claude integration', () => {
 
   test('installGstackClaudePack 安装 runtime root 与 commands', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-claude-home-'));
-    const backupDir = path.join(tmpHome, '.claude', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.claude', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     const manifest = { installed: [], backups: [] };
 
@@ -60,7 +60,7 @@ describe('gstack claude integration', () => {
 
   test('installGstackClaudePack source=local 且无本地源时跳过', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-claude-local-home-'));
-    const backupDir = path.join(tmpHome, '.claude', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.claude', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
 
     const result = installGstackClaudePack({

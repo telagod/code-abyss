@@ -88,7 +88,7 @@ describe('bin/lib/lifecycle/command-generation', () => {
     });
     test('knowledge skill emits skill path reference only', () => {
       const body = buildClaudeBody({ runtimeType: 'knowledge', skillPath: 'p' });
-      expect(body.join('\n')).toMatch(/读取以下秘典/);
+      expect(body.join('\n')).toMatch(/读取以下技能文档/);
       expect(body.join('\n')).toContain('p');
     });
   });
@@ -112,7 +112,7 @@ describe('bin/lib/lifecycle/command-generation', () => {
       );
       expect(content).toMatch(/^---\n/);
       expect(content).toMatch(/name: foo/);
-      expect(content).toMatch(/读取以下秘典/);
+      expect(content).toMatch(/读取以下技能文档/);
     });
   });
 

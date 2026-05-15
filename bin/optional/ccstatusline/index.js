@@ -64,7 +64,7 @@ function deployCcstatuslineConfig(errors, { HOME, ok }) {
   fs.mkdirSync(configDir, { recursive: true });
 
   if (fs.existsSync(targetConfig)) {
-    const backupDir = path.join(HOME, '.claude', '.sage-backup');
+    const backupDir = path.join(HOME, '.claude', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     fs.copyFileSync(targetConfig, path.join(backupDir, 'ccstatusline-settings.json'));
   }

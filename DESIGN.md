@@ -51,7 +51,7 @@ Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code CLI 与 C
 ### 4. 备份策略
 
 安装时自动备份现有配置：
-- 备份到 `{目标目录}/.sage-backup/`（即 `~/.claude/.sage-backup/` 或 `~/.codex/.sage-backup/`）
+- 备份到 `{目标目录}/.code-abyss-backup/`（即 `~/.claude/.code-abyss-backup/` 或 `~/.codex/.code-abyss-backup/`）
 - 通过 manifest 记录备份清单
 - 避免用户数据丢失
 

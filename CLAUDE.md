@@ -138,4 +138,4 @@ aliases: vq                    # optional comma-separated aliases
 | Gemini | `~/.gemini/settings.json` | `~/.gemini/GEMINI.md` + `~/.gemini/commands/*.toml` (optional) + `~/.gemini/skills/` | Global context + TOML command runtime |
 | OpenClaw | `~/.openclaw/openclaw.json` | `~/.openclaw/skills/` + `<workspace>/AGENTS.md` + `<workspace>/SOUL.md` | `SOUL.md` persona/style + workspace AGENTS rules |
 
-Backups go to `<target-dir>/.sage-backup/` with `manifest.json`. Uninstall restores from backup.
+Backups go to `<target-dir>/.code-abyss-backup/` with `manifest.json`. Uninstall restores from backup.

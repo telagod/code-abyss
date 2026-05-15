@@ -57,7 +57,7 @@ describe('gstack codex integration', () => {
 
   test('installGstackCodexPack 安装到 ~/.agents/skills/gstack 且不需要 AGENTS.md', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-home-'));
-    const backupDir = path.join(tmpHome, '.codex', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.codex', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
     const manifest = { installed: [], backups: [] };
 
@@ -87,7 +87,7 @@ describe('gstack codex integration', () => {
 
   test('installGstackCodexPack source=disabled 时跳过', () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-gstack-disabled-home-'));
-    const backupDir = path.join(tmpHome, '.codex', '.sage-backup');
+    const backupDir = path.join(tmpHome, '.codex', '.code-abyss-backup');
     fs.mkdirSync(backupDir, { recursive: true });
 
     const result = installGstackCodexPack({

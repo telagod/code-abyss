@@ -118,21 +118,21 @@ Core skills are now routed automatically by context and are **not exposed as sla
 ├── commands/*.md    (optional)     ├── skills/          (domain skills)
 ├── skills/          (domain skills)├── bin/lib/          (runtime libs)
 ├── bin/lib/         (runtime libs) ├── config.toml      (recommended config)
-├── settings.json    (config)       └── .sage-uninstall.js
-└── .sage-uninstall.js
+├── settings.json    (config)       └── .code-abyss-uninstall.js
+└── .code-abyss-uninstall.js
 ~/.gemini/
 ├── GEMINI.md        (persona + style)
 ├── commands/*.toml  (optional)
 ├── skills/          (domain skills)
 ├── settings.json    (config)
-└── .sage-uninstall.js
+└── .code-abyss-uninstall.js
 ~/.openclaw/                      <workspace>/
 ├── openclaw.json   (optional)    ├── AGENTS.md       (rules / routing)
 ├── skills/         (shared)      └── SOUL.md         (persona + style)
-└── .sage-uninstall.js
+└── .code-abyss-uninstall.js
 ```
 
-All installed files are tracked in `.sage-backup/manifest.json`. Uninstall restores previous state.
+All installed files are tracked in `.code-abyss-backup/manifest.json`. Uninstall restores previous state.
 
 ## CLI Reference
 
@@ -229,10 +229,10 @@ npx code-abyss --uninstall openclaw
 Backup script alternative:
 
 ```bash
-node ~/.claude/.sage-uninstall.js
-node ~/.codex/.sage-uninstall.js
-node ~/.gemini/.sage-uninstall.js
-node ~/.openclaw/.sage-uninstall.js
+node ~/.claude/.code-abyss-uninstall.js
+node ~/.codex/.code-abyss-uninstall.js
+node ~/.gemini/.code-abyss-uninstall.js
+node ~/.openclaw/.code-abyss-uninstall.js
 ```
 
 Restores backed-up configuration and removes all installed files.

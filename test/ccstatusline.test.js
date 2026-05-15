@@ -45,7 +45,7 @@ describe('deployCcstatuslineConfig', () => {
     const errors = [];
     deployCcstatuslineConfig(errors, { HOME: tmpDir, ok: () => {} });
     expect(errors).toHaveLength(0);
-    const backup = path.join(tmpDir, '.claude', '.sage-backup', 'ccstatusline-settings.json');
+    const backup = path.join(tmpDir, '.claude', '.code-abyss-backup', 'ccstatusline-settings.json');
     expect(fs.existsSync(backup)).toBe(true);
     expect(JSON.parse(fs.readFileSync(backup, 'utf8'))).toEqual({ old: true });
   });

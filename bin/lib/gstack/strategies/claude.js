@@ -53,7 +53,7 @@ function buildClaudeCommand(name, description, allowedTools, skillPath) {
     `allowed-tools: ${allowedTools || 'Read'}`,
     '---',
     '',
-    '读取以下秘典，根据内容为用户提供专业指导：',
+    '读取以下技能文档，根据内容为用户提供专业指导：',
     '',
     '```',
     skillPath,

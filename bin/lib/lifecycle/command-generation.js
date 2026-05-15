@@ -67,7 +67,7 @@ function buildClaudeBody(spec) {
     return lines;
   }
 
-  lines.push('读取以下秘典，根据内容为用户提供专业指导：', '');
+  lines.push('读取以下技能文档，根据内容为用户提供专业指导：', '');
   lines.push('```', spec.skillPath, '```');
   return lines;
 }
