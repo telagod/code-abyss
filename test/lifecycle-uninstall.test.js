@@ -8,33 +8,18 @@ function makeTempHome() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-uninstall-'));
 }
 
-function captureLog(fn) {
-  const lines = [];
-  const original = console.log;
-  console.log = (msg) => lines.push(String(msg));
-  try { fn(); } finally { console.log = original; }
-  return lines;
-}
-
 function makeDeps(overrides = {}) {
   const noop = () => { };
   return {
     isSupportedTarget: (t) => ['claude', 'codex', 'gemini', 'openclaw'].includes(t),
     listTargetNames: () => ['claude', 'codex', 'gemini', 'openclaw'],
     resolveManagedRootDir: () => '/nowhere',
-    normalizeManifestEntry: (entry, defaultRoot) => {
-      if (typeof entry === 'string') return { root: defaultRoot, path: entry };
-      return { root: entry.root || defaultRoot, path: entry.path };
-    },
-    manifestLabel: (entry, defaultRoot) => {
-      const e = typeof entry === 'string' ? { root: defaultRoot, path: entry } : entry;
-      return e.root === defaultRoot ? e.path : `${e.root}/${e.path}`;
-    },
     rmSafe: (p) => { if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true }); },
     formatActionableError: (msg) => msg,
     c: { b: (s) => s, red: (s) => s },
     fail: noop,
     ok: noop,
+    info: noop,
     divider: noop,
     ...overrides,
   };
@@ -52,13 +37,19 @@ describe('bin/lib/lifecycle/uninstall', () => {
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  test('aborts when manifest missing', () => {
+  test('idempotent: manifest missing returns silently (not exit 1)', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
     fs.mkdirSync(targetDir, { recursive: true });
-    const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
-    expect(() => runUninstall('claude', deps)).toThrow('exit');
-    expect(exitSpy).toHaveBeenCalledWith(1);
+    const infoMessages = [];
+    const deps = makeDeps({
+      resolveManagedRootDir: () => targetDir,
+      info: (msg) => infoMessages.push(msg),
+    });
+    // should NOT throw / exit
+    expect(() => runUninstall('claude', deps)).not.toThrow();
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(infoMessages.some((m) => /已卸载或从未安装/.test(m))).toBe(true);
   });
 
   test('aborts on incompatible manifest_version', () => {
@@ -74,15 +65,23 @@ describe('bin/lib/lifecycle/uninstall', () => {
     expect(() => runUninstall('claude', deps)).toThrow('exit');
   });
 
+  test('aborts on unreadable manifest', () => {
+    const home = makeTempHome();
+    const targetDir = path.join(home, '.claude');
+    const backupDir = path.join(targetDir, '.sage-backup');
+    fs.mkdirSync(backupDir, { recursive: true });
+    fs.writeFileSync(path.join(backupDir, 'manifest.json'), '{ malformed json');
+    const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
+    expect(() => runUninstall('claude', deps)).toThrow('exit');
+  });
+
   test('removes installed files and restores backups', () => {
     const home = makeTempHome();
     const targetDir = path.join(home, '.claude');
     const backupDir = path.join(targetDir, '.sage-backup');
     fs.mkdirSync(backupDir, { recursive: true });
 
-    // pre-existing install artifacts
     fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), 'installed');
-    // pre-existing backed-up user file (will be restored)
     fs.mkdirSync(path.join(backupDir, 'claude'), { recursive: true });
     fs.writeFileSync(path.join(backupDir, 'claude', 'settings.json'), '{"user":true}');
 
@@ -114,5 +113,54 @@ describe('bin/lib/lifecycle/uninstall', () => {
     const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
     runUninstall('claude', deps);
     expect(fs.existsSync(path.join(targetDir, '.sage-uninstall.js'))).toBe(false);
+  });
+
+  test('idempotent: installed file already deleted skips silently', () => {
+    const home = makeTempHome();
+    const targetDir = path.join(home, '.claude');
+    const backupDir = path.join(targetDir, '.sage-backup');
+    fs.mkdirSync(backupDir, { recursive: true });
+    // 故意不创建 CLAUDE.md，模拟用户已经手动删了
+    fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
+      manifest_version: 2, version: '2.1.11', target: 'claude',
+      installed: ['CLAUDE.md'],  // 但 manifest 仍记录
+      backups: [],
+    }));
+    const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
+    expect(() => runUninstall('claude', deps)).not.toThrow();
+    // backup dir 应仍被清理
+    expect(fs.existsSync(backupDir)).toBe(false);
+  });
+
+  test('idempotent: backup file already restored/missing skips silently', () => {
+    const home = makeTempHome();
+    const targetDir = path.join(home, '.claude');
+    const backupDir = path.join(targetDir, '.sage-backup');
+    fs.mkdirSync(backupDir, { recursive: true });
+    fs.mkdirSync(path.join(backupDir, 'claude'), { recursive: true });
+    // 故意不创建 settings.json backup，模拟用户已手动删了
+    fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
+      manifest_version: 2, version: '2.1.11', target: 'claude',
+      installed: [],
+      backups: [{ root: 'claude', path: 'settings.json' }],  // manifest 仍记录
+    }));
+    const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
+    expect(() => runUninstall('claude', deps)).not.toThrow();
+    expect(fs.existsSync(backupDir)).toBe(false);
+  });
+
+  test('idempotent: 双次卸载不报错', () => {
+    const home = makeTempHome();
+    const targetDir = path.join(home, '.claude');
+    const backupDir = path.join(targetDir, '.sage-backup');
+    fs.mkdirSync(backupDir, { recursive: true });
+    fs.writeFileSync(path.join(targetDir, 'CLAUDE.md'), 'installed');
+    fs.writeFileSync(path.join(backupDir, 'manifest.json'), JSON.stringify({
+      manifest_version: 2, version: '2.1.11', target: 'claude',
+      installed: ['CLAUDE.md'], backups: [],
+    }));
+    const deps = makeDeps({ resolveManagedRootDir: () => targetDir });
+    runUninstall('claude', deps); // first uninstall
+    expect(() => runUninstall('claude', deps)).not.toThrow(); // second uninstall — idempotent
   });
 });

@@ -253,13 +253,12 @@ function runUninstall(tgt) {
     isSupportedTarget,
     listTargetNames,
     resolveManagedRootDir,
-    normalizeManifestEntry,
-    manifestLabel,
     rmSafe,
     formatActionableError,
     c,
     fail,
     ok,
+    info,
     divider,
   });
 }
