@@ -1,9 +1,7 @@
 ---
 name: securing-systems
 description: 安全工程参考索引。涵盖防御加固、安全测试、代码审计、威胁检测、应急响应、漏洞修复、云原生安全、供应链安全、身份零信任、区块链安全、逆向/移动/IoT、协议安全、合规与威胁建模。用于授权安全评估和防御体系建设。当魔尊提到安全、渗透、攻防、红队、蓝队、漏洞、CVE、云安全、K8s 安全、CI/CD 安全、SIEM、YARA、Sigma、IAM、AD、智能合约安全、逆向、固件、工控、协议安全时路由到此。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # 攻防秘典

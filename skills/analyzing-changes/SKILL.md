@@ -1,10 +1,8 @@
 ---
 name: analyzing-changes
 description: 变更校验关卡。分析代码变更，检测文档同步状态，评估变更影响范围。当魔尊提到变更检查、文档同步、代码审查、提交前检查、diff分析时使用。在设计级变更、重构完成时自动触发。
-license: MIT
 compatibility: node>=18
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Grep
 argument-hint: [--mode working|staged|committed]
 ---

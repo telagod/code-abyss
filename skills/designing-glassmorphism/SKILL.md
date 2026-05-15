@@ -1,9 +1,7 @@
 ---
 name: designing-glassmorphism
 description: Glassmorphism design system skill. Use when building frosted-glass UI components with blur, transparency, and layered depth effects.
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # Glassmorphism 设计规范

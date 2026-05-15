@@ -1,10 +1,8 @@
 ---
 name: verifying-modules
 description: 模块完整性校验关卡。扫描目录结构、检测缺失文档、验证代码与文档同步。当魔尊提到模块校验、文档检查、结构完整性、README检查、DESIGN检查时使用。在新建模块完成时自动触发。
-license: MIT
 compatibility: node>=18
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Glob
 argument-hint: <模块路径>
 ---

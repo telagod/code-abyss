@@ -1,9 +1,7 @@
 ---
 name: developing-mobile-apps
 description: 移动开发。iOS、Android、SwiftUI、Jetpack Compose、React Native、Flutter、跨平台。当用户提到移动开发、iOS、Android、跨平台时路由到此。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # 移动开发域 · Mobile

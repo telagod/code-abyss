@@ -1,10 +1,8 @@
 ---
 name: checking-code-quality
 description: 代码质量校验关卡。检测复杂度、重复代码、命名规范、函数长度等质量指标。当魔尊提到代码质量、复杂度检查、代码异味、重构建议、lint检查、代码规范时使用。在复杂模块、重构完成时自动触发。
-license: MIT
 compatibility: node>=18
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Glob
 argument-hint: <扫描路径>
 ---

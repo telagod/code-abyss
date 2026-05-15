@@ -1,9 +1,7 @@
 ---
 name: processing-docx
 description: Office Word 文档能力。支持 .docx 创建、编辑、批注、修订跟踪、OOXML 分析与格式保留，适用于合同、制度、学术、商务、公文等专业文档场景。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Write, Edit, Glob
 argument-hint: <file.docx | task>
 ---

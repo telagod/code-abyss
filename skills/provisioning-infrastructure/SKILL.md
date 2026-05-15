@@ -1,9 +1,7 @@
 ---
 name: provisioning-infrastructure
 description: 云原生基础设施。Kubernetes、Helm、Kustomize、Operator、CRD、GitOps、ArgoCD、Flux、IaC、Terraform、Pulumi、CDK。当用户提到 K8s、Helm、GitOps、IaC 时路由到此。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # 云原生基础设施 · Infrastructure

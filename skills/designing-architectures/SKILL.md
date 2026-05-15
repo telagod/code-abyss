@@ -1,9 +1,7 @@
 ---
 name: designing-architectures
 description: 架构设计能力索引。API设计、安全架构、云原生、数据安全。当用户提到架构、设计、API、云原生时路由到此。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # 阵法秘典 · 架构设计

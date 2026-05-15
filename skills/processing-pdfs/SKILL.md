@@ -1,9 +1,7 @@
 ---
 name: processing-pdfs
 description: Office PDF 能力。支持 PDF 文本/表格提取、表单填写、合并拆分、批量处理、图片转换与程序化生成，适用于票据、表单、报告和归档流转。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Write, Edit, Glob
 argument-hint: <file.pdf | task>
 ---

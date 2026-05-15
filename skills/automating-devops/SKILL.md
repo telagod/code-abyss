@@ -1,9 +1,7 @@
 ---
 name: automating-devops
 description: DevOps 能力索引。Git、测试、DevSecOps、数据库。当用户提到 DevOps、CI/CD、Git、测试时路由到此。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 ---
 
 # 炼器秘典 · DevOps

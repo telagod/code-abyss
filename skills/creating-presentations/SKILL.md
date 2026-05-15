@@ -1,9 +1,7 @@
 ---
 name: creating-presentations
 description: Office PowerPoint 能力。支持 .pptx 创建、模板改写、HTML 转幻灯片、缩略图校验、版式替换、演讲备注与 OOXML 深度编辑。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Write, Edit, Glob
 argument-hint: <file.pptx | task>
 ---

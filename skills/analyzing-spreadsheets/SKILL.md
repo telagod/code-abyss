@@ -1,9 +1,7 @@
 ---
 name: analyzing-spreadsheets
 description: Office Excel 能力。支持 .xlsx/.xlsm/.csv 等表格创建、公式建模、格式保留、数据分析、财务模型和重算校验，强调零公式错误交付。
-license: MIT
 user-invocable: false
-disable-model-invocation: false
 allowed-tools: Bash, Read, Write, Edit, Glob
 argument-hint: <file.xlsx | task>
 ---
