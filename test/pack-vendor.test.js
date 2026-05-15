@@ -3,7 +3,6 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { spawnSync } = require('child_process');
 
 const {
   syncPackVendor,
@@ -40,42 +39,60 @@ describe('pack vendor providers', () => {
     }, null, 2));
   }
 
-  test('validatePackManifest 校验 upstream provider 字段', () => {
+  test('validatePackManifest 拒绝未知 provider', () => {
     expect(() => validatePackManifest({
       name: 'bad',
       description: 'bad',
-      upstream: { provider: 'archive' },
+      upstream: { provider: 'unknown-provider' },
       hosts: { claude: { uninstall: { runtimeRoot: { root: 'claude', path: 'skills/bad' } } } },
-    }, '/tmp/bad.json')).toThrow(/必须提供 path/);
+    }, '/tmp/bad.json')).toThrow(/upstream\.provider 非法/);
   });
 
-  test('syncPackVendor 支持 local-dir provider', () => {
-    const sourceDir = path.join(tmpDir, 'local-source');
+  test('syncPackVendor 支持自定义 provider（项目级注入）', () => {
+    // archive/local-dir 内建 provider 在 v3 已删；动态加载机制保留，可注入项目级 provider
+    const providerDir = path.join(tmpDir, '.code-abyss', 'vendor-providers');
+    fs.mkdirSync(providerDir, { recursive: true });
+    fs.writeFileSync(path.join(providerDir, 'fixture.js'), `
+'use strict';
+const fs = require('fs');
+const path = require('path');
+module.exports = {
+  name: 'fixture',
+  validate(upstream) {
+    if (!upstream.path) throw new Error('upstream.provider=fixture 需要 path');
+  },
+  sync({ projectRoot, upstream, vendorDir, shared, packName }) {
+    const sourcePath = shared.resolveUpstreamPath(projectRoot, upstream.path);
+    shared.rmSafe(vendorDir);
+    shared.copyRecursive(sourcePath, vendorDir);
+    shared.writeVendorMetadata(vendorDir, {
+      pack: packName, provider: 'fixture', path: upstream.path,
+      sourceSignature: shared.hashDirectory(sourcePath),
+      vendorSignature: shared.hashDirectory(vendorDir),
+    });
+    return { pack: packName, provider: 'fixture', action: 'updated', vendorDir, version: '' };
+  },
+  status({ projectRoot, upstream, vendorDir, shared, packName, metadata }) {
+    return {
+      pack: packName, provider: 'fixture', vendorDir,
+      exists: true, dirty: false, drifted: false,
+      currentCommit: null, targetCommit: null,
+      sourceExists: true, metadata,
+    };
+  },
+};
+`);
+
+    const sourceDir = path.join(tmpDir, 'fixture-source');
     fs.mkdirSync(sourceDir, { recursive: true });
-    fs.writeFileSync(path.join(sourceDir, 'README.md'), 'local source\n');
-    writeManifest('local-pack', { provider: 'local-dir', path: 'local-source' });
+    fs.writeFileSync(path.join(sourceDir, 'README.md'), 'fixture source\n');
+    writeManifest('fixture-pack', { provider: 'fixture', path: 'fixture-source' });
 
-    const report = syncPackVendor(tmpDir, 'local-pack');
-    const status = getPackVendorStatus(tmpDir, 'local-pack');
+    const report = syncPackVendor(tmpDir, 'fixture-pack');
+    const status = getPackVendorStatus(tmpDir, 'fixture-pack');
 
-    expect(report.provider).toBe('local-dir');
-    expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'vendor', 'local-pack', 'README.md'))).toBe(true);
-    expect(status).toMatchObject({ exists: true, dirty: false, drifted: false, provider: 'local-dir' });
-  });
-
-  test('syncPackVendor 支持 archive provider', () => {
-    const sourceDir = path.join(tmpDir, 'archive-source');
-    const archivePath = path.join(tmpDir, 'archive-source.tgz');
-    fs.mkdirSync(sourceDir, { recursive: true });
-    fs.writeFileSync(path.join(sourceDir, 'README.md'), 'archive source\n');
-    spawnSync('tar', ['-czf', archivePath, '-C', sourceDir, '.'], { encoding: 'utf8' });
-    writeManifest('archive-pack', { provider: 'archive', path: 'archive-source.tgz' });
-
-    const report = syncPackVendor(tmpDir, 'archive-pack');
-    const status = getPackVendorStatus(tmpDir, 'archive-pack');
-
-    expect(report.provider).toBe('archive');
-    expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'vendor', 'archive-pack', 'README.md'))).toBe(true);
-    expect(status).toMatchObject({ exists: true, dirty: false, drifted: false, provider: 'archive' });
+    expect(report.provider).toBe('fixture');
+    expect(fs.existsSync(path.join(tmpDir, '.code-abyss', 'vendor', 'fixture-pack', 'README.md'))).toBe(true);
+    expect(status).toMatchObject({ exists: true, provider: 'fixture' });
   });
 });

@@ -33,7 +33,8 @@ module.exports = {
 
   test('listVendorProviderNames 合并内建与项目级 provider', () => {
     const providers = listVendorProviderNames(tmpDir);
-    expect(providers).toEqual(expect.arrayContaining(['git', 'local-dir', 'archive', 'custom-provider']));
+    // 内建只剩 git（archive/local-dir 已在 v3 删除，无真实消费者）
+    expect(providers).toEqual(expect.arrayContaining(['git', 'custom-provider']));
   });
 
   test('getVendorProvider 可读取项目级 provider', () => {
