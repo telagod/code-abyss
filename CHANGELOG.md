@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.11] - 2026-05-16
+
+### Fixed
+- `config/ccstatusline/settings.json` `flexMode` 由 `full-minus-40` 改为 `full`，避免双行 token/cost 预设在常见终端宽度下因 ccstatusline 自身保守截断而在行尾追加 `...`；ccstatusline 2.2.18 的 `flexMode` 只接受 `full | full-minus-40 | full-until-compact` 三个合法值，任何非法值都会触发 ZodError 并把整个 `~/.config/ccstatusline/settings.json` 重置为默认单行预设。
+
+### Changed
+- `skills/domains/security/SKILL.md` 路由 description 触发词去歧义：`K8s` / `CI/CD` 改为 `K8s 安全` / `CI/CD 安全`，避免和 `infrastructure` / `devops` 等姊妹 domain 在 LLM 路由时碰撞；`区块链、智能合约` 收敛为 `智能合约安全`，与已存在的 `区块链安全` 不再冗余。
+- `skills/domains/security/coff0xc-security-index.md` 上游归属说明改为既成事实陈述，并直接链接到仓库内的 [`NOTICE.coff0xc-security.md`](./NOTICE.coff0xc-security.md) 与 [`THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt`](./THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt)，方便读者一跳到位。
+
+### Verification
+- Jest: **23 suites / 223 tests passed**（1 skipped）
+- Skill contract gate: `npm run verify:skills` — 26 skills 通过
+
 ## [2.1.10] - 2026-05-13
 
 ### Added
