@@ -34,6 +34,18 @@ code-abyss 自 v1.0 演进到 v2.1.11 期间，逐步生长出两套被认为是
 | **4** | skills 内容打磨 | B + C + P8 | 否（frontmatter 迁子键 + 描述重写） | 2 | v3.0.0-beta.2 |
 | **5** | 生态接入 | δ | 否（新增） | 1 | v3.0.0 |
 
+### 迁移策略（2026-05-16 决策）
+
+**旧路径处理**：v3.0 install 时检测 `~/.{target}/skills/domains/...` 旧路径仅打 warning，要求用户先 `--uninstall` 旧版再装新版。**不做自动迁移**。理由：
+- 自动迁移需为 Phase 2 backup 机制额外加 migration 分支，复杂度不对称
+- v3.0 是 major 版本，用户对破坏性变更有心理预期
+- README + CHANGELOG.BREAKING 提供明确指引足够
+
+**Phase 1 起手点**：α 拆 `install.js`。理由：
+- god object 是所有后续重构的瓶颈（β/γ/ε/η 都要回头改 install.js）
+- 先拆完 install.js，后续动作的改动面会显著缩小
+- ROI 最高，但 review 复杂度也最高，先做掉化解最大未知数
+
 候选 scope（已决，记录用）：
 
 - ~~Scope-S（小修缝合）~~：B + C + D。
