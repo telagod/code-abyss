@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 date: 2026-05-16
 deciders: telagod
 tags: [architecture, refactor, skills, installer, breaking-change]
@@ -18,13 +18,27 @@ code-abyss 自 v1.0 演进到 v2.1.11 期间，逐步生长出两套被认为是
 
 ## Decision
 
-**未决**。本 ADR 提出 3 种 scope，决策由 telagod 在阅读完证据后选择，决策落定后将以"补丁式更新"形式落回本 ADR `Decision` 段。
+**2026-05-16：选定 Scope-L（v3.0 大重构）**，由 telagod 决策。
 
-候选 scope：
+含 17 项问题的全量解决：A + B + C + D + E + F + α + β + γ + δ + ε + ζ + η + θ + P7 + P8 + P17。
 
-- **Scope-S（小修缝合）**：B + C + D（frontmatter 迁 metadata 子键 + description 加触发关键词 + 删 root router）。不改路径、不改产物结构。可作为 v2.2.0 minor 发布。
-- **Scope-M（中修瘦身）**：S + α + β + γ + η（拆 install.js + 砍 pack 子系统 + gstack 三件套合一 + ccstatusline 解耦）。路径不变，bin/ LOC 砍 ~40%。可作为 v2.3.0 minor 发布。
-- **Scope-L（v3.0 大重构）**：M + A + E + δ + ε + ζ + θ（skills 扁平化 + references 外移 + 接 Plugin Marketplace + 删 target-registry + backup 机制简化 + 命名去人格化）。**破坏性变更**，必须 v3.0.0 major 发布并提供 migration guide。
+执行节奏：拆 **5 个 Phase**，每 Phase 独立 PR、独立可回滚，单 PR ≤ ~500 LOC 改动面。每 Phase 完成后 main 仍处于可发布状态。
+
+### Phase 路线图
+
+| Phase | 主题 | 含动作 | 破坏性 | 预估 PR 数 | 可发布版本 |
+|---|---|---|---|---|---|
+| **1** | installer 内部清理 | α + β + γ + ε + η + P17 | 否（CLI surface 不破） | 4–5 | v3.0.0-alpha.1 |
+| **2** | 工程层去耦 + backup 重做 | ζ + θ | 是（旧 `.sage-backup` 用户重装） | 2 | v3.0.0-alpha.2 |
+| **3** | skills 扁平化 | A + D + E + F + P7 | 是（skills 路径全变） | 3–4 | v3.0.0-beta.1 |
+| **4** | skills 内容打磨 | B + C + P8 | 否（frontmatter 迁子键 + 描述重写） | 2 | v3.0.0-beta.2 |
+| **5** | 生态接入 | δ | 否（新增） | 1 | v3.0.0 |
+
+候选 scope（已决，记录用）：
+
+- ~~Scope-S（小修缝合）~~：B + C + D。
+- ~~Scope-M（中修瘦身）~~：S + α + β + γ + η + ε + θ + P17。
+- **Scope-L（v3.0 大重构）✅**：M + A + E + F + δ + ζ + P7 + P8。
 
 ## 证据：量化对照
 
@@ -242,3 +256,4 @@ code-abyss 自 v1.0 演进到 v2.1.11 期间，逐步生长出两套被认为是
 ## 历史
 
 - 2026-05-16：本 ADR 初版提交，决策位待 telagod scope 选择
+- 2026-05-16：telagod 选定 Scope-L（v3.0 大重构），状态由 proposed → accepted；新增 5 阶段 Phase 路线图
