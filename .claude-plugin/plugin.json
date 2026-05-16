@@ -1,7 +1,7 @@
 {
   "name": "code-abyss",
   "description": "26 domain skills + 5 verification tools for security-first full-stack engineering. Covers security, architecture, DevOps, AI, mobile, office docs, frontend design, and multi-agent coordination.",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0",
   "author": {
     "name": "telagod"
   },
