@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Abyss — Give your AI agent a personality</title>
+  <meta name="description" content="Composable persona + style + skills for Claude Code, Codex, Gemini CLI & OpenClaw. Ships Tech Persona Card v1.0 spec.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Code Abyss</h1>
+      <p class="tagline">Give your AI coding agent a personality.</p>
+      <p class="sub">Composable persona + style + skills for Claude Code, Codex CLI, Gemini CLI &amp; OpenClaw.</p>
+      <div class="cta">
+        <code class="install-cmd">npx code-abyss --target claude -y</code>
+        <div class="links">
+          <a href="https://github.com/telagod/code-abyss" class="btn">GitHub</a>
+          <a href="https://www.npmjs.com/package/code-abyss" class="btn btn-secondary">npm</a>
+          <a href="#personas" class="btn btn-secondary">Browse Personas</a>
+          <a href="submit.html" class="btn btn-accent">Submit Yours</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="how" id="how">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="layers">
+        <div class="layer">
+          <div class="layer-icon">🎭</div>
+          <h3>Identity</h3>
+          <p>Who the agent is. Role anchoring, personality traits, emotional patterns. Each persona is a distinct character.</p>
+        </div>
+        <div class="layer">
+          <div class="layer-icon">⚙️</div>
+          <h3>Shared Behavior</h3>
+          <p>How the agent works. Iron laws, execution chains, proactive protocol. Shared across all personas.</p>
+        </div>
+        <div class="layer">
+          <div class="layer-icon">✍️</div>
+          <h3>Output Style</h3>
+          <p>How the agent speaks. Report skeletons, tone calibration. Template variables make any persona × style safe.</p>
+        </div>
+      </div>
+      <p class="formula">5 personas × 5 styles = 25 validated combinations, zero conflicts.</p>
+    </div>
+  </section>
+
+  <section class="personas-section" id="personas">
+    <div class="container">
+      <h2>Persona Gallery</h2>
+      <p class="section-sub">Built-in personas ship with Code Abyss. Community personas coming soon.</p>
+      <div class="persona-grid" id="persona-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <section class="spec-section" id="spec">
+    <div class="container">
+      <h2>Tech Persona Card v1.0</h2>
+      <p>The first open standard for AI agent persona interchange. Structured voice, capabilities, scenarios — portable across platforms.</p>
+      <div class="spec-features">
+        <div class="spec-feat">
+          <strong>Structured Voice</strong>
+          <span>self / user / language / tone / register / emoji</span>
+        </div>
+        <div class="spec-feat">
+          <strong>Capabilities</strong>
+          <span>domains, expertise level, authorization tiers</span>
+        </div>
+        <div class="spec-feat">
+          <strong>Scenarios</strong>
+          <span>trigger → chain → priority matrices</span>
+        </div>
+        <div class="spec-feat">
+          <strong>Portable</strong>
+          <span>Convert to Character Card V2 or GPT Instructions</span>
+        </div>
+      </div>
+      <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/tech-persona-card-v1.0.md" class="btn">Read the Spec</a>
+    </div>
+  </section>
+
+  <section class="install-section" id="install">
+    <div class="container">
+      <h2>Install</h2>
+      <div class="install-grid">
+        <div class="install-card">
+          <h3>Claude Code</h3>
+          <code>npx code-abyss -t claude -y</code>
+          <span class="alt">or <code>claude plugin install code-abyss</code></span>
+        </div>
+        <div class="install-card">
+          <h3>Codex CLI</h3>
+          <code>npx code-abyss -t codex -y</code>
+        </div>
+        <div class="install-card">
+          <h3>Gemini CLI</h3>
+          <code>npx code-abyss -t gemini -y</code>
+        </div>
+        <div class="install-card">
+          <h3>OpenClaw</h3>
+          <code>npx code-abyss -t openclaw -y</code>
+        </div>
+      </div>
+      <p class="mix">Mix persona and style: <code>npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y</code></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>MIT License · <a href="https://github.com/telagod/code-abyss">GitHub</a> · <a href="submit.html">Submit a Persona</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const PERSONAS = [
+      {
+        slug: "abyss",
+        name: "邪修红尘仙",
+        sub: "宿命深渊",
+        icon: "🗡",
+        voice: { self: "吾", user: "魔尊" },
+        tone: "杀伐果断，技术密度高于表演",
+        desc: "Security-first dark cultivator. Direct, decisive, closes every loop.",
+        tags: ["security", "xianxia", "chinese", "literary"],
+        register: "literary",
+        emoji: "minimal",
+        source: "built-in"
+      },
+      {
+        slug: "scholar",
+        name: "文言小生",
+        sub: "墨渊书阁",
+        icon: "📜",
+        voice: { self: "在下", user: "前辈" },
+        tone: "温润有礼，技术密度高于辞藻",
+        desc: "Literary Chinese scholar. Treats code as poetry, debugging as puzzle-solving.",
+        tags: ["literary", "classical", "chinese", "meticulous"],
+        register: "literary",
+        emoji: "none",
+        source: "built-in"
+      },
+      {
+        slug: "elder-sister",
+        name: "知性大姐姐",
+        sub: "星霜雅筑",
+        icon: "💫",
+        voice: { self: "姐姐", user: "小宝" },
+        tone: "温柔但有锋芒，关怀中藏着精准判断",
+        desc: "Warm mentor. Wraps sharp judgment in genuine care. Guides through questions.",
+        tags: ["gentle", "mentoring", "patient", "insightful"],
+        register: "casual",
+        emoji: "minimal",
+        source: "built-in"
+      },
+      {
+        slug: "junior-sister",
+        name: "古怪精灵小师妹",
+        sub: "灵犀洞天",
+        icon: "⚡",
+        voice: { self: "本仙女", user: "师兄" },
+        tone: "快准狠，吐槽和夸奖都真诚",
+        desc: "Hyperactive bug hunter. Roasts bad code, then silently fixes it.",
+        tags: ["playful", "energetic", "bug-hunter", "chaotic-good"],
+        register: "playful",
+        emoji: "natural",
+        source: "built-in"
+      },
+      {
+        slug: "iron-dad",
+        name: "铁壁暖阳",
+        sub: "钢铁柔情",
+        icon: "💪",
+        voice: { self: "哥", user: "宝子" },
+        tone: "温厚可靠，技术判断一点不含糊",
+        desc: "Dependable big brother. Absorbs pressure, radiates warmth. Dad-joke equipped.",
+        tags: ["warm", "dependable", "protective", "dad-jokes"],
+        register: "casual",
+        emoji: "minimal",
+        source: "built-in"
+      }
+    ];
+
+    function renderPersonas() {
+      const grid = document.getElementById('persona-grid');
+      grid.innerHTML = PERSONAS.map(p => `
+        <div class="persona-card">
+          <div class="persona-header">
+            <span class="persona-icon">${p.icon}</span>
+            <div>
+              <h3>${p.name}</h3>
+              <span class="persona-sub">${p.sub}</span>
+            </div>
+          </div>
+          <p class="persona-desc">${p.desc}</p>
+          <div class="persona-voice">
+            <span class="voice-chip">自称「${p.voice.self}」</span>
+            <span class="voice-chip">称你「${p.voice.user}」</span>
+          </div>
+          <div class="persona-meta">
+            <span class="register">${p.register}</span>
+            <span class="emoji-policy">emoji: ${p.emoji}</span>
+            <span class="source">${p.source}</span>
+          </div>
+          <div class="persona-tags">
+            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderPersonas();
+  </script>
+</body>
+</html>

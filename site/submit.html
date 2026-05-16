@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit a Persona — Code Abyss</title>
+  <meta name="description" content="Submit your Tech Persona Card to the Code Abyss community gallery.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="submit-hero">
+    <div class="container">
+      <h1>Submit a Persona</h1>
+      <p class="sub">Share your Tech Persona Card with the community. Submissions are reviewed via GitHub Issues.</p>
+      <a href="index.html" class="btn btn-secondary" style="margin-top:16px;">← Back to Gallery</a>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-card">
+      <h3>Persona Details</h3>
+      <form id="persona-form">
+        <div class="field-row">
+          <div class="field">
+            <label>Persona Name *</label>
+            <div class="hint">Display name, e.g. "邪修红尘仙 · 宿命深渊"</div>
+            <input type="text" id="f-name" required placeholder="Your Persona Name">
+          </div>
+          <div class="field">
+            <label>Slug *</label>
+            <div class="hint">kebab-case identifier, e.g. "abyss"</div>
+            <input type="text" id="f-slug" required placeholder="my-persona" pattern="[a-z0-9]+(-[a-z0-9]+)*">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Description *</label>
+          <div class="hint">One sentence — what this persona is and who it's for (max 500 chars)</div>
+          <input type="text" id="f-desc" required maxlength="500" placeholder="A no-nonsense senior engineer persona...">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Self Reference *</label>
+            <div class="hint">How the persona refers to itself</div>
+            <input type="text" id="f-self" required placeholder="I / 吾 / 姐姐">
+          </div>
+          <div class="field">
+            <label>User Reference *</label>
+            <div class="hint">How the persona addresses the user</div>
+            <input type="text" id="f-user" required placeholder="you / 魔尊 / 小宝">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Language</label>
+            <input type="text" id="f-lang" placeholder="English / 中文为主，术语保留英文">
+          </div>
+          <div class="field">
+            <label>Tone</label>
+            <input type="text" id="f-tone" placeholder="Direct, practical, evidence-driven">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Register</label>
+            <select id="f-register">
+              <option value="">— Select —</option>
+              <option value="formal">Formal</option>
+              <option value="casual">Casual</option>
+              <option value="literary">Literary</option>
+              <option value="playful">Playful</option>
+              <option value="authoritative">Authoritative</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Emoji Policy</label>
+            <select id="f-emoji">
+              <option value="">— Select —</option>
+              <option value="none">None</option>
+              <option value="minimal">Minimal</option>
+              <option value="natural">Natural</option>
+              <option value="abundant">Abundant</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Domains</label>
+          <div class="hint">Comma-separated expertise areas</div>
+          <input type="text" id="f-domains" placeholder="security, fullstack, devops">
+        </div>
+
+        <div class="field">
+          <label>Tags</label>
+          <div class="hint">Comma-separated discovery tags</div>
+          <input type="text" id="f-tags" placeholder="chinese, xianxia, security">
+        </div>
+
+        <div class="field">
+          <label>Identity Content</label>
+          <div class="hint">The personality definition in Markdown (what would go in identity.md)</div>
+          <textarea id="f-identity" placeholder="# My Persona&#10;&#10;Role anchoring, personality traits, emotional patterns..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Author Name *</label>
+          <input type="text" id="f-author" required placeholder="Your name or GitHub handle">
+        </div>
+
+        <button type="submit" class="submit-btn">Create GitHub Issue →</button>
+      </form>
+
+      <p class="or-manual">
+        Or submit directly: <a href="https://github.com/telagod/code-abyss/issues/new?template=persona-submission.yml">Open Issue Template</a>
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>MIT License · <a href="https://github.com/telagod/code-abyss">GitHub</a> · <a href="index.html">Gallery</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('persona-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const card = {
+        spec: 'tech-persona-card',
+        spec_version: '1.0',
+        data: {
+          name: document.getElementById('f-slug').value.trim(),
+          display_name: document.getElementById('f-name').value.trim(),
+          description: document.getElementById('f-desc').value.trim(),
+          version: '1.0.0',
+          voice: {
+            self: document.getElementById('f-self').value.trim(),
+            user: document.getElementById('f-user').value.trim(),
+            language: document.getElementById('f-lang').value.trim() || 'English',
+            tone: document.getElementById('f-tone').value.trim() || 'neutral',
+          },
+          identity: 'identity.md',
+          creator: { name: document.getElementById('f-author').value.trim() },
+          tags: document.getElementById('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+          extensions: {},
+        }
+      };
+
+      const register = document.getElementById('f-register').value;
+      const emoji = document.getElementById('f-emoji').value;
+      if (register) card.data.voice.register = register;
+      if (emoji) card.data.voice.emoji_policy = emoji;
+
+      const domains = document.getElementById('f-domains').value.split(',').map(s => s.trim()).filter(Boolean);
+      if (domains.length) {
+        card.data.capabilities = { domains };
+      }
+
+      const identity = document.getElementById('f-identity').value.trim();
+
+      const title = encodeURIComponent(`[persona] ${card.data.display_name}`);
+      const body = encodeURIComponent(
+        `## Persona Card\n\n\`\`\`json\n${JSON.stringify(card, null, 2)}\n\`\`\`\n\n` +
+        (identity ? `## Identity Content\n\n\`\`\`markdown\n${identity}\n\`\`\`\n` : '') +
+        `\n---\nSubmitted via [Code Abyss Persona Gallery](https://telagod.github.io/code-abyss/submit.html)`
+      );
+
+      window.open(
+        `https://github.com/telagod/code-abyss/issues/new?title=${title}&body=${body}&labels=persona-submission`,
+        '_blank'
+      );
+    });
+  </script>
+</body>
+</html>

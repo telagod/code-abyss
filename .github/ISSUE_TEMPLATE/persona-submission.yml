@@ -1,0 +1,123 @@
+name: Persona Submission
+description: Submit a Tech Persona Card to the community gallery
+title: "[persona] "
+labels: ["persona-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting a persona! Fill out the fields below and we'll review it for the gallery.
+
+  - type: input
+    id: display-name
+    attributes:
+      label: Display Name
+      description: Human-readable persona name
+      placeholder: "邪修红尘仙 · 宿命深渊"
+    validations:
+      required: true
+
+  - type: input
+    id: slug
+    attributes:
+      label: Slug
+      description: kebab-case identifier (lowercase, hyphens only)
+      placeholder: my-persona
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: One sentence — what this persona is and who it's for (max 500 chars)
+      placeholder: A no-nonsense senior engineer persona focused on shipping quality code.
+    validations:
+      required: true
+
+  - type: input
+    id: voice-self
+    attributes:
+      label: Self Reference
+      description: How the persona refers to itself
+      placeholder: "I / 吾 / 姐姐"
+    validations:
+      required: true
+
+  - type: input
+    id: voice-user
+    attributes:
+      label: User Reference
+      description: How the persona addresses the user
+      placeholder: "you / 魔尊 / 小宝"
+    validations:
+      required: true
+
+  - type: input
+    id: voice-language
+    attributes:
+      label: Language
+      placeholder: "English / 中文为主，术语保留英文"
+
+  - type: input
+    id: voice-tone
+    attributes:
+      label: Tone
+      placeholder: "Direct, practical, evidence-driven"
+
+  - type: dropdown
+    id: register
+    attributes:
+      label: Register
+      options:
+        - formal
+        - casual
+        - literary
+        - playful
+        - authoritative
+
+  - type: dropdown
+    id: emoji-policy
+    attributes:
+      label: Emoji Policy
+      options:
+        - none
+        - minimal
+        - natural
+        - abundant
+
+  - type: input
+    id: domains
+    attributes:
+      label: Domains
+      description: Comma-separated expertise areas
+      placeholder: "security, fullstack, devops"
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-separated discovery tags
+      placeholder: "chinese, xianxia, security"
+
+  - type: textarea
+    id: identity
+    attributes:
+      label: Identity Content (Markdown)
+      description: The personality definition — role anchoring, traits, emotional patterns
+      render: markdown
+
+  - type: textarea
+    id: persona-card-json
+    attributes:
+      label: persona-card.json (optional)
+      description: If you've already built the full JSON, paste it here
+      render: json
+
+  - type: input
+    id: author
+    attributes:
+      label: Author
+      description: Your name or GitHub handle
+    validations:
+      required: true
