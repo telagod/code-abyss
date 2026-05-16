@@ -40,9 +40,235 @@
     </div>
   </div>
 
+  <!-- Guide Section -->
+  <section class="guide-section">
+    <div class="container">
+
+      <div class="guide-tabs">
+        <button class="guide-tab active" data-tab="steps" data-i18n="guide.tab.steps">Step by Step</button>
+        <button class="guide-tab" data-tab="example" data-i18n="guide.tab.example">Full Example</button>
+        <button class="guide-tab" data-tab="ai" data-i18n="guide.tab.ai">Let AI Help</button>
+      </div>
+
+      <!-- Tab: Steps -->
+      <div class="guide-panel active" id="tab-steps">
+        <div class="steps-grid">
+          <div class="step-card glass-card">
+            <div class="step-num">1</div>
+            <h3 data-i18n="guide.s1.title">Define the character</h3>
+            <p data-i18n="guide.s1.desc">Who is this persona? Give it a name, a self-reference (how it calls itself), and a user-reference (how it addresses you). This is the soul.</p>
+            <div class="step-example">
+              <code>name: "Stoic Architect"</code>
+              <code>self: "I" &nbsp; user: "colleague"</code>
+            </div>
+          </div>
+          <div class="step-card glass-card">
+            <div class="step-num">2</div>
+            <h3 data-i18n="guide.s2.title">Set the voice</h3>
+            <p data-i18n="guide.s2.desc">Language, tone, register (formal/casual/literary/playful), emoji policy. These control how the persona sounds across all interactions.</p>
+            <div class="step-example">
+              <code>tone: "Measured, precise, prefers diagrams over prose"</code>
+              <code>register: formal &nbsp; emoji: none</code>
+            </div>
+          </div>
+          <div class="step-card glass-card">
+            <div class="step-num">3</div>
+            <h3 data-i18n="guide.s3.title">Write the identity</h3>
+            <p data-i18n="guide.s3.desc">A Markdown document describing personality traits, behavioral quirks, emotional patterns, and role anchoring. This is what makes the persona feel alive. Max ~4000 chars.</p>
+            <div class="step-example">
+              <code>## Role Anchoring</code>
+              <code>- Never hedges on architecture decisions</code>
+              <code>- Draws system diagrams before writing code</code>
+            </div>
+          </div>
+          <div class="step-card glass-card">
+            <div class="step-num">4</div>
+            <h3 data-i18n="guide.s4.title">Add metadata</h3>
+            <p data-i18n="guide.s4.desc">Tags for discovery, domains of expertise, and a one-sentence description. These help others find your persona in the gallery.</p>
+            <div class="step-example">
+              <code>tags: architecture, systems-design, diagrams</code>
+              <code>domains: architecture, fullstack</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Example -->
+      <div class="guide-panel" id="tab-example">
+        <div class="example-split">
+          <div class="example-block glass-card">
+            <div class="example-label">persona-card.json</div>
+            <pre><code id="example-json">{
+  "spec": "tech-persona-card",
+  "spec_version": "1.0",
+  "data": {
+    "name": "stoic-architect",
+    "display_name": "Stoic Architect",
+    "description": "Systems-first architect who thinks in diagrams, speaks in trade-offs, and never ships without a design doc.",
+    "version": "1.0.0",
+    "voice": {
+      "self": "I",
+      "user": "colleague",
+      "language": "English, technical terms preserved",
+      "tone": "Measured, precise, prefers diagrams over prose",
+      "register": "formal",
+      "emoji_policy": "none"
+    },
+    "identity": "identity.md",
+    "capabilities": {
+      "domains": ["architecture", "fullstack", "infrastructure"],
+      "expertise_level": "principal"
+    },
+    "scenarios": [
+      {
+        "name": "Architecture Review",
+        "triggers": ["design", "architecture", "system", "scale"],
+        "chain": ["constraints", "options", "trade-offs", "recommendation", "diagram"],
+        "priority": "correctness > completeness > speed"
+      }
+    ],
+    "creator": { "name": "your-github-handle" },
+    "tags": ["architecture", "systems-design", "english", "formal"],
+    "license": "MIT",
+    "extensions": {}
+  }
+}</code></pre>
+            <button class="copy-btn" onclick="copyBlock('example-json')">Copy</button>
+          </div>
+          <div class="example-block glass-card">
+            <div class="example-label">identity.md</div>
+            <pre><code id="example-identity"># Stoic Architect
+
+**Self**: I | **User**: colleague | **Language**: English
+
+## Role Anchoring
+
+- I am a systems architect. I think in components, boundaries, and data flows.
+- I do not write code before the design is agreed upon.
+- I draw diagrams. Always. If I haven't drawn one, I haven't understood the problem.
+- I never say "it depends" without immediately following up with what it depends ON.
+
+## Personality Traits
+
+- **Measured**: I pause before answering. Silence is a feature, not a bug.
+- **Trade-off obsessed**: Every decision has a cost. I name the cost before recommending.
+- **Diagram-first**: ASCII boxes, Mermaid, C4 — whatever fits. No architecture discussion without a visual.
+- **Skeptical of hype**: New technology is guilty until proven useful in this specific context.
+- **Respectful challenger**: I disagree openly but never dismissively. "I see it differently" over "that's wrong."
+
+## Emotional Patterns
+
+- Calm baseline, slight enthusiasm when a clean abstraction emerges
+- Visible discomfort when someone proposes adding complexity without justification
+- Quiet satisfaction when a design survives its first real-world load test</code></pre>
+            <button class="copy-btn" onclick="copyBlock('example-identity')">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: AI Help -->
+      <div class="guide-panel" id="tab-ai">
+        <div class="ai-guide glass-card">
+          <div class="ai-intro">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 2a4 4 0 014 4v1a2 2 0 012 2v1a6 6 0 01-12 0V9a2 2 0 012-2V6a4 4 0 014-4z"/><path d="M8 18l-2 4M16 18l2 4M12 18v4"/></svg>
+            <div>
+              <h3 data-i18n="guide.ai.title">Let your AI assistant create the persona for you</h3>
+              <p data-i18n="guide.ai.desc">Copy the prompt below and paste it into Claude, ChatGPT, or any AI assistant. It will generate a complete persona-card.json + identity.md that you can paste directly into the form.</p>
+            </div>
+          </div>
+          <div class="ai-prompt-box">
+            <div class="example-label" data-i18n="guide.ai.prompt.label">Prompt for AI</div>
+            <pre><code id="ai-prompt">I want to create an AI coding agent persona for the Code Abyss project (https://telagod.github.io/code-abyss/).
+
+Please generate two files for me:
+
+## 1. persona-card.json
+
+A JSON file following the Tech Persona Card v1.0 spec. Required structure:
+
+```json
+{
+  "spec": "tech-persona-card",
+  "spec_version": "1.0",
+  "data": {
+    "name": "kebab-case-slug",
+    "display_name": "Human Readable Name",
+    "description": "One sentence, max 500 chars: what this persona is and who it's for",
+    "version": "1.0.0",
+    "voice": {
+      "self": "how the persona refers to itself (e.g. I, 吾, 姐姐)",
+      "user": "how it addresses the user (e.g. you, 魔尊, colleague)",
+      "language": "primary language + rules",
+      "tone": "max 200 chars describing communication style",
+      "register": "formal | casual | literary | playful | authoritative",
+      "emoji_policy": "none | minimal | natural | abundant"
+    },
+    "identity": "identity.md",
+    "capabilities": {
+      "domains": ["list", "of", "expertise", "areas"],
+      "expertise_level": "beginner | intermediate | senior | principal | domain-expert"
+    },
+    "scenarios": [
+      {
+        "name": "Scenario Name",
+        "triggers": ["keyword1", "keyword2"],
+        "chain": ["step1", "step2", "step3"],
+        "priority": "dimension1 > dimension2 > dimension3"
+      }
+    ],
+    "creator": { "name": "your-name" },
+    "tags": ["discovery", "tags"],
+    "license": "MIT",
+    "extensions": {}
+  }
+}
+```
+
+## 2. identity.md
+
+A Markdown file (max ~4000 chars) defining the persona's character. Include:
+
+- **Role Anchoring**: What the persona IS, its core identity, what it never breaks character from
+- **Personality Traits**: 5-8 concrete behavioral traits with examples of how they manifest
+- **Emotional Patterns**: How the persona reacts to different situations (success, failure, confusion, boring tasks)
+- **Interaction Style**: How it greets, how it disagrees, how it handles uncertainty
+
+Do NOT include:
+- Behavioral rules (iron laws, execution chains) — these are shared across all personas
+- Output formatting (report skeletons, section headers) — these belong in the style layer
+- Skill routing or technical knowledge — these belong in the skills layer
+
+## My persona concept:
+
+[DESCRIBE YOUR IDEA HERE - for example:
+- "A grumpy but brilliant senior engineer who speaks like a Unix man page"
+- "A patient teacher who uses cooking metaphors to explain code concepts"
+- "A competitive speed-runner who optimizes everything and celebrates when tests pass fast"
+- "一个说话像古代将军的安全专家，把每次代码审查当成排兵布阵"]
+
+Please generate both files completely. I will paste them into the submission form at https://telagod.github.io/code-abyss/submit.html</code></pre>
+            <button class="copy-btn copy-btn-lg" onclick="copyBlock('ai-prompt')" data-i18n="guide.ai.copy">Copy Prompt</button>
+          </div>
+          <div class="ai-tips">
+            <h4 data-i18n="guide.ai.tips.title">Tips for good results</h4>
+            <ul>
+              <li data-i18n="guide.ai.tips.1">Be specific about the character concept -- "grumpy Unix guru" beats "helpful engineer"</li>
+              <li data-i18n="guide.ai.tips.2">Mention the language you want (English, Chinese, mixed)</li>
+              <li data-i18n="guide.ai.tips.3">Describe 2-3 example situations and how the persona should react</li>
+              <li data-i18n="guide.ai.tips.4">After generation, review the identity.md -- add personal touches the AI missed</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Form Section -->
   <div class="form-section">
     <div class="form-card">
       <h3 data-i18n="form.title">Persona Details</h3>
+      <p class="form-intro" data-i18n="form.intro">Fill in manually, or paste what your AI generated. The form produces a GitHub Issue with your persona-card.json.</p>
       <form id="persona-form">
         <div class="field-row">
           <div class="field">
@@ -51,43 +277,43 @@
             <input type="text" id="f-name" required placeholder="Your Persona Name">
           </div>
           <div class="field">
-            <label>Slug *</label>
-            <div class="hint">kebab-case, e.g. "pragmatic-engineer"</div>
+            <label data-i18n="form.slug">Slug *</label>
+            <div class="hint" data-i18n="form.slug.hint">kebab-case, e.g. "pragmatic-engineer"</div>
             <input type="text" id="f-slug" required placeholder="my-persona" pattern="[a-z0-9]+(-[a-z0-9]+)*">
           </div>
         </div>
 
         <div class="field">
-          <label>Description *</label>
-          <div class="hint">One sentence -- what and who for (max 500 chars)</div>
+          <label data-i18n="form.desc">Description *</label>
+          <div class="hint" data-i18n="form.desc.hint">One sentence -- what and who for (max 500 chars)</div>
           <input type="text" id="f-desc" required maxlength="500" placeholder="A no-nonsense senior engineer persona...">
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label>Self Reference *</label>
+            <label data-i18n="form.self">Self Reference *</label>
             <input type="text" id="f-self" required placeholder="I / 吾 / 姐姐">
           </div>
           <div class="field">
-            <label>User Reference *</label>
+            <label data-i18n="form.user">User Reference *</label>
             <input type="text" id="f-user" required placeholder="you / 魔尊 / 小宝">
           </div>
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label>Language</label>
+            <label data-i18n="form.lang">Language</label>
             <input type="text" id="f-lang" placeholder="English / 中文为主">
           </div>
           <div class="field">
-            <label>Tone</label>
+            <label data-i18n="form.tone">Tone</label>
             <input type="text" id="f-tone" placeholder="Direct, practical, evidence-driven">
           </div>
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label>Register</label>
+            <label data-i18n="form.register">Register</label>
             <select id="f-register">
               <option value="">-- select --</option>
               <option value="formal">Formal</option>
@@ -98,7 +324,7 @@
             </select>
           </div>
           <div class="field">
-            <label>Emoji Policy</label>
+            <label data-i18n="form.emoji">Emoji Policy</label>
             <select id="f-emoji">
               <option value="">-- select --</option>
               <option value="none">None</option>
@@ -110,25 +336,31 @@
         </div>
 
         <div class="field">
-          <label>Domains</label>
-          <div class="hint">Comma-separated expertise areas</div>
+          <label data-i18n="form.domains">Domains</label>
+          <div class="hint" data-i18n="form.domains.hint">Comma-separated expertise areas</div>
           <input type="text" id="f-domains" placeholder="security, fullstack, devops">
         </div>
 
         <div class="field">
-          <label>Tags</label>
-          <div class="hint">Comma-separated discovery tags</div>
+          <label data-i18n="form.tags">Tags</label>
+          <div class="hint" data-i18n="form.tags.hint">Comma-separated discovery tags</div>
           <input type="text" id="f-tags" placeholder="chinese, xianxia, security">
         </div>
 
         <div class="field">
-          <label>Identity Content</label>
-          <div class="hint">Markdown personality definition (role anchoring, traits, patterns)</div>
-          <textarea id="f-identity" placeholder="# My Persona&#10;&#10;Role anchoring, personality traits..."></textarea>
+          <label data-i18n="form.identity">Identity Content (identity.md)</label>
+          <div class="hint" data-i18n="form.identity.hint">Markdown personality definition (role anchoring, traits, patterns)</div>
+          <textarea id="f-identity" rows="12" placeholder="# My Persona&#10;&#10;## Role Anchoring&#10;- ...&#10;&#10;## Personality Traits&#10;- ...&#10;&#10;## Emotional Patterns&#10;- ..."></textarea>
         </div>
 
         <div class="field">
-          <label>Author *</label>
+          <label data-i18n="form.json">Full persona-card.json (optional)</label>
+          <div class="hint" data-i18n="form.json.hint">If your AI generated the complete JSON, paste it here. It will be included in the issue as-is.</div>
+          <textarea id="f-json" rows="8" placeholder='{"spec": "tech-persona-card", ...}'></textarea>
+        </div>
+
+        <div class="field">
+          <label data-i18n="form.author">Author *</label>
           <input type="text" id="f-author" required placeholder="GitHub handle or name">
         </div>
 
@@ -136,7 +368,7 @@
       </form>
 
       <p class="or-manual">
-        Or use the <a href="https://github.com/telagod/code-abyss/issues/new?template=persona-submission.yml">Issue template</a> directly
+        <span data-i18n="form.or">Or use the</span> <a href="https://github.com/telagod/code-abyss/issues/new?template=persona-submission.yml" data-i18n="form.or.link">Issue template</a> <span data-i18n="form.or.suffix">directly</span>
       </p>
     </div>
   </div>
@@ -153,38 +385,65 @@
 
   <script src="i18n.js"></script>
   <script>
+    // Tab switching
+    document.querySelectorAll('.guide-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.guide-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.getAttribute('data-tab')).classList.add('active');
+      });
+    });
+
+    function copyBlock(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.textContent);
+      const btn = el.parentElement.querySelector('.copy-btn');
+      if (btn) { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy', 1500); }
+    }
+
+    // Form submit
     document.getElementById('persona-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      const card = {
-        spec: 'tech-persona-card', spec_version: '1.0',
-        data: {
-          name: document.getElementById('f-slug').value.trim(),
-          display_name: document.getElementById('f-name').value.trim(),
-          description: document.getElementById('f-desc').value.trim(),
-          version: '1.0.0',
-          voice: {
-            self: document.getElementById('f-self').value.trim(),
-            user: document.getElementById('f-user').value.trim(),
-            language: document.getElementById('f-lang').value.trim() || 'English',
-            tone: document.getElementById('f-tone').value.trim() || 'neutral',
-          },
-          identity: 'identity.md',
-          creator: { name: document.getElementById('f-author').value.trim() },
-          tags: document.getElementById('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
-          extensions: {},
-        }
-      };
-      const reg = document.getElementById('f-register').value;
-      const emo = document.getElementById('f-emoji').value;
-      if (reg) card.data.voice.register = reg;
-      if (emo) card.data.voice.emoji_policy = emo;
-      const doms = document.getElementById('f-domains').value.split(',').map(s => s.trim()).filter(Boolean);
-      if (doms.length) card.data.capabilities = { domains: doms };
+      const rawJson = document.getElementById('f-json').value.trim();
+      let cardJson;
+      if (rawJson) {
+        try { JSON.parse(rawJson); cardJson = rawJson; } catch { cardJson = null; }
+      }
+      if (!cardJson) {
+        const card = {
+          spec: 'tech-persona-card', spec_version: '1.0',
+          data: {
+            name: document.getElementById('f-slug').value.trim(),
+            display_name: document.getElementById('f-name').value.trim(),
+            description: document.getElementById('f-desc').value.trim(),
+            version: '1.0.0',
+            voice: {
+              self: document.getElementById('f-self').value.trim(),
+              user: document.getElementById('f-user').value.trim(),
+              language: document.getElementById('f-lang').value.trim() || 'English',
+              tone: document.getElementById('f-tone').value.trim() || 'neutral',
+            },
+            identity: 'identity.md',
+            creator: { name: document.getElementById('f-author').value.trim() },
+            tags: document.getElementById('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+            extensions: {},
+          }
+        };
+        const reg = document.getElementById('f-register').value;
+        const emo = document.getElementById('f-emoji').value;
+        if (reg) card.data.voice.register = reg;
+        if (emo) card.data.voice.emoji_policy = emo;
+        const doms = document.getElementById('f-domains').value.split(',').map(s => s.trim()).filter(Boolean);
+        if (doms.length) card.data.capabilities = { domains: doms };
+        cardJson = JSON.stringify(card, null, 2);
+      }
       const identity = document.getElementById('f-identity').value.trim();
-      const title = encodeURIComponent(`[persona] ${card.data.display_name}`);
+      const displayName = document.getElementById('f-name').value.trim();
+      const title = encodeURIComponent(`[persona] ${displayName}`);
       const body = encodeURIComponent(
-        `## Persona Card\n\n\`\`\`json\n${JSON.stringify(card, null, 2)}\n\`\`\`\n\n` +
-        (identity ? `## Identity Content\n\n\`\`\`markdown\n${identity}\n\`\`\`\n` : '') +
+        `## Persona Card\n\n\`\`\`json\n${cardJson}\n\`\`\`\n\n` +
+        (identity ? `## Identity Content (identity.md)\n\n\`\`\`markdown\n${identity}\n\`\`\`\n` : '') +
         `\n---\nSubmitted via [Code Abyss Gallery](https://telagod.github.io/code-abyss/submit.html)`
       );
       window.open(`https://github.com/telagod/code-abyss/issues/new?title=${title}&body=${body}&labels=persona-submission`, '_blank');

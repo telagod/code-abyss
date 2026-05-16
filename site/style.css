@@ -301,6 +301,92 @@ footer { padding: 40px 24px; border-top: 1px solid var(--border); }
 
 /* Submit page */
 .submit-hero { text-align: center; padding: 120px 24px 40px; }
+
+/* Guide Section */
+.guide-section { padding: 0 24px 60px; }
+
+.guide-tabs {
+  display: flex; gap: 4px; max-width: 640px; margin: 0 auto 24px;
+  padding: 4px; background: var(--bg-glass); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.guide-tab {
+  flex: 1; padding: 8px 16px; border: none; border-radius: var(--radius-xs);
+  background: transparent; color: var(--text-dim); font-size: 0.82rem; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: all 0.2s;
+}
+.guide-tab.active { background: var(--accent-dim); color: var(--accent); }
+.guide-tab:hover:not(.active) { color: var(--text); }
+
+.guide-panel { display: none; }
+.guide-panel.active { display: block; }
+
+/* Steps */
+.steps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 800px; margin: 0 auto; }
+.step-card { padding: 24px; position: relative; }
+.step-num {
+  position: absolute; top: 16px; right: 16px;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  background: var(--accent-dim); border-radius: 8px;
+  font-size: 0.78rem; font-weight: 800; color: var(--accent);
+}
+.step-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+.step-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px; }
+.step-example { display: flex; flex-direction: column; gap: 4px; }
+.step-example code {
+  display: block; padding: 4px 10px; background: rgba(255,255,255,0.03);
+  border-radius: 4px; font-family: var(--mono); font-size: 0.72rem; color: var(--green);
+}
+
+/* Example */
+.example-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 960px; margin: 0 auto; }
+.example-block { padding: 20px; position: relative; overflow: hidden; }
+.example-label {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 12px;
+}
+.example-block pre {
+  overflow-x: auto; margin: 0; padding: 0;
+  font-family: var(--mono); font-size: 0.75rem; line-height: 1.5; color: var(--text-dim);
+}
+.example-block .copy-btn { position: absolute; top: 16px; right: 16px; }
+
+/* AI Guide */
+.ai-guide { max-width: 800px; margin: 0 auto; padding: 32px; }
+.ai-intro { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+.ai-intro h3 { font-size: 1rem; margin-bottom: 4px; }
+.ai-intro p { font-size: 0.85rem; color: var(--text-dim); }
+
+.ai-prompt-box { position: relative; margin-bottom: 24px; }
+.ai-prompt-box pre {
+  padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); overflow-x: auto;
+  font-family: var(--mono); font-size: 0.75rem; line-height: 1.6; color: var(--text-dim);
+  max-height: 400px; overflow-y: auto;
+}
+.copy-btn-lg {
+  display: block; width: 100%; margin-top: 12px; padding: 12px;
+  background: var(--accent); color: #fff; border: none; border-radius: var(--radius-xs);
+  font-size: 0.88rem; font-weight: 700; font-family: var(--font); cursor: pointer;
+  transition: all 0.25s var(--spring);
+}
+.copy-btn-lg:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+
+.ai-tips { padding-top: 16px; border-top: 1px solid var(--border); }
+.ai-tips h4 { font-size: 0.85rem; margin-bottom: 10px; }
+.ai-tips ul { list-style: none; padding: 0; }
+.ai-tips li {
+  padding: 6px 0 6px 20px; position: relative;
+  font-size: 0.82rem; color: var(--text-dim); line-height: 1.5;
+}
+.ai-tips li::before {
+  content: ''; position: absolute; left: 0; top: 12px;
+  width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+}
+
+/* Form additions */
+.form-intro { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 24px; }
 .form-section { padding: 0 24px 100px; }
 .form-card {
   max-width: 640px; margin: 0 auto; padding: 40px;
@@ -341,6 +427,8 @@ footer { padding: 40px 24px; border-top: 1px solid var(--border); }
   .spec-grid { grid-template-columns: repeat(2, 1fr); }
   .install-grid { grid-template-columns: repeat(2, 1fr); }
   .persona-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .example-split { grid-template-columns: 1fr; }
   .nav-links a:not(.nav-gh) { display: none; }
   .field-row { grid-template-columns: 1fr; }
 }
