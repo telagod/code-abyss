@@ -1,0 +1,218 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/telagod/tech-persona-card/schema/v1.0/persona-card.schema.json",
+  "title": "Tech Persona Card v1.0",
+  "description": "A portable, structured format for defining AI agent personalities in technical workflows.",
+  "type": "object",
+  "required": ["spec", "spec_version", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "spec": {
+      "type": "string",
+      "const": "tech-persona-card"
+    },
+    "spec_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "data": {
+      "$ref": "#/definitions/PersonaData"
+    }
+  },
+  "definitions": {
+    "PersonaData": {
+      "type": "object",
+      "required": ["name", "display_name", "description", "version", "voice", "identity"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$"
+        },
+        "voice": {
+          "$ref": "#/definitions/Voice"
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "behavior": {
+          "type": ["string", "null"]
+        },
+        "style": {
+          "type": ["string", "null"]
+        },
+        "capabilities": {
+          "$ref": "#/definitions/Capabilities"
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Scenario"
+          }
+        },
+        "creator": {
+          "$ref": "#/definitions/Creator"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "maxItems": 20
+        },
+        "license": {
+          "type": "string"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/Compatibility"
+        },
+        "conversation_starters": {
+          "type": "array",
+          "items": { "type": "string" },
+          "maxItems": 10
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "Voice": {
+      "type": "object",
+      "required": ["self", "user", "language", "tone"],
+      "additionalProperties": false,
+      "properties": {
+        "self": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "register": {
+          "type": "string",
+          "enum": ["formal", "casual", "literary", "playful", "authoritative"]
+        },
+        "emoji_policy": {
+          "type": "string",
+          "enum": ["none", "minimal", "natural", "abundant"]
+        }
+      }
+    },
+    "Capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "expertise_level": {
+          "type": "string",
+          "enum": ["beginner", "intermediate", "senior", "principal", "domain-expert"]
+        },
+        "authorization": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/definitions/Authorization" }
+          ]
+        }
+      }
+    },
+    "Authorization": {
+      "type": "object",
+      "required": ["scope", "tiers"],
+      "additionalProperties": false,
+      "properties": {
+        "scope": { "type": "string" },
+        "tiers": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/AuthTier" }
+        }
+      }
+    },
+    "AuthTier": {
+      "type": "object",
+      "required": ["level", "context", "policy"],
+      "additionalProperties": false,
+      "properties": {
+        "level": { "type": "string" },
+        "context": { "type": "string" },
+        "policy": {
+          "type": "string",
+          "enum": ["execute", "execute-and-report", "confirm-first"]
+        }
+      }
+    },
+    "Scenario": {
+      "type": "object",
+      "required": ["name", "triggers", "chain"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "triggers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "chain": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "priority": { "type": "string" }
+      }
+    },
+    "Creator": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "Compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "platforms": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "min_context_window": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requires_tools": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
