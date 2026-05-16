@@ -87,6 +87,19 @@ body {
 .nav-links a:hover { color: var(--text); }
 .nav-gh { display: flex; }
 
+.lang-switch {
+  display: flex; border: 1px solid var(--border); border-radius: var(--radius-xs); overflow: hidden;
+}
+.lang-switch button {
+  padding: 4px 10px; border: none; background: transparent;
+  color: var(--text-muted); font-size: 0.72rem; font-weight: 700; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s;
+}
+.lang-switch button.active {
+  background: var(--accent-dim); color: var(--accent);
+}
+.lang-switch button:hover:not(.active) { color: var(--text-dim); }
+
 /* Hero */
 .hero {
   padding: 140px 24px 80px;

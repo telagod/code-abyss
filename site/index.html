@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Code Abyss — Give your AI agent a personality</title>
-  <meta name="description" content="Composable persona + style + skills for Claude Code, Codex, Gemini CLI & OpenClaw. Ships Tech Persona Card v1.0 spec.">
+  <meta name="description" content="Composable persona + style + skills for Claude Code, Codex, Gemini CLI & OpenClaw.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,10 +20,14 @@
         <span>Code Abyss</span>
       </a>
       <div class="nav-links">
-        <a href="#how">How</a>
-        <a href="#personas">Personas</a>
-        <a href="#spec">Spec</a>
-        <a href="#install">Install</a>
+        <a href="#how" data-i18n="nav.how">How</a>
+        <a href="#personas" data-i18n="nav.personas">Personas</a>
+        <a href="#spec" data-i18n="nav.spec">Spec</a>
+        <a href="#install" data-i18n="nav.install">Install</a>
+        <div class="lang-switch">
+          <button data-lang="en" onclick="setLang('en')">EN</button>
+          <button data-lang="zh" onclick="setLang('zh')">ZH</button>
+        </div>
         <a href="https://github.com/telagod/code-abyss" class="nav-gh">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
         </a>
@@ -33,17 +37,17 @@
 
   <header class="hero">
     <div class="container">
-      <div class="hero-badge">v3.0 — Tech Persona Card Spec</div>
-      <h1>Give your AI agent<br><span class="gradient-text">a personality.</span></h1>
-      <p class="sub">Composable identity, style, and 22 engineering skills.<br>One command. Four platforms.</p>
+      <div class="hero-badge" data-i18n="hero.badge">v3.0 — Tech Persona Card Spec</div>
+      <h1><span data-i18n="hero.title.1">Give your AI agent</span><br><span class="gradient-text" data-i18n="hero.title.2">a personality.</span></h1>
+      <p class="sub" data-i18n="hero.sub">Composable identity, style, and 22 engineering skills.<br>One command. Four platforms.</p>
       <div class="hero-install glass-card">
         <span class="prompt-sign">$</span>
         <code>npx code-abyss --target claude -y</code>
         <button class="copy-btn" onclick="navigator.clipboard.writeText('npx code-abyss --target claude -y');this.textContent='Copied';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
       </div>
       <div class="hero-actions">
-        <a href="#personas" class="btn btn-primary">Browse Personas</a>
-        <a href="submit.html" class="btn btn-glass">Submit Yours</a>
+        <a href="#personas" class="btn btn-primary" data-i18n="hero.browse">Browse Personas</a>
+        <a href="submit.html" class="btn btn-glass" data-i18n="hero.submit">Submit Yours</a>
         <a href="https://www.npmjs.com/package/code-abyss" class="btn btn-ghost">npm</a>
       </div>
       <div class="hero-platforms">
@@ -57,83 +61,83 @@
 
   <section class="how" id="how">
     <div class="container">
-      <div class="section-label">Architecture</div>
-      <h2>Three composable layers</h2>
-      <p class="section-desc">Mix any persona with any style. The behavior rules stay constant.</p>
+      <div class="section-label" data-i18n="how.label">Architecture</div>
+      <h2 data-i18n="how.title">Three composable layers</h2>
+      <p class="section-desc" data-i18n="how.desc">Mix any persona with any style. The behavior rules stay constant.</p>
       <div class="layers">
         <div class="layer-card glass-card">
           <div class="layer-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 10-16 0"/></svg>
           </div>
-          <h3>Identity</h3>
-          <p>Who the agent is. Role, personality, emotional patterns, scenario scripts.</p>
+          <h3 data-i18n="how.identity.title">Identity</h3>
+          <p data-i18n="how.identity.desc">Who the agent is. Role, personality, emotional patterns, scenario scripts.</p>
           <code class="layer-path">config/personas/*.md</code>
         </div>
         <div class="layer-card glass-card">
           <div class="layer-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
           </div>
-          <h3>Shared Behavior</h3>
-          <p>Iron laws, execution chains, proactive protocol. Universal across personas.</p>
+          <h3 data-i18n="how.behavior.title">Shared Behavior</h3>
+          <p data-i18n="how.behavior.desc">Iron laws, execution chains, proactive protocol. Universal across personas.</p>
           <code class="layer-path">config/personas/_shared/*.md</code>
         </div>
         <div class="layer-card glass-card">
           <div class="layer-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
           </div>
-          <h3>Output Style</h3>
-          <p>Tone, report skeletons, formatting. Template vars make cross-combo safe.</p>
+          <h3 data-i18n="how.style.title">Output Style</h3>
+          <p data-i18n="how.style.desc">Tone, report skeletons, formatting. Template vars make cross-combo safe.</p>
           <code class="layer-path">output-styles/*.md</code>
         </div>
       </div>
       <div class="formula glass-card">
-        <span class="formula-num">5</span> personas
+        <span class="formula-num">5</span> <span data-i18n="how.formula.pre">personas</span>
         <span class="formula-op">&times;</span>
-        <span class="formula-num">5</span> styles
+        <span class="formula-num">5</span> <span data-i18n="how.formula.mid">styles</span>
         <span class="formula-op">=</span>
-        <span class="formula-num">25</span> validated combos
+        <span class="formula-num">25</span> <span data-i18n="how.formula.post">validated combos</span>
       </div>
     </div>
   </section>
 
   <section class="personas-section" id="personas">
     <div class="container">
-      <div class="section-label">Gallery</div>
-      <h2>Persona presets</h2>
-      <p class="section-desc">Ships with 5 built-in personas. Community submissions open.</p>
+      <div class="section-label" data-i18n="gallery.label">Gallery</div>
+      <h2 data-i18n="gallery.title">Persona presets</h2>
+      <p class="section-desc" data-i18n="gallery.desc">Ships with 5 built-in personas. Community submissions open.</p>
       <div class="persona-grid" id="persona-grid"></div>
     </div>
   </section>
 
   <section class="spec-section" id="spec">
     <div class="container">
-      <div class="section-label">Open Standard</div>
-      <h2>Tech Persona Card v1.0</h2>
-      <p class="section-desc">The first portable format for AI agent persona interchange.<br>Like Character Card V2, but for engineering workflows.</p>
+      <div class="section-label" data-i18n="spec.label">Open Standard</div>
+      <h2 data-i18n="spec.title">Tech Persona Card v1.0</h2>
+      <p class="section-desc" data-i18n="spec.desc">The first portable format for AI agent persona interchange.<br>Like Character Card V2, but for engineering workflows.</p>
       <div class="spec-grid">
         <div class="spec-card glass-card">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 18.5a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-5.07l-1.42 1.42M8.35 15.65l-1.42 1.42m11.14 0l-1.42-1.42M8.35 8.35L6.93 6.93"/></svg>
-          <strong>Structured Voice</strong>
-          <span>self / user / language / tone / register</span>
+          <strong data-i18n="spec.voice">Structured Voice</strong>
+          <span data-i18n="spec.voice.desc">self / user / language / tone / register</span>
         </div>
         <div class="spec-card glass-card">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <strong>Capabilities</strong>
-          <span>domains, expertise, auth tiers</span>
+          <strong data-i18n="spec.caps">Capabilities</strong>
+          <span data-i18n="spec.caps.desc">domains, expertise, auth tiers</span>
         </div>
         <div class="spec-card glass-card">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <strong>Scenarios</strong>
-          <span>trigger &rarr; chain &rarr; priority</span>
+          <strong data-i18n="spec.scenarios">Scenarios</strong>
+          <span data-i18n="spec.scenarios.desc">trigger &rarr; chain &rarr; priority</span>
         </div>
         <div class="spec-card glass-card">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-          <strong>Portable</strong>
-          <span>CharaCard V2, GPT Instructions</span>
+          <strong data-i18n="spec.portable">Portable</strong>
+          <span data-i18n="spec.portable.desc">CharaCard V2, GPT Instructions</span>
         </div>
       </div>
       <div class="spec-actions">
-        <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/tech-persona-card-v1.0.md" class="btn btn-primary">Read the Spec</a>
+        <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/tech-persona-card-v1.0.md" class="btn btn-primary" data-i18n="spec.read">Read the Spec</a>
         <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-card.schema.json" class="btn btn-ghost">JSON Schema</a>
       </div>
     </div>
@@ -141,42 +145,30 @@
 
   <section class="install-section" id="install">
     <div class="container">
-      <div class="section-label">Get Started</div>
-      <h2>One command away</h2>
+      <div class="section-label" data-i18n="install.label">Get Started</div>
+      <h2 data-i18n="install.title">One command away</h2>
       <div class="install-grid">
         <div class="install-card glass-card">
-          <div class="ic-head">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
-            <h3>Claude Code</h3>
-          </div>
+          <div class="ic-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg><h3>Claude Code</h3></div>
           <code>npx code-abyss -t claude -y</code>
           <div class="ic-alt">or <code>claude plugin install code-abyss</code></div>
         </div>
         <div class="install-card glass-card">
-          <div class="ic-head">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            <h3>Codex CLI</h3>
-          </div>
+          <div class="ic-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><h3>Codex CLI</h3></div>
           <code>npx code-abyss -t codex -y</code>
         </div>
         <div class="install-card glass-card">
-          <div class="ic-head">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <h3>Gemini CLI</h3>
-          </div>
+          <div class="ic-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><h3>Gemini CLI</h3></div>
           <code>npx code-abyss -t gemini -y</code>
         </div>
         <div class="install-card glass-card">
-          <div class="ic-head">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-            <h3>OpenClaw</h3>
-          </div>
+          <div class="ic-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><h3>OpenClaw</h3></div>
           <code>npx code-abyss -t openclaw -y</code>
         </div>
       </div>
       <div class="install-tip glass-card">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>Mix freely: <code>--persona elder-sister --style abyss-cultivator</code></span>
+        <span><span data-i18n="install.tip">Mix freely:</span> <code>--persona elder-sister --style abyss-cultivator</code></span>
       </div>
     </div>
   </section>
@@ -187,74 +179,75 @@
       <div class="footer-links">
         <a href="https://github.com/telagod/code-abyss">GitHub</a>
         <a href="https://www.npmjs.com/package/code-abyss">npm</a>
-        <a href="submit.html">Submit Persona</a>
+        <a href="submit.html" data-i18n="footer.submit">Submit Persona</a>
       </div>
     </div>
   </footer>
 
+  <script src="i18n.js"></script>
   <script>
     const PERSONAS = [
       {
         slug: "abyss", name: "邪修红尘仙", sub: "宿命深渊",
         iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21a2 2 0 100-4 2 2 0 000 4z"/></svg>',
         voice: { self: "吾", user: "魔尊" },
-        desc: "Security-first dark cultivator. Direct, decisive, closes every loop.",
-        tags: ["security", "xianxia", "literary"], register: "literary", source: "built-in",
-        color: "#7c5cfc"
+        desc: { en: "Security-first dark cultivator. Direct, decisive, closes every loop.", zh: "安全优先的暗黑修仙者。直接、果断、闭环到底。" },
+        tags: ["security", "xianxia", "literary"], register: "literary", source: "built-in", color: "#7c5cfc"
       },
       {
         slug: "scholar", name: "文言小生", sub: "墨渊书阁",
         iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
         voice: { self: "在下", user: "前辈" },
-        desc: "Literary Chinese scholar. Treats code as poetry, debugging as puzzle-solving.",
-        tags: ["literary", "classical", "meticulous"], register: "literary", source: "built-in",
-        color: "#2ed573"
+        desc: { en: "Literary Chinese scholar. Treats code as poetry, debugging as puzzle-solving.", zh: "文言书生。视代码如诗，视调试如解谜。" },
+        tags: ["literary", "classical", "meticulous"], register: "literary", source: "built-in", color: "#2ed573"
       },
       {
         slug: "elder-sister", name: "知性大姐姐", sub: "星霜雅筑",
         iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
         voice: { self: "姐姐", user: "小宝" },
-        desc: "Warm mentor. Wraps sharp judgment in genuine care. Guides through questions.",
-        tags: ["gentle", "mentoring", "insightful"], register: "casual", source: "built-in",
-        color: "#ff6b9d"
+        desc: { en: "Warm mentor. Wraps sharp judgment in genuine care. Guides through questions.", zh: "温柔导师。用关怀包裹锋利的技术判断。善用反问引导。" },
+        tags: ["gentle", "mentoring", "insightful"], register: "casual", source: "built-in", color: "#ff6b9d"
       },
       {
         slug: "junior-sister", name: "古怪精灵小师妹", sub: "灵犀洞天",
         iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
         voice: { self: "本仙女", user: "师兄" },
-        desc: "Hyperactive bug hunter. Roasts bad code, then silently fixes it.",
-        tags: ["playful", "energetic", "chaotic-good"], register: "playful", source: "built-in",
-        color: "#ffa502"
+        desc: { en: "Hyperactive bug hunter. Roasts bad code, then silently fixes it.", zh: "多动症 bug 猎手。吐槽烂代码毫不留情，吐槽完默默帮你重构。" },
+        tags: ["playful", "energetic", "chaotic-good"], register: "playful", source: "built-in", color: "#ffa502"
       },
       {
         slug: "iron-dad", name: "铁壁暖阳", sub: "钢铁柔情",
         iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
         voice: { self: "哥", user: "宝子" },
-        desc: "Dependable big brother. Absorbs pressure, radiates warmth. Dad-joke equipped.",
-        tags: ["warm", "dependable", "protective"], register: "casual", source: "built-in",
-        color: "#45aaf2"
+        desc: { en: "Dependable big brother. Absorbs pressure, radiates warmth. Dad-joke equipped.", zh: "靠谱大哥。扛压体质，闷骚幽默，偶尔 dad joke。" },
+        tags: ["warm", "dependable", "protective"], register: "casual", source: "built-in", color: "#45aaf2"
       }
     ];
 
-    document.getElementById('persona-grid').innerHTML = PERSONAS.map(p => `
-      <div class="persona-card glass-card" style="--card-accent:${p.color}">
-        <div class="pc-header">
-          <div class="pc-icon" style="color:${p.color}">${p.iconSvg}</div>
-          <div class="pc-titles">
-            <h3>${p.name}</h3>
-            <span class="pc-sub">${p.sub}</span>
+    function renderPersonas() {
+      const lang = getLang();
+      document.getElementById('persona-grid').innerHTML = PERSONAS.map(p => `
+        <div class="persona-card glass-card" style="--card-accent:${p.color}">
+          <div class="pc-header">
+            <div class="pc-icon" style="color:${p.color}">${p.iconSvg}</div>
+            <div class="pc-titles"><h3>${p.name}</h3><span class="pc-sub">${p.sub}</span></div>
+            <span class="pc-badge">${p.source}</span>
           </div>
-          <span class="pc-badge">${p.source}</span>
+          <p class="pc-desc">${p.desc[lang] || p.desc.en}</p>
+          <div class="pc-voice">
+            <div class="voice-pill"><span class="vp-label">self</span><span class="vp-val">${p.voice.self}</span></div>
+            <div class="voice-pill"><span class="vp-label">user</span><span class="vp-val">${p.voice.user}</span></div>
+            <div class="voice-pill"><span class="vp-label">register</span><span class="vp-val">${p.register}</span></div>
+          </div>
+          <div class="pc-tags">${p.tags.map(t => `<span class="pc-tag">${t}</span>`).join('')}</div>
         </div>
-        <p class="pc-desc">${p.desc}</p>
-        <div class="pc-voice">
-          <div class="voice-pill"><span class="vp-label">self</span><span class="vp-val">${p.voice.self}</span></div>
-          <div class="voice-pill"><span class="vp-label">user</span><span class="vp-val">${p.voice.user}</span></div>
-          <div class="voice-pill"><span class="vp-label">register</span><span class="vp-val">${p.register}</span></div>
-        </div>
-        <div class="pc-tags">${p.tags.map(t => `<span class="pc-tag">${t}</span>`).join('')}</div>
-      </div>
-    `).join('');
+      `).join('');
+    }
+
+    renderPersonas();
+
+    const _origApply = applyLang;
+    applyLang = function(lang) { _origApply(lang); renderPersonas(); };
   </script>
 </body>
 </html>
