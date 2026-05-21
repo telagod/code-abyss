@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-05-22
+
+### Changed
+- **README 品牌化重写**：与 v3.1 site 设计语言对齐——头图 banner.svg、节奏化文档结构（困境→方案→三层架构图→人格画廊→技能矩阵→升级路径→对比表）、人格 2×3 卡片表格含 voice + register + tags + creator。中文 README 同步重写。
+- **GitHub Pages site 编辑感重设计**：单冷紫主色替代三色 gradient，Noto Serif SC 衬线标题 + Inter 正文，hero 改左右分栏（左文字 + 右浮动 persona 卡阵），Logo 换为切口同心环 + 三道弧 + 中心 dark core 的 SVG，新增 favicon.svg。
+- **设计资产**：`assets/banner.svg`（1200×360 头图）、`assets/logo.svg`（96×96 独立 logo）、`site/favicon.svg`，三件共享同一视觉语言。
+
+> 此版本仅文档与 site 改动，无运行时 / 安装器变更。从 v3.1.0 升级无需任何操作。
+
 ## [3.1.0] - 2026-05-22
 
 ### Added
