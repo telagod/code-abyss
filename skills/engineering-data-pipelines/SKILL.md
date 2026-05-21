@@ -25,7 +25,3 @@ user-invocable: false
 分层验证(源→转换→目标) | 完整性+准确性+一致性 | 及时性阈值 | 加权评分 | 告警(Slack/PagerDuty)
 
 工具对比、API 用法、质量维度详见 [references/details.md](references/details.md)
-
-## 触发词
-
-数据管道、Airflow、Dagster、Prefect、ETL、流处理、Kafka Streams、Flink、数据质量、dbt、数据血缘

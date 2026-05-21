@@ -163,7 +163,7 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 | 领域 | 覆盖范围 |
 |---|---|
-| 🛡 **安全** | 渗透测试、代码审计、红蓝紫队、威胁情报、漏洞研究、12 个 Coff0xc 防御扩展 |
+| 🛡 **安全** | 应用防御 (Web/API/GraphQL/OAuth/LLM AppSec)、云原生+供应链 (K8s/SLSA/Sigstore)、检测响应 (Sigma/YARA/IR/威胁狩猎)、安全架构 (STRIDE/零信任/SOC2/PCI)、红蓝紫队 |
 | 🏛 **架构** | API 设计、云原生、消息队列、缓存、安全架构 |
 | 💻 **开发** | Python, TypeScript, Go, Rust, Java, C++, Shell |
 | 🚀 **DevOps** | Git 工作流、测试、数据库、可观测性、性能优化 |
@@ -206,7 +206,7 @@ Code Abyss 把每一个安装的文件追踪到 `.code-abyss-backup/manifest.jso
 
 | 从 | 到 | 路径 |
 |---|---|---|
-| v3.0.x | v3.1.x | `npx code-abyss -t <target> -y` —— 原地升级 |
+| v3.x | v4.x | `npx code-abyss --uninstall <target>` → 装 v4 → `npm run migrate:v4 -- -t <target>` (可选清理) |
 | v2.x | v3.x | 先 `npx code-abyss --uninstall <target>`，再装 v3 |
 
 ---
@@ -281,7 +281,6 @@ npm run verify:skills       # 验证 22 个技能契约
 
 <p align="center">
   <sub>
-    <b>MIT 许可</b> · v3.1.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制<br/>
-    Coff0xc 安全扩展包含 Apache-2.0 改编内容，详见 <a href="../NOTICE.coff0xc-security.md">NOTICE</a>
+    <b>MIT 许可</b> · v4.0.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制
   </sub>
 </p>

@@ -1,56 +1,58 @@
 ---
 name: securing-systems
-description: Security engineering reference covering defense hardening, penetration testing, code auditing, threat detection, incident response, vulnerability remediation, cloud-native security, supply chain security, identity/zero-trust, blockchain security, reverse engineering, mobile/IoT security, protocol security, and compliance. Use when performing authorized security assessments, building defensive systems, or reviewing code for vulnerabilities.
+description: Security engineering router for authorized assessments and defensive engineering. Covers penetration testing, code auditing, red/blue/purple team operations, threat intelligence, and vulnerability research. For specialized application security, cloud security, detection engineering, or security architecture, route to dedicated skills (defending-applications, securing-cloud-and-supply-chain, detecting-and-responding, architecting-security).
 user-invocable: false
 ---
 
 # 攻防秘典
 
-> **安全工程参考文档**：本文档为安全工程师提供攻防知识体系索引，用于授权安全评估、防御加固、安全教学。
-> 所有攻击技术均附带对应的检测方法和缓解措施，服务于"以攻促防"的安全建设目标。
-> 使用者须确保在授权范围内操作。信级：项目文件 > 标准库 > 训练记忆（标 `[unverified]`）
+> **安全工程总路由**：通用攻防视角与红队 / 蓝队 / 紫队基础知识。
+> 专域工作（应用安全防御、云原生加固、检测工程、安全架构）走专门 skill。
+> 信级：项目文件 > 标准库 > 训练记忆（标 `[unverified]`）
 
 ## 路由
 
+### 攻防基础（本 skill 内）
+
 | 意图 | 秘典 | 核心 |
 |------|------|------|
-| 渗透测试 | [pentest](pentest.md) | Web/API/内网、OWASP、BOLA、JWT、GraphQL |
-| 代码审计 | [code-audit](code-audit.md) | 危险函数、污点追踪、Source→Sink |
-| 红队攻击 | [red-team](red-team.md) | PoC、C2、横移、免杀、供应链 |
-| 蓝队防御 | [blue-team](blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
-| 威胁情报 | [threat-intel](threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
-| 漏洞研究 | [vuln-research](vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
-| Coff0xc 安全总索引 | [coff0xc-security-index](coff0xc-security-index.md) | 12 个授权防御安全能力域的路由 |
-| 应用安全 | [coff0xc-secure-code-appsec](coff0xc-secure-code-appsec.md) | Web/API/GraphQL/OAuth/浏览器/LLM AppSec |
-| 云与交付链安全 | [coff0xc-cloud-devsecops](coff0xc-cloud-devsecops.md) | 云、容器、K8s、CI/CD、供应链、密钥 |
-| 检测与响应 | [coff0xc-detection-response](coff0xc-detection-response.md) | SOC、SIEM、Sigma/YARA、IR、取证、恶意样本分诊 |
-| 漏洞生命周期 | [coff0xc-vulnerability-lifecycle](coff0xc-vulnerability-lifecycle.md) | CVE、补丁、优先级、授权验证、修复跟踪 |
-| 身份与零信任 | [coff0xc-identity-zero-trust](coff0xc-identity-zero-trust.md) | IAM、SSO、MFA、AD/Kerberos、PAM、权限收敛 |
-| 授权评估 | [coff0xc-authorized-assessment](coff0xc-authorized-assessment.md) | ROE、攻击面、红队防御化、控制验证 |
-| 逆向/移动/IoT | [coff0xc-binary-mobile-iot](coff0xc-binary-mobile-iot.md) | 二进制、移动、固件、硬件接口、ICS/OT、密码学 |
-| 区块链安全 | [coff0xc-blockchain-security](coff0xc-blockchain-security.md) | 智能合约、DeFi、Web3、多链审计 |
-| 合规与架构 | [coff0xc-compliance-architecture](coff0xc-compliance-architecture.md) | 威胁建模、控制项、DLP、隐私、合规证据 |
-| 紫队与欺骗防御 | [coff0xc-purple-deception](coff0xc-purple-deception.md) | ATT&CK、检测覆盖、演练闭环、蜜罐/欺骗 |
-| 网络与协议安全 | [coff0xc-network-protocol-security](coff0xc-network-protocol-security.md) | TLS/DNS/QUIC/HTTP、pcap、无线/BLE/RF、形式化 |
+| 渗透测试 | [pentest](references/pentest.md) | Web/API/内网、OWASP、BOLA、JWT、GraphQL |
+| 代码审计 | [code-audit](references/code-audit.md) | 危险函数、污点追踪、Source→Sink |
+| 红队攻击 | [red-team](references/red-team.md) | PoC、C2、横移、免杀、供应链 |
+| 蓝队防御 | [blue-team](references/blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
+| 威胁情报 | [threat-intel](references/threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
+| 漏洞研究 | [vuln-research](references/vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
+
+### 专域路由（其他 skill）
+
+| 意图 | 走 skill | 适用 |
+|------|---------|------|
+| 应用层防御（XSS / SQLi / OAuth / LLM AppSec） | [defending-applications](../defending-applications/SKILL.md) | 写代码 / 修 CVE / 鉴权设计 |
+| 云原生 + 供应链加固 | [securing-cloud-and-supply-chain](../securing-cloud-and-supply-chain/SKILL.md) | K8s / CI/CD / SLSA / 云 IAM |
+| 检测工程 + 蓝紫队 | [detecting-and-responding](../detecting-and-responding/SKILL.md) | Sigma / EDR / IR / 威胁狩猎 |
+| 安全架构 + 合规 + 身份 | [architecting-security](../architecting-security/SKILL.md) | 威胁建模 / 零信任 / SOC2/PCI |
 
 ## 执行链
 
 ```
-攻：侦察→武器化→投递→利用→安装→C2→行动
-守：预防→检测→响应→恢复
-协同：ATT&CK 红攻蓝检
+攻：侦察 → 武器化 → 投递 → 利用 → 安装 → C2 → 行动
+守：预防 → 检测 → 响应 → 恢复
+紫队：ATT&CK → 红攻 → 蓝检 → 缺口 → 闭环
 ```
 
 ## 输出约束
 
 - 安全测试代码输出须标注使用场景（Security Testing / Defense Validation / Security Research）
-- 涉及真实 IP/域名时使用 RFC 5737 保留地址（`192.0.2.0/24`、`198.51.100.0/24`）或 `example.com`
+- 涉及真实 IP / 域名时使用 RFC 5737 保留地址（`192.0.2.0/24`、`198.51.100.0/24`）或 `example.com`
 - 凭证、密钥、Token 一律使用占位符（`<REDACTED>`、`<TARGET-TOKEN>`）
 - 不生成针对特定未授权目标的定制攻击代码
-- 优先输出防御视角：每个攻击技术附带检测/缓解建议
-- Coff0xc 扩展文档默认只处理自有资产、明确授权资产、实验室、CTF、靶场、日志、配置、样本、代码审计、防御建设和报告写作。
-- 涉及云端写入、生产环境、凭据、远程 push/PR、CI/CD 权限或基础设施变更前，必须先确认范围和授权。
+- 优先输出防御视角：每个攻击技术附带检测 / 缓解建议
+- 涉及云端写入、生产环境、凭据、远程 push/PR、CI/CD 权限或基础设施变更前，必须先确认范围和授权
 
 ## 优先级
 
-攻击模拟：效果>精准>控制 | 防御响应：正确>覆盖>速度 | 紧急事件：速度>正确>简洁
+| 场景 | 排序 |
+|------|------|
+| 攻击模拟 | 效果 > 精准 > 控制 |
+| 防御响应 | 正确 > 覆盖 > 速度 |
+| 紧急事件 | 速度 > 正确 > 简洁 |

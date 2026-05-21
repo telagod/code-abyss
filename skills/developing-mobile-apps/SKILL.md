@@ -28,7 +28,3 @@ Compose 优先 | StateFlow 替代 LiveData | Hilt 注入 | Room 持久化 | key 
 Web 背景→RN | 极致动画/UI 定制→Flutter | 大量原生交互→RN | 极致原生体验→原生
 
 SwiftUI/Compose/RN/Flutter API 详情详见 [references/details.md](references/details.md)
-
-## 触发词
-
-iOS、SwiftUI、Android、Jetpack Compose、React Native、Flutter、跨平台、移动开发
