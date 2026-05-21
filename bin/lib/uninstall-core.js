@@ -100,9 +100,9 @@ function createUninstallExecutor(deps) {
       if (fs.existsSync(targetPath)) {
         rmSafe(targetPath);
         onRemoveInstalled(entryLabel(entry, defaultRoot));
-        if (normalized.root !== defaultRoot) {
-          pruneEmptyParents(path.dirname(targetPath), installRoot);
-        }
+        // 移除 root !== defaultRoot 守卫：child-level 安装后，同 root 内的父目录
+        // 在所有 child 被删后会变成空壳，需统一裁剪（installRoot 作 stopAt 上界）。
+        pruneEmptyParents(path.dirname(targetPath), installRoot);
       }
       // idempotent: target 已不在时 silently skip
     });

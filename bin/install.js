@@ -131,7 +131,7 @@ const {
   pushManifestEntry, pushPackReport, resolveEffectivePackSource,
   generateCommandContent, generateGeminiCommandContent,
   CLAUDE_COMMAND_TARGET, GEMINI_COMMAND_TARGET,
-  rmSafe, copyRecursive,
+  rmSafe, copyRecursive, shouldSkip,
   step, ok, warn, info, fail, c,
 });
 

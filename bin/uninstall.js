@@ -97,12 +97,13 @@ console.log(`\n🗑️  卸载 Code Abyss v${manifest.version}...\n`);
   if (fs.existsSync(p)) {
     fs.rmSync(p, { recursive: true, force: true });
     console.log(`🗑️  删除: ${entryLabel(entry)}`);
-    if (typeof entry !== 'string' && entry.root !== manifest.target) {
-      const rootDir = manifest.runtime_roots && manifest.runtime_roots[entry.root]
+    // child-level 安装后空壳父目录需统一裁剪；同 root 与跨 root 都适用。
+    const rootDir = typeof entry === 'string'
+      ? targetDir
+      : (manifest.runtime_roots && manifest.runtime_roots[entry.root]
         ? manifest.runtime_roots[entry.root]
-        : path.join(os.homedir(), MANAGED_ROOTS[entry.root] || '');
-      pruneEmptyParents(path.dirname(p), rootDir);
-    }
+        : path.join(os.homedir(), MANAGED_ROOTS[entry.root] || ''));
+    pruneEmptyParents(path.dirname(p), rootDir);
   }
   // idempotent: 已删的 silently skip
 });

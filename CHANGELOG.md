@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **东北雨姐 persona (#25)**：community 提交的 `dongbei-yujie` 人格 + `dongbei-yujie-blunt` 输出风格落地（identity / persona-card.json / 输出骨架）。已注册到 `config/personas/index.json` 与 `output-styles/index.json`，全 5×6 跨配 smoke 通过。Creator: wons。
+
+### Changed
+- **目录类条目展开为 children 安装（#19）**：`installCore()` 不再把 `skills/`、`output-styles/`、`bin/lib/` 当整体单元备份/替换。改为枚举 immediate children 后逐个安装，每个 child 独立备份 + 独立 manifest 追踪（`{path: "skills/domains"}` 而非 `{path: "skills"}`）。用户原有的自定义 skills 在安装期间不再被冻结进 `.code-abyss-backup/`，可与 Code Abyss skills 共存。
+- **uninstall 同步移除空目录裁剪的 `root !== defaultRoot` 守卫**：child-level 安装后同 root 内的父目录在所有 child 被移除后形成空壳，需统一裁剪（`installRoot` 作 stopAt 上界）。`bin/uninstall.js` 与 `bin/lib/uninstall-core.js` 同步更新；旧版 manifest 中 `{path: "skills"}` 整目录条目仍以 `rmSafe` 删除，行为不变。
+
+### Fixed
+- **Codex 启动报错 `failed to read model instructions file ... instruction.md` (#26)**：v3.0 安装器把 persona+style 写到 `~/.codex/AGENTS.md`，但 `config.toml` 默认 `model_instructions_file = "./instruction.md"` 指向另一个文件名，Codex CLI 启动时直接 `os error 2`。安装器现统一写入 `~/.codex/instruction.md`，与 `config.toml` 默认值对齐；README / DESIGN / CLAUDE.md / 中文 README 同步更新。
+
 ## [3.0.0] - 2026-05-16
 
 ### BREAKING CHANGES
