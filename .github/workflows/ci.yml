@@ -104,7 +104,8 @@ jobs:
 
           npx --yes --package "./$pkg_tgz" code-abyss --target codex -y
 
-          test -f "$abyss_home/.codex/AGENTS.md"
+          test -f "$abyss_home/.codex/instruction.md"
+          test ! -e "$abyss_home/.codex/AGENTS.md"
           test -d "$abyss_home/.codex/skills"
           test -d "$abyss_home/.codex/bin/lib"
           test ! -e "$abyss_home/.agents/skills/gstack"
@@ -114,6 +115,7 @@ jobs:
 
           npx --yes --package "./$pkg_tgz" code-abyss --uninstall codex
 
+          test ! -e "$abyss_home/.codex/instruction.md"
           test ! -e "$abyss_home/.codex/AGENTS.md"
           test ! -e "$abyss_home/.agents/skills"
           test ! -e "$abyss_home/.codex/.code-abyss-backup"
