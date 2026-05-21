@@ -4,6 +4,50 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-05-22
+
+> **Major release — skill quality refactor + native security skills.** 全面深度审计 skill 体系，按 harness 规范重组：
+> - 5 个 office skill 砍至 < 100 行，重内容下沉 references/
+> - 5 个 verify skill 从 CLI 帮助文档升级为判断型知识
+> - 4 个 designing-* 合并为 applying-ui-design-system
+> - building-ai-systems + coordinating-agents 合并为 building-agent-systems
+> - **移除 Apache-2.0 coff0xc 上游依赖**，替换为 4 个自家深度安全 skill (4073 行原创)
+
+### Added
+- **defending-applications** (785 行) — 应用层防御。Web/API/GraphQL 漏洞防御 + OAuth/OIDC/JWT/Session/Cookie 加固 + LLM AppSec (Prompt 注入/越狱/RAG 投毒/Agent 越权)
+- **securing-cloud-and-supply-chain** (1246 行) — 云原生与供应链。容器逃逸/K8s RBAC/PSS + SLSA/Sigstore/SBOM/CI/CD + 云 IAM/Vault/IaC 安全
+- **detecting-and-responding** (942 行) — 蓝紫队工程。Sigma/YARA 规则编写 + NIST 800-61 IR 流程 + 假设驱动威胁狩猎 + ATT&CK 闭环
+- **architecting-security** (1100 行) — 安全架构。STRIDE/PASTA/LINDDUN 威胁建模 + 零信任身份架构 (WebAuthn/Kerberos 加固/PAM JIT) + SOC2/PCI/HIPAA/GDPR 合规证据链
+- **applying-ui-design-system** — 4 个独立 designing-* skill 合并而成的统一前端设计系统选型 + 共享 a11y 铁律
+- **building-agent-systems** — building-ai-systems + coordinating-agents 合并而成的 Agent / LLM 工程总入口
+- **`npm run migrate:v4`** — `bin/migrate-v3-to-v4.js`，自动检测 ~/.{target}/skills/ 下的 v3 残骸 + 提示清理或自动迁移
+
+### Changed (BREAKING)
+- **office skill SKILL.md 全部砍至 < 100 行**：processing-docx (199→61), processing-pdfs (296→51), analyzing-spreadsheets (290→44), creating-presentations (485→74)。所有 code recipe / palette / format rule / workflow 下沉 references/
+- **5 个 verify skill 重写为判断型知识**：analyzing-security / checking-code-quality / analyzing-changes / verifying-modules / generating-docs。新增「何时使用 / 何时不使用」决策表 + 输出解读 + skill 联动指引
+- **securing-systems 瘦身为路由 skill**：18 个平铺 .md 全部迁入 references/。SKILL.md 路由表新增 4 个专域 skill 的链接
+- **触发词冗余段全清**：mobile / data / infra / dev / devops 5 个 skill 末尾的 `## 触发词` 段（与 description 重复）
+
+### Removed (BREAKING)
+- 4 个独立 design skill：designing-glassmorphism / designing-liquid-glass / designing-neubrutalism / designing-claymorphism → 合并为 applying-ui-design-system
+- building-ai-systems 与 coordinating-agents → 合并为 building-agent-systems
+- securing-systems/references/coff0xc-*.md (12 个文件) → 替换为 4 个自家深度 skill
+- `NOTICE.coff0xc-security.md` 与 `THIRD_PARTY_LICENSES/Apache-2.0-coffee-skill.txt`（v4 不再依赖 Apache-2.0 上游）
+- `package.json` `files` 字段移除 `THIRD_PARTY_LICENSES/` 与 `NOTICE.coff0xc-security.md`
+- 5 个 orphan reference 文件（v3.0 重构遗留）：designing-glassmorphism/references/{component-patterns,engineering,state-management,ui-aesthetics,ux-principles}.md
+
+### Migration
+
+```bash
+# v3.x → v4.0 升级路径
+npx code-abyss --uninstall <target>     # 1. 卸载 v3
+npm install -g code-abyss@4              # 2. 装 v4
+npx code-abyss -t <target> -y            # 3. 安装 v4 skill 集
+npm run migrate:v4 -- -t <target>        # 4. 可选：清理仍在 ~/.{target}/skills/ 的残骸
+```
+
+22 skill 全数通过 contract 校验，375 测试全部通过。
+
 ## [3.1.1] - 2026-05-22
 
 ### Changed

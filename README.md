@@ -163,7 +163,7 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 | Domain | Coverage |
 |---|---|
-| 🛡 **Security** | Pentesting, code audit, red/blue/purple team, threat intel, vuln research, 12 Coff0xc extensions |
+| 🛡 **Security** | App defense (Web/API/GraphQL/OAuth/LLM AppSec), cloud + supply chain (K8s/SLSA/Sigstore), detection + IR (Sigma/YARA/IR/threat hunting), security architecture (STRIDE/zero-trust/SOC2/PCI), red/blue/purple team |
 | 🏛 **Architecture** | API design, cloud-native, messaging, caching, security architecture |
 | 💻 **Development** | Python, TypeScript, Go, Rust, Java, C++, Shell |
 | 🚀 **DevOps** | Git workflow, testing, databases, observability, performance |
@@ -206,7 +206,7 @@ Code Abyss tracks every installed file in `.code-abyss-backup/manifest.json`. Un
 
 | From | To | Path |
 |---|---|---|
-| v3.0.x | v3.1.x | `npx code-abyss -t <target> -y` — in-place |
+| v3.x | v4.x | `npx code-abyss --uninstall <target>` → install v4 → `npm run migrate:v4 -- -t <target>` (optional cleanup) |
 | v2.x | v3.x | `npx code-abyss --uninstall <target>` first, then install v3 |
 
 ---
