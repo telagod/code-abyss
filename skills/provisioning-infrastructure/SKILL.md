@@ -23,7 +23,3 @@ automated prune+selfHeal | ApplicationSet 多环境 | 密钥加密(Sealed Secret
 模块化复用 | 环境隔离不同 State | 远程状态+锁定 | Provider 版本锁 | Secrets Manager | 统一标签 | Plan 审查再 Apply
 
 Helm/Kustomize/Operator、GitOps 工具对比、IaC 工具详情详见 [references/details.md](references/details.md)
-
-## 触发词
-
-Kubernetes、K8s、Helm、Kustomize、Operator、CRD、GitOps、ArgoCD、Flux、IaC、Terraform、Pulumi、CDK

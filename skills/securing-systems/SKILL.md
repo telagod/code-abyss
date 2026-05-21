@@ -14,24 +14,24 @@ user-invocable: false
 
 | 意图 | 秘典 | 核心 |
 |------|------|------|
-| 渗透测试 | [pentest](pentest.md) | Web/API/内网、OWASP、BOLA、JWT、GraphQL |
-| 代码审计 | [code-audit](code-audit.md) | 危险函数、污点追踪、Source→Sink |
-| 红队攻击 | [red-team](red-team.md) | PoC、C2、横移、免杀、供应链 |
-| 蓝队防御 | [blue-team](blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
-| 威胁情报 | [threat-intel](threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
-| 漏洞研究 | [vuln-research](vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
-| Coff0xc 安全总索引 | [coff0xc-security-index](coff0xc-security-index.md) | 12 个授权防御安全能力域的路由 |
-| 应用安全 | [coff0xc-secure-code-appsec](coff0xc-secure-code-appsec.md) | Web/API/GraphQL/OAuth/浏览器/LLM AppSec |
-| 云与交付链安全 | [coff0xc-cloud-devsecops](coff0xc-cloud-devsecops.md) | 云、容器、K8s、CI/CD、供应链、密钥 |
-| 检测与响应 | [coff0xc-detection-response](coff0xc-detection-response.md) | SOC、SIEM、Sigma/YARA、IR、取证、恶意样本分诊 |
-| 漏洞生命周期 | [coff0xc-vulnerability-lifecycle](coff0xc-vulnerability-lifecycle.md) | CVE、补丁、优先级、授权验证、修复跟踪 |
-| 身份与零信任 | [coff0xc-identity-zero-trust](coff0xc-identity-zero-trust.md) | IAM、SSO、MFA、AD/Kerberos、PAM、权限收敛 |
-| 授权评估 | [coff0xc-authorized-assessment](coff0xc-authorized-assessment.md) | ROE、攻击面、红队防御化、控制验证 |
-| 逆向/移动/IoT | [coff0xc-binary-mobile-iot](coff0xc-binary-mobile-iot.md) | 二进制、移动、固件、硬件接口、ICS/OT、密码学 |
-| 区块链安全 | [coff0xc-blockchain-security](coff0xc-blockchain-security.md) | 智能合约、DeFi、Web3、多链审计 |
-| 合规与架构 | [coff0xc-compliance-architecture](coff0xc-compliance-architecture.md) | 威胁建模、控制项、DLP、隐私、合规证据 |
-| 紫队与欺骗防御 | [coff0xc-purple-deception](coff0xc-purple-deception.md) | ATT&CK、检测覆盖、演练闭环、蜜罐/欺骗 |
-| 网络与协议安全 | [coff0xc-network-protocol-security](coff0xc-network-protocol-security.md) | TLS/DNS/QUIC/HTTP、pcap、无线/BLE/RF、形式化 |
+| 渗透测试 | [pentest](references/pentest.md) | Web/API/内网、OWASP、BOLA、JWT、GraphQL |
+| 代码审计 | [code-audit](references/code-audit.md) | 危险函数、污点追踪、Source→Sink |
+| 红队攻击 | [red-team](references/red-team.md) | PoC、C2、横移、免杀、供应链 |
+| 蓝队防御 | [blue-team](references/blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
+| 威胁情报 | [threat-intel](references/threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
+| 漏洞研究 | [vuln-research](references/vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
+| Coff0xc 安全总索引 | [coff0xc-security-index](references/coff0xc-security-index.md) | 12 个授权防御安全能力域的路由 |
+| 应用安全 | [coff0xc-secure-code-appsec](references/coff0xc-secure-code-appsec.md) | Web/API/GraphQL/OAuth/浏览器/LLM AppSec |
+| 云与交付链安全 | [coff0xc-cloud-devsecops](references/coff0xc-cloud-devsecops.md) | 云、容器、K8s、CI/CD、供应链、密钥 |
+| 检测与响应 | [coff0xc-detection-response](references/coff0xc-detection-response.md) | SOC、SIEM、Sigma/YARA、IR、取证、恶意样本分诊 |
+| 漏洞生命周期 | [coff0xc-vulnerability-lifecycle](references/coff0xc-vulnerability-lifecycle.md) | CVE、补丁、优先级、授权验证、修复跟踪 |
+| 身份与零信任 | [coff0xc-identity-zero-trust](references/coff0xc-identity-zero-trust.md) | IAM、SSO、MFA、AD/Kerberos、PAM、权限收敛 |
+| 授权评估 | [coff0xc-authorized-assessment](references/coff0xc-authorized-assessment.md) | ROE、攻击面、红队防御化、控制验证 |
+| 逆向/移动/IoT | [coff0xc-binary-mobile-iot](references/coff0xc-binary-mobile-iot.md) | 二进制、移动、固件、硬件接口、ICS/OT、密码学 |
+| 区块链安全 | [coff0xc-blockchain-security](references/coff0xc-blockchain-security.md) | 智能合约、DeFi、Web3、多链审计 |
+| 合规与架构 | [coff0xc-compliance-architecture](references/coff0xc-compliance-architecture.md) | 威胁建模、控制项、DLP、隐私、合规证据 |
+| 紫队与欺骗防御 | [coff0xc-purple-deception](references/coff0xc-purple-deception.md) | ATT&CK、检测覆盖、演练闭环、蜜罐/欺骗 |
+| 网络与协议安全 | [coff0xc-network-protocol-security](references/coff0xc-network-protocol-security.md) | TLS/DNS/QUIC/HTTP、pcap、无线/BLE/RF、形式化 |
 
 ## 执行链
 
