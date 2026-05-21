@@ -281,7 +281,6 @@ npm run verify:skills       # Validate 22 skill contracts
 
 <p align="center">
   <sub>
-    <b>MIT License</b> · v3.1.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a><br/>
-    Coff0xc Security Extensions include adapted Apache-2.0 material — see <a href="NOTICE.coff0xc-security.md">NOTICE</a>
+    <b>MIT License</b> · v4.0.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
   </sub>
 </p>

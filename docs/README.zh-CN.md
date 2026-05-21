@@ -281,7 +281,6 @@ npm run verify:skills       # 验证 22 个技能契约
 
 <p align="center">
   <sub>
-    <b>MIT 许可</b> · v3.1.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制<br/>
-    Coff0xc 安全扩展包含 Apache-2.0 改编内容，详见 <a href="../NOTICE.coff0xc-security.md">NOTICE</a>
+    <b>MIT 许可</b> · v4.0.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制
   </sub>
 </p>
