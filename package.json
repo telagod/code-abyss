@@ -1,6 +1,6 @@
 {
   "name": "code-abyss",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "为 Claude Code / Codex CLI / Gemini CLI / OpenClaw 注入可切换人格、主动执行导向、5种输出风格与26个工程技能",
   "keywords": [
     "claude",

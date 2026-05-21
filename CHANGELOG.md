@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-05-22
+
 ### Added
 - **东北雨姐 persona (#25)**：community 提交的 `dongbei-yujie` 人格 + `dongbei-yujie-blunt` 输出风格落地（identity / persona-card.json / 输出骨架）。已注册到 `config/personas/index.json` 与 `output-styles/index.json`，全 5×6 跨配 smoke 通过。Creator: wons。
 
@@ -13,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - **Codex 启动报错 `failed to read model instructions file ... instruction.md` (#26)**：v3.0 安装器把 persona+style 写到 `~/.codex/AGENTS.md`，但 `config.toml` 默认 `model_instructions_file = "./instruction.md"` 指向另一个文件名，Codex CLI 启动时直接 `os error 2`。安装器现统一写入 `~/.codex/instruction.md`，与 `config.toml` 默认值对齐；README / DESIGN / CLAUDE.md / 中文 README 同步更新。
+- **CI smoke-codex 跟随上游断言修正**：smoke job 改断言 `instruction.md` + 不存在 `AGENTS.md`，与新的安装产物对齐。
 
 ## [3.0.0] - 2026-05-16
 
