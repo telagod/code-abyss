@@ -91,7 +91,7 @@ describe('skill registry', () => {
       'name: generating-docs\ndescription: docs\nuser-invocable: true\nallowed-tools: Bash, Read\nargument-hint: <path>',
       true
     );
-    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: false', false);
+    makeSkill('sample-knowledge-skill', 'name: sample-knowledge-skill\ndescription: design\nuser-invocable: false', false);
 
     const skills = collectSkills(tmpDir);
     expect(skills).toHaveLength(2);
@@ -112,7 +112,7 @@ describe('skill registry', () => {
     expect(genDocs['allowed-tools']).toBeUndefined();
     expect(genDocs['argument-hint']).toBeUndefined();
 
-    const frontendDesign = skills.find(s => s.name === 'designing-glassmorphism');
+    const frontendDesign = skills.find(s => s.name === 'sample-knowledge-skill');
     expect(frontendDesign.category).toBe('domain');
     expect(frontendDesign.runtimeType).toBe('knowledge');
     expect(frontendDesign.allowedTools).toEqual(['Read']);
@@ -120,7 +120,7 @@ describe('skill registry', () => {
 
   test('collectInvocableSkills 只返回 user-invocable skills', () => {
     makeSkill('generating-docs', 'name: generating-docs\ndescription: docs\nuser-invocable: true', true);
-    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: false', false);
+    makeSkill('sample-knowledge-skill', 'name: sample-knowledge-skill\ndescription: design\nuser-invocable: false', false);
 
     const skills = collectInvocableSkills(tmpDir);
     expect(skills.map(s => s.name)).toEqual(['generating-docs']);
@@ -128,15 +128,15 @@ describe('skill registry', () => {
 
   test('resolveExecutableSkillScript 区分缺失与无脚本', () => {
     makeSkill('generating-docs', 'name: generating-docs\ndescription: docs\nuser-invocable: true', true);
-    makeSkill('designing-glassmorphism', 'name: designing-glassmorphism\ndescription: design\nuser-invocable: true', false);
+    makeSkill('sample-knowledge-skill', 'name: sample-knowledge-skill\ndescription: design\nuser-invocable: true', false);
 
     const ok = resolveExecutableSkillScript(tmpDir, 'generating-docs');
     expect(ok.reason).toBeNull();
     expect(ok.scriptPath).toContain(path.join('generating-docs', 'scripts', 'run.js'));
 
-    const noScript = resolveExecutableSkillScript(tmpDir, 'designing-glassmorphism');
+    const noScript = resolveExecutableSkillScript(tmpDir, 'sample-knowledge-skill');
     expect(noScript.reason).toBe('no-script');
-    expect(noScript.skill.name).toBe('designing-glassmorphism');
+    expect(noScript.skill.name).toBe('sample-knowledge-skill');
     expect(noScript.scriptPath).toBeNull();
 
     const missing = resolveExecutableSkillScript(tmpDir, 'missing');

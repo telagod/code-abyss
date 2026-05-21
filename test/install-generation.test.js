@@ -35,16 +35,16 @@ describe('generateCommandContent', () => {
 
   test('无脚本的 skill: 知识库模式', () => {
     const meta = {
-      name: 'designing-glassmorphism',
+      name: 'sample-knowledge-skill',
       description: '前端设计美学秘典',
       allowedTools: 'Read',
     };
-    const content = generateCommandContent(meta, 'designing-glassmorphism', 'knowledge');
+    const content = generateCommandContent(meta, 'sample-knowledge-skill', 'knowledge');
 
-    expect(content).toContain('name: designing-glassmorphism');
+    expect(content).toContain('name: sample-knowledge-skill');
     expect(content).toContain('allowed-tools: Read');
     expect(content).toContain('读取以下技能文档');
-    expect(content).toContain('~/.claude/skills/designing-glassmorphism/SKILL.md');
+    expect(content).toContain('~/.claude/skills/sample-knowledge-skill/SKILL.md');
     expect(content).not.toContain('run_skill.js');
     expect(content).not.toContain('一气呵成');
   });

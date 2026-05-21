@@ -59,16 +59,16 @@ describe('run_skill', () => {
 
   test('无脚本 skill 返回明确错误', () => {
     makeSkill(
-      'designing-glassmorphism',
-      'name: designing-glassmorphism\ndescription: design\nuser-invocable: true',
+      'sample-knowledge-skill',
+      'name: sample-knowledge-skill\ndescription: design\nuser-invocable: true',
       null
     );
 
-    const result = run(['designing-glassmorphism']);
+    const result = run(['sample-knowledge-skill']);
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("runtimeType 不是 scripted");
-    expect(result.stderr).toContain('designing-glassmorphism/SKILL.md');
+    expect(result.stderr).toContain('sample-knowledge-skill/SKILL.md');
   });
 
   test('等待锁释放后继续执行，不 busy wait 失效', async () => {
