@@ -50,7 +50,11 @@ describe('claude install smoke', () => {
     expect(result.status).toBe(0);
     expect(fs.existsSync(path.join(claudeDir, 'CLAUDE.md'))).toBe(true);
     expect(fs.existsSync(path.join(claudeDir, 'skills'))).toBe(true);
-    expect(fs.existsSync(path.join(claudeDir, 'commands'))).toBe(false);
+    // cultivating-skills / cultivating-personas 是 user-invocable，会生成 commands
+    expect(fs.existsSync(path.join(claudeDir, 'commands'))).toBe(true);
+    expect(fs.existsSync(path.join(claudeDir, 'commands', 'cultivating-skills.md'))).toBe(true);
+    expect(fs.existsSync(path.join(claudeDir, 'commands', 'cultivating-personas.md'))).toBe(true);
+    // 但旧的非 invocable skill 不应有 commands
     expect(fs.existsSync(path.join(claudeDir, 'commands', 'gen-docs.md'))).toBe(false);
     expect(fs.existsSync(path.join(claudeDir, 'commands', 'review.md'))).toBe(false);
     expect(fs.existsSync(path.join(claudeDir, 'skills', 'gstack'))).toBe(false);

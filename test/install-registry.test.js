@@ -262,7 +262,8 @@ describe('scanInvocableSkills', () => {
     if (!fs.existsSync(realSkillsDir)) return;
 
     const results = scanInvocableSkills(realSkillsDir);
-    expect(results).toEqual([]);
+    const names = results.map((s) => s.meta.name).sort();
+    expect(names).toEqual(['cultivating-personas', 'cultivating-skills']);
   });
 });
 
