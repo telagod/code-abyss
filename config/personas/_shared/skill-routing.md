@@ -7,6 +7,8 @@
 - AI / RAG / Agent / Prompt → `skills/building-ai-systems/`
 - Office / Word / Excel / PPT / PDF / 文档自动化 → `skills/processing-docx/ etc.`
 - 多 Agent / 并行 → `skills/coordinating-agents/SKILL.md`
+- 沉淀 / 自我进化 / 新建或改进 skill → `skills/cultivating-skills/`
+- 人格 / 声音 / 情绪锚点沉淀 → `skills/cultivating-personas/`
 
 ## 自动关卡
 

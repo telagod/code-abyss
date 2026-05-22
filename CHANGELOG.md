@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.1.0] - 2026-05-22
+
+> **Self-evolution release.** 新增两枚炼炉级 skill：让 Agent 能识别会话中的"该沉淀了"信号，并将工程方法 / 人格沉淀为可复用的 skill / persona，引导用户走三级发布漏斗（本地 → 项目 → 社区）。安全脊柱内化为默认拒绝原则。
+
+### Added
+
+- **cultivating-skills** — meta-skill：从重复操作沉淀为新 skill / 改进现有 skill。脚手架 (`skill_forge init`)、frontmatter+引用 lint (`lint`)、安全扫描 (`scan`)、改进模板 (`improve`)、漏斗升级 (`promote`) 一体。`scripts/skill_forge.js` 默认拒绝危险模式（`rm -rf /`、`curl | sh`、`eval` 用户输入、prompt injection 反模式），支持 `<!-- safety-scan: ignore RULE_ID -->` 行内豁免。
+- **cultivating-personas** — meta-skill：从会话沉淀 voice / 情绪锚点 / 场景脚本为 Tech Persona Card v1.0。`scripts/persona_forge.js` 跑 schema + voice 一致性 + identity 三段（角色锚定 / 性格特征 / 情绪模式）+ 法律红线（真实人名 / 商标 / 政治宗教 / 内容危害）。复用 [submit portal](https://telagod.github.io/code-abyss/submit.html)，不重造提交流程。
+- 主动协助协议新增**沉淀触发协议**：观察到方法论结晶 / 人格结晶 / 现有 skill 缺口时，Agent 不直接落盘，先向用户提议，魔尊点头方进入对应 flow。
+- 三级发布漏斗：L0 本地（`~/.claude/skills/local/`，不入路由、显式调用）→ L1 项目（`<repo>/.claude/skills/`，团队共享）→ L2 社区（upstream，全 block + 全 warn 阻断）。
+
+### Changed
+
+- `_shared/skill-routing.md` 新增两条路由：沉淀走 cultivating-skills，人格沉淀走 cultivating-personas。
+- `_shared/proactive.md` 追加沉淀触发协议章节。
+- skill 总数由 22 升至 24（cultivating-skills + cultivating-personas）。
+- 测试预期更新：Claude install smoke 现在期待 `commands/cultivating-{skills,personas}.md` 存在；旧的"core skills 无 invocable"断言改为"仅 cultivating 系列 invocable"。
+
+### Security
+
+- 新 skill 落盘默认走 safety_scan，命中即阻断：硬编码 secret（复用 analyzing-security 规则）、危险默认模板、prompt injection 反模式、scripts 多入口、引用悬空。
+- 特权工具（Bash / Write / Edit / WebFetch）须在 SKILL.md 内说明理由，否则 warn。
+- 人格内容三道闸：法律红线（真实人名 / 商标 / IP）、平台审查（政治 / 宗教 / 民族）、内容危害（自残 / 仇恨 / 性化未成年）—— 全 block。
+
 ## [4.0.0] - 2026-05-22
 
 > **Major release — skill quality refactor + native security skills.** 全面深度审计 skill 体系，按 harness 规范重组：

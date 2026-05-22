@@ -6,7 +6,7 @@
   </a>
 </p>
 
-<h3 align="center">Composable persona · style · 22 engineering skills · 4 native security domains<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+<h3 align="center">Composable persona · style · 24 engineering skills · 4 native security domains · self-evolution forge<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/code-abyss"><img src="https://img.shields.io/npm/v/code-abyss?color=9b8cff&label=npm&style=flat-square" alt="npm"></a>
@@ -52,9 +52,10 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 ### What's new in v4
 
 - **4 native security domains** — 4073 lines of original defense engineering (no Apache-2.0 upstream)
-- **22 skills total**, all `SKILL.md` ≤ 90 lines (avg 58), heavy content lives in `references/`
+- **24 skills total**, all `SKILL.md` ≤ 90 lines (avg 58), heavy content lives in `references/`
 - 5 verify skills rewritten as **judgment-type knowledge** (when to use, how to interpret output, exemption rules)
 - Office skills slim to under 100 lines each; 4 design systems consolidated into one selector skill
+- **v4.1 — self-evolution forge**: `cultivating-skills` / `cultivating-personas` let the agent distill repeated workflows into reusable skills, with a safety scan and a three-tier publish funnel (local → project → community)
 
 ```bash
 npx code-abyss -t claude -y
@@ -183,7 +184,7 @@ Plus `securing-systems` as the router skill covering pentest, code audit, red/bl
 
 ## Skills
 
-22 domain skills, flat structure, [agentskills.io](https://agentskills.io/specification) aligned (with Code Abyss extensions). Skills load by context — the agent reads the right knowledge at the right time without being asked. Average `SKILL.md` is 58 lines; all `SKILL.md` files are under 90 lines, with heavy content in `references/`.
+24 domain skills, flat structure, [agentskills.io](https://agentskills.io/specification) aligned (with Code Abyss extensions). Skills load by context — the agent reads the right knowledge at the right time without being asked. Average `SKILL.md` is 58 lines; all `SKILL.md` files are under 90 lines, with heavy content in `references/`.
 
 | Domain | Coverage |
 |---|---|
@@ -195,6 +196,7 @@ Plus `securing-systems` as the router skill covering pentest, code audit, red/bl
 | 🎨 **Frontend** | Unified design system selector — Glassmorphism / Liquid Glass / Neubrutalism / Claymorphism |
 | 📑 **Office** | Word, PDF, PowerPoint, Excel — OOXML-level automation |
 | 📡 **Infra / Mobile / Data** | Kubernetes, GitOps, IaC · iOS, Android, RN, Flutter · pipelines, streaming, quality |
+| 🜲 **Self-evolution** | `cultivating-skills` (distill repeated workflows) + `cultivating-personas` (distill voice into Tech Persona Card) — both with safety scan + 3-tier publish funnel |
 
 Five skills also ship as **executable verification tools** for CI:
 
@@ -280,7 +282,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 |---|---|---|
 | **Identity** | Flat help-desk tone | Consistent character with named voice |
 | **Execution** | Ad-hoc, varies by prompt | Iron laws + execution chains baked in |
-| **Domain depth** | Generic best-practices | 22 skill files load by context (avg 58 lines) |
+| **Domain depth** | Generic best-practices | 24 skill files load by context (avg 58 lines) |
 | **Security depth** | OWASP recitation | 4 native suites · 4073 lines · detection signals + mitigation patterns |
 | **Cross-platform** | Re-engineer per CLI | One spec, four platforms |
 | **Reproducibility** | Prompt drift across sessions | Versioned `persona-card.json` |
@@ -294,7 +296,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
 npm test                    # 375 tests
-npm run verify:skills       # Validate 22 skill contracts
+npm run verify:skills       # Validate 24 skill contracts
 ```
 
 **Add a skill** — create `skills/<gerund-name>/SKILL.md` with [SKILL frontmatter](https://agentskills.io/specification), optionally add `scripts/` for executable tools. `npm run verify:skills` validates the contract.
@@ -305,6 +307,6 @@ npm run verify:skills       # Validate 22 skill contracts
 
 <p align="center">
   <sub>
-    <b>MIT License</b> · v4.0.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
+    <b>MIT License</b> · v4.1.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
   </sub>
 </p>
