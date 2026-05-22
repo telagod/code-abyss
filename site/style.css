@@ -1509,3 +1509,95 @@ footer {
   justify-content: center;
   margin-top: 36px;
 }
+
+/* ---------- Evolve section (self-evolution forge) ---------- */
+.evolve-section {
+  padding: 96px 0;
+  background: radial-gradient(circle at 80% 20%, rgba(155, 140, 255, 0.05), transparent 60%);
+}
+.evolve-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.evolve-card {
+  position: relative;
+  display: block;
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: rgba(20, 20, 32, 0.55);
+  border: 1px solid rgba(155, 140, 255, 0.16);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 240ms ease,
+              box-shadow 240ms ease;
+  overflow: hidden;
+}
+.evolve-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(155, 140, 255, 0.08), transparent 60%);
+  pointer-events: none;
+  opacity: 0.6;
+}
+.evolve-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(196, 184, 255, 0.34);
+  box-shadow: 0 16px 40px -16px rgba(155, 140, 255, 0.36);
+}
+.evolve-card h3 {
+  margin: 18px 0 10px;
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-size: 17px;
+  color: var(--iris);
+  position: relative;
+}
+.evolve-card p {
+  position: relative;
+  color: rgba(236, 237, 245, 0.72);
+  line-height: 1.65;
+  font-size: 14.5px;
+}
+.evolve-funnel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+.funnel-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 24px;
+  border-radius: 14px;
+  background: rgba(155, 140, 255, 0.06);
+  border: 1px solid rgba(155, 140, 255, 0.18);
+  min-width: 220px;
+  text-align: center;
+}
+.funnel-tier b {
+  color: var(--iris);
+  font-size: 14px;
+}
+.funnel-tier span {
+  font-size: 12.5px;
+  color: rgba(236, 237, 245, 0.6);
+}
+.funnel-arrow {
+  display: flex;
+  align-items: center;
+  color: rgba(155, 140, 255, 0.5);
+  font-size: 22px;
+  font-weight: 300;
+}
+@media (max-width: 720px) {
+  .funnel-arrow { transform: rotate(90deg); }
+  .evolve-funnel { flex-direction: column; align-items: center; }
+}

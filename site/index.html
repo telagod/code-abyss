@@ -45,6 +45,7 @@
       <div class="nav-links">
         <a href="#how" data-i18n="nav.how">How</a>
         <a href="#security" data-i18n="nav.security">Security</a>
+        <a href="#evolve" data-i18n="nav.evolve">Evolve</a>
         <a href="#personas" data-i18n="nav.personas">Personas</a>
         <a href="#spec" data-i18n="nav.spec">Spec</a>
         <a href="#install" data-i18n="nav.install">Install</a>
@@ -71,7 +72,7 @@
             <span data-i18n="hero.title.1">Give your AI agent</span><br>
             <span class="accent" data-i18n="hero.title.2">a personality.</span>
           </h1>
-          <p class="lead" data-i18n="hero.sub" data-i18n-html>Composable identity, style, and <b>22 engineering skills</b><br>— including <b>4 native security domains, 4073 lines of original defense</b>.</p>
+          <p class="lead" data-i18n="hero.sub" data-i18n-html>Composable identity, style, and <b>24 engineering skills</b><br>— including <b>4 native security domains</b> and a <b>self-evolution forge</b>.</p>
           <div class="hero-install">
             <span class="prompt-sign">$</span>
             <code>npx code-abyss -t claude -y</code>
@@ -208,6 +209,48 @@
 
       <div class="security-actions">
         <a href="https://github.com/telagod/code-abyss/tree/main/skills" class="btn btn-ghost" data-i18n="security.cta">Browse on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="evolve-section" id="evolve">
+    <div class="container">
+      <div class="eyebrow" data-i18n="evolve.label">Self-Evolution</div>
+      <h2 data-i18n="evolve.title">The forge that grows itself</h2>
+      <p class="section-desc" data-i18n="evolve.desc" data-i18n-html>v4.1 adds two meta-skills. The agent watches for <b>repeated workflows</b> and <b>stable voice patterns</b>, then proposes distillation — never silent. Every output passes a <b>default-deny safety scan</b> before landing.</p>
+
+      <div class="evolve-grid">
+        <a class="evolve-card" href="https://github.com/telagod/code-abyss/tree/main/skills/cultivating-skills">
+          <div class="sec-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2v6h6M4 13.5V6a2 2 0 0 1 2-2h7l7 7v9a2 2 0 0 1-2 2H10"/>
+              <path d="M4 19l4-4 3 3 5-5 4 4"/>
+            </svg>
+          </div>
+          <h3>cultivating-skills</h3>
+          <p data-i18n="evolve.skills.desc">Distill repeated workflows into reusable skills. Scaffold, lint, scan, improve, promote across L0/L1/L2 tiers. Default-deny on dangerous tools, prompt injection, hardcoded secrets.</p>
+          <span class="sec-tag">skill_forge.js</span>
+        </a>
+        <a class="evolve-card" href="https://github.com/telagod/code-abyss/tree/main/skills/cultivating-personas">
+          <div class="sec-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
+              <path d="M16 3l2 2-2 2M20 5h-4"/>
+            </svg>
+          </div>
+          <h3>cultivating-personas</h3>
+          <p data-i18n="evolve.personas.desc">Distill voice, emotional anchors, and scenario scripts into a Tech Persona Card v1.0. Reuses the existing submit portal — three legal/platform/content red lines enforced.</p>
+          <span class="sec-tag">persona_forge.js</span>
+        </a>
+      </div>
+
+      <div class="evolve-funnel">
+        <div class="funnel-tier"><b data-i18n="evolve.l0">L0 · Local</b><span data-i18n="evolve.l0.desc">~/.claude/skills/local/ — explicit invocation only</span></div>
+        <div class="funnel-arrow">→</div>
+        <div class="funnel-tier"><b data-i18n="evolve.l1">L1 · Project</b><span data-i18n="evolve.l1.desc">repo .claude/skills/ — team-shared, warn-blocking</span></div>
+        <div class="funnel-arrow">→</div>
+        <div class="funnel-tier"><b data-i18n="evolve.l2">L2 · Community</b><span data-i18n="evolve.l2.desc">upstream PR — full block + warn enforced</span></div>
       </div>
     </div>
   </section>
