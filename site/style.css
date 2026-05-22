@@ -1510,94 +1510,228 @@ footer {
   margin-top: 36px;
 }
 
-/* ---------- Evolve section (self-evolution forge) ---------- */
+/* =============================================================================
+ * Section: Evolve — v4.1 自我进化炼炉
+ * ========================================================================== */
+
 .evolve-section {
-  padding: 96px 0;
-  background: radial-gradient(circle at 80% 20%, rgba(155, 140, 255, 0.05), transparent 60%);
+  padding: 100px 0;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(155, 140, 255, 0.05), transparent 55%),
+    radial-gradient(circle at 20% 100%, rgba(110, 93, 255, 0.04), transparent 55%);
+  border-bottom: 1px solid var(--line);
+  position: relative;
 }
+
 .evolve-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
+  gap: 18px;
   margin-top: 48px;
 }
+
 .evolve-card {
   position: relative;
   display: block;
-  padding: 32px 28px;
-  border-radius: 20px;
-  background: rgba(20, 20, 32, 0.55);
-  border: 1px solid rgba(155, 140, 255, 0.16);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  text-decoration: none;
+  padding: 28px 26px 64px;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   color: inherit;
-  transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              border-color 240ms ease,
-              box-shadow 240ms ease;
+  text-decoration: none;
   overflow: hidden;
+  transition: all var(--t-base) var(--ease);
 }
+
 .evolve-card::before {
-  content: "";
+  content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(155, 140, 255, 0.08), transparent 60%);
-  pointer-events: none;
-  opacity: 0.6;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--iris),
+    transparent);
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
 }
+
 .evolve-card:hover {
+  border-color: var(--line-strong);
+  background: var(--glass-bg-hi);
   transform: translateY(-3px);
-  border-color: rgba(196, 184, 255, 0.34);
-  box-shadow: 0 16px 40px -16px rgba(155, 140, 255, 0.36);
+  box-shadow: 0 16px 40px -16px rgba(155, 140, 255, 0.28);
 }
-.evolve-card h3 {
-  margin: 18px 0 10px;
-  font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-size: 17px;
-  color: var(--iris);
-  position: relative;
-}
-.evolve-card p {
-  position: relative;
-  color: rgba(236, 237, 245, 0.72);
-  line-height: 1.65;
-  font-size: 14.5px;
-}
-.evolve-funnel {
-  display: flex;
-  align-items: stretch;
+
+.evolve-card:hover::before { opacity: 1; }
+
+.evolve-card .sec-icon {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-top: 48px;
-  flex-wrap: wrap;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--iris-bg);
+  color: var(--iris);
+  margin-bottom: 18px;
+  transition: all var(--t-base) var(--ease);
 }
+
+.evolve-card:hover .sec-icon {
+  background: rgba(155, 140, 255, 0.18);
+  transform: scale(1.04);
+}
+
+.evolve-card h3 {
+  font-family: var(--mono);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--paper);
+  margin: 0 0 10px;
+}
+
+.evolve-card p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--paper-soft);
+  margin: 0;
+}
+
+.evolve-card .sec-tag {
+  position: absolute;
+  bottom: 22px;
+  left: 26px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(155, 140, 255, 0.10);
+  border: 1px solid rgba(155, 140, 255, 0.22);
+  color: var(--iris);
+}
+
+/* ---------- 三级漏斗 ---------- */
+
+.evolve-funnel {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  position: relative;
+  counter-reset: funnel;
+}
+
 .funnel-tier {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 16px 24px;
-  border-radius: 14px;
-  background: rgba(155, 140, 255, 0.06);
-  border: 1px solid rgba(155, 140, 255, 0.18);
-  min-width: 220px;
-  text-align: center;
+  gap: 10px;
+  padding: 24px 28px 24px 28px;
+  padding-right: 56px;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: all var(--t-base) var(--ease);
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100px;
 }
-.funnel-tier b {
+
+.funnel-tier::before {
+  counter-increment: funnel;
+  content: counter(funnel);
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--paper-faint);
+  background: rgba(155, 140, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transition: all var(--t-base) var(--ease);
+  pointer-events: none;
+}
+
+.funnel-tier::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(155, 140, 255, calc(0.04 + var(--tier-emphasis, 0) * 0.04)),
+    transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.funnel-tier:nth-child(1) { --tier-emphasis: 1; }
+.funnel-tier:nth-child(2) { --tier-emphasis: 2; }
+.funnel-tier:nth-child(3) {
+  --tier-emphasis: 3;
+  border-color: var(--iris-line);
+}
+
+.funnel-tier:nth-child(3)::before {
   color: var(--iris);
-  font-size: 14px;
+  background: var(--iris-bg);
+  border-color: var(--iris-line);
 }
+
+.funnel-tier:hover {
+  border-color: var(--line-strong);
+  background: var(--glass-bg-hi);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -16px rgba(155, 140, 255, 0.3);
+}
+
+.funnel-tier:hover::before {
+  color: var(--iris);
+  background: var(--iris-bg);
+  border-color: var(--iris-line);
+}
+
+.funnel-tier b {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--iris);
+  text-transform: uppercase;
+  display: block;
+}
+
 .funnel-tier span {
-  font-size: 12.5px;
-  color: rgba(236, 237, 245, 0.6);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--paper-soft);
 }
-.funnel-arrow {
-  display: flex;
-  align-items: center;
-  color: rgba(155, 140, 255, 0.5);
-  font-size: 22px;
-  font-weight: 300;
-}
-@media (max-width: 720px) {
-  .funnel-arrow { transform: rotate(90deg); }
-  .evolve-funnel { flex-direction: column; align-items: center; }
+
+@media (max-width: 880px) {
+  .evolve-section { padding: 72px 0; }
+  .evolve-grid { gap: 14px; margin-top: 40px; }
+  .evolve-funnel {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 48px;
+  }
+  .funnel-tier {
+    min-height: auto;
+    padding: 20px 56px 20px 22px;
+  }
 }
