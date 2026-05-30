@@ -1,6 +1,6 @@
 ---
 name: automating-devops
-description: DevOps knowledge reference covering Git workflows, testing strategies, DevSecOps, CI/CD pipelines, database management, observability, and performance optimization. Use when working with Git, CI/CD, testing, monitoring, or infrastructure automation.
+description: DevOps knowledge reference covering Git workflows, testing strategies, DevSecOps, release pipeline orchestration (release.yml, multi-arch images, cosign integration), CI/CD pipelines, database management, observability, and performance optimization. Use when working with Git, CI/CD, release pipelines, ghcr image publishing, testing, monitoring, or infrastructure automation.
 user-invocable: false
 ---
 
@@ -13,6 +13,7 @@ user-invocable: false
 | 版本控制 | [git-workflow](git-workflow.md) | Git 分支策略、PR 流程、rebase vs merge |
 | 测试 | [testing](testing.md) | 单元/集成/E2E、TDD、覆盖率 |
 | 安全开发 | [devsecops](devsecops.md) | CI/CD 安全、SAST/DAST、供应链 |
+| Release 编排 | [release-pipelines](release-pipelines.md) | release.yml 多 job 骨架、metadata tag、cosign 集成、踩坑字典 |
 | 数据库 | [database](database.md) | SQL/NoSQL 选型、索引优化、迁移 |
 | 性能 | [performance](performance.md) | Profiling、火焰图、基准/负载测试 |
 | 可观测 | [observability](observability.md) | 日志/指标/追踪三支柱、SLO/SLI |
