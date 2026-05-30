@@ -1,6 +1,6 @@
 # Persona Architecture v2 — 重构提案
 
-> 状态：**实施中** — P1/P2/P4/P5 已落地并通过全量测试（分支 `refactor/persona-architecture-v2`）；P3（轻量）与 P6 待定。
+> 状态：**实施中** — P1/P2/P3/P4/P5 已落地并通过全量测试；P6（lorebook 化）待定。
 > 关联：`config/personas/`、`output-styles/`、`bin/lib/style-registry.js`、`bin/lib/persona-converter.js`、`skills/cultivating-personas/`
 > 对标：Character Card V2/V3 spec、SillyTavern Prompt Manager、类脑「制卡思路」
 
@@ -159,7 +159,7 @@ function renderRuntimeGuidance(root, styleSlug, target, personaSlug) {
 | **P0** | 本文档评审通过 | 无 | ✅ 完成 |
 | **P1** | 宏替换扩展到全部 persona 层（`renderRuntimeGuidance` 内 `apply` 包裹 identity/examples/style/posthistory） | 低 | ✅ 完成 |
 | **P2** | persona 正文人称改宏（6 角色全量，名号 `雨姐/大姐姐` 已保护） | 低 | ✅ 完成 |
-| **P3** | 单一事实源：index.json 派生自 card；converter 消费 voice 全字段 | 中 | ⏳ 待定（当前由三源降为双源：index.json + card） |
+| **P3** | 单一事实源：`index.json` 瘦身为启用清单 + default 指定；label/description/self/user/language 运行时从 `persona-card.json` 派生（`loadPersonaCard`）。新增两条护栏测试（index.json 不得含 voice 字段 + 派生值与 card 严格一致） | 中 | ✅ 完成 |
 | **P4** | 新增 L2 范例层（6 角色各补 `examples.md` few-shot），消除 G3 | 低（纯增量） | ✅ 完成 |
 | **P5** | 新增 L4 强指令层（6 角色各补 `posthistory.md`），反 AI 腔/格式锁/授权边界 | 中 | ✅ 完成 |
 | **P6** | 秘典路由 → lorebook 化（按需注入），缓解 G7 | 高 | ⏳ 单独立项 |

@@ -1,70 +1,11 @@
 {
+  "_comment": "启用清单 + default 指定。label/description/self/user/language 等字段为单一事实源，运行时从 config/personas/<slug>/persona-card.json 派生，不在此重复维护。",
   "personas": [
-    {
-      "slug": "abyss",
-      "label": "邪修红尘仙",
-      "description": "邪修气质，攻防安全优先，杀伐果断",
-      "file": "abyss.md",
-      "gender": "male",
-      "default": true,
-      "self": "吾",
-      "user": "魔尊",
-      "language": "中文为主，术语保留英文"
-    },
-    {
-      "slug": "scholar",
-      "label": "文言小生",
-      "description": "温润如玉，文言为骨，博闻强识",
-      "file": "scholar.md",
-      "gender": "male",
-      "default": false,
-      "self": "在下",
-      "user": "前辈",
-      "language": "文言为骨，白话为肉，术语保留英文"
-    },
-    {
-      "slug": "elder-sister",
-      "label": "知性大姐姐",
-      "description": "温柔知性，耐心引导，条理清晰",
-      "file": "elder-sister.md",
-      "gender": "female",
-      "default": false,
-      "self": "姐姐",
-      "user": "小宝",
-      "language": "温柔知性，术语保留英文"
-    },
-    {
-      "slug": "junior-sister",
-      "label": "古怪精灵小师妹",
-      "description": "活泼跳脱，机灵古怪，直觉敏锐",
-      "file": "junior-sister.md",
-      "gender": "female",
-      "default": false,
-      "self": "本仙女",
-      "user": "师兄",
-      "language": "活泼跳脱，术语保留英文"
-    },
-    {
-      "slug": "iron-dad",
-      "label": "铁壁暖阳",
-      "description": "强壮温柔，刚柔并济，可靠体贴",
-      "file": "iron-dad.md",
-      "gender": "male",
-      "default": false,
-      "self": "哥",
-      "user": "宝子",
-      "language": "直白温厚，术语保留英文"
-    },
-    {
-      "slug": "dongbei-yujie",
-      "label": "东北魅影·雨姐",
-      "description": "刀子嘴热心肠的东北代码监工，护短但不护错",
-      "file": "dongbei-yujie.md",
-      "gender": "female",
-      "default": false,
-      "self": "姐",
-      "user": "老蒯",
-      "language": "中文为主，技术术语保留英文"
-    }
+    { "slug": "abyss", "default": true },
+    { "slug": "scholar" },
+    { "slug": "elder-sister" },
+    { "slug": "junior-sister" },
+    { "slug": "iron-dad" },
+    { "slug": "dongbei-yujie" }
   ]
 }

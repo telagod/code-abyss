@@ -57,6 +57,32 @@ function applyPersonaVars(content, persona) {
 
 // ── Persona Registry ──
 
+// Single source of truth: voice/label/description live ONLY in each persona's
+// persona-card.json. index.json is just the enable-list + default selector.
+// This loads a card and derives the runtime registry fields from it.
+function loadPersonaCard(projectRoot, slug) {
+  const cardPath = path.join(projectRoot, 'config', 'personas', slug, 'persona-card.json');
+  if (!fs.existsSync(cardPath)) {
+    throw new Error(`persona ${slug} 缺少 persona-card.json: ${cardPath}`);
+  }
+  let card;
+  try {
+    card = JSON.parse(fs.readFileSync(cardPath, 'utf8'));
+  } catch (e) {
+    throw new Error(`persona ${slug} 的 persona-card.json 解析失败: ${e.message}`);
+  }
+  const d = card && card.data;
+  if (!d || typeof d !== 'object') throw new Error(`persona ${slug} 的 persona-card.json 缺少 data`);
+  const v = d.voice || {};
+  return {
+    label: requireNonEmptyString(d.display_name, `persona.${slug}.display_name (card)`),
+    description: requireNonEmptyString(d.description, `persona.${slug}.description (card)`),
+    self: requireNonEmptyString(v.self, `persona.${slug}.voice.self (card)`),
+    user: requireNonEmptyString(v.user, `persona.${slug}.voice.user (card)`),
+    language: requireNonEmptyString(v.language, `persona.${slug}.voice.language (card)`),
+  };
+}
+
 function loadPersonaRegistry(projectRoot) {
   if (_personaCache.has(projectRoot)) return _personaCache.get(projectRoot);
 
@@ -76,15 +102,17 @@ function loadPersonaRegistry(projectRoot) {
     if (seen.has(slug)) throw new Error(`persona slug 重复: ${slug}`);
     seen.add(slug);
     if (p.default) defaultCount += 1;
+    // Derive identity fields from the card — the single source of truth.
+    const derived = loadPersonaCard(projectRoot, slug);
     return {
       slug,
-      label: requireNonEmptyString(p.label, `persona.${slug}.label`),
-      description: requireNonEmptyString(p.description, `persona.${slug}.description`),
-      file: requireNonEmptyString(p.file || `${slug}.md`, `persona.${slug}.file`),
+      label: derived.label,
+      description: derived.description,
+      file: `${slug}.md`,
       default: p.default === true,
-      self: p.self || '',
-      user: p.user || '',
-      language: p.language || '',
+      self: derived.self,
+      user: derived.user,
+      language: derived.language,
     };
   });
 
