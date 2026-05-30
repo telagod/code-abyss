@@ -1,6 +1,6 @@
 # Persona Architecture v2 — 重构提案
 
-> 状态：**实施中** — P1/P2/P3/P4/P5 已落地并通过全量测试；P6（lorebook 化）待定。
+> 状态：**已收口** — P1/P2/P3/P4/P5 全部落地并通过全量测试；P6 经调研证伪，标记为「无需实施：已天然满足 lorebook 语义」（见 §6）。
 > 关联：`config/personas/`、`output-styles/`、`bin/lib/style-registry.js`、`bin/lib/persona-converter.js`、`skills/cultivating-personas/`
 > 对标：Character Card V2/V3 spec、SillyTavern Prompt Manager、类脑「制卡思路」
 
@@ -162,9 +162,19 @@ function renderRuntimeGuidance(root, styleSlug, target, personaSlug) {
 | **P3** | 单一事实源：`index.json` 瘦身为启用清单 + default 指定；label/description/self/user/language 运行时从 `persona-card.json` 派生（`loadPersonaCard`）。新增两条护栏测试（index.json 不得含 voice 字段 + 派生值与 card 严格一致） | 中 | ✅ 完成 |
 | **P4** | 新增 L2 范例层（6 角色各补 `examples.md` few-shot），消除 G3 | 低（纯增量） | ✅ 完成 |
 | **P5** | 新增 L4 强指令层（6 角色各补 `posthistory.md`），反 AI 腔/格式锁/授权边界 | 中 | ✅ 完成 |
-| **P6** | 秘典路由 → lorebook 化（按需注入），缓解 G7 | 高 | ⏳ 单独立项 |
+| **P6** | 秘典路由 → lorebook 化（按需注入），缓解 G7 | 高 | ❎ 无需实施（命题证伪，见下） |
 
-**实测结论**：P1/P2/P4/P5 落地后，`npm test`（12 套件 / 148 测试 / 8 快照）与 `npm run verify:skills` 全绿；6 persona 渲染零宏泄漏、L2/L4 到位、名号无损。L2/L4 缺省时输出与 v1 逐字节等价。
+**实测结论**：P1/P2/P4/P5 落地后，`npm test`（12 套件 / 148 测试 / 8 快照）与 `npm run verify:skills` 全绿；6 persona 渲染零宏泄漏、L2/L4 到位、名号无损。L2/L4 缺省时输出与 v1 逐字节等价。P3 已合入 main（PR #32），单一事实源生效。
+
+### 6.1 P6 调研结论（命题证伪）
+
+实施前调研发现 **P6 原命题不成立——秘典路由本身已是 lorebook**，无需「化」：
+
+1. **已是指针式按需注入**：`abyss.md` 的「神通秘典路由」表仅 **447 字符**（常驻），6 个秘典文件共 **21,359 字符** 只在触发关键词时由 agent `Read` 加载——这正是 lorebook「绿灯按需」语义。
+2. **常驻 token 大头不在它**：abyss 整体渲染 ~5,526 字符，L0 共享层占 ~3,422，秘典路由仅 447。移除它省不下多少，反而丢失攻防人格锚点（赤焰/破阵/验毒 等化身名属 voice）。
+3. **绑定的 issue #16/#13 已 CLOSED 且原文迁移**，原始诉求不可考。
+
+**调研副产物（已知，未处理）**：`config/personas/abyss.md` 的秘典路由与 `skills/securing-systems/SKILL.md` 的「路由域」指向相同 6 文件、触发词高度重叠，存在 **persona↔skill 跨层路由重复**（与 P3 治的双源同源）。但 persona 那张表裹着人格化身名（voice），不宜简单删除——若未来要治，需保住 voice。当前判定：收益低、损 voice 风险高，**不处理**。
 
 > 建议先做 **P1 → P4**（低风险、立竿见影），P5/P6 视效果再推进。
 > 每阶段以 `abyss` 单角色做 PoC，绿了再横推其余 5 角色。
