@@ -161,7 +161,8 @@ describe('persona registry', () => {
     const persona = resolvePersona(projectRoot, 'junior-sister');
     expect(persona).toMatchObject({
       slug: 'junior-sister',
-      label: '古怪精灵小师妹',
+      // label 派生自 persona-card.json 的 display_name（P3 单一事实源）
+      label: '古怪精灵小师妹 · 灵犀洞天',
     });
   });
 
