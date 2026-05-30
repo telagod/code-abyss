@@ -563,8 +563,28 @@ h3 {
 .hero-stack:hover .hero-card-3 { transform: rotate(-1deg) translateY(0) translateZ(-80px); }
 
 @media (max-width: 880px) {
-  .hero-stack { min-height: 320px; }
-  .hero-card { width: 220px; }
+  /* 窄屏：绝对定位的浮动卡阵会溢出 → 转为常规流式横排，可横向滚动 */
+  .hero-stack {
+    min-height: 0;
+    perspective: none;
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 4px 4px 12px;
+    margin: 0 -4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .hero-stack::-webkit-scrollbar { display: none; }
+  .hero-card {
+    position: static;
+    flex: 0 0 200px;
+    width: 200px;
+    transform: none !important;
+    opacity: 1 !important;
+    scroll-snap-align: start;
+  }
   .hero-card .hc-self { font-size: 2rem; }
 }
 
@@ -733,6 +753,8 @@ h3 {
 
 .persona-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   padding: 28px 26px 24px;
   background: var(--glass-bg);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
@@ -808,7 +830,8 @@ h3 {
   font-size: 0.9rem;
   line-height: 1.65;
   margin-bottom: 20px;
-  min-height: 3.3em;
+  /* flex 拉伸吃掉长短差，voice/meta 块始终贴底对齐 */
+  flex: 1 0 auto;
 }
 
 .pc-voice {
