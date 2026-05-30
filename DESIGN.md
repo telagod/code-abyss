@@ -4,18 +4,24 @@
 
 Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code、Codex CLI、Gemini CLI 与 OpenClaw），采用三层架构 + 模板变量系统提供可组合的人格体验。v3.0.0 引入 **Tech Persona Card** 标准，实现跨平台人格互换。
 
-## 三层架构分工
+## 五层架构分工
 
-| 层 | 文件 | 职责 |
-|---|------|------|
-| **身份（Identity）** | `config/personas/*.md` | 每个 persona 独有的角色锚定、性格层、情绪节奏 |
-| **共享行为（Shared Behavior）** | `config/personas/_shared/*.md` | 所有 persona 共享的铁律、执行链、验证链、技能路由、主动协助协议 |
-| **输出风格（Output Style）** | `output-styles/*.md` + `index.json` | 输出骨架、场景加权、情绪锚点；使用 `{{self}}`/`{{user}}`/`{{language}}` 模板变量 |
-| **技术知识（Skills）** | `skills/<slug>/SKILL.md` | 22 个 flat skill，gerund 命名，spec 合规 |
+> v2 起人格按「注入位置 / 作用」分层（对标 Character Card / SillyTavern）。详见 [persona-architecture-v2.md](persona-architecture-v2.md)。
 
-**组装公式**：`renderRuntimeGuidance(persona, style, target)` = identity + shared + style（模板变量替换后）
+| 层 | 文件 | 职责 | 必需 |
+|---|------|------|------|
+| **L1 人物（Identity）** | `config/personas/<slug>.md` | 每个 persona 独有的角色锚定、性格层、情绪节奏（人称用 `{{self}}`/`{{user}}` 宏） | 是 |
+| **L2 范例（Examples）** | `config/personas/<slug>/examples.md` | few-shot 范例对话，锁定语气（比形容词更强） | 可选 |
+| **L0 引擎（Shared Behavior）** | `config/personas/_shared/*.md` | 所有 persona 共享的铁律、执行链、验证链、技能路由、主动协助协议 | 是 |
+| **L3 契约（Output Style）** | `output-styles/*.md` + `index.json` | 输出骨架、场景加权、情绪锚点 | 是 |
+| **L4 强指令（Post-History）** | `config/personas/<slug>/posthistory.md` | 反 AI 腔 / 格式锁 / 授权边界，注入到末尾（位置偏见，权重最高） | 可选 |
+| **技术知识（Skills）** | `skills/<slug>/SKILL.md` | flat skill，gerund 命名，spec 合规 | — |
 
-**跨配安全**：5 persona × 5 style = 25 种组合全量 smoke 验证，零冲突。
+**模板变量（宏）**：`{{self}}`/`{{user}}`/`{{language}}` 在**所有 persona 层**（L1/L2/L4 + L3）统一替换，值来自 persona 注册表 voice。
+
+**组装公式**：`renderRuntimeGuidance(persona, style, target)` = `[identity, shared, examples, style, posthistory].filter(Boolean)`（宏替换后）。L2/L4 缺省时退化为 v1 的 `identity + shared + style`，向后兼容。
+
+**跨配安全**：6 persona × 6 style = 36 种组合，宏全局化后人称随 voice 走，零人格分裂。
 
 ## 分发方式
 

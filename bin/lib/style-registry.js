@@ -115,6 +115,16 @@ function readPersonaContent(projectRoot, persona) {
   return fs.readFileSync(personaPath, 'utf8');
 }
 
+// Optional per-persona layer files live alongside persona-card.json in
+// config/personas/<slug>/. Returns '' when the file is absent so the layer
+// is dropped by the assembler — keeping output byte-identical to v1 until
+// the new layers are authored.
+function readPersonaLayer(projectRoot, persona, filename) {
+  const layerPath = path.join(projectRoot, 'config', 'personas', persona.slug, filename);
+  if (!fs.existsSync(layerPath)) return '';
+  return fs.readFileSync(layerPath, 'utf8').replace(/\s+$/, '');
+}
+
 // ── Style Registry ──
 
 function loadStyleRegistry(projectRoot) {
@@ -228,14 +238,23 @@ function renderRuntimeGuidance(projectRoot, styleSlug, targetName = 'codex', per
     persona = getDefaultPersona(projectRoot);
   }
 
-  const identity = readPersonaContent(projectRoot, persona).replace(/\s+$/, '');
-  const shared = loadSharedBehavior(projectRoot);
-  const styleContent = applyPersonaVars(
-    readStyleContent(projectRoot, style).replace(/^\s+/, ''),
-    persona
-  );
+  // Macros (self/user/language) now apply to ALL persona-authored layers,
+  // not just the style layer — this is what lets a persona's identity follow
+  // its own voice and makes cross-combination safe (see docs/persona-architecture-v2.md).
+  const apply = (content) => applyPersonaVars(content, persona);
 
-  return `${identity}\n\n${shared}\n\n${styleContent}\n`;
+  const identity = apply(readPersonaContent(projectRoot, persona).replace(/\s+$/, '')); // L1 人物
+  const shared = loadSharedBehavior(projectRoot);                                        // L0 引擎(共享)
+  const examples = apply(readPersonaLayer(projectRoot, persona, 'examples.md'));         // L2 范例(可选)
+  const styleContent = apply(readStyleContent(projectRoot, style).replace(/^\s+/, ''));  // L3 契约
+  const posthistory = apply(readPersonaLayer(projectRoot, persona, 'posthistory.md'));   // L4 末段强指令(可选)
+
+  // Order preserves the v1 prefix (identity → shared → style); the two new
+  // optional layers slot in around the style layer. With both absent this is
+  // byte-identical to v1's `${identity}\n\n${shared}\n\n${styleContent}\n`.
+  return [identity, shared, examples, styleContent, posthistory]
+    .filter(Boolean)
+    .join('\n\n') + '\n';
 }
 
 function renderCodexAgents(projectRoot, styleSlug, personaSlug = null) {

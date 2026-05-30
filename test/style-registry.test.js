@@ -108,7 +108,9 @@ describe('style registry', () => {
     const styles = listStyles(projectRoot);
     styles.forEach(style => {
       const content = renderGeminiContext(projectRoot, style.slug);
-      expect(content.length).toBeLessThan(6000);
+      // v2 五层架构新增 L2 范例 / L4 强指令层后，组装体上限对齐
+      // tech-persona-card spec §6.3「Total assembled prompt recommended max 8,000」。
+      expect(content.length).toBeLessThan(8000);
     });
   });
 });
