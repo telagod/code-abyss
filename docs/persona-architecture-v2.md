@@ -162,7 +162,7 @@ function renderRuntimeGuidance(root, styleSlug, target, personaSlug) {
 | **P3** | 单一事实源：`index.json` 瘦身为启用清单 + default 指定；label/description/self/user/language 运行时从 `persona-card.json` 派生（`loadPersonaCard`）。新增两条护栏测试（index.json 不得含 voice 字段 + 派生值与 card 严格一致） | 中 | ✅ 完成 |
 | **P4** | 新增 L2 范例层（6 角色各补 `examples.md` few-shot），消除 G3 | 低（纯增量） | ✅ 完成 |
 | **P5** | 新增 L4 强指令层（6 角色各补 `posthistory.md`），反 AI 腔/格式锁/授权边界 | 中 | ✅ 完成 |
-| **P6** | 秘典路由 → lorebook 化（按需注入），缓解 G7 | 高 | ❎ 无需实施（命题证伪，见下） |
+| **P6** | 秘典路由 → lorebook 化（按需注入），缓解 G7 | 高 | ❎ 原命题证伪（见 §6.1）；衍生出真问题「路由去重」并已处理（见 §6.2） |
 
 **实测结论**：P1/P2/P4/P5 落地后，`npm test`（12 套件 / 148 测试 / 8 快照）与 `npm run verify:skills` 全绿；6 persona 渲染零宏泄漏、L2/L4 到位、名号无损。L2/L4 缺省时输出与 v1 逐字节等价。P3 已合入 main（PR #32），单一事实源生效。
 
@@ -174,7 +174,19 @@ function renderRuntimeGuidance(root, styleSlug, target, personaSlug) {
 2. **常驻 token 大头不在它**：abyss 整体渲染 ~5,526 字符，L0 共享层占 ~3,422，秘典路由仅 447。移除它省不下多少，反而丢失攻防人格锚点（赤焰/破阵/验毒 等化身名属 voice）。
 3. **绑定的 issue #16/#13 已 CLOSED 且原文迁移**，原始诉求不可考。
 
-**调研副产物（已知，未处理）**：`config/personas/abyss.md` 的秘典路由与 `skills/securing-systems/SKILL.md` 的「路由域」指向相同 6 文件、触发词高度重叠，存在 **persona↔skill 跨层路由重复**（与 P3 治的双源同源）。但 persona 那张表裹着人格化身名（voice），不宜简单删除——若未来要治，需保住 voice。当前判定：收益低、损 voice 风险高，**不处理**。
+### 6.2 P6 衍生治理：persona↔skill 路由去重（已处理）
+
+调研副产物揭出一处真实重复：`config/personas/abyss.md` 的秘典路由表曾硬编码 6 个 `references/*.md` 路径，与 `skills/securing-systems/SKILL.md` 的路由表指向相同文件、触发词高度重叠——**persona↔skill 跨层路由重复**（与 P3 治的双源同源）。
+
+**处理**：abyss 路由表从「列文件路径」改为「化身 + 主司意图 + 触发词」，并加单一源指引——
+
+```
+> 路由落点（具体 references/*.md）以 skills/securing-systems/SKILL.md 为单一事实源。
+```
+
+- **voice 全保**：6 个化身名（🔥赤焰/🗡破阵/🔬验毒/💀噬魂/❄玄冰/👁天眼）与触发词原样保留，人格锚点不损。
+- **重复清零**：`abyss.md` 不再出现任何 `references/*.md` 路径（grep 计数 6→0），securing-systems SKILL.md 成为路由落点唯一事实源，文件改名/迁移不再需要双改。
+- **渲染验证**：abyss 渲染仍含全部化身名 + 单一源指引，零宏泄漏，self/user 正常。
 
 > 建议先做 **P1 → P4**（低风险、立竿见影），P5/P6 视效果再推进。
 > 每阶段以 `abyss` 单角色做 PoC，绿了再横推其余 5 角色。
