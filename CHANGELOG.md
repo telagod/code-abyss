@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.3.0] - 2026-05-31
+
+> **Adversarial-review orchestration release.** 新增多 agent 对抗验证编排 skill，并把站点/包描述的技能数同步到 26。
+
+### Added
+
+- **orchestrating-adversarial-reviews** — 多 agent 对抗验证编排 skill（从 L0 本地经 cultivating-skills 漏斗升入仓库）。fan-out 发现 → 三棱镜对抗验证（可利用性 / 正确性 / 证伪猎杀，默认怀疑）→ load-bearing 证明测试 guard（揪出谎报"已修复/全覆盖"的 agent）→ build-first 退出码守卫上线。核心信条：结论可信度不来自"谁说的"，来自"扛过几次推翻"。与 `securing-systems`（找什么洞）+ `shipping-changes`（变更闭环）职责切分；编排引擎为 Workflow 工具。`user-invocable: false`，知识型自动路由。
+
+### Changed
+
+- skill 总数由 25 升至 26（orchestrating-adversarial-reviews）。
+- 站点 `site/index.html` + `site/i18n.js`（中英）与 `package.json` description 的技能数同步到 26。
+
 ## [4.2.0] - 2026-05-30
 
 > **Persona architecture v2 + skill sediment release.** 人格系统按「注入位置/作用」重构为五层（对标 Character Card / SillyTavern），宏全局化让任意 persona×style 组合不再人格分裂；persona 身份字段收敛为单一事实源；新增两枚 skill（变更闭环编排 + release pipeline 实战秘典）。
