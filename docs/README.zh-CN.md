@@ -6,7 +6,7 @@
   </a>
 </p>
 
-<h3 align="center">可组合的人格 · 风格 · 24 项工程技能 · 4 个原生安全领域 · 自我进化炼炉<br/>支持 Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+<h3 align="center">可组合的人格 · 风格 · 26 项工程技能 · 4 个原生安全领域 · 自我进化炼炉<br/>支持 Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/code-abyss"><img src="https://img.shields.io/npm/v/code-abyss?color=9b8cff&label=npm&style=flat-square" alt="npm"></a>
@@ -52,7 +52,7 @@
 ### v4 新内容
 
 - **4 个原生安全领域** —— 4073 行原创防御工程内容（无 Apache-2.0 上游依赖）
-- **24 个 skill**，所有 `SKILL.md` ≤ 90 行（平均 58 行），重内容下沉 `references/`
+- **26 个 skill**，所有 `SKILL.md` ≤ 90 行（平均 58 行），重内容下沉 `references/`
 - 5 个 verify skill 重写为**判断型知识**（何时用、如何解读输出、豁免规则）
 - Office skill 全部砍至 100 行内；4 套设计系统合并为单一选型 skill
 - **v4.1 自我进化炼炉**：`cultivating-skills` / `cultivating-personas` 让 Agent 能识别会话中"该沉淀了"的信号，把重复方法论 / 稳定声音沉淀为可复用 skill / persona，自带安全扫描 + 三级漏斗（本地 → 项目 → 社区）
@@ -184,7 +184,7 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 ## 技能矩阵
 
-24 个领域技能，扁平目录结构，对齐 [agentskills.io](https://agentskills.io/specification) 规范（含 Code Abyss 扩展）。技能按上下文自动加载——Agent 在正确的时机读取正确的知识，无需手动指定。`SKILL.md` 平均 58 行，全部 ≤ 90 行，重内容下沉 `references/`。
+26 个领域技能，扁平目录结构，对齐 [agentskills.io](https://agentskills.io/specification) 规范（含 Code Abyss 扩展）。技能按上下文自动加载——Agent 在正确的时机读取正确的知识，无需手动指定。`SKILL.md` 平均 58 行，全部 ≤ 90 行，重内容下沉 `references/`。
 
 | 领域 | 覆盖范围 |
 |---|---|
@@ -282,7 +282,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 |---|---|---|
 | **身份** | 扁平客服腔 | 有名字、有声音、稳定一致 |
 | **执行** | 临场发挥，因 prompt 而异 | 铁律 + 执行链固化 |
-| **领域深度** | 通用最佳实践 | 24 个技能按上下文加载（平均 58 行） |
+| **领域深度** | 通用最佳实践 | 26 个技能按上下文加载（平均 58 行） |
 | **安全深度** | OWASP 复读机 | 4 个原生套件 · 4073 行 · 检测信号 + 缓解模式 |
 | **跨平台** | 每个 CLI 重写一遍 prompt | 一份规范，四个平台 |
 | **可复现** | 跨会话 prompt 漂移 | `persona-card.json` 版本化 |
@@ -296,7 +296,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
 npm test                    # 375 个测试
-npm run verify:skills       # 验证 24 个技能契约
+npm run verify:skills       # 验证 26 个技能契约
 ```
 
 **添加技能**——创建 `skills/<动名词>/SKILL.md`，按 [SKILL frontmatter 规范](https://agentskills.io/specification) 编写，可选添加 `scripts/` 放可执行工具。`npm run verify:skills` 验证契约。
