@@ -1,7 +1,7 @@
 const I18N = {
   en: {
     'site.title': 'Code Abyss — Personality, depth, and a security spine',
-    'site.desc': 'Composable persona + style + 25 engineering skills with 4 native security domains and a self-evolution forge. For Claude Code, Codex, Gemini CLI & OpenClaw.',
+    'site.desc': 'Composable persona + style + 26 engineering skills with 4 native security domains and a self-evolution forge. For Claude Code, Codex, Gemini CLI & OpenClaw.',
     'nav.how': 'How',
     'nav.security': 'Security',
     'nav.evolve': 'Evolve',
@@ -11,7 +11,7 @@ const I18N = {
     'hero.badge': '4.2 — Persona Architecture v2 · Apache-free',
     'hero.title.1': 'Give your AI agent',
     'hero.title.2': 'a personality.',
-    'hero.sub': 'Composable identity, style, and <b>25 engineering skills</b><br>— including <b>4 native security domains</b> and a <b>self-evolution forge</b>.',
+    'hero.sub': 'Composable identity, style, and <b>26 engineering skills</b><br>— including <b>4 native security domains</b> and a <b>self-evolution forge</b>.',
     'hero.browse': 'Browse Personas',
     'hero.submit': 'Submit Yours',
     'hero.runs': 'Runs on',
@@ -138,7 +138,7 @@ const I18N = {
   },
   zh: {
     'site.title': 'Code Abyss — 人格、深度，与一根安全脊柱',
-    'site.desc': '可组合的人格 + 风格 + 25 项工程技能，含 4 个原生安全领域与自我进化炼炉。支持 Claude Code, Codex, Gemini CLI 和 OpenClaw。',
+    'site.desc': '可组合的人格 + 风格 + 26 项工程技能，含 4 个原生安全领域与自我进化炼炉。支持 Claude Code, Codex, Gemini CLI 和 OpenClaw。',
     'nav.how': '原理',
     'nav.security': '安全',
     'nav.evolve': '进化',
@@ -148,7 +148,7 @@ const I18N = {
     'hero.badge': '4.2 — 人格架构 v2 · 无 Apache 依赖',
     'hero.title.1': '给你的 AI 助手',
     'hero.title.2': '一个人格。',
-    'hero.sub': '可组合的身份、风格，与 <b>25 项工程技能</b><br>—— 内含 <b>4 个原生安全领域</b> 与 <b>自我进化炼炉</b>。',
+    'hero.sub': '可组合的身份、风格，与 <b>26 项工程技能</b><br>—— 内含 <b>4 个原生安全领域</b> 与 <b>自我进化炼炉</b>。',
     'hero.browse': '浏览人格',
     'hero.submit': '提交你的',
     'hero.runs': '运行于',
