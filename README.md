@@ -56,6 +56,8 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - 5 verify skills rewritten as **judgment-type knowledge** (when to use, how to interpret output, exemption rules)
 - Office skills slim to under 100 lines each; 4 design systems consolidated into one selector skill
 - **v4.1 — self-evolution forge**: `cultivating-skills` / `cultivating-personas` let the agent distill repeated workflows into reusable skills, with a safety scan and a three-tier publish funnel (local → project → community)
+- **v4.4 — hardware + academic writing**: 3 new domain skills (KiCad EDA, hardware product pipeline, AIGC detection reduction) + prompt injection defense + execution-drive shared behavior
+- **v4.5 — dynamic persona loading**: only `abyss` ships with npm — all other personas are fetched from GitHub on first use and cached locally, slimming the package
 
 ```bash
 npx code-abyss -t claude -y
@@ -75,20 +77,20 @@ claude plugin install code-abyss
 <tr>
 <td width="50%" valign="top">
 
-<sub><b>BUILT-IN · LITERARY</b></sub>
+<sub><b>CORE · LITERARY</b></sub>
 
 ### 邪修红尘仙 · `abyss`
 
 > 吾 → 魔尊
 
-Security-first dark cultivator. Direct, decisive, closes every loop. Default persona.
+Security-first dark cultivator. Direct, decisive, closes every loop. **Ships with npm — works offline.**
 
 `#security` `#xianxia` `#decisive`
 
 </td>
 <td width="50%" valign="top">
 
-<sub><b>BUILT-IN · LITERARY</b></sub>
+<sub><b>REMOTE · LITERARY</b></sub>
 
 ### 文言小生 · `scholar`
 
@@ -103,7 +105,7 @@ Literary Chinese scholar. Treats code as poetry, debugging as puzzle-solving.
 <tr>
 <td valign="top">
 
-<sub><b>BUILT-IN · CASUAL</b></sub>
+<sub><b>REMOTE · CASUAL</b></sub>
 
 ### 知性大姐姐 · `elder-sister`
 
@@ -116,7 +118,7 @@ Warm mentor. Wraps sharp judgment in genuine care. Guides through questions.
 </td>
 <td valign="top">
 
-<sub><b>BUILT-IN · PLAYFUL</b></sub>
+<sub><b>REMOTE · PLAYFUL</b></sub>
 
 ### 古怪精灵小师妹 · `junior-sister`
 
@@ -131,7 +133,7 @@ Hyperactive bug hunter. Roasts bad code, then silently fixes it.
 <tr>
 <td valign="top">
 
-<sub><b>BUILT-IN · CASUAL</b></sub>
+<sub><b>REMOTE · CASUAL</b></sub>
 
 ### 铁壁暖阳 · `iron-dad`
 
@@ -144,7 +146,7 @@ Dependable big brother. Absorbs pressure, radiates warmth. Dad-joke equipped.
 </td>
 <td valign="top">
 
-<sub><b>COMMUNITY · PLAYFUL</b></sub>
+<sub><b>REMOTE · COMMUNITY</b></sub>
 
 ### 东北魅影·雨姐 · `dongbei-yujie`
 
@@ -158,9 +160,12 @@ Sharp-tongued Northeast code overseer. Cuts straight to the bug, then patches th
 </tr>
 </table>
 
+**Core** persona (`abyss`) ships with npm and works offline. **Remote** personas are fetched from GitHub on first `--persona <slug>` use and cached at `~/.code-abyss/personas/`.
+
 ```bash
 # Mix freely — any persona × any style
 npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
+# → fetches elder-sister on first run, cached thereafter
 ```
 
 **[Browse the full gallery →](https://telagod.github.io/code-abyss/#personas)**
