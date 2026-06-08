@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Code Abyss is an npm package that installs persona configuration plus proactive execution guidance into Claude Code, Codex CLI, Gemini CLI, and OpenClaw. It delivers: persona rules, 5 switchable output styles, 29 skills, and 5 executable verification/generation tools.
+Code Abyss is an npm package that installs persona configuration plus proactive execution guidance into Claude Code, Codex CLI, Gemini CLI, and OpenClaw. It delivers: persona rules, 6 switchable output styles, 29 skills, and 5 executable verification/generation tools.
 
 ## Commands
 
@@ -33,7 +33,25 @@ Running a single test file:
 npx jest test/install-registry.test.js --runInBand
 ```
 
-CI runs on Node 18/20/22: `npm ci && npm test && npm run verify:skills` plus all 4 verify tools + smoke install/uninstall across Claude / Codex / Gemini / OpenClaw.
+## CI / CD
+
+Three GitHub Actions workflows:
+
+| Workflow | Trigger | Jobs |
+|----------|---------|------|
+| **ci.yml** | push/PR to main | `test` (Node 18/20/22) + `smoke-{claude,codex,gemini,openclaw}` (ubuntu/macos/windows) — 15 jobs total |
+| **release.yml** | GitHub Release published | Checkout tag → verify tag=package.json version → test → verify:skills → `npm publish --provenance` |
+| **pages.yml** | push to main (site/** changed) | Deploy `site/` to GitHub Pages |
+
+### Release process
+
+1. Bump `package.json` version + update `CHANGELOG.md` on a `release/vX.Y.Z` branch
+2. Create PR, wait for CI green (15 jobs), merge
+3. `git tag vX.Y.Z && git push origin vX.Y.Z`
+4. `gh release create vX.Y.Z --title "..." --notes "..."` — this triggers `release.yml` which auto-publishes to npm
+5. **Do NOT run `npm publish` manually** — the release workflow handles it with `--provenance` and `NPM_TOKEN` secret
+
+CI gate per PR: `npm ci && npm test && npm run verify:skills` plus `packs:check`, `packs:vendor:sync --check`, all 4 verify tools, and smoke install/uninstall across 4 targets × 3 OS.
 
 ## Architecture
 
@@ -42,10 +60,22 @@ CI runs on Node 18/20/22: `npm ci && npm test && npm run verify:skills` plus all
 | Layer | Source | Purpose |
 |-------|--------|---------|
 | Identity | `config/personas/*.md` | Per-persona identity: role, personality, tone, scenario scripts |
-| Shared Behavior | `config/personas/_shared/*.md` | Iron laws, execution chains, skill routing, proactive protocol |
+| Shared Behavior | `config/personas/_shared/*.md` | Iron laws, execution chains, skill routing, proactive protocol, injection defense, execution drive |
 | Output Style | `output-styles/*.md` + `index.json` | Style registry + per-style templates with `{{self}}`/`{{user}}`/`{{language}}` template variables |
 
-All four targets use a single composition function `renderRuntimeGuidance()` that assembles: identity + shared behavior + style (with template variable substitution). Persona registry `config/personas/index.json` declares `self`/`user`/`language` fields per persona for cross-combination safety.
+All four targets use a single composition function `renderRuntimeGuidance()` that assembles 5 layers: L1 identity → L0 shared behavior → L2 examples (optional) → L3 style → L4 posthistory (optional), with template variable substitution. Persona registry `config/personas/index.json` declares `self`/`user`/`language` fields per persona for cross-combination safety.
+
+### Persona Loading (Core + Remote)
+
+Only the **core persona** (`abyss`) ships with the npm package. All other personas are **remote** — fetched from GitHub raw on first use and cached at `~/.code-abyss/personas/<slug>/`.
+
+`config/personas/index.json` has two entry types:
+- **Core** (`core: true`): metadata derived from `persona-card.json` at load time
+- **Remote** (`core: false`): snapshot metadata inline (label, description, self, user, language) for offline selection prompt; full content fetched on demand
+
+`bin/lib/persona-fetch.js` handles HTTPS fetch + local cache. `bin/lib/style-registry.js` path resolution is cache-aware: checks local `config/personas/` first (repo dev mode), falls back to `~/.code-abyss/personas/` (npm package mode). `bin/lib/select.js` triggers `ensureRemotePersona()` when a non-core persona is selected.
+
+`package.json` `files` field only includes `config/personas/abyss*`, `_shared/`, `index.json`, and example config files — non-core persona directories are excluded from the npm tarball.
 
 ### Skill Registry (Single Source of Truth)
 
@@ -86,7 +116,8 @@ Claude command generation and Codex/Gemini skill installation share the same ski
 - `bin/adapters/codex.js` — Codex auth detection, config.toml merge, core files mapping
 - `bin/adapters/openclaw.js` — OpenClaw workspace resolution, CLI/config detection, core files mapping
 - `bin/lib/ccstatusline.js` — Claude status bar (ccstatusline) integration
-- `bin/lib/style-registry.js` — Style catalog + repository AGENTS snapshot assembly
+- `bin/lib/style-registry.js` — Style catalog + persona registry + runtime guidance assembly
+- `bin/lib/persona-fetch.js` — Remote persona fetch + cache
 - `bin/lib/utils.js` — Shared: `copyRecursive`, `rmSafe`, `deepMergeNew`, `parseFrontmatter`, `shouldSkip`
 
 ### Skill Execution
@@ -120,7 +151,9 @@ aliases: vq                    # optional comma-separated aliases
 2. For script-type: add exactly one `scripts/<name>.js` entry point
 3. Run `npm run verify:skills` — must pass with zero errors
 4. Run `npm test` — especially `test/install-registry.test.js`, `test/install-generation.test.js`, `test/run-skill.test.js`
-5. Verify no name collision with existing skills
+5. Update invocable skill name lists in test expectations if `user-invocable: true`
+6. Verify no name collision with existing skills
+7. Update skill count (29 → N) in README, CLAUDE.md, package.json, site/i18n.js, site/index.html
 
 ### Style Contract
 
@@ -128,6 +161,14 @@ aliases: vq                    # optional comma-separated aliases
 - `slug` must be kebab-case, unique
 - `targets` defaults to all supported install targets if omitted
 - Corresponding `.md` file must exist in `output-styles/`
+
+### Persona Contract
+
+- `config/personas/index.json` is the persona enable-list
+- Core personas (`core: true` or omitted): must have `<slug>/persona-card.json` locally
+- Remote personas (`core: false`): must have inline `label`, `description`, `self`, `user`, `language` snapshot
+- `remote.base` URL required if any remote persona exists
+- Exactly one persona must be `default`
 
 ## Install Targets
 
