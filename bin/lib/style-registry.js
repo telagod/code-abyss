@@ -59,9 +59,8 @@ function applyPersonaVars(content, persona) {
 
 // ── Persona Registry ──
 
-// Single source of truth: voice/label/description live ONLY in each persona's
-// persona-card.json. index.json is just the enable-list + default selector.
-// This loads a card and derives the runtime registry fields from it.
+// Core personas derive metadata from persona-card.json (single source of truth).
+// Remote personas carry snapshot metadata in index.json for offline selection.
 function loadPersonaCard(projectRoot, slug) {
   const cardPath = path.join(projectRoot, 'config', 'personas', slug, 'persona-card.json');
   if (!fs.existsSync(cardPath)) {
@@ -95,6 +94,7 @@ function loadPersonaRegistry(projectRoot) {
   if (!personas || personas.length === 0) {
     throw new Error('config/personas/index.json 缺少 personas 列表');
   }
+  const remoteBase = parsed.remote && parsed.remote.base;
 
   const seen = new Set();
   let defaultCount = 0;
@@ -104,17 +104,35 @@ function loadPersonaRegistry(projectRoot) {
     if (seen.has(slug)) throw new Error(`persona slug 重复: ${slug}`);
     seen.add(slug);
     if (p.default) defaultCount += 1;
-    // Derive identity fields from the card — the single source of truth.
-    const derived = loadPersonaCard(projectRoot, slug);
+
+    const isCore = p.core !== false;
+
+    if (isCore) {
+      const derived = loadPersonaCard(projectRoot, slug);
+      return {
+        slug,
+        label: derived.label,
+        description: derived.description,
+        file: `${slug}.md`,
+        default: p.default === true,
+        core: true,
+        self: derived.self,
+        user: derived.user,
+        language: derived.language,
+      };
+    }
+
+    // Remote persona — use snapshot metadata from index.json.
     return {
       slug,
-      label: derived.label,
-      description: derived.description,
+      label: requireNonEmptyString(p.label, `persona.${slug}.label`),
+      description: requireNonEmptyString(p.description, `persona.${slug}.description`),
       file: `${slug}.md`,
       default: p.default === true,
-      self: derived.self,
-      user: derived.user,
-      language: derived.language,
+      core: false,
+      self: requireNonEmptyString(p.self, `persona.${slug}.self`),
+      user: requireNonEmptyString(p.user, `persona.${slug}.user`),
+      language: requireNonEmptyString(p.language, `persona.${slug}.language`),
     };
   });
 
@@ -122,37 +140,62 @@ function loadPersonaRegistry(projectRoot) {
     throw new Error('persona registry 必须且只能有一个 default persona');
   }
 
-  _personaCache.set(projectRoot, normalized);
-  return normalized;
+  const result = { personas: normalized, remoteBase: remoteBase || null };
+  _personaCache.set(projectRoot, result);
+  return result;
 }
 
 function listPersonas(projectRoot) {
-  return loadPersonaRegistry(projectRoot);
+  return loadPersonaRegistry(projectRoot).personas;
 }
 
 function getDefaultPersona(projectRoot) {
-  const personas = loadPersonaRegistry(projectRoot);
+  const { personas } = loadPersonaRegistry(projectRoot);
   return personas.find(p => p.default);
 }
 
 function resolvePersona(projectRoot, slug) {
-  const personas = loadPersonaRegistry(projectRoot);
+  const { personas } = loadPersonaRegistry(projectRoot);
   return personas.find(p => p.slug === slug) || null;
 }
 
-function readPersonaContent(projectRoot, persona) {
-  const personaPath = path.join(projectRoot, 'config', 'personas', persona.file);
-  return fs.readFileSync(personaPath, 'utf8');
+function getRemoteBase(projectRoot) {
+  return loadPersonaRegistry(projectRoot).remoteBase;
 }
 
-// Optional per-persona layer files live alongside persona-card.json in
-// config/personas/<slug>/. Returns '' when the file is absent so the layer
-// is dropped by the assembler — keeping output byte-identical to v1 until
-// the new layers are authored.
+// Resolve the base directory for a persona's files.
+// For non-core personas: check local config/personas/ first (repo dev mode),
+// then fall back to cache dir (npm package mode where files are excluded).
+function resolvePersonaBase(projectRoot, persona) {
+  const localBase = path.join(projectRoot, 'config', 'personas');
+  if (persona.core !== false) return localBase;
+  const localIdentity = path.join(localBase, persona.file);
+  if (fs.existsSync(localIdentity)) return localBase;
+  const { getCacheDir } = require('./persona-fetch');
+  return getCacheDir(persona.slug);
+}
+
+function readPersonaContent(projectRoot, persona) {
+  const base = resolvePersonaBase(projectRoot, persona);
+  return fs.readFileSync(path.join(base, persona.file), 'utf8');
+}
+
+// Optional per-persona layer files. For core personas they live in
+// config/personas/<slug>/. For remote personas, check local dir first, then cache.
 function readPersonaLayer(projectRoot, persona, filename) {
-  const layerPath = path.join(projectRoot, 'config', 'personas', persona.slug, filename);
-  if (!fs.existsSync(layerPath)) return '';
-  return fs.readFileSync(layerPath, 'utf8').replace(/\s+$/, '');
+  const base = resolvePersonaBase(projectRoot, persona);
+  const localLayer = path.join(base, persona.slug, filename);
+  if (fs.existsSync(localLayer)) {
+    return fs.readFileSync(localLayer, 'utf8').replace(/\s+$/, '');
+  }
+  if (persona.core === false) {
+    const { getCacheDir } = require('./persona-fetch');
+    const cacheLayer = path.join(getCacheDir(persona.slug), filename);
+    if (fs.existsSync(cacheLayer)) {
+      return fs.readFileSync(cacheLayer, 'utf8').replace(/\s+$/, '');
+    }
+  }
+  return '';
 }
 
 // ── Style Registry ──
@@ -303,6 +346,7 @@ module.exports = {
   listPersonas,
   getDefaultPersona,
   resolvePersona,
+  getRemoteBase,
   readPersonaContent,
   readPersonaLayer,
   renderCodexAgents,

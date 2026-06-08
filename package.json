@@ -26,7 +26,12 @@
   },
   "files": [
     "bin/",
-    "config/",
+    "config/*.json",
+    "config/*.toml",
+    "config/personas/index.json",
+    "config/personas/_shared/",
+    "config/personas/abyss/",
+    "config/personas/abyss.md",
     "output-styles/",
     "packs/",
     "skills/",

@@ -97,12 +97,23 @@ function createSelectFlows(deps) {
     };
   }
 
+  async function ensureRemotePersona(persona) {
+    if (persona.core !== false) return persona;
+    const { getRemoteBase } = require('./style-registry');
+    const { ensurePersona } = require('./persona-fetch');
+    const remoteBase = getRemoteBase(PKG_ROOT);
+    if (!remoteBase) throw new Error(`远程人格 ${persona.slug} 需要 remote.base 配置`);
+    info(`${c.d('拉取远程人格')} ${c.mag(persona.slug)} ...`);
+    await ensurePersona(persona.slug, remoteBase);
+    return persona;
+  }
+
   async function resolveInstallPersona() {
     const requested = getRequestedPersonaSlug();
     if (requested) {
       const persona = resolvePersona(PKG_ROOT, requested);
       if (!persona) throw new Error(`未知人格预设: ${requested}`);
-      return persona;
+      return ensureRemotePersona(persona);
     }
     if (getAutoYes()) return getDefaultPersona(PKG_ROOT);
 
@@ -118,7 +129,8 @@ function createSelectFlows(deps) {
       })),
       default: defaultPersona.slug,
     });
-    return resolvePersona(PKG_ROOT, slug);
+    const persona = resolvePersona(PKG_ROOT, slug);
+    return ensureRemotePersona(persona);
   }
 
   async function resolveInstallStyle(targetName) {

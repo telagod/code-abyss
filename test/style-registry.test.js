@@ -175,19 +175,32 @@ describe('persona registry', () => {
     }
   });
 
-  test('单一事实源：index.json 不得重复 card 的 voice/label/description', () => {
+  test('单一事实源：core persona 的 index.json 条目不含 voice/label/description', () => {
     const raw = JSON.parse(
       fs.readFileSync(path.join(projectRoot, 'config', 'personas', 'index.json'), 'utf8')
     );
     for (const entry of raw.personas) {
+      if (entry.core === false) continue;
       ['self', 'user', 'language', 'label', 'description'].forEach((field) => {
         expect(entry[field]).toBeUndefined();
       });
     }
   });
 
-  test('派生值与对应 persona-card.json 严格一致', () => {
-    const personas = listPersonas(projectRoot);
+  test('非核心 persona 的 index.json 条目必须含 snapshot metadata', () => {
+    const raw = JSON.parse(
+      fs.readFileSync(path.join(projectRoot, 'config', 'personas', 'index.json'), 'utf8')
+    );
+    for (const entry of raw.personas) {
+      if (entry.core !== false) continue;
+      ['self', 'user', 'language', 'label', 'description'].forEach((field) => {
+        expect(entry[field]).toBeTruthy();
+      });
+    }
+  });
+
+  test('核心 persona 派生值与对应 persona-card.json 严格一致', () => {
+    const personas = listPersonas(projectRoot).filter(p => p.core !== false);
     for (const p of personas) {
       const card = JSON.parse(
         fs.readFileSync(
