@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-06-09
+
+> **Dynamic persona loading release.** 仅核心人格（abyss）随 npm 包发布，其余从 GitHub raw 按需拉取+本地缓存，npm 包瘦身。
+
+### Added
+
+- **persona-fetch.js** — 远程人格拉取+缓存模块。HTTPS fetch persona-card.json / identity.md / examples.md / posthistory.md → 缓存至 `~/.code-abyss/personas/<slug>/`。
+- **index.json core/remote 模型** — 核心人格从 persona-card.json 派生 metadata，远程人格在 index.json 内嵌 snapshot metadata 供离线选择列表使用。
+- **select.js ensureRemotePersona()** — 选中非核心人格时自动触发 fetch + cache。
+
+### Changed
+
+- **package.json files 收窄** — 仅打包 `config/personas/abyss*` + `_shared/` + `index.json` + example 配置文件。非核心人格（scholar/elder-sister/junior-sister/iron-dad/dongbei-yujie）从 npm 包移除。
+- **style-registry.js 路径解析 cache-aware** — 先查本地 `config/personas/`（仓库开发模式），再查 `~/.code-abyss/personas/`（npm 包模式）。
+- persona registry 返回结构从数组改为 `{ personas, remoteBase }`，下游 API 不变。
+
+### CI
+
+- Skill contract gate: `npm run verify:skills` — 29 skills 通过
+- Test suite: 384 tests pass (含 3 persona-fetch 新测试), Node 18/20/22
+- Smoke install: Claude / Codex / Gemini / OpenClaw × ubuntu / macos / windows 全绿
+
 ## [4.4.0] - 2026-06-08
 
 > **Hardware + academic writing + injection defense release.** 三个实战 skill 从 L0 本地升入项目（26→29），新增 prompt injection 防御与执行驱动力共享行为模块。
