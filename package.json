@@ -26,6 +26,8 @@
   },
   "files": [
     "bin/",
+    "config/*.json",
+    "config/*.toml",
     "config/personas/index.json",
     "config/personas/_shared/",
     "config/personas/abyss/",
