@@ -87,9 +87,28 @@ async function configureCustomProvider(ctx, { ok }) {
 
 function resolveSettingsTemplate(projectRoot) {
   const { getDefaultStyle } = require(path.join(__dirname, '..', 'lib', 'style-registry.js'));
+  const { execSync } = require('child_process');
   const slug = getDefaultStyle(projectRoot || PROJECT_ROOT, 'claude').slug;
   const template = JSON.parse(JSON.stringify(SETTINGS_TEMPLATE));
   template.outputStyle = slug;
+
+  // Inject abyss hooks if abyss CLI is available
+  try {
+    execSync('command -v abyss', { stdio: 'ignore' });
+    const hookDir = path.join(projectRoot || PROJECT_ROOT, 'skills', 'indexing-code', 'hooks', 'common');
+    if (fs.existsSync(hookDir)) {
+      template.hooks = template.hooks || {};
+      template.hooks.SessionStart = (template.hooks.SessionStart || []).concat([{
+        matcher: '',
+        hooks: [{ type: 'command', command: `bash "${path.join(hookDir, 'session-init.sh')}"`, timeout: 10 }]
+      }]);
+      template.hooks.PreToolUse = (template.hooks.PreToolUse || []).concat([{
+        matcher: 'Edit|Write',
+        hooks: [{ type: 'command', command: `bash "${path.join(hookDir, 'pre-edit-check.sh')}"`, timeout: 5 }]
+      }]);
+    }
+  } catch {}
+
   return template;
 }
 

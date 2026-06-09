@@ -1,0 +1,26 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/session-init.sh",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/pre-edit-check.sh",
+          "timeout": 5
+        }
+      ]
+    }
+  ]
+}

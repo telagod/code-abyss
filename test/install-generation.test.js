@@ -191,6 +191,7 @@ describe('斜杠命令回归防护', () => {
         'cultivating-personas',
         'cultivating-skills',
         'designing-hardware-products',
+  
         'operating-kicad-eda',
         'reducing-aigc-detection',
       ]);

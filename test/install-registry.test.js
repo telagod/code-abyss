@@ -267,6 +267,7 @@ describe('scanInvocableSkills', () => {
       'cultivating-personas',
       'cultivating-skills',
       'designing-hardware-products',
+
       'operating-kicad-eda',
       'reducing-aigc-detection',
     ]);

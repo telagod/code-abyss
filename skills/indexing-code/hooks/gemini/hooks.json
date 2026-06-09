@@ -1,0 +1,30 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "startup",
+      "hooks": [
+        {
+          "name": "abyss-init",
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/session-init.sh",
+          "timeout": 10000,
+          "description": "Auto-index project with abyss"
+        }
+      ]
+    }
+  ],
+  "BeforeTool": [
+    {
+      "matcher": "write_file|replace|edit_file",
+      "hooks": [
+        {
+          "name": "abyss-check",
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/pre-edit-check.sh",
+          "timeout": 5000,
+          "description": "Check callers before editing code"
+        }
+      ]
+    }
+  ]
+}

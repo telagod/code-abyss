@@ -1,0 +1,26 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "startup|resume",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/session-init.sh",
+          "statusMessage": "abyss: checking index"
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "Bash|shell",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash __SKILL_DIR__/hooks/common/pre-edit-check.sh",
+          "statusMessage": "abyss: checking callers"
+        }
+      ]
+    }
+  ]
+}

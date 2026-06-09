@@ -6,7 +6,7 @@
   </a>
 </p>
 
-<h3 align="center">Composable persona · style · 29 engineering skills · 4 native security domains · self-evolution forge<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+<h3 align="center">Composable persona · style · 30 engineering skills · 4 native security domains · self-evolution forge · code graph intelligence<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/code-abyss"><img src="https://img.shields.io/npm/v/code-abyss?color=9b8cff&label=npm&style=flat-square" alt="npm"></a>
@@ -52,7 +52,7 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 ### What's new in v4
 
 - **4 native security domains** — 4073 lines of original defense engineering (no Apache-2.0 upstream)
-- **29 skills total**, all `SKILL.md` ≤ 90 lines (avg 58), heavy content lives in `references/`
+- **30 skills total**, all `SKILL.md` ≤ 110 lines (avg 59), heavy content lives in `references/`
 - 5 verify skills rewritten as **judgment-type knowledge** (when to use, how to interpret output, exemption rules)
 - Office skills slim to under 100 lines each; 4 design systems consolidated into one selector skill
 - **v4.1 — self-evolution forge**: `cultivating-skills` / `cultivating-personas` let the agent distill repeated workflows into reusable skills, with a safety scan and a three-tier publish funnel (local → project → community)
