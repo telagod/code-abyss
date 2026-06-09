@@ -103,6 +103,8 @@ bash skills/indexing-code/hooks/common/install-hooks.sh auto
 | Claude Code | `PreToolUse`(Edit\|Write) | `.claude/settings.json` |
 | Codex CLI | `PreToolUse`(Bash\|shell) | `~/.codex/config.toml` |
 | Gemini CLI | `BeforeTool`(write_file\|replace) | `~/.gemini/settings.json` |
+| Pi Agent | `tool_call`(edit_file\|write_file) | `~/.pi/agent/settings.json` |
+| Hermes | `pre_tool_call` | `~/.hermes/config.yaml` 或 plugin |
 | OpenClaw | `before_tool_call` | plugin `api.on()` |
 
 效果：编辑代码文件前自动跑 `abyss context`，输出调用方警告。agent 无需手动调用。

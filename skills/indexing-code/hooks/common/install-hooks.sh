@@ -13,9 +13,11 @@ if [ "$TARGET" = "auto" ]; then
   if [ -d ".claude" ] || command -v claude &>/dev/null; then TARGET="claude"
   elif [ -f "codex.toml" ] || command -v codex &>/dev/null; then TARGET="codex"
   elif [ -d ".gemini" ] || command -v gemini &>/dev/null; then TARGET="gemini"
+  elif [ -d "${HOME}/.pi" ] || command -v pi &>/dev/null; then TARGET="pi"
+  elif [ -d "${HOME}/.hermes" ] || command -v hermes &>/dev/null; then TARGET="hermes"
   elif command -v openclaw &>/dev/null; then TARGET="openclaw"
   else
-    echo "No AI CLI detected. Specify platform: bash install-hooks.sh [claude|codex|gemini|openclaw]"
+    echo "No AI CLI detected. Specify: bash install-hooks.sh [claude|codex|gemini|pi|hermes|openclaw]"
     exit 1
   fi
 fi
@@ -89,6 +91,56 @@ if not any('pre-edit-check' in str(h) for h in bt):
 json.dump(s, open('$SETTINGS','w'), indent=2)
 print('✓ Gemini CLI hooks installed in $SETTINGS')
 "
+    ;;
+
+  pi)
+    SETTINGS="${HOME}/.pi/agent/settings.json"
+    [ ! -f "$SETTINGS" ] && mkdir -p "$(dirname "$SETTINGS")" && echo '{}' > "$SETTINGS"
+
+    python3 -c "
+import json
+s = json.load(open('$SETTINGS'))
+hooks = s.setdefault('hooks', {})
+
+ss = hooks.setdefault('session_start', [])
+if not any('session-init' in str(h) for h in ss):
+    ss.append({'matcher':'','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/session-init.sh\"','timeout':10}]})
+
+tc = hooks.setdefault('tool_call', [])
+if not any('pre-edit-check' in str(h) for h in tc):
+    tc.append({'matcher':'edit_file|write_file|Edit|Write','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/pre-edit-check.sh\"','timeout':5}]})
+
+json.dump(s, open('$SETTINGS','w'), indent=2)
+print('✓ Pi Agent hooks installed in $SETTINGS')
+"
+    ;;
+
+  hermes)
+    CFG="${HOME}/.hermes/config.yaml"
+    if [ -f "$CFG" ] && ! grep -q "session-init" "$CFG" 2>/dev/null; then
+      cat >> "$CFG" << YAML
+
+# abyss code intelligence hooks
+hooks:
+  on_session_start:
+    - command: "bash \"${SCRIPT_DIR}/session-init.sh\""
+  pre_tool_call:
+    - command: "bash \"${SCRIPT_DIR}/pre-edit-check.sh\""
+YAML
+      echo "✓ Hermes hooks appended to $CFG"
+    else
+      # Also install as plugin
+      PLUGIN_DIR="${HOME}/.hermes/plugins/abyss-hooks"
+      mkdir -p "$PLUGIN_DIR"
+      cp "${HOOK_ROOT}/hermes/plugin.py" "$PLUGIN_DIR/plugin.py"
+      cat > "$PLUGIN_DIR/plugin.yaml" << YAML
+name: abyss-hooks
+version: 0.2.0
+description: Code relationship graph hooks via abyss CLI
+YAML
+      echo "✓ Hermes plugin installed at $PLUGIN_DIR"
+      echo "  Enable in ~/.hermes/config.yaml: plugins.enabled: [abyss-hooks]"
+    fi
     ;;
 
   openclaw)

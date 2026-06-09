@@ -1,0 +1,6 @@
+# Merge into ~/.hermes/config.yaml under "hooks:"
+hooks:
+  on_session_start:
+    - command: "bash __SKILL_DIR__/hooks/common/session-init.sh"
+  pre_tool_call:
+    - command: "bash __SKILL_DIR__/hooks/common/pre-edit-check.sh"
