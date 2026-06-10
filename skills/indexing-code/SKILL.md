@@ -53,15 +53,22 @@ abyss context <要修改的文件路径> --json
 ```json
 {
   "symbols_with_external_callers": [
-    { "symbol": "SetError", "external_callers": [
-      { "file": "handler.go", "line": 42, "caller": "HandleRequest", "is_test": false }
-    ]}
+    { "symbol": "SetError",
+      "external_callers": [
+        { "file": "handler.go", "line": 42, "caller": "HandleRequest",
+          "confidence": 0.95, "is_test": false }
+      ],
+      "possible_callers": []
+    }
   ],
   "dependencies": [{ "name": "Account", "file": "types.go", "kind": "type_ref" }],
   "hotspot": { "score": 5200, "changes_30d": 12, "complexity": 433 },
   "coupled_files": [{ "file": "gateway.go", "co_changes": 13, "coupling": "65%" }]
 }
 ```
+
+- `external_callers`：confidence ≥ 0.7 的可信调用方，按解析档位标注（1.0 同文件 / 0.95 同包 / 0.9 import 限定 / 0.8 全局唯一）
+- `possible_callers`：confidence < 0.7 的歧义匹配——参考线索，不是事实，勿据此改调用方
 
 ### impact 输出关键字段
 
@@ -80,8 +87,11 @@ abyss context <要修改的文件路径> --json
 ```
 abyss index                           # 建索引（~5s）
 abyss context <file> [--json]         # 文件完整上下文（改代码前用这个）
-abyss callers <symbol> [--json]       # 谁调了这个函数
-abyss impact <symbol> [--json]        # 改了会影响什么
+abyss callers <symbol> [--json]       # 谁调了这个函数（默认隐藏 confidence < 0.7）
+abyss callers <symbol> --min-confidence 0   # 连歧义匹配一起看
+abyss impact <symbol> [--json]        # 改了会影响什么（低置信边被排除时会在 risk_factors 标注）
+abyss hook pre-edit                   # agent hook：stdin 读 tool JSON，增量刷新索引后输出警告
+abyss hook post-edit                  # agent hook：编辑后增量刷新索引
 abyss search "query" [--json]         # 搜索代码
 abyss map [--json]                    # 项目热点+耦合
 abyss history <file> [--symbol X]     # 变更历史
@@ -107,4 +117,4 @@ bash skills/indexing-code/hooks/common/install-hooks.sh auto
 | Hermes | `pre_tool_call` | `~/.hermes/config.yaml` 或 plugin |
 | OpenClaw | `before_tool_call` | plugin `api.on()` |
 
-效果：编辑代码文件前自动跑 `abyss context`，输出调用方警告。agent 无需手动调用。
+统一入口是 `abyss hook pre-edit`（shell 脚本只是带存在性守卫的薄壳）：自动识别各平台 stdin JSON 形状、增量刷新索引（警告反映文件当前状态而非旧索引）、输出生产调用方 / 歧义引用 / 热点警告。编辑后可挂 `abyss hook post-edit` 保持索引新鲜。agent 无需手动调用。
