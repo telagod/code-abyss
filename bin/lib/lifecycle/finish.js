@@ -31,6 +31,7 @@ function createFinish(deps) {
       console.log(`  ${c.ylw('⚠ 未检测到 abyss 二进制 — indexing-code 的代码图谱 hook 将静默停用')}`);
       console.log(`    ${c.b('安装（任选其一）:')}`);
       console.log(`    ${c.d('npx code-abyss --with-abyss   # 重跑安装器，自动下载预编译版')}`);
+      console.log(`    ${c.d('npm install -g @code-abyss/cli')}`);
       console.log(`    ${c.d('curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash')}`);
       console.log(`    ${c.d('curl -fsSL https://cdn.jsdelivr.net/gh/telagod/abyss@main/install.sh | bash   # raw 不可达时的镜像')}`);
       console.log(`    ${c.d('cargo binstall code-abyss   # 或 cargo install code-abyss')}`);
