@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Install abyss hooks for the detected AI CLI platform
-# Usage: bash install-hooks.sh [claude|codex|gemini|openclaw|auto]
+# Usage: bash install-hooks.sh [claude|codex|gemini|pi|hermes|openclaw|auto]
+#
+# JSON merging uses node (no python3 dependency — code-abyss requires node anyway).
+# All branches are idempotent: existing abyss entries (marker:
+# indexing-code/hooks/common) are replaced, user entries untouched.
 
 set -euo pipefail
 
@@ -24,27 +28,32 @@ fi
 
 echo "Installing abyss hooks for: $TARGET"
 
+# merge_json_hooks <settings-file> <session-event> <session-entry-json> <tool-event> <tool-entry-json>
+merge_json_hooks() {
+  SETTINGS_FILE="$1" SS_EVENT="$2" SS_ENTRY="$3" TOOL_EVENT="$4" TOOL_ENTRY="$5" node -e '
+const fs = require("fs");
+const file = process.env.SETTINGS_FILE;
+const marker = "indexing-code/hooks/common";
+const s = JSON.parse(fs.readFileSync(file, "utf8"));
+const hooks = s.hooks = (s.hooks && typeof s.hooks === "object") ? s.hooks : {};
+function upsert(ev, entry) {
+  const cur = Array.isArray(hooks[ev]) ? hooks[ev] : [];
+  hooks[ev] = cur.filter(e => !JSON.stringify(e).includes(marker)).concat([entry]);
+}
+upsert(process.env.SS_EVENT, JSON.parse(process.env.SS_ENTRY));
+upsert(process.env.TOOL_EVENT, JSON.parse(process.env.TOOL_ENTRY));
+fs.writeFileSync(file, JSON.stringify(s, null, 2) + "\n");
+console.log("✓ hooks installed in " + file);
+'
+}
+
 case "$TARGET" in
   claude)
     SETTINGS="${HOME}/.claude/settings.json"
-    [ ! -f "$SETTINGS" ] && echo '{}' > "$SETTINGS"
-
-    python3 -c "
-import json, sys
-s = json.load(open('$SETTINGS'))
-hooks = s.setdefault('hooks', {})
-
-ss = hooks.setdefault('SessionStart', [])
-if not any('session-init' in str(h) for h in ss):
-    ss.append({'matcher':'','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/session-init.sh\"','timeout':10}]})
-
-pt = hooks.setdefault('PreToolUse', [])
-if not any('pre-edit-check' in str(h) for h in pt):
-    pt.append({'matcher':'Edit|Write','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/pre-edit-check.sh\"','timeout':5}]})
-
-json.dump(s, open('$SETTINGS','w'), indent=2)
-print('✓ Claude Code hooks installed in $SETTINGS')
-"
+    [ ! -f "$SETTINGS" ] && mkdir -p "$(dirname "$SETTINGS")" && echo '{}' > "$SETTINGS"
+    merge_json_hooks "$SETTINGS" \
+      SessionStart "{\"matcher\":\"\",\"hooks\":[{\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/session-init.sh\\\"\",\"timeout\":10}]}" \
+      PreToolUse "{\"matcher\":\"Edit|Write\",\"hooks\":[{\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/pre-edit-check.sh\\\"\",\"timeout\":5}]}"
     ;;
 
   codex)
@@ -54,8 +63,10 @@ print('✓ Claude Code hooks installed in $SETTINGS')
       echo "" > "$SETTINGS"
     fi
 
-    # Codex hooks go in JSON format inside config.toml
-    cat >> "$SETTINGS" << TOML
+    if grep -q "indexing-code/hooks/common" "$SETTINGS" 2>/dev/null; then
+      echo "✓ Codex hooks already present in $SETTINGS"
+    else
+      cat >> "$SETTINGS" << TOML
 
 # abyss hooks
 [hooks.SessionStart]
@@ -68,51 +79,24 @@ matcher = "Bash|shell"
 command = "bash \"${SCRIPT_DIR}/pre-edit-check.sh\""
 timeout = 5
 TOML
-    echo "✓ Codex hooks appended to $SETTINGS"
+      echo "✓ Codex hooks appended to $SETTINGS"
+    fi
     ;;
 
   gemini)
     SETTINGS="${HOME}/.gemini/settings.json"
     [ ! -f "$SETTINGS" ] && mkdir -p "$(dirname "$SETTINGS")" && echo '{}' > "$SETTINGS"
-
-    python3 -c "
-import json
-s = json.load(open('$SETTINGS'))
-hooks = s.setdefault('hooks', {})
-
-ss = hooks.setdefault('SessionStart', [])
-if not any('session-init' in str(h) for h in ss):
-    ss.append({'matcher':'startup','hooks':[{'name':'abyss-init','type':'command','command':'bash \"${SCRIPT_DIR}/session-init.sh\"','timeout':10000}]})
-
-bt = hooks.setdefault('BeforeTool', [])
-if not any('pre-edit-check' in str(h) for h in bt):
-    bt.append({'matcher':'write_file|replace|edit_file','hooks':[{'name':'abyss-check','type':'command','command':'bash \"${SCRIPT_DIR}/pre-edit-check.sh\"','timeout':5000}]})
-
-json.dump(s, open('$SETTINGS','w'), indent=2)
-print('✓ Gemini CLI hooks installed in $SETTINGS')
-"
+    merge_json_hooks "$SETTINGS" \
+      SessionStart "{\"matcher\":\"startup\",\"hooks\":[{\"name\":\"abyss-init\",\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/session-init.sh\\\"\",\"timeout\":10000}]}" \
+      BeforeTool "{\"matcher\":\"write_file|replace|edit_file\",\"hooks\":[{\"name\":\"abyss-check\",\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/pre-edit-check.sh\\\"\",\"timeout\":5000}]}"
     ;;
 
   pi)
     SETTINGS="${HOME}/.pi/agent/settings.json"
     [ ! -f "$SETTINGS" ] && mkdir -p "$(dirname "$SETTINGS")" && echo '{}' > "$SETTINGS"
-
-    python3 -c "
-import json
-s = json.load(open('$SETTINGS'))
-hooks = s.setdefault('hooks', {})
-
-ss = hooks.setdefault('session_start', [])
-if not any('session-init' in str(h) for h in ss):
-    ss.append({'matcher':'','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/session-init.sh\"','timeout':10}]})
-
-tc = hooks.setdefault('tool_call', [])
-if not any('pre-edit-check' in str(h) for h in tc):
-    tc.append({'matcher':'edit_file|write_file|Edit|Write','hooks':[{'type':'command','command':'bash \"${SCRIPT_DIR}/pre-edit-check.sh\"','timeout':5}]})
-
-json.dump(s, open('$SETTINGS','w'), indent=2)
-print('✓ Pi Agent hooks installed in $SETTINGS')
-"
+    merge_json_hooks "$SETTINGS" \
+      session_start "{\"matcher\":\"\",\"hooks\":[{\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/session-init.sh\\\"\",\"timeout\":10}]}" \
+      tool_call "{\"matcher\":\"edit_file|write_file|Edit|Write\",\"hooks\":[{\"type\":\"command\",\"command\":\"bash \\\"${SCRIPT_DIR}/pre-edit-check.sh\\\"\",\"timeout\":5}]}"
     ;;
 
   hermes)

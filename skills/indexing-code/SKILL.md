@@ -100,13 +100,26 @@ abyss stats                           # 索引统计
 
 ## Hook 自动执行
 
-所有主流 AI CLI 都支持 hook。一条命令安装：
+**code-abyss 安装器（claude/codex/gemini）会自动注入 hook**，无需手动操作：
+hook 命令锚定安装后的 skill 路径（`<target-dir>/skills/indexing-code/hooks/common/`），
+幂等注入（重装去重、旧路径自动重锚定），卸载时按标记剥除。
+配套 flag：
+
+```sh
+npx code-abyss --target claude --with-abyss   # 顺带下载 abyss 预编译二进制到 ~/.code-abyss/bin/
+npx code-abyss --target claude --with-mcp     # 顺带注册 abyss MCP server（8 tools，opt-in）
+```
+
+二进制查找顺序：PATH → `~/.code-abyss/bin/abyss`（`--with-abyss` 落点，不污染 PATH）。
+两处都没有时 hook 静默停用，后装即生效，无需重装。
+
+其余平台（pi/hermes/openclaw）或脱离安装器时，一条命令手动安装：
 
 ```sh
 bash skills/indexing-code/hooks/common/install-hooks.sh auto
 ```
 
-自动检测平台并注入对应 hook 配置：
+自动检测平台并注入对应 hook 配置（幂等，JSON 合并用 node）：
 
 | 平台 | Hook 事件 | 配置位置 |
 |------|----------|---------|

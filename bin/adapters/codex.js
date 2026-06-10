@@ -454,6 +454,122 @@ function patchAndReportCodexDefaults({ cfgPath, ok, warn }) {
   }
 }
 
+// ── abyss 联动（hook + MCP）──
+// hook 形状与 skills/indexing-code/hooks/codex/hooks.json 同源：
+//   [hooks.SessionStart] matcher/command/timeout
+//   [hooks.PreToolUse]   matcher/command/timeout
+// MCP: [mcp_servers.abyss] command/args —— 节名是我方命名空间，可自由 upsert。
+
+const ABYSS_HOOK_MARKER = 'indexing-code/hooks/common';
+
+function readKeyValueInSection(content, sectionName, key) {
+  const lines = content.split(/\r?\n/);
+  const sectionRe = new RegExp(`^\\s*\\[${escapeRegExp(sectionName)}\\]\\s*$`);
+  const anySectionRe = /^\s*\[[^\]]+\]\s*$/;
+  const keyRe = new RegExp(`^\\s*${escapeRegExp(key)}\\s*=\\s*(.*)$`);
+  let inSection = false;
+  for (const line of lines) {
+    if (sectionRe.test(line)) { inSection = true; continue; }
+    if (inSection && anySectionRe.test(line)) return null;
+    if (inSection) {
+      const m = line.match(keyRe);
+      if (m) return m[1].trim();
+    }
+  }
+  return null;
+}
+
+function upsertKeyInSection(content, sectionName, key, valueLiteral, eol) {
+  const removed = removeKeyAssignmentsInSection(content, sectionName, key);
+  return ensureKeyInSection(removed.merged, sectionName, key, valueLiteral, eol).merged;
+}
+
+// TOML basic string 里 \ 是转义符，统一用正斜杠（bash 在 Windows 下也认）
+function tomlPath(p) {
+  return p.split(path.sep).join('/');
+}
+
+function injectCodexHooks(content, hookDir, eol) {
+  const dir = tomlPath(hookDir);
+  const events = [
+    { section: 'hooks.SessionStart', matcher: '"startup|resume"', script: 'session-init.sh', timeout: '10' },
+    { section: 'hooks.PreToolUse', matcher: '"Bash|shell"', script: 'pre-edit-check.sh', timeout: '5' },
+  ];
+  let merged = content;
+  const installed = [];
+  const skipped = [];
+  for (const ev of events) {
+    const existing = readKeyValueInSection(merged, ev.section, 'command');
+    // 用户自有 hook（无我方标记）占位时不抢，保持非破坏
+    if (existing && !existing.includes(ABYSS_HOOK_MARKER)) {
+      skipped.push(ev.section);
+      continue;
+    }
+    const cmd = `"bash \\"${dir}/${ev.script}\\""`;
+    merged = upsertKeyInSection(merged, ev.section, 'matcher', ev.matcher, eol);
+    merged = upsertKeyInSection(merged, ev.section, 'command', cmd, eol);
+    merged = upsertKeyInSection(merged, ev.section, 'timeout', ev.timeout, eol);
+    installed.push(ev.section);
+  }
+  return { merged, installed, skipped };
+}
+
+function injectCodexMcp(content, abyssBinPath, eol) {
+  const cmd = `"${tomlPath(abyssBinPath || 'abyss')}"`;
+  let merged = upsertKeyInSection(content, 'mcp_servers.abyss', 'command', cmd, eol);
+  merged = upsertKeyInSection(merged, 'mcp_servers.abyss', 'args', '["mcp"]', eol);
+  return merged;
+}
+
+// 卸载用：剥除带标记的 hook 节与 [mcp_servers.abyss] 节
+function stripCodexAbyssIntegration(content) {
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(/\r?\n/);
+  const anySectionRe = /^\s*\[[^\]]+\]\s*$/;
+
+  // 先按节切块，再决定去留——hook 节看 body 是否含标记，mcp_servers.abyss 按名删
+  const blocks = [];
+  let current = { header: null, lines: [] };
+  for (const line of lines) {
+    if (anySectionRe.test(line)) {
+      blocks.push(current);
+      current = { header: line.trim(), lines: [line] };
+    } else {
+      current.lines.push(line);
+    }
+  }
+  blocks.push(current);
+
+  const kept = [];
+  let removed = false;
+  for (const b of blocks) {
+    const isAbyssMcp = b.header === '[mcp_servers.abyss]';
+    const isMarkedHook = b.header && /^\[hooks\./.test(b.header)
+      && b.lines.some((l) => l.includes(ABYSS_HOOK_MARKER));
+    if (isAbyssMcp || isMarkedHook) { removed = true; continue; }
+    kept.push(...b.lines);
+  }
+  // 顺带清掉孤立的 "# abyss hooks" 注释行
+  const cleaned = kept.filter((l) => l.trim() !== '# abyss hooks');
+  return { merged: cleaned.join(eol), removed };
+}
+
+function injectCodexAbyssIntegration({ cfgPath, HOME, withMcp = false, abyssBinPath = null }) {
+  const raw = fs.existsSync(cfgPath) ? fs.readFileSync(cfgPath, 'utf8') : '';
+  const eol = raw.includes('\r\n') ? '\r\n' : '\n';
+  const hookDir = path.join(HOME, '.codex', 'skills', 'indexing-code', 'hooks', 'common');
+
+  const hooks = injectCodexHooks(raw, hookDir, eol);
+  let merged = hooks.merged;
+  let mcpInstalled = false;
+  if (withMcp) {
+    merged = injectCodexMcp(merged, abyssBinPath, eol);
+    mcpInstalled = true;
+  }
+  if (merged !== raw) fs.writeFileSync(cfgPath, merged);
+  return { installed: hooks.installed, skipped: hooks.skipped, mcpInstalled };
+}
+
 function detectCodexAuth({
   HOME,
   env = process.env,
@@ -504,6 +620,17 @@ function cleanupLegacyCodexRuntime({
   return removed;
 }
 
+function reportAbyssIntegration({ cfgPath, HOME, withMcp, abyssBinPath, ok, info, warn }) {
+  try {
+    const r = injectCodexAbyssIntegration({ cfgPath, HOME, withMcp, abyssBinPath });
+    if (r.installed.length > 0) ok(`abyss hooks → ${r.installed.join(', ')}`);
+    if (r.skipped.length > 0) info(`保留用户自有 hook，跳过: ${r.skipped.join(', ')}`);
+    if (r.mcpInstalled) ok('MCP → [mcp_servers.abyss]');
+  } catch (e) {
+    warn(`abyss 联动写入失败: ${e.message}`);
+  }
+}
+
 async function postCodex({
   autoYes,
   HOME,
@@ -512,7 +639,9 @@ async function postCodex({
   ok,
   warn,
   info,
-  c
+  c,
+  withMcp = false,
+  abyssBinPath = null
 }) {
   const { confirm } = await import('@inquirer/prompts');
   const cfgPath = path.join(HOME, '.codex', 'config.toml');
@@ -539,6 +668,7 @@ async function postCodex({
     } else {
       patchAndReportCodexDefaults({ cfgPath, ok, warn });
     }
+    reportAbyssIntegration({ cfgPath, HOME, withMcp, abyssBinPath, ok, info, warn });
     return;
   }
 
@@ -556,6 +686,7 @@ async function postCodex({
   } else {
     patchAndReportCodexDefaults({ cfgPath, ok, warn });
   }
+  reportAbyssIntegration({ cfgPath, HOME, withMcp, abyssBinPath, ok, info, warn });
 }
 
 module.exports = {
@@ -564,6 +695,10 @@ module.exports = {
   mergeCodexConfigDefaults,
   patchCodexConfig,
   patchCodexConfigDefaults,
+  injectCodexHooks,
+  injectCodexMcp,
+  injectCodexAbyssIntegration,
+  stripCodexAbyssIntegration,
   detectCodexAuth,
   getCodexCoreFiles,
   postCodex,

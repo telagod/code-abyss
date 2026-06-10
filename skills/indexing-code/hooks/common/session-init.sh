@@ -5,6 +5,8 @@
 set -euo pipefail
 
 ABYSS="$(command -v abyss 2>/dev/null || echo "")"
+# --with-abyss 安装的二进制不进 PATH，落点固定 ~/.code-abyss/bin/
+[ -z "$ABYSS" ] && [ -x "${HOME}/.code-abyss/bin/abyss" ] && ABYSS="${HOME}/.code-abyss/bin/abyss"
 [ -z "$ABYSS" ] && exit 0
 
 DB=".code-abyss/index.db"

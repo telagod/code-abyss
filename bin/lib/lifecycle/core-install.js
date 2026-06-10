@@ -19,6 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { installGstackPack } = require('../gstack/installer');
+const { injectClaudeHooks, injectGeminiHooks } = require('../abyss-integration');
 
 function createInstallCore(deps) {
   const {
@@ -391,6 +392,9 @@ function createInstallCore(deps) {
       }
       settings.outputStyle = selectedStyle.slug;
       ok(`outputStyle = ${c.mag(selectedStyle.slug)}`);
+      // abyss 代码图谱 hook：指向安装后的 skill 路径，幂等注入（脚本自带存在性守卫）
+      injectClaudeHooks(settings, targetDir);
+      ok(`abyss hooks → ${c.d('SessionStart + PreToolUse(Edit|Write)')}`);
       fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
       pushManifestEntry(manifest.installed, 'claude', 'settings.json');
     } else if (tgt === 'gemini') {
@@ -406,6 +410,9 @@ function createInstallCore(deps) {
         fs.copyFileSync(settingsPath, path.join(backupDir, 'gemini', 'settings.json'));
         pushManifestEntry(manifest.backups, 'gemini', 'settings.json');
       }
+      // abyss 代码图谱 hook：与 claude 同源逻辑，事件名按 Gemini 形状（BeforeTool）
+      injectGeminiHooks(settings, targetDir);
+      ok(`abyss hooks → ${c.d('SessionStart + BeforeTool(write_file|replace|edit_file)')}`);
       fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
       pushManifestEntry(manifest.installed, 'gemini', 'settings.json');
     } else {

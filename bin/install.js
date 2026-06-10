@@ -142,6 +142,39 @@ const finish = createFinish({
   c, divider,
 });
 
+// ── abyss 联动（代码图谱 CLI）──
+const {
+  detectAbyss,
+  injectClaudeMcp,
+  injectGeminiMcp,
+} = require(path.join(__dirname, 'lib', 'abyss-integration.js'));
+const { installAbyssBinary } = require(path.join(__dirname, 'lib', 'abyss-binary.js'));
+
+// 本次运行的 abyss 探测结果（ensureAbyssBinary 后更新）
+let abyssState = null;
+
+// 二进制下载是外网行为：--with-abyss 显式才下载；交互模式询问；-y 只提示不下载
+async function ensureAbyssBinary() {
+  abyssState = detectAbyss({ HOME });
+  if (abyssState) return;
+  let doInstall = withAbyss;
+  if (!doInstall && !autoYes) {
+    const { confirm } = await import('@inquirer/prompts');
+    doInstall = await confirm({
+      message: '未检测到 abyss 二进制（代码图谱 hook 依赖）。下载预编译版到 ~/.code-abyss/bin?',
+      default: true,
+    });
+  }
+  if (!doInstall) return;
+  const r = await installAbyssBinary({ HOME, info, warn });
+  if (r.installed) {
+    ok(`abyss 二进制 → ${c.cyn(r.binPath)}`);
+    abyssState = detectAbyss({ HOME });
+  } else {
+    warn(`abyss 下载未完成: ${r.reason}（hook 将静默停用，可稍后手动安装）`);
+  }
+}
+
 async function installTargetFlow(targetName, installOptions = {}) {
   const persona = installOptions.persona || await resolveInstallPersona();
   const style = installOptions.style || await resolveInstallStyle(targetName);
@@ -152,7 +185,25 @@ async function installTargetFlow(targetName, installOptions = {}) {
   else if (targetName === 'codex') await postCodex();
   else if (targetName === 'gemini') await postGemini(ctx);
   else await postOpenClaw(ctx);
+  registerAbyssMcp(targetName, ctx);
   finish(ctx);
+}
+
+// MCP 注册（--with-mcp 显式 opt-in；codex 在 postCodex 内随 config.toml 一并写）
+function registerAbyssMcp(targetName, ctx) {
+  if (!withMcp) return;
+  const binPath = abyssState ? abyssState.binPath : 'abyss';
+  if (targetName === 'claude') {
+    const r = injectClaudeMcp({ HOME, binPath });
+    if (r.written) ok(`MCP → ${c.cyn(r.cfgPath)} mcpServers.abyss`);
+    else warn(`MCP 注册跳过: ~/.claude.json ${r.reason}`);
+  } else if (targetName === 'gemini' && ctx.settingsPath) {
+    injectGeminiMcp(ctx.settings, binPath);
+    fs.writeFileSync(ctx.settingsPath, JSON.stringify(ctx.settings, null, 2) + '\n');
+    ok(`MCP → ${c.cyn(ctx.settingsPath)} mcpServers.abyss`);
+  } else if (targetName === 'openclaw') {
+    info('OpenClaw 暂不支持 MCP 注册，跳过');
+  }
 }
 
 function styleTargetForSelection(targetNames) {
@@ -191,6 +242,8 @@ let listStylesOnly = false;
 let listPersonasOnly = false;
 let requestedStyleSlug = null;
 let requestedPersonaSlug = null;
+let withAbyss = false;
+let withMcp = false;
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--target' && args[i + 1]) { target = args[++i]; }
@@ -199,6 +252,8 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === '--persona' && args[i + 1]) { requestedPersonaSlug = args[++i]; }
   else if (args[i] === '--list-styles') { listStylesOnly = true; }
   else if (args[i] === '--list-personas') { listPersonasOnly = true; }
+  else if (args[i] === '--with-abyss') { withAbyss = true; }
+  else if (args[i] === '--with-mcp') { withMcp = true; }
   else if (args[i] === '--yes' || args[i] === '-y') { autoYes = true; }
   else if (args[i] === '--help' || args[i] === '-h') {
     banner();
@@ -206,6 +261,8 @@ for (let i = 0; i < args.length; i++) {
 `);
     console.log(`  ${c.cyn('--target')} <${formatTargetList('|')}>      install one target`);
     console.log(`  ${c.cyn('--uninstall')} <${formatTargetList('|')}>   remove one target`);
+    console.log(`  ${c.cyn('--with-abyss')}   download abyss binary to ~/.code-abyss/bin (code graph hooks)`);
+    console.log(`  ${c.cyn('--with-mcp')}     register abyss MCP server (claude/codex/gemini)`);
     console.log(`  ${c.cyn('--style')} <slug>  ${c.cyn('--persona')} <slug>  ${c.cyn('-y')}
 `);
     console.log(`${c.b('Examples')}`);
@@ -302,6 +359,8 @@ async function postCodex() {
     warn,
     info,
     c,
+    withMcp,
+    abyssBinPath: abyssState ? abyssState.binPath : null,
   });
 }
 
@@ -357,6 +416,7 @@ async function main() {
       fail(formatActionableError(`--target 必须是 ${listTargetNames().join('、')}`, 'Try: node bin/install.js --target claude'));
       process.exit(1);
     }
+    await ensureAbyssBinary();
     await installTargetFlow(target);
     return;
   }
@@ -380,6 +440,7 @@ async function main() {
   });
 
   if (action === 'install') {
+    await ensureAbyssBinary();
     const persona = await resolveInstallPersona();
     const style = await resolveInstallStyle(styleTargetForSelection(selectedTargets));
     for (const targetName of selectedTargets) {

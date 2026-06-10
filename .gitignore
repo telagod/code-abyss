@@ -52,5 +52,6 @@ node_modules/
 .env.local
 .ace-tool/
 .code-abyss/reports/
+.code-abyss/index.db
 .pi/
 .npmrc

@@ -19,6 +19,41 @@ const {
   readManifestSafe,
   createUninstallExecutor,
 } = require('../uninstall-core');
+const { stripAbyssHooks, removeClaudeMcp } = require('../abyss-integration');
+
+// 备份还原可能把上一轮安装的 abyss hook 条目带回 settings——
+// 此时 skill 脚本已删，残留条目会让宿主每次编辑冒 bash 127 噪音。
+// 卸载收尾按 HOOK_MARKER 剥除（claude/gemini settings.json + codex config.toml + ~/.claude.json MCP）。
+function cleanupAbyssIntegration(tgt, targetDir, { ok, info }) {
+  try {
+    if (tgt === 'claude' || tgt === 'gemini') {
+      const settingsPath = path.join(targetDir, 'settings.json');
+      if (fs.existsSync(settingsPath)) {
+        const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+        if (stripAbyssHooks(settings)) {
+          fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
+          ok('剥除残留 abyss hooks: settings.json');
+        }
+      }
+      if (tgt === 'claude' && removeClaudeMcp()) {
+        ok('剥除 MCP 注册: ~/.claude.json mcpServers.abyss');
+      }
+    } else if (tgt === 'codex') {
+      const { stripCodexAbyssIntegration } = require('../../adapters/codex.js');
+      const cfgPath = path.join(targetDir, 'config.toml');
+      if (fs.existsSync(cfgPath)) {
+        const raw = fs.readFileSync(cfgPath, 'utf8');
+        const { merged, removed } = stripCodexAbyssIntegration(raw);
+        if (removed) {
+          fs.writeFileSync(cfgPath, merged);
+          ok('剥除残留 abyss hooks/MCP: config.toml');
+        }
+      }
+    }
+  } catch (e) {
+    info(`abyss 残留清理跳过: ${e.message}`);
+  }
+}
 
 function runUninstall(tgt, deps) {
   const {
@@ -85,6 +120,8 @@ function runUninstall(tgt, deps) {
   });
 
   executeUninstall(targetDir, manifest, backupDir);
+
+  cleanupAbyssIntegration(tgt, targetDir, { ok, info });
 
   // 清理 .code-abyss-uninstall.js 或老的 .sage-uninstall.js 自身 — idempotent
   ['.code-abyss-uninstall.js', '.sage-uninstall.js'].forEach((name) => {
