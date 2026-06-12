@@ -1533,6 +1533,38 @@ footer {
   margin-top: 36px;
 }
 
+/* Resolution benchmark — SCIP-measured precision, mono pills */
+.graph-bench {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.graph-bench .bench-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--paper-mute);
+}
+
+.bench-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 11px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+  background: var(--iris-bg);
+  border: 1px solid var(--iris-line);
+}
+
+.bench-pill .lang { color: var(--paper-soft); }
+.bench-pill .pct { color: var(--iris); font-weight: 600; }
+
 /* =============================================================================
  * Section: Evolve — v4.1 自我进化炼炉
  * ========================================================================== */
