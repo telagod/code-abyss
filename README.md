@@ -62,14 +62,16 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - **v4.7 — measured resolution**: `abyss` v0.3.3 ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. Named-import binding tiers, receiver-type inference, and type-grade evidence — published numbers, not claims. `npm install -g @code-abyss/cli`
 
 ```bash
-npx code-abyss -t claude -y
+npx code-abyss -t claude -y --with-abyss
 ```
 
-Or as a Claude Code plugin:
+`--with-abyss` also downloads the `abyss` code-graph binary so the pre-edit hooks work out of the box; add `--with-mcp` to register `abyss` as an MCP server. Swap `-t claude` for `codex` / `gemini` / `openclaw`. Or as a Claude Code plugin:
 
 ```bash
 claude plugin install code-abyss
 ```
+
+> Plain `-y` (no `--with-abyss`) installs only the persona/skills/style layer and skips the network — code-graph hooks stay dormant until `abyss` is on `PATH`. Interactive runs (drop the `-y`) prompt before downloading. Verify code-graph is live with `abyss --version`, then `abyss index` in any project.
 
 ---
 

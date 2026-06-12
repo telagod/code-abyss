@@ -64,14 +64,16 @@
 - **v4.7 可度量的解析**：`abyss` v0.3.3 支持四语言引用解析（Go / TypeScript / Python / Rust），对标 SCIP 真值、跨五个语料实测 ≥98.5% gated precision。命名导入绑定档、receiver 类型推断、类型级证据——公布数字，而非口号。`npm install -g @code-abyss/cli`
 
 ```bash
-npx code-abyss -t claude -y
+npx code-abyss -t claude -y --with-abyss
 ```
 
-或作为 Claude Code 插件安装：
+`--with-abyss` 会顺带下载 `abyss` 代码图二进制，pre-edit hook 开箱即用；加 `--with-mcp` 可把 `abyss` 注册为 MCP server。`-t claude` 换成 `codex` / `gemini` / `openclaw` 即装其他平台。或作为 Claude Code 插件安装：
 
 ```bash
 claude plugin install code-abyss
 ```
+
+> 纯 `-y`（不带 `--with-abyss`）只装 persona/技能/风格层、不走网络——代码图 hook 在 `abyss` 进入 `PATH` 前保持休眠。交互模式（去掉 `-y`）会在下载前询问。装完用 `abyss --version` 确认，再在任意项目里 `abyss index`。
 
 ---
 
