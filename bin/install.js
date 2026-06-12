@@ -153,10 +153,13 @@ const { installAbyssBinary } = require(path.join(__dirname, 'lib', 'abyss-binary
 // 本次运行的 abyss 探测结果（ensureAbyssBinary 后更新）
 let abyssState = null;
 
-// 二进制下载是外网行为：--with-abyss 显式才下载；交互模式询问；-y 只提示不下载
+// 二进制下载是外网行为：--with-abyss 显式才下载；交互模式询问；-y 只提示不下载。
+// CODE_ABYSS_SKIP_BINARY=1 在 headless/CI/测试场景下静默跳过 detect 之外的一切
+// （不询问、不下载），让交互安装在无网/无 stdin 的环境里也不阻塞。
 async function ensureAbyssBinary() {
   abyssState = detectAbyss({ HOME });
   if (abyssState) return;
+  if (process.env.CODE_ABYSS_SKIP_BINARY) return;
   let doInstall = withAbyss;
   if (!doInstall && !autoYes) {
     const { confirm } = await import('@inquirer/prompts');

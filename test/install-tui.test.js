@@ -22,6 +22,12 @@ function runInteractiveInstall({ tmpHome, steps, timeout = 30000, settleMs = 80 
         HOME: tmpHome,
         USERPROFILE: tmpHome,
         CODE_ABYSS_GSTACK_SOURCE: gstackFixture,
+        // The persona/style flow under test must not depend on whether the
+        // host has an abyss binary: without this, `ensureAbyssBinary()` (run
+        // between "选择动作" and "选择人格") prompts to download on clean CI
+        // and the driver — which has no step for that prompt — hangs to the
+        // 30s timeout. Skip the offer entirely; detection still runs.
+        CODE_ABYSS_SKIP_BINARY: '1',
       },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
