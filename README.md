@@ -58,7 +58,8 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - **v4.1 — self-evolution forge**: `cultivating-skills` / `cultivating-personas` let the agent distill repeated workflows into reusable skills, with a safety scan and a three-tier publish funnel (local → project → community)
 - **v4.4 — hardware + academic writing**: 3 new domain skills (KiCad EDA, hardware product pipeline, AIGC detection reduction) + prompt injection defense + execution-drive shared behavior
 - **v4.5 — dynamic persona loading**: only `abyss` ships with npm — all other personas are fetched from GitHub on first use and cached locally, slimming the package
-- **v4.6 — code graph intelligence**: `abyss` CLI builds a code relationship graph (call graph + temporal analysis) in 5 seconds — caller tracing, impact analysis, hotspot detection, change coupling. Pre-edit hooks auto-check callers across all 4 platforms
+- **v4.6 — code graph intelligence**: `abyss` CLI builds a code relationship graph (call graph + temporal analysis) in seconds — caller tracing, impact analysis, hotspot detection, change coupling. Pre-edit hooks auto-check callers across all 4 platforms
+- **v4.7 — measured resolution**: `abyss` v0.3.3 ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. Named-import binding tiers, receiver-type inference, and type-grade evidence — published numbers, not claims. `npm install -g @code-abyss/cli`
 
 ```bash
 npx code-abyss -t claude -y
@@ -188,9 +189,9 @@ Plus `securing-systems` as the router skill covering pentest, code audit, red/bl
 
 ---
 
-## Code graph intelligence (v4.6 highlight)
+## Code graph intelligence (powered by `abyss`)
 
-**Your agent can now see code relationships.** The `abyss` CLI builds a full call graph, temporal analysis, and hotspot map — in 5 seconds, with zero cloud dependencies.
+**Your agent can now see code relationships.** The `abyss` CLI builds a full call graph, temporal analysis, and hotspot map — in seconds, with zero cloud dependencies.
 
 | Capability | What it answers | Command |
 |---|---|---|
@@ -201,10 +202,20 @@ Plus `securing-systems` as the router skill covering pentest, code audit, red/bl
 | **Change coupling** | "Which files always change together?" | `abyss map` |
 | **Evolution trace** | "Why does this code look the way it does?" | `abyss history <file>` |
 
-The `indexing-code` skill automatically hooks into all 4 supported platforms — before every Edit/Write, the agent checks callers and warns about high-impact changes. No MCP server needed; `abyss` runs as a CLI via the agent's shell tool.
+The `indexing-code` skill automatically hooks into all 4 supported platforms — before every Edit/Write, the agent checks callers and warns about high-impact changes. Available as a CLI via the agent's shell tool, or as an `abyss mcp` server (7 tools over stdio).
+
+**Resolution is measured, not asserted.** abyss resolves call references through tiered heuristics, each tagged with a confidence score, and benchmarks itself against SCIP (compiler-grade) ground truth across four languages and five corpora — published whatever the numbers say:
+
+| Corpus | Language | Gated precision | Gated recall |
+|--------|----------|----------------:|-------------:|
+| gin v1.10.0 | Go | **99.3%** | 82.6% |
+| hono v4.6.14 | TypeScript | **98.8%** | 63.8% |
+| click 8.1.8 | Python | **98.7%** | 94.6% |
+| ripgrep 14.1.1 | Rust | **98.5%** | 75.3% |
+| abyss (dogfood) | Rust | **100.0%** | 90.9% |
 
 ```
-# Real output from a 1862-file Go project (5 seconds to index):
+# Real output from a 1862-file Go project (seconds to index):
 
 $ abyss impact SetError
 impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0/10
@@ -213,7 +224,12 @@ impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0
   ⚠ 319 call paths without test coverage
 ```
 
-`abyss` is a separate Rust binary ([code-abyss-dev](https://github.com/telagod/code-abyss-dev)). Install: `bash install.sh` in the repo, or copy the release binary to `~/.local/bin/abyss`.
+`abyss` is a separate Rust binary ([telagod/abyss](https://github.com/telagod/abyss)). The installer offers to fetch it (`--with-abyss`), or grab it directly:
+
+```sh
+npm install -g @code-abyss/cli   # prebuilt binary, all platforms
+cargo binstall code-abyss        # or: cargo install code-abyss
+```
 
 ---
 

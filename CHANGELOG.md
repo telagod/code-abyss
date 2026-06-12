@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.7.0] - 2026-06-12
+
+> **Product-line release.** Code Abyss (the agent integration layer) ships aligned with `abyss` v0.3.3 (the code graph engine) as one product line.
+
+### Changed
+
+- **README / docs / site — measured resolution story.** The code-graph section now leads with `abyss` v0.3.3's SCIP-benchmarked precision across four languages and five corpora (Go / TypeScript / Python / Rust, all ≥98.5% gated precision) instead of a single Go sample. Install guidance points at the live distribution channels (`npm install -g @code-abyss/cli`, `cargo binstall code-abyss`, installer `--with-abyss`).
+- **Repository link drift fixed.** `abyss` CLI references now point at [telagod/abyss](https://github.com/telagod/abyss) (was the pre-publish `code-abyss-dev`) in README, zh-CN README, and the site CTA.
+- **i18n + static site** graph descriptions updated (en + zh) to drop the stale "5 seconds / v4.6" framing and surface the four-language ≥98.5% precision benchmark.
+
+### Notes
+
+- `abyss` integration contract is unchanged: `MIN_ABYSS_VERSION` stays at `0.3.0` (the hook/MCP command surface is stable since 0.3.0; the binary downloader fetches the latest release, i.e. v0.3.3, by default).
+- `abyss` v0.3.3 itself: nine eval-driven resolver rounds — named-import binding tiers (with barrel / `pub use` chasing), receiver-type lite inference for Go/TS/Python/Rust, workspace crate-root resolution, and type-grade evidence beyond exact scope matching. See [telagod/abyss](https://github.com/telagod/abyss) `eval/RESULTS.md`.
+
 ## [4.5.0] - 2026-06-09
 
 > **Dynamic persona loading release.** 仅核心人格（abyss）随 npm 包发布，其余从 GitHub raw 按需拉取+本地缓存，npm 包瘦身。

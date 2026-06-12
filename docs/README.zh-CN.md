@@ -60,7 +60,8 @@
 - **v4.1 自我进化炼炉**：`cultivating-skills` / `cultivating-personas` 让 Agent 沉淀重复方法论与稳定声音，自带安全扫描 + 三级漏斗
 - **v4.4 硬件 + 学术写作**：3 个新领域 skill（KiCad EDA、硬件产品流水线、AIGC 降重）+ Prompt 注入防御 + 执行驱动共享行为
 - **v4.5 人格动态加载**：仅 `abyss` 随 npm 发布，其他人格首次使用时从 GitHub 拉取并本地缓存
-- **v4.6 代码关系图智能**：`abyss` CLI 5 秒构建代码调用图 + 时间维度分析——调用方追踪、影响面分析、热点检测、变更耦合。四平台 Pre-edit hooks 自动检查
+- **v4.6 代码关系图智能**：`abyss` CLI 秒级构建代码调用图 + 时间维度分析——调用方追踪、影响面分析、热点检测、变更耦合。四平台 Pre-edit hooks 自动检查
+- **v4.7 可度量的解析**：`abyss` v0.3.3 支持四语言引用解析（Go / TypeScript / Python / Rust），对标 SCIP 真值、跨五个语料实测 ≥98.5% gated precision。命名导入绑定档、receiver 类型推断、类型级证据——公布数字，而非口号。`npm install -g @code-abyss/cli`
 
 ```bash
 npx code-abyss -t claude -y
@@ -74,9 +75,9 @@ claude plugin install code-abyss
 
 ---
 
-## 代码关系图智能（v4.6 杀手锏）
+## 代码关系图智能（由 `abyss` 驱动）
 
-**你的 Agent 现在能看见代码关系了。** `abyss` CLI 构建完整调用图、时间分析和热点地图——5 秒完成，零云端依赖。
+**你的 Agent 现在能看见代码关系了。** `abyss` CLI 构建完整调用图、时间分析和热点地图——秒级完成，零云端依赖。
 
 | 能力 | 回答什么问题 | 命令 |
 |---|---|---|
@@ -87,10 +88,20 @@ claude plugin install code-abyss
 | **变更耦合** | "哪些文件总是一起改？" | `abyss map` |
 | **演化追溯** | "这段代码为什么长这样？" | `abyss history <file>` |
 
-`indexing-code` skill 自动 hook 四个平台——每次 Edit/Write 前，Agent 自动检查调用方并警告高影响变更。无需 MCP server，`abyss` 通过 Agent 的 shell 工具直接调用。
+`indexing-code` skill 自动 hook 四个平台——每次 Edit/Write 前，Agent 自动检查调用方并警告高影响变更。可通过 Agent 的 shell 工具直接调用，或作为 `abyss mcp` server（stdio 暴露 7 个工具）。
+
+**解析是度量出来的，不是声称的。** abyss 通过分档启发式解析调用引用，每条都带置信分，并对标 SCIP（编译器级）真值，跨四语言五语料实测——公布数字，无论好看难看：
+
+| 语料 | 语言 | Gated precision | Gated recall |
+|------|------|----------------:|-------------:|
+| gin v1.10.0 | Go | **99.3%** | 82.6% |
+| hono v4.6.14 | TypeScript | **98.8%** | 63.8% |
+| click 8.1.8 | Python | **98.7%** | 94.6% |
+| ripgrep 14.1.1 | Rust | **98.5%** | 75.3% |
+| abyss（自举） | Rust | **100.0%** | 90.9% |
 
 ```
-# 1862 文件的 Go 项目实测（5 秒索引）：
+# 1862 文件的 Go 项目实测（秒级索引）：
 
 $ abyss impact SetError
 impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0/10
@@ -99,7 +110,12 @@ impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0
   ⚠ 319 call paths without test coverage
 ```
 
-`abyss` 是独立的 Rust 二进制（[code-abyss-dev](https://github.com/telagod/code-abyss-dev)）。安装：在仓库中 `bash install.sh`，或将 release 二进制复制到 `~/.local/bin/abyss`。
+`abyss` 是独立的 Rust 二进制（[telagod/abyss](https://github.com/telagod/abyss)）。安装器可代为下载（`--with-abyss`），或直接获取：
+
+```sh
+npm install -g @code-abyss/cli   # 预编译二进制，全平台
+cargo binstall code-abyss        # 或：cargo install code-abyss
+```
 
 ### 跨平台 hooks
 
