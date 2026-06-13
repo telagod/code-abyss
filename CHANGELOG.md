@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.7.2] - 2026-06-13
+
+> **Patch: Codex install no longer corrupts `config.toml`.** Codex 0.125+ rejected the hooks schema we generated, breaking `codex` startup outright.
+
+### Fixed
+
+- **Codex hooks now use the array-of-tables schema** (`#49`). Codex 0.125+ deprecated the flat `[hooks.X]` table form; installs produced a `config.toml` that failed to load with `invalid type: map, expected a sequence in hooks`, breaking `codex` startup. `injectCodexHooks` now emits `[[hooks.X]]` + `[[hooks.X.hooks]]` (type/command/timeout/statusMessage), and `stripCodexAbyssIntegration` groups those units for clean uninstall. Idempotent re-runs, stale-path re-anchoring, and non-destructive skip of user-owned hooks are preserved. The `install-hooks.sh` codex branch was updated to match.
+- **Windows `command_windows` override for Codex hooks.** At install time on Windows the installer locates Git Bash (`where bash`, then common install dirs) and emits `command_windows`, so the bash hook scripts run even when Git Bash is not on `PATH`. Omitted on non-Windows.
+
 ## [4.7.1] - 2026-06-12
 
 > **Patch: the documented install command now works.** `-t` was used everywhere in the docs but never implemented in the parser.
