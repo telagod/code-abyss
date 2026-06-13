@@ -99,22 +99,34 @@ describe('gemini hook 注入', () => {
 describe('codex TOML hook 注入', () => {
   const HOOK_DIR = '/home/user/.codex/skills/indexing-code/hooks/common';
 
-  test('空 config 注入两个 hook 节', () => {
+  test('空 config 注入数组表形态的两个 hook（Codex 0.125+ schema）', () => {
     const { merged, installed, skipped } = injectCodexHooks('', HOOK_DIR, '\n');
     expect(installed).toEqual(['hooks.SessionStart', 'hooks.PreToolUse']);
     expect(skipped).toEqual([]);
-    expect(merged).toContain('[hooks.SessionStart]');
-    expect(merged).toContain('[hooks.PreToolUse]');
+    // 数组表头：[[hooks.X]] + [[hooks.X.hooks]]，绝不能再出现扁平 [hooks.X]
+    expect(merged).toContain('[[hooks.SessionStart]]');
+    expect(merged).toContain('[[hooks.SessionStart.hooks]]');
+    expect(merged).toContain('[[hooks.PreToolUse]]');
+    expect(merged).toContain('[[hooks.PreToolUse.hooks]]');
+    expect(merged).not.toMatch(/^\[hooks\./m);
+    expect(merged).toContain('type = "command"');
     expect(merged).toContain(`${HOOK_DIR}/pre-edit-check.sh`);
   });
 
   test('重复注入幂等（节与键不重复）', () => {
     const first = injectCodexHooks('', HOOK_DIR, '\n').merged;
     const second = injectCodexHooks(first, HOOK_DIR, '\n').merged;
-    const count = (second.match(/\[hooks\.PreToolUse\]/g) || []).length;
+    const count = (second.match(/\[\[hooks\.PreToolUse\]\]/g) || []).length;
     expect(count).toBe(1);
     const cmdCount = (second.match(/pre-edit-check\.sh/g) || []).length;
     expect(cmdCount).toBe(1);
+  });
+
+  test('command_windows 仅在传入 winBash 时生成', () => {
+    const without = injectCodexHooks('', HOOK_DIR, '\n').merged;
+    expect(without).not.toContain('command_windows');
+    const withWin = injectCodexHooks('', HOOK_DIR, '\n', { winBash: 'C:/Program Files/Git/bin/bash.exe' }).merged;
+    expect(withWin).toContain('command_windows = "\\"C:/Program Files/Git/bin/bash.exe\\"');
   });
 
   test('旧路径条目被重锚定', () => {

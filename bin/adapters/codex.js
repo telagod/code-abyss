@@ -455,29 +455,13 @@ function patchAndReportCodexDefaults({ cfgPath, ok, warn }) {
 }
 
 // ── abyss 联动（hook + MCP）──
-// hook 形状与 skills/indexing-code/hooks/codex/hooks.json 同源：
-//   [hooks.SessionStart] matcher/command/timeout
-//   [hooks.PreToolUse]   matcher/command/timeout
+// hook 形状与 skills/indexing-code/hooks/codex/hooks.json 同源，Codex 0.125+ 数组表 schema：
+//   [[hooks.SessionStart]] matcher  +  [[hooks.SessionStart.hooks]] type/command/timeout
+//   [[hooks.PreToolUse]]   matcher  +  [[hooks.PreToolUse.hooks]]   type/command/timeout
+//   旧扁平 [hooks.X] 已被 Codex 拒载（invalid type: map, expected a sequence）
 // MCP: [mcp_servers.abyss] command/args —— 节名是我方命名空间，可自由 upsert。
 
 const ABYSS_HOOK_MARKER = 'indexing-code/hooks/common';
-
-function readKeyValueInSection(content, sectionName, key) {
-  const lines = content.split(/\r?\n/);
-  const sectionRe = new RegExp(`^\\s*\\[${escapeRegExp(sectionName)}\\]\\s*$`);
-  const anySectionRe = /^\s*\[[^\]]+\]\s*$/;
-  const keyRe = new RegExp(`^\\s*${escapeRegExp(key)}\\s*=\\s*(.*)$`);
-  let inSection = false;
-  for (const line of lines) {
-    if (sectionRe.test(line)) { inSection = true; continue; }
-    if (inSection && anySectionRe.test(line)) return null;
-    if (inSection) {
-      const m = line.match(keyRe);
-      if (m) return m[1].trim();
-    }
-  }
-  return null;
-}
 
 function upsertKeyInSection(content, sectionName, key, valueLiteral, eol) {
   const removed = removeKeyAssignmentsInSection(content, sectionName, key);
@@ -489,27 +473,108 @@ function tomlPath(p) {
   return p.split(path.sep).join('/');
 }
 
-function injectCodexHooks(content, hookDir, eol) {
-  const dir = tomlPath(hookDir);
-  const events = [
-    { section: 'hooks.SessionStart', matcher: '"startup|resume"', script: 'session-init.sh', timeout: '10' },
-    { section: 'hooks.PreToolUse', matcher: '"Bash|shell"', script: 'pre-edit-check.sh', timeout: '5' },
+// 任意 TOML 表头：既配 [section] 也配 [[array.of.tables]]
+const ANY_TOML_HEADER_RE = /^\s*\[\[?[^\]]+\]\]?\s*$/;
+// hook 事件级表头（不含 .hooks 子表），捕获事件名
+const HOOK_EVENT_HEADER_RE = /^\[\[?hooks\.([A-Za-z]+)\]\]?$/;
+
+// 按表头把 TOML 切成块（保留原始行），[[..]] 与 [..] 同视为分界
+function splitTomlBlocks(content) {
+  const lines = content.split(/\r?\n/);
+  const blocks = [];
+  let cur = { header: null, lines: [] };
+  for (const line of lines) {
+    if (ANY_TOML_HEADER_RE.test(line)) {
+      blocks.push(cur);
+      cur = { header: line.trim(), lines: [line] };
+    } else {
+      cur.lines.push(line);
+    }
+  }
+  blocks.push(cur);
+  return blocks;
+}
+
+// 把一个事件级 block 与其紧随的同事件 .hooks 子表聚成一组
+function gatherHookGroup(blocks, startIdx, eventName) {
+  const group = [blocks[startIdx]];
+  const childRe = new RegExp(`^\\[\\[?hooks\\.${escapeRegExp(eventName)}\\.hooks\\]\\]?$`);
+  let j = startIdx + 1;
+  while (j < blocks.length && blocks[j].header && childRe.test(blocks[j].header)) {
+    group.push(blocks[j]);
+    j++;
+  }
+  return { group, next: j };
+}
+
+// Codex 0.125+ 期望数组表形态：[[hooks.Event]] + [[hooks.Event.hooks]]，旧扁平表会报
+// "invalid type: map, expected a sequence in hooks" 直接拒载 config.toml。
+function renderCodexHookBlock(ev, dir, winBash, eol) {
+  const target = `${dir}/${ev.script}`;
+  const L = [
+    `[[hooks.${ev.name}]]`,
+    `matcher = "${ev.matcher}"`,
+    '',
+    `[[hooks.${ev.name}.hooks]]`,
+    'type = "command"',
+    `command = "bash \\"${target}\\""`,
   ];
-  let merged = content;
-  const installed = [];
-  const skipped = [];
-  for (const ev of events) {
-    const existing = readKeyValueInSection(merged, ev.section, 'command');
-    // 用户自有 hook（无我方标记）占位时不抢，保持非破坏
-    if (existing && !existing.includes(ABYSS_HOOK_MARKER)) {
-      skipped.push(ev.section);
+  // Windows 下 Git Bash 可能不在 PATH，command_windows 钉到安装期解析出的 bash 绝对路径
+  if (winBash) L.push(`command_windows = "\\"${tomlPath(winBash)}\\" \\"${target}\\""`);
+  L.push(`timeout = ${ev.timeout}`);
+  L.push(`statusMessage = "${ev.statusMessage}"`);
+  return L.join(eol);
+}
+
+function injectCodexHooks(content, hookDir, eol, opts = {}) {
+  const dir = tomlPath(hookDir);
+  const winBash = opts.winBash || null;
+  const events = [
+    { name: 'SessionStart', matcher: 'startup|resume', script: 'session-init.sh', timeout: 10, statusMessage: 'abyss: checking index' },
+    { name: 'PreToolUse', matcher: 'Bash|shell', script: 'pre-edit-check.sh', timeout: 5, statusMessage: 'abyss: checking callers' },
+  ];
+
+  // 1. 先剥掉我方旧 hook 组（带标记），同时记录用户自有事件——保持非破坏 + 旧路径重锚
+  const blocks = splitTomlBlocks(content);
+  const userOwned = new Set();
+  const kept = [];
+  let i = 0;
+  while (i < blocks.length) {
+    const b = blocks[i];
+    const m = b.header && b.header.match(HOOK_EVENT_HEADER_RE);
+    if (m) {
+      const { group, next } = gatherHookGroup(blocks, i, m[1]);
+      const groupText = group.map((g) => g.lines.join('\n')).join('\n');
+      if (groupText.includes(ABYSS_HOOK_MARKER)) {
+        // 我方旧条目：丢弃，稍后重建（顺带重锚旧路径）
+      } else {
+        userOwned.add(m[1]);
+        for (const g of group) kept.push(...g.lines);
+      }
+      i = next;
       continue;
     }
-    const cmd = `"bash \\"${dir}/${ev.script}\\""`;
-    merged = upsertKeyInSection(merged, ev.section, 'matcher', ev.matcher, eol);
-    merged = upsertKeyInSection(merged, ev.section, 'command', cmd, eol);
-    merged = upsertKeyInSection(merged, ev.section, 'timeout', ev.timeout, eol);
-    installed.push(ev.section);
+    kept.push(...b.lines);
+    i++;
+  }
+
+  // 2. 为非用户占位的事件追加新块
+  const installed = [];
+  const skipped = [];
+  const fresh = [];
+  for (const ev of events) {
+    if (userOwned.has(ev.name)) {
+      skipped.push(`hooks.${ev.name}`);
+      continue;
+    }
+    fresh.push(renderCodexHookBlock(ev, dir, winBash, eol));
+    installed.push(`hooks.${ev.name}`);
+  }
+
+  let merged = kept.join(eol);
+  if (fresh.length) {
+    const base = merged.replace(/\s+$/, '');
+    merged = (base ? base + eol + eol : '') + fresh.join(eol + eol) + eol;
   }
   return { merged, installed, skipped };
 }
@@ -521,37 +586,58 @@ function injectCodexMcp(content, abyssBinPath, eol) {
   return merged;
 }
 
-// 卸载用：剥除带标记的 hook 节与 [mcp_servers.abyss] 节
+// 卸载用：剥除带标记的 hook 组（含 [[hooks.X]] + [[hooks.X.hooks]]）与 [mcp_servers.abyss] 节
 function stripCodexAbyssIntegration(content) {
   const eol = content.includes('\r\n') ? '\r\n' : '\n';
-  const lines = content.split(/\r?\n/);
-  const anySectionRe = /^\s*\[[^\]]+\]\s*$/;
-
-  // 先按节切块，再决定去留——hook 节看 body 是否含标记，mcp_servers.abyss 按名删
-  const blocks = [];
-  let current = { header: null, lines: [] };
-  for (const line of lines) {
-    if (anySectionRe.test(line)) {
-      blocks.push(current);
-      current = { header: line.trim(), lines: [line] };
-    } else {
-      current.lines.push(line);
-    }
-  }
-  blocks.push(current);
+  const blocks = splitTomlBlocks(content);
 
   const kept = [];
   let removed = false;
-  for (const b of blocks) {
-    const isAbyssMcp = b.header === '[mcp_servers.abyss]';
-    const isMarkedHook = b.header && /^\[hooks\./.test(b.header)
-      && b.lines.some((l) => l.includes(ABYSS_HOOK_MARKER));
-    if (isAbyssMcp || isMarkedHook) { removed = true; continue; }
+  let i = 0;
+  while (i < blocks.length) {
+    const b = blocks[i];
+    if (b.header === '[mcp_servers.abyss]') { removed = true; i++; continue; }
+    const m = b.header && b.header.match(HOOK_EVENT_HEADER_RE);
+    if (m) {
+      const { group, next } = gatherHookGroup(blocks, i, m[1]);
+      const groupText = group.map((g) => g.lines.join('\n')).join('\n');
+      if (groupText.includes(ABYSS_HOOK_MARKER)) {
+        removed = true;
+      } else {
+        for (const g of group) kept.push(...g.lines);
+      }
+      i = next;
+      continue;
+    }
     kept.push(...b.lines);
+    i++;
   }
   // 顺带清掉孤立的 "# abyss hooks" 注释行
   const cleaned = kept.filter((l) => l.trim() !== '# abyss hooks');
   return { merged: cleaned.join(eol), removed };
+}
+
+// 安装期解析 Windows 下的 bash 绝对路径，供 command_windows 钉用——非 win32 返回 null。
+// 优先 PATH 中的 bash，其次 Git for Windows 常见安装位；找不到则不写 command_windows。
+function resolveWindowsBash(platform = process.platform, env = process.env) {
+  if (platform !== 'win32') return null;
+  try {
+    const { execSync } = require('child_process');
+    const out = execSync('where bash', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString().split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+    // 跳过 WSL 的 C:\Windows\System32\bash.exe（不能跑 Git Bash 脚本），优先 Git 的
+    const git = out.find((p) => /git/i.test(p)) || out.find((p) => !/system32/i.test(p));
+    if (git) return git;
+  } catch (_) { /* bash 不在 PATH，回落到常见安装位 */ }
+  const candidates = [
+    path.join(env.ProgramFiles || 'C:/Program Files', 'Git', 'bin', 'bash.exe'),
+    path.join(env['ProgramFiles(x86)'] || 'C:/Program Files (x86)', 'Git', 'bin', 'bash.exe'),
+    path.join(env.LOCALAPPDATA || 'C:/Users/Default/AppData/Local', 'Programs', 'Git', 'bin', 'bash.exe'),
+  ];
+  for (const c of candidates) {
+    try { if (fs.existsSync(c)) return c; } catch (_) { /* ignore */ }
+  }
+  return null;
 }
 
 function injectCodexAbyssIntegration({ cfgPath, HOME, withMcp = false, abyssBinPath = null }) {
@@ -559,7 +645,7 @@ function injectCodexAbyssIntegration({ cfgPath, HOME, withMcp = false, abyssBinP
   const eol = raw.includes('\r\n') ? '\r\n' : '\n';
   const hookDir = path.join(HOME, '.codex', 'skills', 'indexing-code', 'hooks', 'common');
 
-  const hooks = injectCodexHooks(raw, hookDir, eol);
+  const hooks = injectCodexHooks(raw, hookDir, eol, { winBash: resolveWindowsBash() });
   let merged = hooks.merged;
   let mcpInstalled = false;
   if (withMcp) {

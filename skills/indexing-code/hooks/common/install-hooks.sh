@@ -66,18 +66,28 @@ case "$TARGET" in
     if grep -q "indexing-code/hooks/common" "$SETTINGS" 2>/dev/null; then
       echo "✓ Codex hooks already present in $SETTINGS"
     else
+      # Codex 0.125+ expects array-of-tables hooks; the old flat [hooks.X] form
+      # is rejected with "invalid type: map, expected a sequence in hooks".
       cat >> "$SETTINGS" << TOML
 
 # abyss hooks
-[hooks.SessionStart]
+[[hooks.SessionStart]]
 matcher = "startup|resume"
+
+[[hooks.SessionStart.hooks]]
+type = "command"
 command = "bash \"${SCRIPT_DIR}/session-init.sh\""
 timeout = 10
+statusMessage = "abyss: checking index"
 
-[hooks.PreToolUse]
+[[hooks.PreToolUse]]
 matcher = "Bash|shell"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
 command = "bash \"${SCRIPT_DIR}/pre-edit-check.sh\""
 timeout = 5
+statusMessage = "abyss: checking callers"
 TOML
       echo "✓ Codex hooks appended to $SETTINGS"
     fi
