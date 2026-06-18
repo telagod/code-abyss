@@ -19,6 +19,10 @@ const {
   injectGeminiMcp,
   injectClaudeMcp,
   MIN_ABYSS_VERSION,
+  SKILL_MANIFEST_AVAILABLE_FROM,
+  tryReadAbyssManifest,
+  summarizeAbyssManifest,
+  resolveAbyssMcpTools,
 } = require('../bin/lib/abyss-integration.js');
 
 const {
@@ -160,10 +164,21 @@ describe('版本契约', () => {
     expect(compareVersions('1.0.0', '0.9.9')).toBeGreaterThan(0);
   });
 
-  test('satisfiesMin 拒绝缺失与过旧', () => {
-    expect(satisfiesMin('0.3.1', MIN_ABYSS_VERSION)).toBe(true);
-    expect(satisfiesMin('0.2.0', MIN_ABYSS_VERSION)).toBe(false);
+  test('satisfiesMin 拒绝缺失与过旧（针对当前 MIN_ABYSS_VERSION 锁）', () => {
+    // MIN_ABYSS_VERSION = 0.5.20 起步；0.5.x 起算稳定，0.5.22+ 解锁 skill-manifest
+    expect(satisfiesMin('0.5.20', MIN_ABYSS_VERSION)).toBe(true);
+    expect(satisfiesMin('0.5.23', MIN_ABYSS_VERSION)).toBe(true);
+    expect(satisfiesMin('0.5.19', MIN_ABYSS_VERSION)).toBe(false);
+    expect(satisfiesMin('0.3.1', MIN_ABYSS_VERSION)).toBe(false);
     expect(satisfiesMin(null, MIN_ABYSS_VERSION)).toBe(false);
+  });
+
+  test('SKILL_MANIFEST_AVAILABLE_FROM 在 MIN_ABYSS_VERSION 之上', () => {
+    // 0.5.22+ 才有 skill-manifest；MIN 是 0.5.20 是允许的，
+    // 但 0.5.20 / 0.5.21 不应被错误地认为「能跑 skill-manifest」
+    expect(compareVersions(SKILL_MANIFEST_AVAILABLE_FROM, MIN_ABYSS_VERSION)).toBeGreaterThanOrEqual(0);
+    expect(satisfiesMin('0.5.21', SKILL_MANIFEST_AVAILABLE_FROM)).toBe(false);
+    expect(satisfiesMin('0.5.22', SKILL_MANIFEST_AVAILABLE_FROM)).toBe(true);
   });
 
   test('checkLockToolRequirement 覆盖缺失/过旧/满足/无声明', () => {
@@ -291,5 +306,99 @@ describe('hook 目录解析', () => {
     const dir = resolveAbyssHookDir('/home/u/.claude');
     expect(dir).toBe(path.join('/home/u/.claude', 'skills', 'indexing-code', 'hooks', 'common'));
     expect(dir).toContain(HOOK_MARKER.split('/')[0]);
+  });
+});
+
+describe('skill-manifest 能力发现', () => {
+  // 锁一个空 HOME 目录，避免误命中宿主机上真的 ~/.code-abyss/bin/abyss
+  function emptyHome() {
+    return fs.mkdtempSync(path.join(os.tmpdir(), 'abyss-manifest-test-'));
+  }
+
+  test('abyss 不在 PATH 且 ~/.code-abyss/bin 也没有时返回 null', () => {
+    const HOME = emptyHome();
+    try {
+      const pathBefore = process.env.PATH;
+      process.env.PATH = HOME; // 一个绝对没 abyss 的目录
+      try {
+        // 走 detectAbyss → null 路径
+        expect(tryReadAbyssManifest({ HOME })).toBeNull();
+      } finally {
+        process.env.PATH = pathBefore;
+      }
+    } finally {
+      fs.rmSync(HOME, { recursive: true, force: true });
+    }
+  });
+
+  test('显式 binPath 指向不存在的文件返回 null（不抛）', () => {
+    expect(tryReadAbyssManifest({ binPath: '/no/such/abyss-bin-xyz' })).toBeNull();
+  });
+
+  // 真实 abyss 二进制烟囱测试。CI 上没装就 skip，本地有就跑——
+  // ABYSS_BIN 显式指向也认。
+  const realAbyss = process.env.ABYSS_BIN
+    || (fs.existsSync('/home/telagod/project/code-abyss-dev/target/release/abyss')
+      ? '/home/telagod/project/code-abyss-dev/target/release/abyss'
+      : null);
+  const maybeIt = realAbyss ? test : test.skip;
+
+  maybeIt('对真实 abyss ≥ 0.5.22 返回 schema_version=1 的 manifest', () => {
+    const m = tryReadAbyssManifest({ binPath: realAbyss });
+    expect(m).toBeTruthy();
+    expect(m.schema_version).toBe(1);
+    expect(typeof m.version).toBe('string');
+    expect(m.providers).toBeTruthy();
+    expect(Array.isArray(m.providers.cli.commands)).toBe(true);
+    expect(Array.isArray(m.providers.mcp.tools)).toBe(true);
+    expect(Array.isArray(m.providers.daemon.verbs)).toBe(true);
+    // 关键 verb：subscribe 是 0.5.22+ 新引入的，验证发现路径走通
+    expect(m.providers.daemon.verbs).toContain('subscribe');
+  });
+
+  test('summarizeAbyssManifest 把 manifest 浓缩成单行', () => {
+    expect(summarizeAbyssManifest(null)).toBeNull();
+    const fake = {
+      version: '0.5.23',
+      schema_version: 1,
+      providers: {
+        cli: { commands: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] },
+        mcp: { tools: ['x', 'y'] },
+        daemon: { verbs: ['ping', 'subscribe'] },
+      },
+    };
+    const s = summarizeAbyssManifest(fake);
+    expect(s).toContain('abyss v0.5.23');
+    expect(s).toContain('3 CLI commands');
+    expect(s).toContain('2 MCP tools');
+    expect(s).toContain('daemon verbs: ping, subscribe');
+  });
+
+  test('resolveAbyssMcpTools 优先用 manifest 否则 fallback', () => {
+    // null manifest → fallback
+    expect(resolveAbyssMcpTools(null)).toEqual(expect.arrayContaining(['search_context', 'get_symbols']));
+    // 空数组也算无效，走 fallback
+    expect(resolveAbyssMcpTools({ providers: { mcp: { tools: [] } } }, ['fb'])).toEqual(['fb']);
+    // 有内容直接用
+    expect(resolveAbyssMcpTools({ providers: { mcp: { tools: ['t1', 't2'] } } }, ['fb'])).toEqual(['t1', 't2']);
+  });
+
+  test('schema_version 不为 1 的 manifest 被拒（jest 单测 mock spawnSync）', () => {
+    jest.resetModules();
+    jest.doMock('child_process', () => ({
+      spawnSync: (cmd, args) => {
+        if (args && args[0] === '--version') {
+          return { status: 0, stdout: 'abyss 0.5.23\n' };
+        }
+        if (args && args[0] === 'skill-manifest') {
+          return { status: 0, stdout: JSON.stringify({ schema_version: 2, version: '0.5.23' }) };
+        }
+        return { status: 1, stdout: '' };
+      },
+    }));
+    const { tryReadAbyssManifest: mocked } = require('../bin/lib/abyss-integration.js');
+    expect(mocked({ binPath: '/fake/abyss' })).toBeNull();
+    jest.dontMock('child_process');
+    jest.resetModules();
   });
 });

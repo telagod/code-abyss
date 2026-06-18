@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.8.0] - 2026-06-18
+
+> **Minor: dynamic capability discovery via `abyss skill-manifest`.** code-abyss 4.8 reads abyss's manifest at install time and surfaces the discovered CLI / MCP / daemon surface to the user, instead of carrying a hand-maintained mirror.
+
+### Added
+
+- **`tryReadAbyssManifest()` helper** in `bin/lib/abyss-integration.js`. Spawns `abyss skill-manifest --compact`, validates `schema_version === 1`, returns the parsed object or `null`. Never throws — callers fall back to hard-coded defaults. Version-gated at `SKILL_MANIFEST_AVAILABLE_FROM = 0.5.22` (the release that introduced the subcommand).
+- **Install-time discovery summary.** After abyss is detected (or downloaded via `--with-abyss`), `ensureAbyssBinary` calls `discoverAbyssCapabilities()` and prints e.g. `abyss v0.5.23: 19 CLI commands, 8 MCP tools; daemon verbs: ping, stats, reindex, logs, mcp, subscribe`, so users see the contract their toolchain actually exposes.
+- **`resolveAbyssMcpTools(manifest, fallback)`** as the future single source of truth for the MCP tool list. Falls back to the hard-coded 7-tool list when manifest is unavailable, so older abyss installs keep working unchanged.
+- **`summarizeAbyssManifest(manifest)`** — `null`-safe one-line formatter used by the install summary and reusable from any consumer.
+
+### Changed
+
+- **`MIN_ABYSS_VERSION` bumped `0.3.0` → `0.5.20`.** The 0.5.x line has been dogfooded across hono/helix/vite/FastAPI/Django/SQLAlchemy corpora; older builds never saw the codegen-aware indexer or the bounded temporal mining. `0.5.22+` additionally unlocks dynamic capability discovery via `abyss skill-manifest`.
+
+### Compatibility
+
+- Additive only. `injectClaudeHooks` / `injectGeminiHooks` / hook scripts / adapter shapes are unchanged.
+- Hosts with no abyss installed, or with abyss `< 0.5.22`, still install successfully — the discovery summary is simply silent.
+
 ## [4.7.2] - 2026-06-13
 
 > **Patch: Codex install no longer corrupts `config.toml`.** Codex 0.125+ rejected the hooks schema we generated, breaking `codex` startup outright.

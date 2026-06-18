@@ -60,6 +60,7 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - **v4.5 — dynamic persona loading**: only `abyss` ships with npm — all other personas are fetched from GitHub on first use and cached locally, slimming the package
 - **v4.6 — code graph intelligence**: `abyss` CLI builds a code relationship graph (call graph + temporal analysis) in seconds — caller tracing, impact analysis, hotspot detection, change coupling. Pre-edit hooks auto-check callers across all 4 platforms
 - **v4.7 — measured resolution**: `abyss` v0.3.3 ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. Named-import binding tiers, receiver-type inference, and type-grade evidence — published numbers, not claims. `npm install -g @code-abyss/cli`
+- **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are now discovered at install time instead of hard-coded. `MIN_ABYSS_VERSION` bumped 0.3.0 → 0.5.20 (the 0.5.x line dogfooded across hono / helix / vite / FastAPI / Django / SQLAlchemy). Hand-coded fallbacks are preserved, so older `abyss` installs keep working unchanged.
 
 ```bash
 npx code-abyss -t claude -y --with-abyss

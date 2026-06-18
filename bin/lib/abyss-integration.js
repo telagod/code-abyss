@@ -20,8 +20,13 @@ const path = require('path');
 const os = require('os');
 const { spawnSync } = require('child_process');
 
-// indexing-code hook 薄壳依赖 `abyss hook pre-edit`（>= 0.3.0）
-const MIN_ABYSS_VERSION = '0.3.0';
+// indexing-code hook 薄壳依赖 `abyss hook pre-edit`（>= 0.3.0 起稳定），
+// 但 0.5.x 才完成跨语言 (hono/helix/vite/FastAPI/Django/SQLAlchemy) 的全量
+// 回归。0.5.22+ 增加了 `abyss skill-manifest`，让 code-abyss 动态发现 abyss
+// 暴露的 CLI 命令、MCP 工具、daemon 套接字 verbs，告别硬编码列表。
+const MIN_ABYSS_VERSION = '0.5.20';
+// 0.5.22+ 才有 skill-manifest 子命令；缺它即 fallback 回硬编码默认。
+const SKILL_MANIFEST_AVAILABLE_FROM = '0.5.22';
 const HOOK_MARKER = 'indexing-code/hooks/common';
 
 function resolveAbyssHookDir(targetDir) {
@@ -184,6 +189,65 @@ function checkLockToolRequirement(lock, detected) {
   return { ok: true, spec, required, actual: detected.version };
 }
 
+// ── 能力发现：abyss skill-manifest（0.5.22+） ──
+//
+// 设计契约：
+//   - 永不抛错。manifest 解析失败、abyss 版本过旧、二进制不存在——一律 null。
+//   - 调用方必须有硬编码 fallback。manifest 是「增强」不是「依赖」。
+//   - schema_version 严格 == 1。abyss 改 schema 时需要 code-abyss 同步适配，
+//     而不是静默吞掉一个不认识的 shape。
+//
+// 用途：
+//   - 安装后摘要：打印 "abyss vX.Y.Z: N CLI commands, M MCP tools"，让用户
+//     看到能力发现链路走通。
+//   - MCP 注册（未来扩展）：用 manifest.providers.mcp.tools 替代硬编码列表。
+//   - daemon 验证：providers.daemon.verbs 可用于探测 subscribe 等新 verb 支持。
+function tryReadAbyssManifest({ binPath = null, HOME = os.homedir(), timeoutMs = 2000 } = {}) {
+  let abyss = binPath;
+  if (!abyss) {
+    const detected = detectAbyss({ HOME });
+    if (!detected) return null;
+    abyss = detected.binPath;
+    if (!detected.version || compareVersions(detected.version, SKILL_MANIFEST_AVAILABLE_FROM) < 0) {
+      return null;
+    }
+  } else {
+    // binPath 显式传入也需要版本闸：避免对老 abyss 喊 skill-manifest 报 unknown subcommand
+    const v = tryVersion(abyss);
+    if (!v || !v.version || compareVersions(v.version, SKILL_MANIFEST_AVAILABLE_FROM) < 0) {
+      return null;
+    }
+  }
+  try {
+    const r = spawnSync(abyss, ['skill-manifest', '--compact'], { encoding: 'utf8', timeout: timeoutMs });
+    if (r.status !== 0 || !r.stdout) return null;
+    const m = JSON.parse(r.stdout);
+    if (!m || typeof m !== 'object' || m.schema_version !== 1) return null;
+    return m;
+  } catch {
+    return null;
+  }
+}
+
+// 安装后摘要：把 manifest 浓缩成一行人类可读串。null in → null out（不打印）。
+function summarizeAbyssManifest(manifest) {
+  if (!manifest) return null;
+  const ver = manifest.version || '?';
+  const cli = Array.isArray(manifest?.providers?.cli?.commands) ? manifest.providers.cli.commands.length : 0;
+  const mcp = Array.isArray(manifest?.providers?.mcp?.tools) ? manifest.providers.mcp.tools.length : 0;
+  const verbs = Array.isArray(manifest?.providers?.daemon?.verbs) ? manifest.providers.daemon.verbs.join(', ') : null;
+  let s = `abyss v${ver}: ${cli} CLI commands, ${mcp} MCP tools`;
+  if (verbs) s += `; daemon verbs: ${verbs}`;
+  return s;
+}
+
+// MCP 工具源真：能从 manifest 拿就拿，否则 fallback 到硬编码列表（保留旧行为）
+function resolveAbyssMcpTools(manifest, fallback = ['search_context', 'get_symbols', 'find_callers', 'impact_analysis', 'code_map', 'evolution', 'index_project']) {
+  const t = manifest && manifest.providers && manifest.providers.mcp && manifest.providers.mcp.tools;
+  if (Array.isArray(t) && t.length > 0) return t;
+  return fallback;
+}
+
 // ── MCP 注册（--with-mcp 显式 opt-in；8 个 tool schema 常驻 context 有成本） ──
 
 function buildMcpEntry(binPath) {
@@ -215,6 +279,7 @@ function injectGeminiMcp(settings, binPath) {
 
 module.exports = {
   MIN_ABYSS_VERSION,
+  SKILL_MANIFEST_AVAILABLE_FROM,
   HOOK_MARKER,
   resolveAbyssHookDir,
   abyssManagedBinPath,
@@ -229,4 +294,7 @@ module.exports = {
   buildMcpEntry,
   injectClaudeMcp,
   injectGeminiMcp,
+  tryReadAbyssManifest,
+  summarizeAbyssManifest,
+  resolveAbyssMcpTools,
 };

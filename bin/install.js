@@ -147,18 +147,25 @@ const {
   detectAbyss,
   injectClaudeMcp,
   injectGeminiMcp,
+  tryReadAbyssManifest,
+  summarizeAbyssManifest,
 } = require(path.join(__dirname, 'lib', 'abyss-integration.js'));
 const { installAbyssBinary } = require(path.join(__dirname, 'lib', 'abyss-binary.js'));
 
 // 本次运行的 abyss 探测结果（ensureAbyssBinary 后更新）
 let abyssState = null;
+// 0.5.22+ 才有 skill-manifest；缺它不报错，只是不打印发现摘要
+let abyssManifest = null;
 
 // 二进制下载是外网行为：--with-abyss 显式才下载；交互模式询问；-y 只提示不下载。
 // CODE_ABYSS_SKIP_BINARY=1 在 headless/CI/测试场景下静默跳过 detect 之外的一切
 // （不询问、不下载），让交互安装在无网/无 stdin 的环境里也不阻塞。
 async function ensureAbyssBinary() {
   abyssState = detectAbyss({ HOME });
-  if (abyssState) return;
+  if (abyssState) {
+    discoverAbyssCapabilities();
+    return;
+  }
   if (process.env.CODE_ABYSS_SKIP_BINARY) return;
   let doInstall = withAbyss;
   if (!doInstall && !autoYes) {
@@ -173,9 +180,22 @@ async function ensureAbyssBinary() {
   if (r.installed) {
     ok(`abyss 二进制 → ${c.cyn(r.binPath)}`);
     abyssState = detectAbyss({ HOME });
+    discoverAbyssCapabilities();
   } else {
     warn(`abyss 下载未完成: ${r.reason}（hook 将静默停用，可稍后手动安装）`);
   }
+}
+
+// 走 abyss skill-manifest 拿能力清单（0.5.22+）。失败静默——manifest 是增强不是依赖。
+function discoverAbyssCapabilities() {
+  if (!abyssState) return;
+  try {
+    abyssManifest = tryReadAbyssManifest({ binPath: abyssState.binPath, HOME });
+  } catch {
+    abyssManifest = null;
+  }
+  const line = summarizeAbyssManifest(abyssManifest);
+  if (line) info(line);
 }
 
 async function installTargetFlow(targetName, installOptions = {}) {
