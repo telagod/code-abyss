@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.8.2] - 2026-06-25
+
+### Changed
+
+- **abyss hooks are now opt-in.** Default install no longer auto-injects `SessionStart` + `PreToolUse`/`BeforeTool` hooks into Claude / Codex / Gemini settings. The `indexing-code` skill remains available for passive model-driven invocation. Pass `--with-hooks` to restore the previous behavior. Re-installing without `--with-hooks` strips prior marker-tagged entries; user-authored hooks are untouched (marker-based).
+- **Bundled ccstatusline preset compacted to a single line.** Dropped redundant `↑input` / `↓output` / `⊡cached` token fields (already encoded in `session-cost`), `context-length` absolute count (covered by percentage), and `session-clock`. Now shows: `model · context-% · cost · git-root-dir`, separated by U+22EE (⋮).
+
 ## [4.8.1] - 2026-06-19
 
 ### Fixed
