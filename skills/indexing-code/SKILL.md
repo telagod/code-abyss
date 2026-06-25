@@ -100,23 +100,38 @@ abyss stats                           # 索引统计
 
 ## Hook 自动执行
 
-**code-abyss 安装器（claude/codex/gemini）会自动注入 hook**，无需手动操作：
-hook 命令锚定安装后的 skill 路径（`<target-dir>/skills/indexing-code/hooks/common/`），
-幂等注入（重装去重、旧路径自动重锚定），卸载时按标记剥除。
-配套 flag：
+Hook 注入按 host 分两条路径（hybrid 切割架构，2026-06-25 锁定）：
+
+**claude / codex / gemini** — 由 abyss CLI 的 `attach` 子命令负责（production 主入口，abyss v0.5.20+）：
 
 ```sh
-npx code-abyss --target claude --with-abyss   # 顺带下载 abyss 预编译二进制到 ~/.code-abyss/bin/
-npx code-abyss --target claude --with-mcp     # 顺带注册 abyss MCP server（8 tools，opt-in）
+abyss attach claude     # → ~/.claude/settings.json
+abyss attach codex      # → ~/.codex/config.toml（Codex 0.125+ 数组表）
+abyss attach gemini     # → ~/.gemini/settings.json（SessionStart/BeforeTool/AfterTool）
+abyss attach all        # 三平台一次完成
 ```
 
-二进制查找顺序：PATH → `~/.code-abyss/bin/abyss`（`--with-abyss` 落点，不污染 PATH）。
-两处都没有时 hook 静默停用，后装即生效，无需重装。
+幂等，重跑覆盖旧 shape，不污染其它键。
 
-其余平台（pi/hermes/openclaw）或脱离安装器时，一条命令手动安装：
+二进制查找顺序：PATH → `~/.code-abyss/bin/abyss`。两处都没有时 hook 静默停用，后装 abyss 即生效，无需重装。
+
+> **v4.8.x → v4.9 deprecation 期变更**
+> - `--with-hooks` 对 claude/codex/gemini 仍写入 hook，但 install.js 打印 warning 引导改用 `abyss attach <host>`；v5.0 移除该路径（openclaw/pi/hermes 的 `--with-hooks` 永久保留并改造为 spawn install-hooks.sh）
+> - `--with-abyss` 下载 abyss 二进制到 `~/.code-abyss/bin/` 进入 deprecation，引导用户改用 `curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash`；v5.0 移除
+> - `--with-mcp` 注册 abyss MCP 进入 deprecation，引导用户改用 `abyss mcp` 客户端自配；v5.0 移除
+
+**openclaw / pi / hermes** — 由 code-abyss npm 包负责（abyss CLI 不接管这三平台，见 abyss `src/attach/mod.rs` 注释）：
 
 ```sh
-bash skills/indexing-code/hooks/common/install-hooks.sh auto
+npx code-abyss --target openclaw --with-hooks   # 自动 spawn install-hooks.sh
+npx code-abyss --target pi       --with-hooks
+npx code-abyss --target hermes   --with-hooks
+```
+
+或脱离安装器直接跑脚本：
+
+```sh
+bash skills/indexing-code/hooks/common/install-hooks.sh auto   # 自动检测平台
 ```
 
 自动检测平台并注入对应 hook 配置（幂等，JSON 合并用 node）：

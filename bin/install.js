@@ -199,6 +199,7 @@ function discoverAbyssCapabilities() {
 }
 
 async function installTargetFlow(targetName, installOptions = {}) {
+  emitDeprecationWarnings(targetName);
   const persona = installOptions.persona || await resolveInstallPersona();
   const style = installOptions.style || await resolveInstallStyle(targetName);
   const packPlan = await resolveProjectPackPlan(targetName);
@@ -209,6 +210,7 @@ async function installTargetFlow(targetName, installOptions = {}) {
   else if (targetName === 'gemini') await postGemini(ctx);
   else await postOpenClaw(ctx);
   registerAbyssMcp(targetName, ctx);
+  maybeSpawnInstallHooks(targetName);
   finish(ctx);
   if (ctx.cleanupPreviousBackup) ctx.cleanupPreviousBackup();
 }
@@ -287,9 +289,12 @@ for (let i = 0; i < args.length; i++) {
 `);
     console.log(`  ${c.cyn('--target, -t')} <${formatTargetList('|')}>   install one target`);
     console.log(`  ${c.cyn('--uninstall, -u')} <${formatTargetList('|')}>   remove one target`);
-    console.log(`  ${c.cyn('--with-abyss')}   download abyss binary to ~/.code-abyss/bin (code graph index)`);
-    console.log(`  ${c.cyn('--with-mcp')}     register abyss MCP server (claude/codex/gemini)`);
-    console.log(`  ${c.cyn('--with-hooks')}   inject SessionStart + Edit/Write hooks (opt-in; off by default)`);
+    console.log(`  ${c.cyn('--with-abyss')}   ${c.ylw('[DEPRECATED v4.9, removed v5.0]')} download abyss binary;`);
+    console.log(`                 use \`curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash\` instead`);
+    console.log(`  ${c.cyn('--with-mcp')}     ${c.ylw('[DEPRECATED v4.9, removed v5.0]')} register abyss MCP server;`);
+    console.log(`                 add { command: "abyss", args: ["mcp"] } to your MCP client config directly`);
+    console.log(`  ${c.cyn('--with-hooks')}   inject hooks (opt-in). claude/codex/gemini: ${c.ylw('[DEPRECATED v4.9]')} use \`abyss attach <host>\`;`);
+    console.log(`                 openclaw/pi/hermes: spawns skills/indexing-code/hooks/common/install-hooks.sh (kept in v5.0)`);
     console.log(`  ${c.cyn('--style')} <slug>  ${c.cyn('--persona')} <slug>  ${c.cyn('-y')}
 `);
     console.log(`${c.b('Examples')}`);
@@ -299,6 +304,50 @@ for (let i = 0; i < args.length; i++) {
 `);
     process.exit(0);
   }
+}
+
+// ── v4.9.0 deprecation 期 helper（2026-06-25 起；见 [[code-abyss-v5-split]] memory + abyss v0.5.24 CHANGELOG） ──
+//
+// 三 flag 的对外承诺：
+//   --with-abyss (v4.9 deprecation, v5.0 移除) → abyss 仓库自身的 install.sh / cargo binstall / npm wrapper 接管
+//   --with-mcp   (v4.9 deprecation, v5.0 移除) → 客户端 MCP 配置直接写 mcpServers.abyss
+//   --with-hooks 分双 scope：
+//     • claude/codex/gemini → v4.9 deprecation + 仍 inject；v5.0 移除该路径，引导 abyss attach <host>
+//     • openclaw/pi/hermes  → v4.9 起新增能力：自动 spawn install-hooks.sh（abyss CLI 设计上不接管这三平台）；v5.0 永久保留
+
+function emitDeprecationWarnings(targetName) {
+  if (withAbyss) {
+    process.stderr.write(`${c.ylw('⚠ DEPRECATED')} --with-abyss 将在 v5.0 移除（abyss 二进制分发已转交 abyss 仓库本体）\n`);
+    process.stderr.write(`  ${c.b('迁移:')} ${c.d('curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash')}\n`);
+    process.stderr.write(`         ${c.d('# 或 cargo binstall code-abyss / npm i -g @code-abyss/cli')}\n`);
+  }
+  if (withMcp) {
+    process.stderr.write(`${c.ylw('⚠ DEPRECATED')} --with-mcp 将在 v5.0 移除（MCP 注册由客户端自管）\n`);
+    process.stderr.write(`  ${c.b('迁移:')} 客户端 MCP 配置中添加 ${c.d('mcpServers.abyss = { command: "abyss", args: ["mcp"] }')}\n`);
+  }
+  if (withHooks && targetName && ['claude', 'codex', 'gemini'].includes(targetName)) {
+    process.stderr.write(`${c.ylw('⚠ DEPRECATED')} --with-hooks 对 ${targetName} 将在 v5.0 移除（abyss attach 是 production 主入口）\n`);
+    process.stderr.write(`  ${c.b('迁移:')} ${c.d(`abyss attach ${targetName}`)} ${c.d('# abyss v0.5.20+，幂等')}\n`);
+  }
+}
+
+// --with-hooks 对 openclaw 的真正能力（v4.9 起）：自动 spawn install-hooks.sh。
+// abyss CLI 设计上不接管 openclaw（per-pack layout 单二进制无法可靠创建），
+// 所以 code-abyss 是 openclaw hook 注入的唯一入口。pi/hermes 不在 install target 列表，
+// 但若未来扩 target 至 pi/hermes，本函数已就位。
+function maybeSpawnInstallHooks(targetName) {
+  if (!withHooks) return;
+  if (!['openclaw', 'pi', 'hermes'].includes(targetName)) return;
+  const scriptPath = path.join(PKG_ROOT, 'skills', 'indexing-code', 'hooks', 'common', 'install-hooks.sh');
+  if (!fs.existsSync(scriptPath)) {
+    warn(`--with-hooks: install-hooks.sh 未找到 (${scriptPath})`);
+    return;
+  }
+  info(`--with-hooks → bash install-hooks.sh ${targetName}`);
+  const { spawnSync } = require('child_process');
+  const r = spawnSync('bash', [scriptPath, targetName], { stdio: 'inherit' });
+  if (r.status === 0) ok(`hook 已注入 ${targetName}`);
+  else warn(`install-hooks.sh ${targetName} 退出码 ${r.status ?? 'n/a'}（不阻断安装）`);
 }
 
 // ── Select flows (must be assembled after CLI parsing) ──

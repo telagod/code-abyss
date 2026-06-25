@@ -6,7 +6,9 @@
   </a>
 </p>
 
-<h3 align="center">Composable persona · style · 30 engineering skills · 4 native security domains · self-evolution forge · code graph intelligence<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+<h3 align="center">Composable persona · style · 30 engineering skills · 4 native security domains · self-evolution forge<br/>for Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+
+<p align="center"><sub>Need code graph intelligence? Use the companion <a href="https://github.com/telagod/abyss"><code>abyss</code></a> Rust CLI — it auto-attaches its hooks to claude/codex/gemini. The <code>indexing-code</code> skill ships its calling convention; the CLI ships separately.</sub></p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/code-abyss"><img src="https://img.shields.io/npm/v/code-abyss?color=9b8cff&label=npm&style=flat-square" alt="npm"></a>
@@ -57,22 +59,25 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - Office skills slim to under 100 lines each; 4 design systems consolidated into one selector skill
 - **v4.1 — self-evolution forge**: `cultivating-skills` / `cultivating-personas` let the agent distill repeated workflows into reusable skills, with a safety scan and a three-tier publish funnel (local → project → community)
 - **v4.4 — hardware + academic writing**: 3 new domain skills (KiCad EDA, hardware product pipeline, AIGC detection reduction) + prompt injection defense + execution-drive shared behavior
-- **v4.5 — dynamic persona loading**: only `abyss` ships with npm — all other personas are fetched from GitHub on first use and cached locally, slimming the package
-- **v4.6 — code graph intelligence**: `abyss` CLI builds a code relationship graph (call graph + temporal analysis) in seconds — caller tracing, impact analysis, hotspot detection, change coupling. Pre-edit hooks auto-check callers across all 4 platforms
-- **v4.7 — measured resolution**: `abyss` v0.3.3 ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. Named-import binding tiers, receiver-type inference, and type-grade evidence — published numbers, not claims. `npm install -g @code-abyss/cli`
-- **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are now discovered at install time instead of hard-coded. `MIN_ABYSS_VERSION` bumped 0.3.0 → 0.5.20 (the 0.5.x line dogfooded across hono / helix / vite / FastAPI / Django / SQLAlchemy). Hand-coded fallbacks are preserved, so older `abyss` installs keep working unchanged.
+- **v4.5 — dynamic persona loading**: only the `abyss` persona slug (邪修红尘仙) ships with npm — all other personas are fetched from GitHub on first use and cached locally, slimming the package
+- **v4.6 — `indexing-code` skill (calling convention only)**: the `indexing-code` skill ships the calling convention for the external [`abyss`](https://github.com/telagod/abyss) Rust CLI (call graph + temporal analysis). The CLI itself is a separate product with its own release cadence — install it with its own `install.sh` / `cargo binstall` / `@code-abyss/cli` npm wrapper
+- **v4.7 — measured resolution (abyss CLI)**: the companion `abyss` Rust CLI ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. See its repo for numbers
+- **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` CLI is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are discovered at install time instead of hard-coded
+- **v4.9 — hybrid split deprecation period (2026-06-25)**: `--with-abyss` / `--with-mcp` enter deprecation (removed v5.0). `--with-hooks` splits: claude/codex/gemini move to `abyss attach <host>` as the production main entrypoint (abyss v0.5.20+); openclaw/pi/hermes stay with code-abyss and `--with-hooks` now auto-spawns `install-hooks.sh` for those three. See [CHANGELOG](CHANGELOG.md) for the migration guide
 
 ```bash
-npx code-abyss -t claude -y --with-abyss
+npx code-abyss -t claude -y                       # persona / skills / style layer (zero network)
+curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash   # then install abyss CLI
+abyss attach claude                               # finally, attach the code-graph hook (idempotent)
 ```
 
-`--with-abyss` also downloads the `abyss` code-graph binary so the pre-edit hooks work out of the box; add `--with-mcp` to register `abyss` as an MCP server. Swap `-t claude` for `codex` / `gemini` / `openclaw`. Or as a Claude Code plugin:
+Swap `-t claude` for `codex` / `gemini` / `openclaw`. For openclaw/pi/hermes (whose hook surface abyss CLI does not own), use `npx code-abyss -t openclaw --with-hooks` to spawn the bundled `install-hooks.sh`. Or as a Claude Code plugin:
 
 ```bash
 claude plugin install code-abyss
 ```
 
-> Plain `-y` (no `--with-abyss`) installs only the persona/skills/style layer and skips the network — code-graph hooks stay dormant until `abyss` is on `PATH`. Interactive runs (drop the `-y`) prompt before downloading. Verify code-graph is live with `abyss --version`, then `abyss index` in any project.
+> The persona/skills/style layer is fully decoupled from the code-graph CLI — installing code-abyss alone never touches the network beyond fetching remote persona content. `abyss attach <host>` is idempotent (re-running upgrades shape in place). Verify code-graph is live with `abyss --version`, then `abyss index` in any project.
 
 ---
 

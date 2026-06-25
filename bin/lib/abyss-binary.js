@@ -9,6 +9,14 @@
 //   - 零额外依赖：Node 18+ 内建 fetch + 系统 tar（Windows 10+ 的 bsdtar
 //     同时支持 .tar.gz 与 .zip），与 abyss npm wrapper 同一套已验证逻辑。
 //   - 下载失败不阻断安装流程：报告原因 + 给出手动安装路，由 finish 收尾提示。
+//
+// ── @deprecated v4.9.0（2026-06-25）──
+//
+// abyss 二进制分发已转交 abyss 仓库自身的 install.sh / `cargo binstall code-abyss`
+// / npm wrapper `@code-abyss/cli`（见 abyss v0.5.24 CHANGELOG）。本文件在 v4.9
+// 保留以兼容 `--with-abyss` flag；install.js 触发时打印 deprecation warning
+// 引导用户改用 `curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash`。
+// v5.0 物理删除本文件与 `--with-abyss` flag。
 
 const fs = require('fs');
 const path = require('path');

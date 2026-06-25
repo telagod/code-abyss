@@ -14,6 +14,18 @@
 //     易失路径的条目也会被同一标记捕获并重锚定。
 //   - 脚本自带 abyss 存在性守卫，注入不以安装时是否检测到 abyss 为条件——
 //     用户后装 abyss 时 hook 自动生效，无需重装。
+//
+// ── v4.9.0 hybrid-切割 deprecation 期（2026-06-25 起）──
+//
+// claude/gemini hook 注入由 `abyss attach <host>` 接管为 production 主入口
+// （见 abyss v0.5.24+ docs/book/getting-started/agent-hook.md）。本文件的
+// `injectClaudeHooks` / `injectGeminiHooks` / `stripAbyssHooks` 在 v4.9 保留
+// 行为以维持 `--with-hooks` flag 的 backward compatibility，但 install.js
+// 触发时会打印 deprecation warning 引导用户改用 `abyss attach`。v5.0 物理
+// 删除这三个函数与相关 export；卸载剥除 (uninstall.js stripAbyssHooks) 与
+// MCP 注册 (injectClaudeMcp/GeminiMcp + removeClaudeMcp) 仍是 code-abyss
+// 责任，不在切割范围。openclaw/pi/hermes 不在此文件——它们的 hook 由
+// skills/indexing-code/hooks/common/install-hooks.sh 处理（v5.0 仍保留）。
 
 const fs = require('fs');
 const path = require('path');
@@ -47,6 +59,11 @@ function upsertHookEntries(hooks, eventName, entries) {
   hooks[eventName] = existing.filter((e) => !isAbyssHookEntry(e)).concat(entries);
 }
 
+/**
+ * @deprecated v4.9.0 — abyss attach claude 是 production 主入口。
+ *   本函数保留行为以维持 `--with-hooks` flag 兼容，v5.0 物理删除。
+ *   迁移：`abyss attach claude` (abyss CLI v0.5.20+)。
+ */
 function injectClaudeHooks(settings, targetDir) {
   const hookDir = resolveAbyssHookDir(targetDir);
   if (!settings.hooks || typeof settings.hooks !== 'object') settings.hooks = {};
@@ -69,6 +86,11 @@ function injectClaudeHooks(settings, targetDir) {
   return hookDir;
 }
 
+/**
+ * @deprecated v4.9.0 — abyss attach gemini 是 production 主入口。
+ *   本函数保留行为以维持 `--with-hooks` flag 兼容，v5.0 物理删除。
+ *   迁移：`abyss attach gemini` (abyss CLI v0.5.20+)。
+ */
 function injectGeminiHooks(settings, targetDir) {
   const hookDir = resolveAbyssHookDir(targetDir);
   if (!settings.hooks || typeof settings.hooks !== 'object') settings.hooks = {};

@@ -17,24 +17,33 @@ function createFinish(deps) {
 
   // indexing-code 的 hook 依赖 abyss 二进制；缺失或过旧时 hook 静默停用/降级，
   // 必须在安装收尾时显式告知，而不是让用户以为功能已生效。
-  function reportAbyssStatus(projectLock) {
+  // v4.9.0 起引导文案：claude/codex/gemini → `abyss attach <host>` 是 production 主入口；
+  // openclaw/pi/hermes → `npx code-abyss -t <host> --with-hooks` 自动跑 install-hooks.sh。
+  function reportAbyssStatus(projectLock, targetName) {
     const detected = detectAbyss();
     if (detected && satisfiesMin(detected.version, MIN_ABYSS_VERSION)) {
       const sourceNote = detected.source === 'managed' ? c.d(' (~/.code-abyss/bin)') : '';
       console.log(`  ${c.b('abyss:')}    ${c.grn(detected.raw)}${sourceNote} — 代码图谱 pre-edit hook 可用`);
+      // claude/codex/gemini 用户：提示 abyss attach 是 hook 注入主入口（v0.5.20+ 自带 attach 子命令）
+      if (targetName && ['claude', 'codex', 'gemini'].includes(targetName)) {
+        console.log(`    ${c.d(`hook 注入主入口:`)} ${c.d(`abyss attach ${targetName}`)} ${c.d(`(idempotent; v4.9+ 推荐路径)`)}`);
+      }
     } else if (detected) {
       console.log('');
       console.log(`  ${c.ylw(`⚠ abyss ${detected.version || detected.raw} 低于最低要求 ${MIN_ABYSS_VERSION} — hook 子命令不可用`)}`);
-      console.log(`    ${c.b('升级:')} ${c.d('npx code-abyss --with-abyss   # 或 cargo binstall code-abyss')}`);
+      console.log(`    ${c.b('升级:')} ${c.d('curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash')}`);
+      console.log(`           ${c.d('# 或 cargo binstall code-abyss / npm i -g @code-abyss/cli')}`);
     } else {
       console.log('');
       console.log(`  ${c.ylw('⚠ 未检测到 abyss 二进制 — indexing-code 的代码图谱 hook 将静默停用')}`);
-      console.log(`    ${c.b('安装（任选其一）:')}`);
-      console.log(`    ${c.d('npx code-abyss --with-abyss   # 重跑安装器，自动下载预编译版')}`);
-      console.log(`    ${c.d('npm install -g @code-abyss/cli')}`);
+      console.log(`    ${c.b('安装 abyss（任选其一）:')}`);
       console.log(`    ${c.d('curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash')}`);
       console.log(`    ${c.d('curl -fsSL https://cdn.jsdelivr.net/gh/telagod/abyss@main/install.sh | bash   # raw 不可达时的镜像')}`);
       console.log(`    ${c.d('cargo binstall code-abyss   # 或 cargo install code-abyss')}`);
+      console.log(`    ${c.d('npm install -g @code-abyss/cli')}`);
+      if (targetName && ['claude', 'codex', 'gemini'].includes(targetName)) {
+        console.log(`    ${c.b('装好后:')} ${c.d(`abyss attach ${targetName}`)} ${c.d('# 注入 hook 到 settings 文件（v4.9+ 推荐路径，替代 --with-hooks）')}`);
+      }
     }
 
     // 项目级工具链声明：.code-abyss/packs.lock.json 的 tools.abyss（P2）
@@ -109,7 +118,7 @@ function createFinish(deps) {
     }
     console.log(`  ${c.b('文件:')}     ${ctx.manifest.installed.length} 个安装, ${ctx.manifest.backups.length} 个备份`);
     console.log(`  ${c.b('卸载:')}     ${c.d(`npx code-abyss --uninstall ${tgt}`)}`);
-    reportAbyssStatus(projectLock);
+    reportAbyssStatus(projectLock, tgt);
     console.log('');
     console.log(c.grn(`  ✓ 安装完成\n`));
   };

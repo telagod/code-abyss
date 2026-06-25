@@ -432,6 +432,16 @@ function patchAndReportCodexDefaults({ cfgPath, ok, warn }) {
 //   [[hooks.PreToolUse]]   matcher  +  [[hooks.PreToolUse.hooks]]   type/command/timeout
 //   旧扁平 [hooks.X] 已被 Codex 拒载（invalid type: map, expected a sequence）
 // MCP: [mcp_servers.abyss] command/args —— 节名是我方命名空间，可自由 upsert。
+//
+// ── v4.9.0 hybrid-切割 deprecation 期（2026-06-25 起）──
+//
+// `abyss attach codex` (abyss CLI v0.5.20+) 是 codex hook 注入的 production 主入口
+// （shape 与本文件 1:1 一致，2026-06-18 abyss v0.5.23 已对齐 ground truth）。下方
+// `injectCodexHooks` / `splitTomlBlocks` / `gatherHookGroup` / `renderCodexHookBlock`
+// / `stripCodexAbyssIntegration` (~256 行) 与常量 `ABYSS_HOOK_MARKER` 在 v4.9 保留
+// 行为以维持 `--with-hooks` flag 兼容；install.js 触发时打印 deprecation warning
+// 引导用户改用 `abyss attach codex`。v5.0 物理删除上述函数与常量。MCP 注册
+// (mcp_servers.abyss) 仍是 code-abyss 责任，不在切割范围。
 
 const ABYSS_HOOK_MARKER = 'indexing-code/hooks/common';
 

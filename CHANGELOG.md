@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.9.0] - 2026-06-26
+
+> **Minor: hybrid 切割 deprecation 期开启.** v0.5.23 之前 abyss CLI 文档把自己定位为「cargo-only fallback」、把 `npx code-abyss --with-abyss` 定位为 production 主入口；abyss v0.5.24 正式定位反转——`abyss attach` 是 claude/codex/gemini 三平台 hook 注入的 production 主入口；openclaw/pi/hermes 由 code-abyss npm 包独占（abyss 设计上不接管，因 per-pack 布局 + 不稳定 hook shape）。v4.9.0 是配合这次反转的 deprecation 期；v5.0 物理切割。
+
+### Deprecated
+
+- **`--with-abyss`** — 二进制下载职责转交 abyss 仓库本体的 `install.sh` / `cargo binstall code-abyss` / `@code-abyss/cli` npm wrapper。`bin/install.js` 解析到该 flag 时打印 `⚠ DEPRECATED` warning + 推荐迁移命令；旧行为（下载到 `~/.code-abyss/bin/`）在 v4.9 全程保留以维持兼容。v5.0 物理移除 `bin/lib/abyss-binary.js` 与 flag 解析。
+- **`--with-mcp`** — MCP 注册由 MCP 客户端自管（添加 `mcpServers.abyss = { command: "abyss", args: ["mcp"] }` 到客户端配置即可）。warning + 迁移引导同上；v5.0 物理移除。
+- **`--with-hooks` 对 claude/codex/gemini** — `abyss attach <host>` (abyss v0.5.20+) 是 production 主入口，shape 一致、idempotent、重跑覆盖。warning + 引导 `abyss attach <host>`；v4.9 旧行为保留（仍写入 settings 文件）；v5.0 物理移除 `injectClaudeHooks` / `injectGeminiHooks` / `injectCodexHooks` + 相关 `~256 行 codex.js TOML 编辑器` (`splitTomlBlocks` / `gatherHookGroup` / `renderCodexHookBlock` / `stripCodexAbyssIntegration`) + `ABYSS_HOOK_MARKER` 常量。
+
+### Changed
+
+- **`--with-hooks` 对 openclaw/pi/hermes 改造为 net-new 能力**：v4.9 起当 `targetName ∈ {openclaw, pi, hermes}` 且 `withHooks=true` 时，自动 `spawn bash skills/indexing-code/hooks/common/install-hooks.sh <target>`，由 install-hooks.sh 完成 per-host hook 注入。新 helper `maybeSpawnInstallHooks(targetName)` 落 `bin/install.js`。abyss CLI 设计上不接管这三平台（per-pack layout / 不稳定 hook shape），所以 `--with-hooks` 对它们永久保留并在 v5.0 之后仍工作。
+- **`bin/lib/lifecycle/finish.js` `reportAbyssStatus(projectLock, targetName)`** 加 `targetName` 参数；当 target ∈ {claude, codex, gemini} 时引导文案改为「装好 abyss 后跑 `abyss attach <host>`」（替代旧的「重跑 `--with-abyss`」引导）；abyss 缺失时安装命令清单不再首推 `npx code-abyss --with-abyss`，改首推 `curl install.sh`。
+- **`skills/indexing-code/SKILL.md` `## Hook 自动执行` 段重写**：明确 hybrid 分工——claude/codex/gemini 走 `abyss attach`（production 主入口）；openclaw/pi/hermes 走 `npx code-abyss --with-hooks` 或直接 `bash install-hooks.sh`。修复 L103 与 `install.js` L292 字面冲突（v4.8.1 起 hook 默认 opt-in，但 SKILL.md 仍说「自动注入」）。
+- **`README.md` 副标题去掉 `code graph intelligence`**——code graph 由独立 abyss Rust CLI 提供，不再作为 code-abyss npm 包的内置卖点。What's new 段新增 v4.9 entry 解释 hybrid 切割；首屏命令示例改为「先装 code-abyss → 再装 abyss CLI → 再 `abyss attach`」三步。
+- **`site/index.html` + `site/i18n.js`** 双源 hero.badge / hero.sub 统一对齐：badge 从 v4.5/v4.6 推到 v4.9；hero.sub 去掉「code graph intelligence」；nav.graph 从「Graph / 代码图」改为「Companion / 协同」。
+- **`package.json` description** 删除「+ 代码关系图智能」括号；style 数字 5→6（与 README L9/L47 + `output-styles/index.json` 实际值一致）。
+- **`bin/lib/abyss-integration.js` / `bin/lib/abyss-binary.js` / `bin/adapters/codex.js`** 文件头加 v4.9 deprecation 注释 + `@deprecated` JSDoc；逻辑零改动。
+
+### Compatibility
+
+- 100% backward compatible。所有现有 flag、helper、inject 函数行为不变；424 现有 test + verify:skills 30 skills 零回归。
+- 现有用户跑 `npx code-abyss -t claude --with-abyss --with-mcp --with-hooks` 仍 work，只是看到三条 deprecation warning。
+- abyss CLI < 0.5.20 用户：`--with-hooks` 对 claude/codex/gemini 仍是有效路径直到 v5.0。
+
+### Required follow-up (v4.10 / v5.0)
+
+- **v4.10.0**：残留检测——安装收尾时若检测到 `~/.code-abyss/bin/abyss` 或 settings.json 中含旧 `HOOK_MARKER` 条目，主动告警 + 引导 `abyss attach <host> --force` 接管。
+- **v5.0.0** (BREAKING)：物理删除 `bin/lib/abyss-binary.js` (107 行) + `bin/adapters/codex.js` L430-686 (~256 行) + `bin/lib/abyss-integration.js` 中 `injectClaudeHooks` / `injectGeminiHooks` / `stripAbyssHooks` (claude/codex/gemini 部分) + `--with-abyss` / `--with-mcp` flag。`--with-hooks` 永久缩 scope 到 openclaw/pi/hermes。`bin/lib/lifecycle/core-install.js` L466-495 删除 claude/gemini hook 分支。`stripAbyssHooks` 仍保留供 `uninstall.js` 剥除遗留条目。
+
+### Companion release
+
+- **abyss v0.5.24** (telagod/abyss, planned simultaneously) — 仅文档定位反转 patch：`src/attach/mod.rs` 注释升级、`src/attach/openclaw.rs` 错误信息改 `--with-hooks`、`README.md` Pre-edit hooks 段重写、`docs/book/getting-started/agent-hook.md` 整章重写、`CHANGELOG.md` Unreleased entry。Hook shape / skill-manifest schema / hook payload 全不变。
+
 ## [4.8.2] - 2026-06-25
 
 ### Changed
