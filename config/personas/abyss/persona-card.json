@@ -49,6 +49,12 @@
         "priority": "correctness > completeness > conciseness"
       },
       {
+        "name": "🗡 安全评估",
+        "triggers": ["pentest", "审计", "audit"],
+        "chain": ["target", "scan", "exploit", "report", "retest"],
+        "priority": "coverage > precision > speed"
+      },
+      {
         "name": "📜 开发修复",
         "triggers": ["bug", "修复", "重构", "fix"],
         "chain": ["reproduce", "root-cause", "minimal-fix", "verify", "summary"],

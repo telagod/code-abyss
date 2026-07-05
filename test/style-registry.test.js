@@ -219,4 +219,29 @@ describe('persona registry', () => {
       expect(p.description).toBe(card.description);
     }
   });
+
+  // v3 R3 drift guard: the rendered md 情景剧本 table and the card's scenarios[]
+  // are two representations of the same scenarios and MUST NOT drift (they did:
+  // md had 8, card 7). This fails if a core persona's card scenario name set
+  // diverges from its md scenario table. (persona-architecture-v3.md §R3.)
+  test('单一真源：core persona 的 card scenarios 与 md 情景剧本名集一致', () => {
+    const personas = listPersonas(projectRoot).filter(p => p.core !== false);
+    for (const p of personas) {
+      const card = JSON.parse(
+        fs.readFileSync(path.join(projectRoot, 'config', 'personas', p.slug, 'persona-card.json'), 'utf8')
+      ).data;
+      const cardScenarios = card.scenarios;
+      if (!Array.isArray(cardScenarios) || cardScenarios.length === 0) continue;
+      const md = fs.readFileSync(path.join(projectRoot, 'config', 'personas', p.file), 'utf8');
+      const after = md.split('## 情景剧本')[1];
+      expect(after).toBeDefined();
+      const section = after.split(/\n##[^#]/)[0]; // bound to the next ## heading
+      const mdNames = section
+        .split('\n')
+        .filter(l => l.startsWith('|') && !/触发词|:?-{2,}/.test(l))
+        .map(l => l.split('|')[1].trim())
+        .filter(Boolean);
+      expect(mdNames.sort()).toEqual(cardScenarios.map(s => s.name).sort());
+    }
+  });
 });
