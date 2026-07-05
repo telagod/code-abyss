@@ -6,6 +6,8 @@ user-invocable: false
 
 # 蓝队检测与响应 · 镇魔盾
 
+> **判断先于执行**：决定「是否做 / 选什么 / 如何取舍」（栈、方案、架构、权衡）前，先读领域判断内核 `skills/_kernel/security/SKILL.md`——它管 judgment，本秘典管 execution；冲突时以内核判断为准。
+
 > 检测是工程，不是运气。每条规则必须能回答四问：**what / why / FP rate / response**。
 > 站在防御侧，把告警当代码维护、把事件当事故管理、把狩猎当假设验证。
 > 信级：项目日志/EDR 原始事件 > Sigma/YARA 规则库 > ATT&CK 官方矩阵 > 训练记忆（标 `[unverified]`）。

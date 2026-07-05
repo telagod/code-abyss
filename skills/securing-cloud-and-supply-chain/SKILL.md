@@ -6,6 +6,8 @@ user-invocable: false
 
 # 云原生与供应链安全
 
+> **判断先于执行**：决定「是否做 / 选什么 / 如何取舍」（栈、方案、架构、权衡）前，先读领域判断内核 `skills/_kernel/security/SKILL.md`——它管 judgment，本秘典管 execution；冲突时以内核判断为准。
+
 > 默认怀疑一切外来字节：镜像、依赖、IaC 模块、CI runner、IAM trust。能签就签，能锁就锁，能最小就最小。
 
 ## 路由

@@ -6,6 +6,8 @@ user-invocable: false
 
 # 设计语言选型
 
+> **判断先于执行**：决定「是否做 / 选什么 / 如何取舍」（栈、方案、架构、权衡）前，先读领域判断内核 `skills/_kernel/frontend/SKILL.md`——它管 judgment，本秘典管 execution；冲突时以内核判断为准。
+
 > 不同设计语言不可混搭。先选语言，再按 reference 落地组件。
 
 ## 风格决策

@@ -6,6 +6,8 @@ user-invocable: false
 
 # 安全架构与治理
 
+> **判断先于执行**：决定「是否做 / 选什么 / 如何取舍」（栈、方案、架构、权衡）前，先读领域判断内核 `skills/_kernel/security/SKILL.md`——它管 judgment，本秘典管 execution；冲突时以内核判断为准。
+
 > 架构是预防层，不是补丁。先建模再写代码，先定边界再开 API。控制必须可证据化。
 
 ## 路由

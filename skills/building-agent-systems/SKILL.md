@@ -6,6 +6,8 @@ user-invocable: false
 
 # 丹鼎秘典 · Agent / LLM 工程
 
+> **判断先于执行**：决定「是否做 / 选什么 / 如何取舍」（栈、方案、架构、权衡）前，先读领域判断内核 `skills/_kernel/ml/SKILL.md`——它管 judgment，本秘典管 execution；冲突时以内核判断为准。
+
 > 单 Agent 是器，多 Agent 是阵。先选规模，再选模式。
 
 ## 路由
