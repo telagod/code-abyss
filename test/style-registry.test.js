@@ -244,4 +244,31 @@ describe('persona registry', () => {
       expect(mdNames.sort()).toEqual(cardScenarios.map(s => s.name).sort());
     }
   });
+
+  // v3 R5 static measurement gates (the dimensions that CAN be unit-tested;
+  // the behavioral scoring that needs a model lives in scripts/persona-battery/).
+  test('测量闸：每个 persona×style 渲染都携带内核优先级锚与 forbidden-zone', () => {
+    const personas = listPersonas(projectRoot);
+    const styles = listStyles(projectRoot);
+    for (const p of personas) {
+      for (const s of styles) {
+        const content = renderGeminiContext(projectRoot, s.slug, p.slug);
+        expect(content).toContain('## 内核边界');      // precedence anchor (always last)
+        expect(content).toContain('forbidden zone');   // iron-laws boundary
+      }
+    }
+  });
+
+  test('测量闸：每个 core persona-card scenario 都声明 priority（决策策略完整性）', () => {
+    const personas = listPersonas(projectRoot).filter(p => p.core !== false);
+    for (const p of personas) {
+      const card = JSON.parse(
+        fs.readFileSync(path.join(projectRoot, 'config', 'personas', p.slug, 'persona-card.json'), 'utf8')
+      ).data;
+      for (const sc of card.scenarios || []) {
+        expect(typeof sc.priority).toBe('string');
+        expect(sc.priority.length).toBeGreaterThan(0);
+      }
+    }
+  });
 });
