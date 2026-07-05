@@ -56,23 +56,48 @@ case "$TARGET" in
     ;;
 
   codex)
-    # HONEST DEGRADATION (mythos "no silent caps"): the vendored backstop reads the
-    # Claude Code Stop-input field `last_assistant_message`. Codex's hook payload
-    # schema is different and its post-response event support is unverified, so
-    # wiring this script to a Codex [[hooks.Stop]] would SILENTLY NO-OP (the field
-    # is absent -> the guard never fires). We refuse to fake it. Enabling Codex
-    # enforcement requires: (1) confirm Codex emits a post-response/Stop hook event,
-    # (2) its stdin JSON schema, (3) a Codex payload adapter that maps Codex's
-    # last-message field to what check_banned_openers.py reads.
-    echo "SKIPPED (not silently): Codex Stop-hook enforcement is not wired." >&2
-    echo "  Reason: check_banned_openers.py reads Claude's 'last_assistant_message';" >&2
-    echo "  Codex does not provide that field, so the hook would never fire." >&2
-    echo "  TODO: confirm Codex post-response hook event + schema, add a payload adapter." >&2
-    exit 3
+    # Codex's `Stop` hook is a near-exact parallel to Claude's: it fires at turn
+    # scope after the final message, provides `last_assistant_message` + the
+    # `stop_hook_active` loop-guard on stdin, and honors `{"decision":"block",
+    # "reason":...}` on stdout (reason becomes an auto continuation prompt). So the
+    # SAME check_banned_openers.py works verbatim — no payload adapter needed.
+    # Requirements (per developers.openai.com/codex/hooks): `[features]
+    # codex_hooks = true`, user-level config (repo-local .codex is ignored — bug
+    # openai/codex#17532), command-type hooks only.
+    SETTINGS="${HOME}/.codex/config.toml"
+    [ ! -f "$SETTINGS" ] && mkdir -p "$(dirname "$SETTINGS")" && : > "$SETTINGS"
+    SETTINGS_FILE="$SETTINGS" MARKER="$MARKER" SCRIPT_DIR="$SCRIPT_DIR" node -e '
+      const fs = require("fs");
+      const file = process.env.SETTINGS_FILE;
+      const marker = process.env.MARKER;
+      const cmd = `python3 "${process.env.SCRIPT_DIR}/check_banned_openers.py" || exit 0`;
+      let t = fs.readFileSync(file, "utf8");
+      // 1. Ensure the codex_hooks feature flag (idempotent, non-destructive).
+      if (!/^\s*codex_hooks\s*=/m.test(t)) {
+        if (/^\[features\]\s*$/m.test(t)) {
+          t = t.replace(/^\[features\]\s*$/m, "[features]\ncodex_hooks = true");
+        } else {
+          t = t.replace(/\s*$/, "") + "\n\n[features]\ncodex_hooks = true\n";
+        }
+      }
+      // 2. Append our Stop hook block unless already present (marker-idempotent).
+      if (!t.includes(marker)) {
+        const block = [
+          "", "# character Stop-hook enforcement (" + marker + ")",
+          "[[hooks.Stop]]", "[[hooks.Stop.hooks]]",
+          "type = \"command\"",
+          "command = \"" + cmd.replace(/"/g, "\\\"") + "\"",
+          "timeout = 5", "",
+        ].join("\n");
+        t = t.replace(/\s*$/, "") + "\n" + block;
+      }
+      fs.writeFileSync(file, t);
+      console.log("✓ character Stop-hook installed in " + file);
+    '
     ;;
 
   *)
-    echo "Unknown/unsupported host: $TARGET (only claude is wired today)"
+    echo "Unknown/unsupported host: $TARGET (supported: claude, codex)"
     exit 1
     ;;
 esac
