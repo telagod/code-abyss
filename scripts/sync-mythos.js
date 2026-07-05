@@ -99,6 +99,26 @@ function main() {
     console.log(`  vendored ${b}/`);
   }
 
+  // Overlay code-abyss-authored kernel-hook integration files into the vendored
+  // tree. They live at scripts/kernel-hooks/ (outside skills/_kernel/, which we
+  // just wiped) so they survive re-sync, and are copied in beside the vendored
+  // check_banned_openers.py so the installer self-locates via SCRIPT_DIR.
+  let overlaid = 0;
+  const overlaySrc = path.join(__dirname, 'kernel-hooks');
+  if (fs.existsSync(overlaySrc)) {
+    const charHooks = path.join(KERNEL_DIR, 'character', 'hooks');
+    fs.mkdirSync(charHooks, { recursive: true });
+    for (const f of fs.readdirSync(overlaySrc)) {
+      const src = path.join(overlaySrc, f);
+      if (!fs.statSync(src).isFile()) continue;
+      const dest = path.join(charHooks, f);
+      fs.copyFileSync(src, dest);
+      if (f.endsWith('.sh')) fs.chmodSync(dest, 0o755);
+      overlaid++;
+    }
+    console.log(`  overlaid ${overlaid} kernel-hook file(s) into character/hooks/`);
+  }
+
   const meta = {
     source: MYTHOS_DIR,
     sourceCommit: mythosCommit(),
