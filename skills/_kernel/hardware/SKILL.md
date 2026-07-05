@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: hardware
 description: Electronics and embedded engineering judgment, distilled from a stronger model - invoke when CHOOSING components, MCUs, modules, or interfaces; designing or reviewing a circuit, power tree, or PCB; writing embedded firmware; debugging physical hardware (resets, noise, dead boards, flaky sensors); or planning bring-up and validation of a new board. Scenario-driven part selection, electrical design margins, firmware-for-unattended-devices rules, bench debugging discipline, and a trap catalog.
 ---

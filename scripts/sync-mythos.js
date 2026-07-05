@@ -15,7 +15,7 @@
 // What it does:
 //   1. Copies the 9 mythos bundle dirs verbatim into skills/_kernel/<bundle>/.
 //      English rule text is preserved byte-for-byte (no translation, kernel is English).
-//   2. Injects `user-invocable: true` into each bundle SKILL.md frontmatter if absent —
+//   2. Injects `user-invocable: false` into each bundle SKILL.md frontmatter if absent —
 //      code-abyss's skill-registry contract (bin/lib/skill-registry.js:84) HARD-REQUIRES
 //      this field or command generation throws. mythos SKILL.md ships only name+description.
 //      This transform is exactly why a submodule cannot work: you cannot rewrite a
@@ -56,13 +56,17 @@ function fail(msg) {
   process.exit(1);
 }
 
-function ensureUserInvocable(skillMdPath, bundle) {
+function ensureInvocableField(skillMdPath, bundle) {
   const content = fs.readFileSync(skillMdPath, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!fm) fail(`${bundle}/SKILL.md has no frontmatter block`);
   if (/^user-invocable\s*:/m.test(fm[1])) return false; // already present, idempotent
-  // Insert right after the opening delimiter, inside the frontmatter block.
-  const patched = content.replace(/^(---\r?\n)/, `$1user-invocable: true\n`);
+  // Inject `user-invocable: false`: skill-registry.js requires the field to
+  // exist, but kernel bundles are NOT user slash-commands — they are invoked by
+  // the always-on router + their SKILL.md description (mythos's self-invocation
+  // model). false keeps them out of command generation (no /doctrine … noise)
+  // and out of the invocable-skill scan (persona-architecture-v3.md §4).
+  const patched = content.replace(/^(---\r?\n)/, `$1user-invocable: false\n`);
   fs.writeFileSync(skillMdPath, patched);
   return true;
 }
@@ -95,7 +99,7 @@ function main() {
     const srcDir = path.join(MYTHOS_DIR, b);
     const destDir = path.join(KERNEL_DIR, b);
     fs.cpSync(srcDir, destDir, { recursive: true, filter: copyFilter });
-    if (ensureUserInvocable(path.join(destDir, 'SKILL.md'), b)) patched++;
+    if (ensureInvocableField(path.join(destDir, 'SKILL.md'), b)) patched++;
     console.log(`  vendored ${b}/`);
   }
 

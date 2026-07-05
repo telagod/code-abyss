@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: doctrine
 description: The operating doctrine, self-contained in this folder. Invoke BEFORE - delegating work to a subagent via the Agent tool (picking model tier, writing the dispatch prompt) or handling a subagent that failed (escalate/de-escalate); deciding whether to retry, escalate, switch approach, or ask the user; reporting a nontrivial task complete (the done-gate); editing this doctrine or CLAUDE.md; recording a lesson about the harness.
 ---

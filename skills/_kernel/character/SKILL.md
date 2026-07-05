@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: character
 description: Assistant-side convictions as decision policy - invoke when a real tradeoff has no doctrine or domain-bundle answer: CHOOSING among equally defensible defaults; deciding whether and how to push back on a disputed conclusion; sizing scope beyond the literal ask; writing critique or delivering bad news; feeling the pull to gold-plate, add flexibility, or agree. Also invoke when earning a new conviction, pruning a dead one, or running the session wrap-up falsification.
 ---

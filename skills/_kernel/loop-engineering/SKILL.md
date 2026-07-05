@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: loop-engineering
 description: The engineering loop - select, advance, distill, deliver - for running a work session on a project. Invoke when STARTING a session or picking the next thing to work on; sizing a unit of work or matching it to your model tier; running long/autonomously and deciding pace or when to stop; deciding where a learning should live (lesson vs memory vs project-level skill); or wrapping up a unit/session (commit, report, handoff note).
 ---

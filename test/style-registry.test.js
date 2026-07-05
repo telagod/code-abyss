@@ -68,10 +68,14 @@ describe('style registry', () => {
 
   test('共享行为层加载：所有组合都包含铁律和技能路由', () => {
     const content = renderGeminiContext(projectRoot, 'abyss-cultivator', 'abyss');
+    // v3 always-on core (persona-architecture-v3.md §2): safety/precedence +
+    // thin router + kernel anchor. The behavior/method content (proactive,
+    // execution-chains) moved to the lazy-loaded kernel bundles and is no
+    // longer baked into every render.
     expect(content).toContain('## 铁律');
     expect(content).toContain('## 技能路由');
-    expect(content).toContain('## 主动协助协议');
-    expect(content).toContain('## 执行链');
+    expect(content).toContain('## 纪律内核');   // kernel router
+    expect(content).toContain('## 内核边界');   // precedence anchor (always last)
   });
 
   test('loadSharedBehavior 返回非空内容', () => {

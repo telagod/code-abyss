@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: frontend
 description: Visual design taste for web UI, distilled from a stronger model's aesthetic - invoke when about to BUILD or STYLE any web page, component, artifact, or UI; picking a visual direction; writing CSS; reviewing how a design looks; or when a design works but feels generic or boring. Named style directions with exact tokens, concrete craft numbers, and a catalog of garbage design to refuse.
 ---

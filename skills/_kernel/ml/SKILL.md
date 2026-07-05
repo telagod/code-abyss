@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: ml
 description: Machine learning and LLM engineering judgment, distilled from a stronger model - invoke when DECIDING whether/how to use ML or an LLM for a task (prompt vs RAG vs fine-tune vs classical); working with training/eval data or labels; building or reviewing evals for models and LLM features; designing RAG, structured output, or agent pipelines; or diagnosing why a model/LLM feature underperforms. Method-selection ladder, data and leakage discipline, eval-as-spec rules, LLM-era craft, and a trap catalog.
 ---

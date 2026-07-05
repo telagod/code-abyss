@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: backend
 description: Backend engineering judgment, distilled from a stronger model - invoke when CHOOSING a tech stack, language, database, queue, or architecture; designing a service, API, business logic, or schema; making a system production-ready (observability, failure handling, security); or reviewing server-side code and judging codebase health. Scenario-driven stack tradeoffs, logic-design rules, data discipline, production floors, and a rot catalog (the early signs of unmaintainable code).
 ---

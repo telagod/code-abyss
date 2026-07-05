@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: security
 description: Defensive security engineering judgment, distilled from a stronger model - invoke when THREAT MODELING a system or feature; making security-relevant design decisions (auth, crypto, trust boundaries, attack surface); reviewing code for vulnerabilities (injection, IDOR, secrets, the OWASP classes); hardening operations (secrets management, detection, patching, incident response); or judging whether a security control/program is real or theater. Also invoke BEFORE any offensive-flavored request (pentest, exploit, credential testing) to apply the authorization gate. Also invoke when designing, reviewing, or hardening an LLM/agent system that reads untrusted content or holds tool/MCP access (prompt injection, excessive agency, MCP supply chain).
 ---

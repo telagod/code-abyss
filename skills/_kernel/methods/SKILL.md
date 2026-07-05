@@ -1,5 +1,5 @@
 ---
-user-invocable: true
+user-invocable: false
 name: methods
 description: How to think through work, distilled from a stronger model's demonstrated moves - invoke when STARTING to investigate a confusing behavior or debug a root cause; design or evaluate an approach/proposal; plan a multi-step or long-running task; verify work, review findings, or reconcile conflicting reports; write rules, reports, or docs someone else must act on.
 ---
