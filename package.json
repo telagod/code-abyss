@@ -48,7 +48,8 @@
     "packs:bootstrap": "node bin/packs.js bootstrap",
     "packs:update": "node bin/packs.js update",
     "packs:check": "node bin/packs.js check",
-    "packs:vendor:sync": "node bin/packs.js vendor-sync"
+    "packs:vendor:sync": "node bin/packs.js vendor-sync",
+    "kernel:sync": "node scripts/sync-mythos.js"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.10.1"

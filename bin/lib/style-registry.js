@@ -23,6 +23,7 @@ const SHARED_FILES_ORDER = [
   'execution-drive.md',
   'big-picture.md',
   'execution-chains.md',
+  'kernel-router.md',
   'skill-routing.md',
   'environment.md',
 ];
