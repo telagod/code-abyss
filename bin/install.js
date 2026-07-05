@@ -211,6 +211,7 @@ async function installTargetFlow(targetName, installOptions = {}) {
   else await postOpenClaw(ctx);
   registerAbyssMcp(targetName, ctx);
   maybeSpawnInstallHooks(targetName);
+  maybeInstallEnforcement(targetName, ctx);
   finish(ctx);
   if (ctx.cleanupPreviousBackup) ctx.cleanupPreviousBackup();
 }
@@ -271,6 +272,7 @@ let requestedPersonaSlug = null;
 let withAbyss = false;
 let withMcp = false;
 let withHooks = false;
+let withEnforcement = false;
 
 for (let i = 0; i < args.length; i++) {
   if ((args[i] === '--target' || args[i] === '-t') && args[i + 1]) { target = args[++i]; }
@@ -282,6 +284,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === '--with-abyss') { withAbyss = true; }
   else if (args[i] === '--with-mcp') { withMcp = true; }
   else if (args[i] === '--with-hooks') { withHooks = true; }
+  else if (args[i] === '--with-enforcement') { withEnforcement = true; }
   else if (args[i] === '--yes' || args[i] === '-y') { autoYes = true; }
   else if (args[i] === '--help' || args[i] === '-h') {
     banner();
@@ -295,6 +298,8 @@ for (let i = 0; i < args.length; i++) {
     console.log(`                 add { command: "abyss", args: ["mcp"] } to your MCP client config directly`);
     console.log(`  ${c.cyn('--with-hooks')}   inject hooks (opt-in). claude/codex/gemini: ${c.ylw('[DEPRECATED v4.9]')} use \`abyss attach <host>\`;`);
     console.log(`                 openclaw/pi/hermes: spawns skills/indexing-code/hooks/common/install-hooks.sh (kept in v5.0)`);
+    console.log(`  ${c.cyn('--with-enforcement')}  install the character Stop-hook backstop (opt-in; ${c.ylw('blocks')} to force one`);
+    console.log(`                 revision when a reply opens with a banned capitulation phrase). claude/codex only.`);
     console.log(`  ${c.cyn('--style')} <slug>  ${c.cyn('--persona')} <slug>  ${c.cyn('-y')}
 `);
     console.log(`${c.b('Examples')}`);
@@ -348,6 +353,29 @@ function maybeSpawnInstallHooks(targetName) {
   const r = spawnSync('bash', [scriptPath, targetName], { stdio: 'inherit' });
   if (r.status === 0) ok(`hook 已注入 ${targetName}`);
   else warn(`install-hooks.sh ${targetName} 退出码 ${r.status ?? 'n/a'}（不阻断安装）`);
+}
+
+// --with-enforcement：安装 character Stop-hook 强制执行兜底（与 --with-hooks 的
+// abyss 代码图谱 hook 分离——那条 v5.0 移除且非阻塞；本条是独立、非 deprecated、
+// 刻意阻塞的 opt-in）。从「安装后」的 skill 路径 spawn，使 installer 的 SCRIPT_DIR
+// 落在持久位置（非 npx 缓存），写进 settings 的 check_banned_openers.py 路径才稳定。
+// 仅 claude/codex 有可用的 Stop 事件；gemini/openclaw 无，按 no-silent-caps 明示跳过。
+function maybeInstallEnforcement(targetName, ctx) {
+  if (!withEnforcement) return;
+  if (!['claude', 'codex'].includes(targetName)) {
+    info(`--with-enforcement：${targetName} 无 Stop hook 事件，强制执行不可用，已跳过`);
+    return;
+  }
+  const scriptPath = path.join(ctx.targetDir, 'skills', '_kernel', 'character', 'hooks', 'install-character-hooks.sh');
+  if (!fs.existsSync(scriptPath)) {
+    warn(`--with-enforcement: install-character-hooks.sh 未找到 (${scriptPath})`);
+    return;
+  }
+  info(`--with-enforcement → bash install-character-hooks.sh ${targetName}`);
+  const { spawnSync } = require('child_process');
+  const r = spawnSync('bash', [scriptPath, targetName], { stdio: 'inherit' });
+  if (r.status === 0) ok(`character Stop-hook 已注入 ${targetName}`);
+  else warn(`install-character-hooks.sh ${targetName} 退出码 ${r.status ?? 'n/a'}（不阻断安装）`);
 }
 
 // ── Select flows (must be assembled after CLI parsing) ──
