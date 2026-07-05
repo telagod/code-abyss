@@ -18,15 +18,17 @@ function clearStyleCache() {
 
 // v3 always-on core (persona-architecture-v3.md §2-3): keep only the minimal
 // always-on layer — safety/precedence (iron-laws), injection defense, the thin
-// router, and the close-out contract (environment). The behavior/method content
-// (proactive, execution-drive, big-picture, execution-chains) moved to the
-// lazy-loaded kernel bundles (character/methods/loop-engineering) so it no
-// longer bloats every render. This is the eager→lazy inversion.
+// router, skill routing + the code-abyss-specific sedimentation triggers
+// (trimmed proactive), and the close-out contract (environment). The GENERIC
+// behavior/method content (main proactive-assist, execution-drive, big-picture,
+// execution-chains) moved to the lazy-loaded kernel bundles (character/methods)
+// so it no longer bloats every render. This is the eager→lazy inversion.
 const SHARED_FILES_ORDER = [
   'iron-laws.md',
   'injection-awareness.md',
   'kernel-router.md',
   'skill-routing.md',
+  'proactive.md',
   'environment.md',
 ];
 
