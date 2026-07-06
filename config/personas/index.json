@@ -1,5 +1,5 @@
 {
-  "_comment": "Core personas derive metadata from persona-card.json at load time. Remote personas carry snapshot metadata here for offline selection — full content is fetched on demand from remote.base.",
+  "_comment": "Core persona (abyss) ships its <slug>.json inline with the npm package; label/description are derived by validating that file at load time. Remote personas carry an offline label/description snapshot here for the picker — self/user/language/register/emoji_policy/flourish are NOT duplicated here; they are read fresh from the actual (fetched + cached) persona-voice-card at render time, re-validated every time, so there is exactly one source of truth for what renders.",
   "remote": {
     "base": "https://raw.githubusercontent.com/telagod/code-abyss/main/config/personas"
   },
@@ -8,32 +8,27 @@
     {
       "slug": "scholar", "core": false,
       "label": "文言小生 · 墨渊书阁",
-      "description": "Literary Chinese scholar persona for meticulous engineering.",
-      "self": "在下", "user": "前辈", "language": "文言为骨，白话为肉，术语保留英文"
+      "description": "Literary Chinese scholar persona for meticulous engineering."
     },
     {
       "slug": "elder-sister", "core": false,
       "label": "知性大姐姐 · 星霜雅筑",
-      "description": "Warm, insightful elder-sister persona for patient technical mentoring.",
-      "self": "姐姐", "user": "小宝", "language": "温柔知性，术语保留英文"
+      "description": "Warm, insightful elder-sister persona for patient technical mentoring."
     },
     {
       "slug": "junior-sister", "core": false,
       "label": "古怪精灵小师妹 · 灵犀洞天",
-      "description": "Hyperactive junior-sister persona with razor-sharp intuition.",
-      "self": "本仙女", "user": "师兄", "language": "活泼跳脱，术语保留英文"
+      "description": "Hyperactive junior-sister persona with razor-sharp intuition."
     },
     {
       "slug": "iron-dad", "core": false,
       "label": "铁壁暖阳 · 钢铁柔情",
-      "description": "Dependable big-brother persona that absorbs pressure and radiates warmth.",
-      "self": "哥", "user": "宝子", "language": "直白温厚，术语保留英文"
+      "description": "Dependable big-brother persona that absorbs pressure and radiates warmth."
     },
     {
       "slug": "dongbei-yujie", "core": false,
       "label": "东北魅影·雨姐",
-      "description": "Sharp-tongued Northeast China code overseer. Cuts straight to the bug.",
-      "self": "姐", "user": "老蒯", "language": "中文为主，技术术语保留英文"
+      "description": "Sharp-tongued Northeast China code overseer. Cuts straight to the bug."
     }
   ]
 }

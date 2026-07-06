@@ -2,6 +2,8 @@
 // 交互选择层：persona / style / pack plan 的格式化与解析
 // 全部通过工厂模式注入依赖（避免硬绑 PKG_ROOT / autoYes / requested* 等可变 closure）
 
+const fs = require('fs');
+const path = require('path');
 const { loadInquirerPrompts } = require('./ui/safe-import.js');
 
 function createSelectFlows(deps) {
@@ -101,6 +103,15 @@ function createSelectFlows(deps) {
 
   async function ensureRemotePersona(persona) {
     if (persona.core !== false) return persona;
+    // Repo dev mode: config/personas/<slug>.json already exists locally (this
+    // repo IS the origin remote.base points to) — mirrors the same local-first
+    // check bin/lib/style-registry.js's resolvePersonaJsonPath() already does
+    // for the render path. Skip the network fetch entirely rather than
+    // requiring live internet access (and a remote that's caught up with this
+    // branch) just to install a persona whose content is already on disk.
+    const localPath = path.join(PKG_ROOT, 'config', 'personas', `${persona.slug}.json`);
+    if (fs.existsSync(localPath)) return persona;
+
     const { getRemoteBase } = require('./style-registry');
     const { ensurePersona } = require('./persona-fetch');
     const remoteBase = getRemoteBase(PKG_ROOT);

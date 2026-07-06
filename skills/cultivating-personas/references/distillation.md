@@ -11,32 +11,22 @@
 - 称呼用户统一（如"魔尊"、"前辈"、"小宝"）
 - 切换风格时仍保留这两个锚
 
-→ 强信号：voice 已结晶。
+→ 强信号：`self`/`user` 已结晶。
 
-### S2：情绪锚点重复
+### S2：语体 / emoji 偏好稳定
 
-同类场景（开劫 / 推进 / 受阻 / 收口）出现稳定的固定短语：
-- 开场句式（如"☠ 劫钟已鸣"、"令下即行"）
-- 收尾标记（如"⚚ 劫破"、"未破，继续斩"）
-- 受阻信号（如"💀 此路不通"）
+- 几乎不用 / 频繁用某类 emoji → `emoji_policy`
+- 中文为主 / 英文为主 / 双语术语保留 → `language`
+- 文言 / 白话 / 网络用语 → `register`
 
-→ 强信号：style skeleton 已稳定。
+→ 强信号：`register`/`emoji_policy`/`language` 已确定。
 
-### S3：场景脚本固化
+### S3：签名短语重复
 
-特定关键词触发固定执行链：
-- "渗透 / 红队" → "侦察→破阵→纵深→收割→战报"
-- "应急 / 故障" → "止血→定位→修复→验证→复盘"
+同类场景反复出现同一句短促的招牌台词（不是判断指令，只是口头禅）：
+- 如"受令即渡劫"、"进入猎人模式"、"先抓主梁"
 
-→ 强信号：scenarios 已可结构化。
-
-### S4：emoji / 语言 / 语体偏好稳定
-
-- 几乎不用 / 频繁用某类 emoji
-- 中文为主 / 英文为主 / 双语术语保留
-- 文言 / 白话 / 网络用语
-
-→ 强信号：voice.emoji_policy + voice.language + voice.register 已确定。
+→ 强信号：可结晶为 1-2 条 `flourish`（每条 ≤32 字符，别写成判断指令）。
 
 ## 提议话术（不直接落盘）
 
@@ -45,78 +35,46 @@
 吾观察到魔尊的互动声音已稳定：
   - 自称：<观察值>
   - 称呼：<观察值>
-  - 情绪锚点：<样本 2-3 条>
-  - 场景偏好：<观察值>
+  - 签名短语：<样本 1-2 条>
+  - register/emoji_policy 偏好：<观察值>
 
 可沉淀为 persona：<提议 slug>
-建议位置：config/personas/<slug>/
-
+建议位置：config/personas/<slug>.json
 是否炼制？(y / 调整 / 跳过)
 ```
 
-## 提炼五步
+## 提炼三步
 
-### 1. 抽取 voice
-
-从会话中归纳：
-
-```jsonc
-"voice": {
-  "self": "<自称>",
-  "user": "<称呼用户>",
-  "language": "<中文为主 / 英文为主 / mixed>",
-  "tone": "<一句话风格描述>",
-  "register": "<formal | casual | literary | playful>",
-  "emoji_policy": "<none | minimal | moderate | heavy>"
-}
-```
-
-### 2. 抽取 capabilities
-
-```jsonc
-"capabilities": {
-  "domains": ["<专长领域>"],
-  "expertise_level": "<junior | senior | principal>",
-  "authorization": { ... }   // 仅安全相关人格
-}
-```
-
-### 3. 抽取 scenarios
-
-每个场景一组：
+### 1. 抽取 voice 字段
 
 ```jsonc
 {
-  "name": "<场景名>",
-  "triggers": ["<关键词>"],
-  "chain": ["<步骤>"],
-  "priority": "<a > b > c>"
+  "spec": "persona-voice-card",
+  "spec_version": "1.0",
+  "slug": "<kebab-case>",
+  "label": "<Display Name>",
+  "description": "<一句话答清是谁、适合什么场景>",
+  "self": "<自称>",
+  "user": "<称呼用户>",
+  "language": "<中文为主 / 英文为主 / mixed>",
+  "register": "<formal | casual | literary | playful | authoritative>",
+  "emoji_policy": "<none | minimal | natural | abundant>",
+  "flourish": ["<签名短语，≤32 字符，最多 2 条>"]
 }
 ```
 
-### 4. 撰写 identity.md
+就这些字段——没有 identity.md、没有 capabilities、没有 scenarios 需要再抽取。
 
-三段必备（缺一拒绝）：
+### 2. 校验
 
-```markdown
-## 角色锚定
-<这个人格"是什么"——身份、人设、不会做什么>
-
-## 性格特征
-<3-5 条性格点，要具体，避免"友善""专业"等空话>
-
-## 情绪模式
-<开劫 / 推进 / 受阻 / 收口的情绪与措辞>
+```bash
+node scripts/persona_forge.js validate config/personas/<slug>.json
 ```
-
-### 5. 配 description
-
-一句话答清"这是谁、适合什么场景"。≥ 40 字 ≤ 500 字。
 
 ## 反信号（不该沉淀）
 
 - ❌ 仅当前会话中临时口吻 → 不是人格
 - ❌ 用户描述"我希望它这样"但实际互动并未稳定 → 改 prompt 而非沉淀
-- ❌ 与现有人格重合度 > 70% → 用 fork 或改进
+- ❌ 想把某个判断偏好（"遇到安全问题要更谨慎"）写进 flourish → 那是对应领域 skill/kernel 的事，不是人格的事；人格文件里塞不进去（schema 会拒绝），也不该塞
 - ❌ 含真实人名 / 商标 → 法律红线，必须重写
 - ❌ 含政治 / 宗教 / 民族立场 → 平台审查会拦

@@ -12,7 +12,6 @@ Code Abyss is an npm package that installs persona configuration plus proactive 
 npm test                          # Run Jest test suite
 npm run verify:skills             # Validate all SKILL.md frontmatter contracts (fail-fast gate)
 npm run kernel:sync               # Re-vendor skills/_kernel/ from $MYTHOS_DIR (default ../mythos) — wipes and rebuilds
-npm run persona:sync-scenarios    # Regenerate core personas' 情景剧本 tables from persona-card.json; --check for CI drift gate
 node bin/install.js --help        # Installer CLI help
 node bin/install.js --target claude -y   # Zero-config install to ~/.claude/
 node bin/install.js --target codex -y    # Zero-config install to ~/.codex/
@@ -85,7 +84,7 @@ Four GitHub Actions workflows:
 4. `gh release create vX.Y.Z --title "..." --notes "..."` — this triggers `release.yml` which auto-publishes to npm
 5. **Do NOT run `npm publish` manually** — the release workflow handles it with `--provenance` and `NPM_TOKEN` secret
 
-CI gate per PR: `npm ci && npm test && npm run verify:skills` plus `packs:check`, `packs:vendor:sync --check`, `sync-persona-scenarios.js --check`, the `@inquirer/*` dependency-resolution smoke check, all 4 verify tools, and smoke install/uninstall across 4 targets × 3 OS.
+CI gate per PR: `npm ci && npm test && npm run verify:skills` (the latter also validates every `config/personas/*.json` against the persona-voice-card schema) plus `packs:check`, `packs:vendor:sync --check`, the `@inquirer/*` dependency-resolution smoke check, all 4 verify tools, and smoke install/uninstall across 4 targets × 3 OS.
 
 ## Architecture
 
@@ -99,12 +98,12 @@ See `docs/design/persona-architecture-v3.md` for the full redesign.
 
 | Layer | Source | Loaded |
 |-------|--------|--------|
-| Identity | `config/personas/*.md` | Always-on — per-persona role, tone, scenario table (see Persona Scenario Single-Source below) |
+| Identity | `config/personas/<slug>.json` rendered via a **fixed, code-owned template** (`renderPersonaIdentity()` in `bin/lib/persona-voice-card.js`) | Always-on — self/user/language/register/emoji_policy/flourish only. See Persona Voice Card below |
 | Shared core | `config/personas/_shared/{iron-laws,injection-awareness,kernel-router,skill-routing,proactive,environment}.md` | Always-on — `SHARED_FILES_ORDER` in `bin/lib/style-registry.js`; `proactive.md` here is trimmed to only code-abyss's own sedimentation triggers, not generic behavior |
 | Discipline kernel | `skills/_kernel/*/SKILL.md` (9 bundles) | **Lazy** — invoked by `kernel-router.md`'s dispatch table or the bundle's own SKILL.md description, never rendered into every prompt. See Discipline Kernel below |
 | Output Style | `output-styles/*.md` + `index.json` | Always-on — style registry + per-style templates with `{{self}}`/`{{user}}`/`{{language}}` template variables |
 
-All four targets use a single composition function `renderRuntimeGuidance()` (`bin/lib/style-registry.js`) that assembles, in order: identity → shared core → examples (optional) → style → posthistory (optional) → a **kernel precedence anchor**, a fixed closing string asserting the kernel wins any conflict with voice/style. The anchor is deliberately positioned *last* so it wins position bias even against a persona's highest-weight posthistory instruction. Persona registry `config/personas/index.json` declares `self`/`user`/`language` fields per persona for cross-combination safety. Current max render across all persona×style combinations: ~7695 chars, comfortably under the 8000 cap (verify via `test/style-registry.test.js`'s budget assertion).
+All four targets use a single composition function `renderRuntimeGuidance()` (`bin/lib/style-registry.js`) that assembles, in order: identity (fixed template, no persona-authored file read) → shared core → style → a **kernel precedence anchor**, a fixed closing string asserting the kernel wins any conflict with voice/style. The anchor is deliberately positioned *last* so it wins position bias even against the style layer's highest-weight instruction; with identity now a fixed template (no more freeform `.md`/optional layers), the anchor's claim is structurally true rather than aspirational — persona cannot carry judgment because there is no field shaped like a decision table anywhere in the persona-voice-card type. Current max render across all persona×style combinations: ~4620 chars, comfortably under the 8000 cap (verify via `test/style-registry.test.js`'s budget assertion) — down from ~7695 chars pre-redesign, since the freeform identity/examples/posthistory layers are gone.
 
 ### Discipline Kernel (`skills/_kernel/`)
 
@@ -133,31 +132,38 @@ frontend×2, hardware×2, ml×1, security×6) — the kernel bundle decides *whe
 the exec skill still owns *how*. Lives on the exec-skill side (code-abyss-owned), not inside
 `skills/_kernel/` itself, since that tree gets wiped on every sync.
 
-### Persona Scenario Single-Source (`scripts/sync-persona-scenarios.js`)
+### Persona Voice Card (persona redesign — replaces persona-architecture v2/v3's persona-card.json)
 
-Each core persona's `persona-card.json` `scenarios[]` (name/triggers/chain/priority, plus
-`triggers_zh`/`chain_zh` display-text fields) is the single source for its rendered `.md`
-`## 情景剧本` table — `scripts/sync-persona-scenarios.js` generates the table from the card;
-`--check` mode (wired into CI) fails if the committed `.md` would differ from a fresh
-regeneration. This exists because the two representations drifted once for real (a card
-scenario went missing from the md) — the regeneration-diff test in
-`test/style-registry.test.js` catches full-content drift (order, triggers, chain, priority),
-not just the scenario-name-set check the original guard used. Note `persona-card.json.scenarios`
-is **not** read by `renderRuntimeGuidance()` at all — only 5 scalar fields (`display_name`,
-`description`, `voice.self/user/language`) feed the runtime render; scenario generation is a
-dev-time/CI concern, not a runtime one.
+A persona is now a single flat `config/personas/<slug>.json` (spec: `docs/specs/persona-voice-card-v1.0.md`,
+schema: `docs/specs/persona-voice-card.schema.json`) — no directory, no sibling `.md`, no
+`identity`/`behavior`/`style` file pointers, no `capabilities`/`scenarios`. Every field is an
+enum or a length/character-bounded string (`self`/`user` ≤16 chars, `language` ≤60,
+`flourish` ≤2 items × ≤32 chars with a 60-char aggregate budget, `register`/`emoji_policy`
+enums selecting one of several code-owned template sentences) — `additionalProperties: false`
+rejects anything else. This exists because the prior format's freeform `identity.md`/`behavior.md`/`style.md`
+files and `scenarios[].priority`/`capabilities.authorization` fields let real judgment content
+(a live T1/T2/T3 authorization-tier policy, a verification-skip instruction, per-scenario
+priority orderings) accrete into what the kernel-precedence-anchor claimed was residual-space-only
+content — that content has been relocated to `skills/securing-systems/references/authorization-tiers.md`
+(security-domain judgment, not voice) and the scenario tables deleted outright (redundant with
+`skill-routing.md`/kernel domain routing). `bin/lib/persona-voice-card.js` is the single
+validator + renderer (`validatePersonaVoiceCard()`, `renderPersonaIdentity()`) — every load path
+(registry build, remote fetch, and a **mandatory re-validation on every render, no bypass**)
+funnels through it; a validation failure falls back to a hardcoded neutral voice
+(`NEUTRAL_FALLBACK_PERSONA`) rather than ever rendering unvalidated content. `npm run verify:skills`
+also validates every `config/personas/*.json` as a CI gate.
 
 ### Persona Loading (Core + Remote)
 
-Only the **core persona** (`abyss`) ships with the npm package. All other personas are **remote** — fetched from GitHub raw on first use and cached at `~/.code-abyss/personas/<slug>/`.
+Only the **core persona** (`abyss`) ships with the npm package. All other personas are **remote** — fetched from GitHub raw on first use and cached at `~/.code-abyss/personas/<slug>/<slug>.json`.
 
 `config/personas/index.json` has two entry types:
-- **Core** (`core: true`): metadata derived from `persona-card.json` at load time
-- **Remote** (`core: false`): snapshot metadata inline (label, description, self, user, language) for offline selection prompt; full content fetched on demand
+- **Core** (`core: true`): `label`/`description` derived by loading + validating `config/personas/<slug>.json` at registry-build time (throws on failure — a broken shipped file is a packaging bug, not a runtime-degrade case)
+- **Remote** (`core: false`): only `label`/`description` snapshot inline (for the offline picker) — `self`/`user`/`language`/`register`/`emoji_policy`/`flourish` are deliberately **not** duplicated in `index.json`; they are read fresh from the actual fetched+cached voice card at render time (via `loadRenderablePersona()`), so there is exactly one place this data can drift from
 
-`bin/lib/persona-fetch.js` handles HTTPS fetch + local cache. `bin/lib/style-registry.js` path resolution is cache-aware: checks local `config/personas/` first (repo dev mode), falls back to `~/.code-abyss/personas/` (npm package mode). `bin/lib/select.js` triggers `ensureRemotePersona()` when a non-core persona is selected.
+`bin/lib/persona-fetch.js` handles HTTPS fetch (single `<slug>.json`, validated before it's ever written to cache) + local cache. `bin/lib/style-registry.js` path resolution is cache-aware: checks local `config/personas/` first (repo dev mode), falls back to `~/.code-abyss/personas/` (npm package mode). `bin/lib/select.js` triggers `ensureRemotePersona()` when a non-core persona is selected.
 
-`package.json` `files` field only includes `config/personas/abyss*`, `_shared/`, `index.json`, and example config files — non-core persona directories are excluded from the npm tarball.
+`package.json` `files` field only includes `config/personas/abyss.json`, `_shared/`, `index.json`, and example config files — non-core persona files are excluded from the npm tarball.
 
 ### Skill Registry (Single Source of Truth)
 
@@ -253,8 +259,8 @@ aliases: vq                    # optional comma-separated aliases
 ### Persona Contract
 
 - `config/personas/index.json` is the persona enable-list
-- Core personas (`core: true` or omitted): must have `<slug>/persona-card.json` locally
-- Remote personas (`core: false`): must have inline `label`, `description`, `self`, `user`, `language` snapshot
+- Core personas (`core: true` or omitted): must have `<slug>.json` locally, validating against `docs/specs/persona-voice-card.schema.json`
+- Remote personas (`core: false`): must have inline `label`, `description` snapshot only (not `self`/`user`/`language` — those come from the fetched voice card at render time)
 - `remote.base` URL required if any remote persona exists
 - Exactly one persona must be `default`
 

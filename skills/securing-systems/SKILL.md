@@ -24,6 +24,7 @@ user-invocable: false
 | 蓝队防御 | [blue-team](references/blue-team.md) | 检测、SOC、IR、取证、密钥轮换 |
 | 威胁情报 | [threat-intel](references/threat-intel.md) | OSINT、威胁狩猎、ATT&CK 建模 |
 | 漏洞研究 | [vuln-research](references/vuln-research.md) | 逆向、Exploit、Fuzzing、PWN |
+| 授权分级 / CTF 沙箱契约 | [authorization-tiers](references/authorization-tiers.md) | T1/T2/T3、CTF 目标默认沙箱 |
 
 ### 专域路由（其他 skill）
 

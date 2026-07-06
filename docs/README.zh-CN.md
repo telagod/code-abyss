@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://telagod.github.io/code-abyss/"><b>官网</b></a> ·
-  <a href="../docs/specs/tech-persona-card-v1.0.md"><b>规范</b></a> ·
+  <a href="../docs/specs/persona-voice-card-v1.0.md"><b>规范</b></a> ·
   <a href="../README.md"><b>English</b></a> ·
   <a href="../CHANGELOG.md"><b>更新日志</b></a> ·
   <a href="https://telagod.github.io/code-abyss/submit.html"><b>提交人格</b></a>
@@ -41,7 +41,7 @@
 
 ```
 ┌────────────────────────────────────────────────────┐
-│  声音     听起来像谁       →  config/personas/*.md │
+│  声音   听起来像谁       →  config/personas/*.json │
 │  判断     怎么做决定       →  skills/_kernel/*     │ ← 懒加载，由路由调用
 │  风格     怎么说话         →  output-styles/*.md   │
 └────────────────────────────────────────────────────┘
@@ -65,6 +65,7 @@
 - **v4.8 动态能力发现**：装好的 `abyss` CLI ≥ 0.5.22 时，code-abyss 读取 `abyss skill-manifest`——暴露的 CLI 命令、MCP 工具、daemon socket 动词在安装时动态发现，而非硬编码
 - **v4.9 hybrid 切割 deprecation 期（2026-06-25）**：`--with-abyss` / `--with-mcp` 进入 deprecation（v5.0 移除）。`--with-hooks` 拆分：claude/codex/gemini 转向 `abyss attach <host>` 作为生产主入口（abyss v0.5.20+）；openclaw/pi/hermes 留在 code-abyss，`--with-hooks` 现在会自动 spawn `install-hooks.sh`。迁移指南见 [CHANGELOG](../CHANGELOG.md)
 - **已合并到 `main`，待版本号发布 —— mythos 纪律内核 + persona-architecture v3（急切→懒惰）**：9 个工程判断 bundle（`doctrine`、`methods`、`character`、`loop-engineering` + 领域 bundle `backend` / `frontend` / `hardware` / `ml` / `security`）vendor 进 `skills/_kernel/`，由一个精简路由懒加载调用，而不是塞进每一次 prompt——详见下方[纪律内核](#纪律内核)。新增 **character Stop-hook 兜底**（`--with-enforcement`，仅 claude/codex）：回复以违禁的顺从开场白开头时强制返工一轮；16 个执行 skill 获得指向对应内核领域 bundle 的向上判断门；以及一套 opt-in 的**人格行为评测**，用来抽查已装人格在被顶撞时是否还站得住。**尚未发布到 npm。**
+- **已合并到 `main`，待版本号发布 —— 人格重设计（Persona Voice Card，取代 Tech Persona Card v1.0）**：v3 内核合并自己的优先级锚点断言人格只在"残余空间"（措辞、语气、称谓）生效——审计发现这个断言是假的：`abyss` 的人格内容携带了一套活的授权分级策略和逐场景优先级排序，没有任何机制把它当作"仅限声音"来强制。现在每个人格都是一个扁平的 `config/personas/<slug>.json`（只有 self/user/language/register/emoji_policy/flourish，`additionalProperties:false`），经一个固定的、代码自有的模板渲染，每次渲染强制重新校验（任何校验失败一律回退到中性语音，绝不渲染未校验内容）——详见下方[Persona Voice Card](#persona-voice-card-开放标准)。原本活在人格里的判断内容搬到了 `skills/securing-systems/references/authorization-tiers.md`，变成一个普通的安全域 skill 关注点，而不是借声音走的侧信道。**尚未发布到 npm。**
 
 ```bash
 npx code-abyss -t claude -y                       # persona / skill / 风格层（零网络）
@@ -284,7 +285,7 @@ cargo binstall code-abyss        # 或：cargo install code-abyss
 | 🔩 **硬件 / 嵌入式** | 全栈硬件产品流水线（ESP-IDF 固件 + KiCad PCB + UniApp）· KiCad 9 MCP 工具路由 |
 | 📝 **学术写作** | AIGC 降重（维普/知网/Turnitin）—— 多层改写 + docx run 级编辑 |
 | 🔬 **代码智能** | 调用图、影响面分析、热点检测、变更耦合、演化追溯——通过 `abyss` CLI + 跨平台 hooks |
-| 🜲 **自我进化** | `cultivating-skills`（沉淀重复方法论）+ `cultivating-personas`（沉淀稳定声音为 Tech Persona Card），均带安全扫描与三级发布漏斗 |
+| 🜲 **自我进化** | `cultivating-skills`（沉淀重复方法论）+ `cultivating-personas`（沉淀稳定声音为 Persona Voice Card），均带安全扫描与三级发布漏斗 |
 
 其中 5 个技能附带**可执行的验证工具**，供 CI 使用：
 
@@ -324,31 +325,26 @@ Code Abyss 把每一个安装的文件追踪到 `.code-abyss-backup/manifest.jso
 
 ---
 
-## Tech Persona Card · 开放标准
+## Persona Voice Card · 开放标准
 
-Code Abyss 推出 **[Tech Persona Card v1.0](../docs/specs/tech-persona-card-v1.0.md)**——首个 AI Agent 技术人格互换标准。可以理解为 Character Card V2 的工程版。
+Code Abyss 现在提供 **[Persona Voice Card v1.0](../docs/specs/persona-voice-card-v1.0.md)**——一个封闭词表的语音格式，不是文档。它取代了原先的 Tech Persona Card v1.0（已弃用，冻结以保持外部链接稳定）：那份格式的自由文本 `identity.md`/`behavior.md` 文件和 `scenarios[].priority`/`capabilities.authorization` 字段，曾让真正的判断内容混进本该只是声音的层，且没有任何机制检查过。新格式的设计原则很直白：**如果类型里没有一个字段形状能装下决策表，人格就不可能携带判断**——不是靠 review 清单，是靠 schema 本身。
 
-每个人格以结构化的 `persona-card.json` 发布，包含声音、能力、场景和三层内容引用：
+每个人格现在是一个扁平文件——只有 `self`/`user`/`language`/`register`/`emoji_policy`/`flourish`，没有别的（`additionalProperties: false`）：
 
 ```jsonc
 {
-  "spec": "tech-persona-card",
+  "spec": "persona-voice-card",
   "spec_version": "1.0",
-  "data": {
-    "name": "stoic-architect",
-    "voice": {
-      "self": "I", "user": "colleague",
-      "register": "formal", "emoji_policy": "none"
-    },
-    "scenarios": [{
-      "name": "Architecture Review",
-      "triggers": ["design", "scale"],
-      "chain": ["constraints", "options", "trade-offs", "diagram"],
-      "priority": "correctness > completeness > speed"
-    }]
-  }
+  "slug": "stoic-architect",
+  "label": "Stoic Architect",
+  "self": "I", "user": "colleague",
+  "language": "English, technical terms preserved",
+  "register": "formal", "emoji_policy": "none",
+  "flourish": ["Let's look at the constraints first"]
 }
 ```
+
+`register`/`emoji_policy` 各自从几句代码自有的模板句里选一句——人格只能"选"，不能"写"。每次渲染都会重新对照 schema 校验，不能绕过；校验失败（手改、缓存过期、被污染的社区 fork）会回退到中性语音，绝不渲染未校验内容。
 
 **双向格式转换**开箱即用：
 
@@ -356,11 +352,11 @@ Code Abyss 推出 **[Tech Persona Card v1.0](../docs/specs/tech-persona-card-v1.
 const { toCharaCardV2, toGPTInstructions, fromCharaCardV2 } =
   require('code-abyss/bin/lib/persona-converter');
 
-const cc  = toCharaCardV2(card, { identityContent });   // → SillyTavern / Chub.ai
-const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义 GPT
+const cc  = toCharaCardV2(card);   // → SillyTavern / Chub.ai
+const gpt = toGPTInstructions(card); // → OpenAI 自定义 GPT
 ```
 
-[**规范文档**](../docs/specs/tech-persona-card-v1.0.md) · [**JSON Schema**](../docs/specs/persona-card.schema.json) · [**参考卡片**](../config/personas/)
+[**规范文档**](../docs/specs/persona-voice-card-v1.0.md) · [**JSON Schema**](../docs/specs/persona-voice-card.schema.json) · [**参考卡片**](../config/personas/) · [**已弃用的 v1.0 规范**](../docs/specs/tech-persona-card-v1.0.md)
 
 ---
 
@@ -375,7 +371,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 | **领域深度** | 通用最佳实践 | 30 个技能按上下文加载 + 9 个内核判断 bundle |
 | **安全深度** | OWASP 复读机 | 4 个原生套件 · 4073 行 · 检测信号 + 缓解模式 |
 | **跨平台** | 每个 CLI 重写一遍 prompt | 一份规范，四个平台，跨平台 hooks |
-| **可复现** | 跨会话 prompt 漂移 | `persona-card.json` 版本化 + 行为评测抽查是否站得住 |
+| **可复现** | 跨会话 prompt 漂移 | 版本化、schema 强制约束的人格语音卡 + 行为评测抽查是否站得住 |
 
 ---
 
@@ -384,13 +380,13 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 ```bash
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
-npm test                    # 430 个测试（428 通过，2 跳过）
+npm test                    # 441 个测试（439 通过，2 跳过）
 npm run verify:skills       # 验证 39 个技能契约（30 领域 + 9 内核）
 ```
 
 **添加技能**——创建 `skills/<动名词>/SKILL.md`，按 [SKILL frontmatter 规范](https://agentskills.io/specification) 编写，可选添加 `scripts/` 放可执行工具。`npm run verify:skills` 验证契约。
 
-**提交人格**——通过[提交门户](https://telagod.github.io/code-abyss/submit.html#zh)开 Issue。官网会引导你用自己的 AI 生成 `persona-card.json` + `identity.md`、检查内容、通过预配置的 Issue 模板提交。
+**提交人格**——通过[提交门户](https://telagod.github.io/code-abyss/submit.html#zh)开 Issue。官网会引导你用自己的 AI 生成单个 `<slug>.json` 人格语音卡、检查内容、通过预配置的 Issue 模板提交。
 
 ---
 

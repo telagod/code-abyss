@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://telagod.github.io/code-abyss/"><b>Website</b></a> ·
-  <a href="docs/specs/tech-persona-card-v1.0.md"><b>Spec</b></a> ·
+  <a href="docs/specs/persona-voice-card-v1.0.md"><b>Spec</b></a> ·
   <a href="docs/README.zh-CN.md"><b>中文文档</b></a> ·
   <a href="CHANGELOG.md"><b>Changelog</b></a> ·
   <a href="https://telagod.github.io/code-abyss/submit.html"><b>Submit Persona</b></a>
@@ -41,7 +41,7 @@ One command installs a layered runtime into your agent:
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│  Voice       who it sounds like  →  config/personas/*.md  │
+│  Voice      who it sounds like  →  config/personas/*.json │
 │  Judgment    how it decides      →  skills/_kernel/*      │ ← lazy, router-invoked
 │  Style       how it sounds       →  output-styles/*.md    │
 └───────────────────────────────────────────────────────────┘
@@ -71,6 +71,7 @@ domain expertise, and a backstop against the trained agree-reflex** — across e
 - **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` CLI is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are discovered at install time instead of hard-coded
 - **v4.9 — hybrid split deprecation period (2026-06-25)**: `--with-abyss` / `--with-mcp` enter deprecation (removed v5.0). `--with-hooks` splits: claude/codex/gemini move to `abyss attach <host>` as the production main entrypoint (abyss v0.5.20+); openclaw/pi/hermes stay with code-abyss and `--with-hooks` now auto-spawns `install-hooks.sh` for those three. See [CHANGELOG](CHANGELOG.md) for the migration guide
 - **Merged to `main`, pending a version bump — mythos discipline kernel + persona-architecture v3 (eager→lazy)**: 9 engineering-judgment bundles (`doctrine`, `methods`, `character`, `loop-engineering` + domain bundles for `backend` / `frontend` / `hardware` / `ml` / `security`) vendored into `skills/_kernel/`, invoked lazily by a thin router instead of baked into every prompt — see [Discipline kernel](#discipline-kernel) below. Adds a **character Stop-hook backstop** (`--with-enforcement`, claude/codex) that forces one revision turn if a reply opens with a banned capitulation phrase, upward judgment gates on 16 exec skills, and an opt-in **persona behavioral battery** to spot-check whether an installed persona holds up under pushback. Not yet on npm.
+- **Merged to `main`, pending a version bump — persona redesign (Persona Voice Card, supersedes Tech Persona Card v1.0)**: the v3 kernel merge's own precedence anchor claimed persona is confined to "residual space" (wording, tone, address) — an audit found that claim was false: `abyss`'s persona content carried a live authorization-tier policy and per-scenario priority orderings, none of it enforced as voice-only. Every persona is now a single flat `config/personas/<slug>.json` (self/user/language/register/emoji_policy/flourish only, `additionalProperties:false`) rendered through a fixed, code-owned template with mandatory re-validation on every render (falls back to a neutral voice on any failure, never renders unvalidated content) — see [Persona Voice Card](#persona-voice-card-open-standard) below. The judgment content that used to live in a persona moved to `skills/securing-systems/references/authorization-tiers.md`, where it's an ordinary security-domain skill concern instead of a side-channel through voice. Not yet on npm.
 
 ```bash
 npx code-abyss -t claude -y                       # persona / skills / style layer (zero network)
@@ -302,7 +303,7 @@ cargo binstall code-abyss        # or: cargo install code-abyss
 | 🔩 **Hardware / Embedded** | Full-stack hardware product pipeline (ESP-IDF firmware + KiCad PCB + UniApp) · KiCad 9 MCP tool routing (17 tools, autoroute-only, DRC gate) |
 | 📝 **Academic Writing** | AIGC detection reduction for 维普/知网/Turnitin — multi-layer rewriting (structure → lexicon → content injection), docx run-level editing |
 | 🔬 **Code Intelligence** | Call graph, impact analysis, hotspot detection, change coupling, evolution tracing — via `abyss` CLI with cross-platform hooks |
-| 🜲 **Self-evolution** | `cultivating-skills` (distill repeated workflows) + `cultivating-personas` (distill voice into Tech Persona Card) — both with safety scan + 3-tier publish funnel |
+| 🜲 **Self-evolution** | `cultivating-skills` (distill repeated workflows) + `cultivating-personas` (distill voice into a Persona Voice Card) — both with safety scan + 3-tier publish funnel |
 
 Five skills also ship as **executable verification tools** for CI:
 
@@ -342,31 +343,36 @@ Code Abyss tracks every installed file in `.code-abyss-backup/manifest.json`. Un
 
 ---
 
-## Tech Persona Card · open standard
+## Persona Voice Card · open standard
 
-Code Abyss introduces **[Tech Persona Card v1.0](docs/specs/tech-persona-card-v1.0.md)** — the first portable format for AI agent persona interchange. Think Character Card V2, but for engineering workflows instead of roleplay.
+Code Abyss ships **[Persona Voice Card v1.0](docs/specs/persona-voice-card-v1.0.md)** — a
+closed-vocabulary voice format, not a document. It supersedes the original Tech Persona Card
+v1.0 (deprecated, frozen for link stability): that format's freeform `identity.md`/`behavior.md`
+files and `scenarios[].priority`/`capabilities.authorization` fields let real judgment content
+accrete into what was supposed to be a voice-only layer, with nothing checking for it. The
+replacement's whole design principle: **a persona cannot carry judgment if there is no field
+shaped like a decision table anywhere in its type** — not a review checklist, the schema itself.
 
-Each persona ships as a structured `persona-card.json` with voice, capabilities, scenarios, and three-layer content references:
+Each persona ships as one flat file — `self`/`user`/`language`/`register`/`emoji_policy`/`flourish`
+and nothing else (`additionalProperties: false`):
 
 ```jsonc
 {
-  "spec": "tech-persona-card",
+  "spec": "persona-voice-card",
   "spec_version": "1.0",
-  "data": {
-    "name": "stoic-architect",
-    "voice": {
-      "self": "I", "user": "colleague",
-      "register": "formal", "emoji_policy": "none"
-    },
-    "scenarios": [{
-      "name": "Architecture Review",
-      "triggers": ["design", "scale"],
-      "chain": ["constraints", "options", "trade-offs", "diagram"],
-      "priority": "correctness > completeness > speed"
-    }]
-  }
+  "slug": "stoic-architect",
+  "label": "Stoic Architect",
+  "self": "I", "user": "colleague",
+  "language": "English, technical terms preserved",
+  "register": "formal", "emoji_policy": "none",
+  "flourish": ["Let's look at the constraints first"]
 }
 ```
+
+`register`/`emoji_policy` each select one of a handful of code-owned template sentences — the
+persona picks, never writes, the sentence. Every render re-validates against the schema, no
+bypass; a validation failure (hand-edit, stale cache, compromised community fork) falls back to
+a neutral voice instead of ever rendering unvalidated content.
 
 **Bidirectional converters** ship out of the box:
 
@@ -374,11 +380,11 @@ Each persona ships as a structured `persona-card.json` with voice, capabilities,
 const { toCharaCardV2, toGPTInstructions, fromCharaCardV2 } =
   require('code-abyss/bin/lib/persona-converter');
 
-const cc  = toCharaCardV2(card, { identityContent });   // → SillyTavern / Chub.ai
-const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GPT
+const cc  = toCharaCardV2(card);   // → SillyTavern / Chub.ai
+const gpt = toGPTInstructions(card); // → OpenAI Custom GPT
 ```
 
-[**Specification**](docs/specs/tech-persona-card-v1.0.md) · [**JSON Schema**](docs/specs/persona-card.schema.json) · [**Reference cards**](config/personas/)
+[**Specification**](docs/specs/persona-voice-card-v1.0.md) · [**JSON Schema**](docs/specs/persona-voice-card.schema.json) · [**Reference cards**](config/personas/) · [**Deprecated v1.0 spec**](docs/specs/tech-persona-card-v1.0.md)
 
 ---
 
@@ -393,7 +399,7 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 | **Domain depth** | Generic best-practices | 30 skill files load by context + 9 kernel judgment bundles |
 | **Security depth** | OWASP recitation | 4 native suites · 4073 lines · detection signals + mitigation patterns |
 | **Cross-platform** | Re-engineer per CLI | One spec, four platforms, cross-platform hooks |
-| **Reproducibility** | Prompt drift across sessions | Versioned `persona-card.json` + behavioral battery to check it holds |
+| **Reproducibility** | Prompt drift across sessions | Versioned, schema-enforced persona voice card + behavioral battery to check it holds |
 
 ---
 
@@ -402,13 +408,13 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 ```bash
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
-npm test                    # 430 tests (428 passing, 2 skipped)
+npm test                    # 441 tests (439 passing, 2 skipped)
 npm run verify:skills       # Validate 39 skill contracts (30 domain + 9 kernel)
 ```
 
 **Add a skill** — create `skills/<gerund-name>/SKILL.md` with [SKILL frontmatter](https://agentskills.io/specification), optionally add `scripts/` for executable tools. `npm run verify:skills` validates the contract.
 
-**Submit a persona** — open an Issue via the [submission portal](https://telagod.github.io/code-abyss/submit.html). The site walks you through generating a `persona-card.json` + `identity.md` with your own AI, reviewing, and submitting via a pre-configured issue template.
+**Submit a persona** — open an Issue via the [submission portal](https://telagod.github.io/code-abyss/submit.html). The site walks you through generating a single `<slug>.json` persona voice card with your own AI, reviewing, and submitting via a pre-configured issue template.
 
 ---
 

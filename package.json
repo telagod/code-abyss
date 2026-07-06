@@ -30,8 +30,7 @@
     "config/*.toml",
     "config/personas/index.json",
     "config/personas/_shared/",
-    "config/personas/abyss/",
-    "config/personas/abyss.md",
+    "config/personas/abyss.json",
     "output-styles/",
     "packs/",
     "skills/",
@@ -50,7 +49,6 @@
     "packs:check": "node bin/packs.js check",
     "packs:vendor:sync": "node bin/packs.js vendor-sync",
     "kernel:sync": "node scripts/sync-mythos.js",
-    "persona:sync-scenarios": "node scripts/sync-persona-scenarios.js",
     "battery:persona": "node scripts/persona-battery/run.js"
   },
   "dependencies": {

@@ -112,7 +112,11 @@ describe('interactive install TUI', () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('tab/→ next');
-    expect(claudeMd).toContain('文言小生');
+    // scholar's label ("文言小生") is UI-only picker metadata under the persona
+    // redesign — it is never dereferenced by the render path (see
+    // docs/specs/persona-voice-card-v1.0.md §2.2). Assert on `self`, which IS
+    // rendered via the fixed identity template.
+    expect(claudeMd).toContain('自称：在下');
     expect(settings.outputStyle).toBe('scholar-classic');
   }, 45000);
 });

@@ -1,7 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/telagod/tech-persona-card/schema/v1.0/persona-card.schema.json",
-  "title": "Tech Persona Card v1.0",
+  "$comment": "DEPRECATED (2026-07-06) — frozen for external link stability, do not implement against this schema. Replaced by persona-voice-card.schema.json in this same directory; nothing in this repo validates against this file anymore.",
+  "title": "Tech Persona Card v1.0 (deprecated)",
   "description": "A portable, structured format for defining AI agent personalities in technical workflows.",
   "type": "object",
   "required": ["spec", "spec_version", "data"],

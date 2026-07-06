@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/telagod/code-abyss/schema/persona-voice-card/v1.0/persona-voice-card.schema.json",
+  "title": "Persona Voice Card v1.0",
+  "description": "A closed-vocabulary voice record substituted into a code-owned template. Every field is an enum or a length/character-bounded string — there is no freeform field a persona author can use to encode a decision policy (authorization tiers, verification-skip instructions, priority orderings). additionalProperties:false everywhere: adding a new field to this schema is a re-opened content channel and should be reviewed as a security change, not a routine schema tweak. This is the published mirror of the enforcement code in bin/lib/persona-voice-card.js — that file is authoritative for code-abyss's own runtime; this schema is for external tooling/community submissions to validate against.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec", "spec_version", "slug", "label", "self", "user", "language", "register", "emoji_policy"],
+  "properties": {
+    "spec": {
+      "type": "string",
+      "const": "persona-voice-card"
+    },
+    "spec_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 40
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "description": "UI/picker display only — never dereferenced by the render path."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "UI/picker display only — never dereferenced by the render path."
+    },
+    "self": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16,
+      "pattern": "^[^\\n>|#\\u2192]+$",
+      "description": "Rendered into the prompt via a fixed template — self-address term."
+    },
+    "user": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16,
+      "pattern": "^[^\\n>|#\\u2192]+$",
+      "description": "Rendered into the prompt via a fixed template — user-address term."
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "pattern": "^[^\\n>|#\\u2192]+$",
+      "description": "Rendered into the prompt via a fixed template — short free-text phrasing/mixing style descriptor. Bounded and banned-char-filtered like self/user rather than a rigid enum, since real personas need more nuance than a 5-value category (e.g. 'literary skeleton, vernacular flesh, keep technical terms in English') and none of that nuance is judgment-shaped."
+    },
+    "register": {
+      "type": "string",
+      "enum": ["formal", "casual", "literary", "playful", "authoritative"],
+      "description": "Selects one of five code-owned template sentences (bin/lib/persona-voice-card.js REGISTER_SENTENCES) — the persona picks, never writes, the sentence."
+    },
+    "emoji_policy": {
+      "type": "string",
+      "enum": ["none", "minimal", "natural", "abundant"],
+      "description": "Selects one of four code-owned template sentences (EMOJI_SENTENCES)."
+    },
+    "flourish": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32,
+        "pattern": "^[^\\n>|#\\u2192]+$"
+      },
+      "description": "Short decorative phrases (catchphrases), rendered as blockquotes after the voice line. self.length + user.length + sum(flourish item lengths) must not exceed 60 total (enforced in code, not expressible in this schema alone) — this closes the 'split a table across individually-compliant array items' loophole. The budget sits below the per-field caps' own ceiling (16+16+2x32=96) so it is a real, binding constraint rather than a decorative one."
+    },
+    "creator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": "string" }
+      },
+      "description": "UI-only metadata — never dereferenced by the render path."
+    },
+    "license": {
+      "type": "string",
+      "description": "UI-only metadata — never dereferenced by the render path."
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string" },
+      "description": "UI-only metadata — never dereferenced by the render path."
+    },
+    "sample_prompts": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "maxLength": 300 },
+      "description": "UI-only metadata (picker preview copy, renamed from the old spec's conversation_starters) — never dereferenced by the render path."
+    }
+  },
+  "definitions": {
+    "_permanently_absent_note": "identity/behavior/style file pointers, capabilities (domains/expertise_level/authorization tiers), scenarios (name/triggers/chain/priority), and extensions existed in tech-persona-card v1.0 and are permanently removed here, not merely deprecated — additionalProperties:false rejects them outright. No field in this schema accepts a newline, a multi-clause sentence, or an ordering; there is no slot shaped like a decision table anywhere in the type."
+  }
+}

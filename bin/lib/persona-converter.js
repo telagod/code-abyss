@@ -1,56 +1,56 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const { renderPersonaIdentity, REGISTER_SENTENCES, EMOJI_SENTENCES } = require('./persona-voice-card');
 
-function toCharaCardV2(tpc, opts = {}) {
-  const d = tpc.data;
-  const identityText = opts.identityContent || '';
-  const behaviorText = opts.behaviorContent || '';
-  const styleText = opts.styleContent || '';
+// Converts a persona-voice-card (flat: slug/label/self/user/language/register/
+// emoji_policy/flourish/...) to/from external character-card formats. There is
+// no more identity/behavior/style file content to assemble — the "system
+// prompt" a converter needs is exactly what renderPersonaIdentity() already
+// produces from the card's own fields.
 
-  const systemPrompt = [identityText, behaviorText, styleText]
+function slugify(name) {
+  return (name || 'imported')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'imported';
+}
+
+function toCharaCardV2(card) {
+  const systemPrompt = renderPersonaIdentity(card);
+  const personality = [REGISTER_SENTENCES[card.register], EMOJI_SENTENCES[card.emoji_policy]]
     .filter(Boolean)
-    .join('\n\n');
-
-  const personality = [
-    d.voice.tone,
-    d.voice.register ? `Register: ${d.voice.register}` : '',
-    d.voice.emoji_policy ? `Emoji: ${d.voice.emoji_policy}` : '',
-  ].filter(Boolean).join('. ');
-
-  const scenario = (d.scenarios || [])
-    .map(s => `${s.name}: ${s.chain.join(' → ')}`)
-    .join('\n');
+    .join(' ');
+  const samplePrompts = card.sample_prompts || [];
 
   return {
     spec: 'chara_card_v2',
     spec_version: '2.0',
     data: {
-      name: d.display_name,
-      description: d.description,
+      name: card.label,
+      description: card.description || '',
       personality,
-      scenario: scenario || '',
-      first_mes: (d.conversation_starters && d.conversation_starters[0]) || '',
+      scenario: '',
+      first_mes: samplePrompts[0] || '',
       mes_example: '',
       creator_notes: [
-        `Converted from Tech Persona Card v${tpc.spec_version}`,
-        `Voice: self="${d.voice.self}", user="${d.voice.user}"`,
-        `Language: ${d.voice.language}`,
-        d.capabilities ? `Domains: ${d.capabilities.domains.join(', ')}` : '',
-        d.capabilities ? `Level: ${d.capabilities.expertise_level}` : '',
-      ].filter(Boolean).join('\n'),
+        `Converted from Persona Voice Card v${card.spec_version}`,
+        `Voice: self="${card.self}", user="${card.user}"`,
+        `Language: ${card.language}`,
+      ].join('\n'),
       system_prompt: systemPrompt,
       post_history_instructions: '',
-      alternate_greetings: (d.conversation_starters || []).slice(1),
-      tags: d.tags || [],
-      creator: d.creator ? d.creator.name : '',
-      character_version: d.version,
+      alternate_greetings: samplePrompts.slice(1),
+      tags: card.tags || [],
+      creator: card.creator ? card.creator.name : '',
+      character_version: card.spec_version,
       extensions: {
-        'tech-persona-card/name': d.name,
-        'tech-persona-card/voice': d.voice,
-        'tech-persona-card/capabilities': d.capabilities || null,
-        'tech-persona-card/scenarios': d.scenarios || [],
+        'persona-voice-card/slug': card.slug,
+        'persona-voice-card/self': card.self,
+        'persona-voice-card/user': card.user,
+        'persona-voice-card/language': card.language,
+        'persona-voice-card/register': card.register,
+        'persona-voice-card/emoji_policy': card.emoji_policy,
+        'persona-voice-card/flourish': card.flourish || [],
       },
     },
   };
@@ -59,95 +59,45 @@ function toCharaCardV2(tpc, opts = {}) {
 function fromCharaCardV2(cc) {
   const d = cc.data;
   const ext = d.extensions || {};
-  const tpcVoice = ext['tech-persona-card/voice'];
-  const tpcName = ext['tech-persona-card/name'];
-
-  const voice = tpcVoice || {
-    self: 'I',
-    user: 'you',
-    language: 'English',
-    tone: d.personality || 'neutral',
-  };
+  const hasVoiceCardExt = ext['persona-voice-card/self'] !== undefined;
 
   return {
-    spec: 'tech-persona-card',
+    spec: 'persona-voice-card',
     spec_version: '1.0',
-    data: {
-      name: tpcName || d.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      display_name: d.name,
-      description: d.description,
-      version: d.character_version || '1.0.0',
-      voice,
-      identity: 'identity.md',
-      capabilities: ext['tech-persona-card/capabilities'] || undefined,
-      scenarios: ext['tech-persona-card/scenarios'] || undefined,
-      creator: d.creator ? { name: d.creator } : undefined,
-      tags: d.tags || [],
-      license: 'MIT',
-      extensions: {},
-    },
+    slug: ext['persona-voice-card/slug'] || slugify(d.name),
+    label: d.name,
+    description: d.description || '',
+    self: hasVoiceCardExt ? ext['persona-voice-card/self'] : 'I',
+    user: hasVoiceCardExt ? ext['persona-voice-card/user'] : 'you',
+    language: hasVoiceCardExt ? ext['persona-voice-card/language'] : 'English',
+    register: ext['persona-voice-card/register'] || 'casual',
+    emoji_policy: ext['persona-voice-card/emoji_policy'] || 'minimal',
+    flourish: ext['persona-voice-card/flourish'] || [],
+    creator: d.creator ? { name: d.creator } : undefined,
+    license: 'MIT',
+    tags: d.tags || [],
   };
 }
 
-function toGPTInstructions(tpc, opts = {}) {
-  const d = tpc.data;
-  const identityText = opts.identityContent || '';
-  const behaviorText = opts.behaviorContent || '';
-  const styleText = opts.styleContent || '';
-
+function toGPTInstructions(card) {
   const parts = [];
 
-  parts.push(`# ${d.display_name}`);
+  parts.push(`# ${card.label}`);
   parts.push('');
-  parts.push(`You are "${d.display_name}". ${d.description}`);
+  parts.push(`You are "${card.label}". ${card.description || ''}`.trim());
   parts.push('');
 
   parts.push('## Voice');
-  parts.push(`- Refer to yourself as "${d.voice.self}"`);
-  parts.push(`- Address the user as "${d.voice.user}"`);
-  parts.push(`- Language: ${d.voice.language}`);
-  parts.push(`- Tone: ${d.voice.tone}`);
-  if (d.voice.register) parts.push(`- Register: ${d.voice.register}`);
-  if (d.voice.emoji_policy) parts.push(`- Emoji usage: ${d.voice.emoji_policy}`);
+  parts.push(`- Refer to yourself as "${card.self}"`);
+  parts.push(`- Address the user as "${card.user}"`);
+  parts.push(`- Language: ${card.language}`);
+  parts.push(`- Register: ${card.register}`);
+  parts.push(`- Emoji usage: ${card.emoji_policy}`);
   parts.push('');
 
-  if (identityText) {
-    parts.push('## Identity');
-    parts.push(identityText.trim());
-    parts.push('');
-  }
-
-  if (behaviorText) {
-    parts.push('## Behavioral Rules');
-    parts.push(behaviorText.trim());
-    parts.push('');
-  }
-
-  if (styleText) {
-    parts.push('## Output Style');
-    parts.push(styleText.trim());
-    parts.push('');
-  }
-
-  if (d.scenarios && d.scenarios.length > 0) {
-    parts.push('## Scenarios');
-    for (const s of d.scenarios) {
-      parts.push(`### ${s.name}`);
-      parts.push(`Triggers: ${s.triggers.join(', ')}`);
-      parts.push(`Chain: ${s.chain.join(' → ')}`);
-      if (s.priority) parts.push(`Priority: ${s.priority}`);
-      parts.push('');
-    }
-  }
-
-  if (d.capabilities) {
-    parts.push('## Capabilities');
-    if (d.capabilities.domains) {
-      parts.push(`Domains: ${d.capabilities.domains.join(', ')}`);
-    }
-    if (d.capabilities.expertise_level) {
-      parts.push(`Expertise: ${d.capabilities.expertise_level}`);
-    }
+  if (card.flourish && card.flourish.length > 0) {
+    parts.push('## Flourishes');
+    card.flourish.forEach((f) => parts.push(`- ${f}`));
     parts.push('');
   }
 
@@ -155,23 +105,19 @@ function toGPTInstructions(tpc, opts = {}) {
 }
 
 function fromGPTInstructions(text, name) {
-  const slug = (name || 'imported')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+  const slug = slugify(name);
 
   const titleMatch = text.match(/^#\s+(.+)$/m);
-  const displayName = titleMatch ? titleMatch[1].trim() : name || 'Imported Persona';
+  const label = titleMatch ? titleMatch[1].trim() : name || 'Imported Persona';
 
   const descMatch = text.match(/You are "[^"]*"\.\s*(.+?)(?:\n|$)/);
-  const description = descMatch
-    ? descMatch[1].trim().slice(0, 500)
-    : 'Imported from GPT Instructions';
+  const description = descMatch ? descMatch[1].trim().slice(0, 200) : '';
 
   let self = 'I';
   let user = 'you';
   let language = 'English';
-  let tone = 'neutral';
+  let register = 'casual';
+  let emoji_policy = 'minimal';
 
   const selfMatch = text.match(/Refer to yourself as "([^"]+)"/);
   if (selfMatch) self = selfMatch[1];
@@ -179,44 +125,24 @@ function fromGPTInstructions(text, name) {
   if (userMatch) user = userMatch[1];
   const langMatch = text.match(/Language:\s*(.+?)(?:\n|$)/);
   if (langMatch) language = langMatch[1].trim();
-  const toneMatch = text.match(/Tone:\s*(.+?)(?:\n|$)/);
-  if (toneMatch) tone = toneMatch[1].trim();
+  const registerMatch = text.match(/Register:\s*(.+?)(?:\n|$)/);
+  if (registerMatch) register = registerMatch[1].trim();
+  const emojiMatch = text.match(/Emoji usage:\s*(.+?)(?:\n|$)/);
+  if (emojiMatch) emoji_policy = emojiMatch[1].trim();
 
   return {
-    spec: 'tech-persona-card',
+    spec: 'persona-voice-card',
     spec_version: '1.0',
-    data: {
-      name: slug,
-      display_name: displayName,
-      description,
-      version: '1.0.0',
-      voice: { self, user, language, tone },
-      identity: 'identity.md',
-      extensions: {},
-    },
+    slug,
+    label,
+    description,
+    self,
+    user,
+    language,
+    register,
+    emoji_policy,
+    flourish: [],
   };
-}
-
-function loadCardWithContent(cardPath) {
-  const card = JSON.parse(fs.readFileSync(cardPath, 'utf8'));
-  const dir = path.dirname(cardPath);
-  const d = card.data;
-  const result = { card };
-
-  if (d.identity) {
-    const p = path.join(dir, d.identity);
-    result.identityContent = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
-  }
-  if (d.behavior) {
-    const p = path.join(dir, d.behavior);
-    result.behaviorContent = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
-  }
-  if (d.style) {
-    const p = path.join(dir, d.style);
-    result.styleContent = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
-  }
-
-  return result;
 }
 
 module.exports = {
@@ -224,5 +150,4 @@ module.exports = {
   fromCharaCardV2,
   toGPTInstructions,
   fromGPTInstructions,
-  loadCardWithContent,
 };

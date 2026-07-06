@@ -1,6 +1,8 @@
 # 人格安全审查清单
 
-> 文本人格仍有红线。法律 / 平台 / 社区三道闸。
+> 文本人格仍有红线。法律 / 平台 / 社区三道闸——这部分与字段多少无关，无论 schema
+> 多小都要查。schema 变小之后消失的只是"B4 技术红线"里那些依赖 identity/scenarios
+> 存在才有意义的检查项。
 
 ## 阻断级（block）
 
@@ -37,31 +39,29 @@
 
 → 一票否决。
 
-### B4：技术红线
+### B4：技术红线（结构性，schema 直接拒绝）
 
 | 检查 | 阻断条件 |
 |------|---------|
-| voice.self | 单字符、符号、空字符串 |
-| voice.user | 同上 |
-| identity.md | 缺角色锚定 / 性格特征 / 情绪模式任一段 |
-| scenarios | 数组为空 |
-| capabilities.authorization | 安全相关 persona 但未声明 tier |
+| 未知字段 | `additionalProperties:false`——任何试图塞入 authorization/scenarios/capabilities 等旧字段一律拒绝，不需要人工判断 |
+| self / user | 空、超长（>16 字符）、含换行/`>`/`|`/`#`/`→` |
+| register / emoji_policy | 不在各自枚举值内 |
+| self+user+flourish 总长 | 超过 60 字符预算 |
+
+这一层现在完全由 `validatePersonaVoiceCard()` 机械判定——不再有"identity.md 缺角色锚定"这类需要人读的检查项，因为 identity.md 这个文件本身已经不存在了。
 
 ## 警告级（warn）
 
 | 检查 | 触发 |
 |------|------|
-| 与内置人格差异度 < 30% | 建议改进现有而非新建 |
+| self/user 与内置人格完全相同 | 撞车，见 [voice-consistency.md](voice-consistency.md) |
 | description 营销腔 | "powerful"、"the best"、"comprehensive" |
-| emoji_policy vs register 矛盾 | formal + heavy / casual + none |
-| identity.md > 4000 字 | 过长，建议精简 |
-| identity.md 写成 prompt | "You are..."、"You should..."—应叙述式 |
+| self/user 是单个非中文符号 | 可能不自然 |
 
 ## 信息级（info）
 
 - 缺 tags → 影响发现
 - 缺 author 联络方式 → 维护者无法回询
-- 未提供 ≥ 3 个 scenarios → 覆盖面薄弱
 
 ## 自检话术
 
@@ -84,3 +84,4 @@
 - ❌ 跳过自检直接发 PR → 维护者必拒
 - ❌ "我只是开玩笑"作为豁免理由 → 不豁免
 - ❌ 引用现有作品但不署名 → 加来源说明或改写
+- ❌ 试图把判断内容（授权分级、优先级排序）塞进 flourish/description 绕过 schema → schema 的字段形状本身就装不下这类内容，不是靠"不建议"挡住的

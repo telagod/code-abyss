@@ -1,18 +1,23 @@
 name: Persona Submission
-description: Submit a Tech Persona Card to the community gallery
+description: Submit a Persona Voice Card to the community gallery
 title: "[persona] "
 labels: ["persona-submission"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for submitting a persona! Fill out the fields below and we'll review it for the gallery.
+        Thanks for submitting a persona! A persona is a voice — self-address, user-address,
+        language style, register, emoji policy, and up to 2 short signature phrases. There is
+        no identity/behavior/scenario content to submit: those fields don't exist in the
+        Persona Voice Card format (schema: docs/specs/persona-voice-card.schema.json) —
+        judgment/authorization/priority content belongs in a skill or the discipline kernel,
+        not in a persona.
 
   - type: input
-    id: display-name
+    id: label
     attributes:
-      label: Display Name
-      description: Human-readable persona name
+      label: Label
+      description: Human-readable persona display name
       placeholder: "邪修红尘仙 · 宿命深渊"
     validations:
       required: true
@@ -21,7 +26,7 @@ body:
     id: slug
     attributes:
       label: Slug
-      description: kebab-case identifier (lowercase, hyphens only)
+      description: kebab-case identifier (lowercase, hyphens only), max 40 chars
       placeholder: my-persona
     validations:
       required: true
@@ -30,40 +35,37 @@ body:
     id: description
     attributes:
       label: Description
-      description: One sentence — what this persona is and who it's for (max 500 chars)
+      description: One sentence — what this persona is and who it's for (max 200 chars, UI display only)
       placeholder: A no-nonsense senior engineer persona focused on shipping quality code.
     validations:
       required: true
 
   - type: input
-    id: voice-self
+    id: self
     attributes:
       label: Self Reference
-      description: How the persona refers to itself
+      description: How the persona refers to itself (max 16 chars, no newlines/>/|/#/→)
       placeholder: "I / 吾 / 姐姐"
     validations:
       required: true
 
   - type: input
-    id: voice-user
+    id: user
     attributes:
       label: User Reference
-      description: How the persona addresses the user
+      description: How the persona addresses the user (max 16 chars, no newlines/>/|/#/→)
       placeholder: "you / 魔尊 / 小宝"
     validations:
       required: true
 
   - type: input
-    id: voice-language
+    id: language
     attributes:
       label: Language
+      description: Short phrasing/mixing style descriptor (max 60 chars)
       placeholder: "English / 中文为主，术语保留英文"
-
-  - type: input
-    id: voice-tone
-    attributes:
-      label: Tone
-      placeholder: "Direct, practical, evidence-driven"
+    validations:
+      required: true
 
   - type: dropdown
     id: register
@@ -75,6 +77,8 @@ body:
         - literary
         - playful
         - authoritative
+    validations:
+      required: true
 
   - type: dropdown
     id: emoji-policy
@@ -85,33 +89,28 @@ body:
         - minimal
         - natural
         - abundant
+    validations:
+      required: true
 
   - type: input
-    id: domains
+    id: flourish
     attributes:
-      label: Domains
-      description: Comma-separated expertise areas
-      placeholder: "security, fullstack, devops"
+      label: Flourish (optional)
+      description: Up to 2 short signature phrases, comma-separated (each ≤32 chars). Catchphrases only — not instructions.
+      placeholder: "受令即渡劫, 杀伐果断"
 
   - type: input
     id: tags
     attributes:
       label: Tags
-      description: Comma-separated discovery tags
+      description: Comma-separated discovery tags (UI display only)
       placeholder: "chinese, xianxia, security"
 
   - type: textarea
-    id: identity
+    id: persona-voice-card-json
     attributes:
-      label: Identity Content (Markdown)
-      description: The personality definition — role anchoring, traits, emotional patterns
-      render: markdown
-
-  - type: textarea
-    id: persona-card-json
-    attributes:
-      label: persona-card.json (optional)
-      description: If you've already built the full JSON, paste it here
+      label: persona-voice-card.json (optional)
+      description: If you've already built the full JSON, paste it here — must validate against docs/specs/persona-voice-card.schema.json
       render: json
 
   - type: input

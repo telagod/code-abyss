@@ -5,6 +5,7 @@ const path = require('path');
 const https = require('https');
 const http = require('http');
 const os = require('os');
+const { validatePersonaVoiceCard } = require('./persona-voice-card');
 
 const CACHE_BASE = path.join(os.homedir(), '.code-abyss', 'personas');
 
@@ -13,9 +14,7 @@ function getCacheDir(slug) {
 }
 
 function isPersonaCached(slug) {
-  const dir = getCacheDir(slug);
-  return fs.existsSync(path.join(dir, 'persona-card.json'))
-    && fs.existsSync(path.join(dir, `${slug}.md`));
+  return fs.existsSync(path.join(getCacheDir(slug), `${slug}.json`));
 }
 
 function fetch(url) {
@@ -37,34 +36,34 @@ function fetch(url) {
   });
 }
 
+// Fetches the single flat `<slug>.json` (persona-voice-card v1.0) — no more
+// persona-card.json/<slug>.md/examples.md/posthistory.md quartet. Validated
+// before it ever touches disk: a remote persona that fails schema validation
+// is a rejected fetch, not a cached file for the render path to later fall
+// back away from.
 async function fetchPersona(slug, remoteBase) {
   const cacheDir = getCacheDir(slug);
   fs.mkdirSync(cacheDir, { recursive: true });
 
   const base = remoteBase.replace(/\/+$/, '');
-
-  const cardUrl = `${base}/${slug}/persona-card.json`;
-  const cardContent = await fetch(cardUrl);
-  if (!cardContent) {
+  const cardUrl = `${base}/${slug}.json`;
+  const raw = await fetch(cardUrl);
+  if (!raw) {
     throw new Error(`远程人格 ${slug} 不存在: ${cardUrl} 返回非 200`);
   }
-  fs.writeFileSync(path.join(cacheDir, 'persona-card.json'), cardContent);
 
-  const identityUrl = `${base}/${slug}.md`;
-  const identityContent = await fetch(identityUrl);
-  if (!identityContent) {
-    throw new Error(`远程人格 ${slug} 缺少 identity 文件: ${identityUrl}`);
+  let card;
+  try {
+    card = JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`远程人格 ${slug} 的 voice card 解析失败: ${e.message}`);
   }
-  fs.writeFileSync(path.join(cacheDir, `${slug}.md`), identityContent);
-
-  for (const optional of ['examples.md', 'posthistory.md']) {
-    const url = `${base}/${slug}/${optional}`;
-    const content = await fetch(url);
-    if (content) {
-      fs.writeFileSync(path.join(cacheDir, optional), content);
-    }
+  const { valid, errors } = validatePersonaVoiceCard(card);
+  if (!valid) {
+    throw new Error(`远程人格 ${slug} 的 voice card 未通过校验，拒绝缓存:\n  ${errors.join('\n  ')}`);
   }
 
+  fs.writeFileSync(path.join(cacheDir, `${slug}.json`), raw);
   return cacheDir;
 }
 

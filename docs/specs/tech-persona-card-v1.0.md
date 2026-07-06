@@ -1,8 +1,18 @@
 # Tech Persona Card Specification v1.0
 
+> ⚠️ **Deprecated (2026-07-06).** Frozen for external link stability — do not implement
+> against this spec. The `identity`/`behavior`/`style` file-pointer model and the
+> `capabilities`/`scenarios` fields this spec defines turned out to let judgment content
+> (authorization tiers, verification-skip instructions, priority orderings) accrete into
+> what was supposed to be a voice-only layer, with no gate that ever checked for it — see
+> `docs/specs/persona-voice-card-v1.0.md` for the replacement lineage (new name, not "v2",
+> so no reader assumes the old capability fields still parse). `docs/specs/persona-card.schema.json`
+> is likewise frozen. Existing personas have been migrated to `config/personas/<slug>.json`
+> per the new spec; nothing in this repo validates against this document anymore.
+
 > A portable, structured format for defining AI agent personalities in technical workflows.
 
-**Status:** Draft  
+**Status:** Draft (frozen/deprecated — see banner above)  
 **Authors:** telagod  
 **Created:** 2026-05-16  
 **License:** CC-BY-4.0  
