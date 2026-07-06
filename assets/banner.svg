@@ -42,7 +42,7 @@
   <g transform="translate(80, 80)">
     <!-- outer ring with cut -->
     <path d="M100 10 A90 90 0 1 1 28 174.3" stroke="url(#iris)" stroke-width="6" stroke-linecap="round"/>
-    <!-- four arcs: identity · style · skills · security -->
+    <!-- four arcs: voice · style · skills · kernel -->
     <path d="M60 78 A40 40 0 0 1 140 78" stroke="url(#iris)" stroke-width="4.5" stroke-linecap="round" opacity="0.9"/>
     <path d="M70 100 A30 30 0 0 1 130 100" stroke="url(#iris)" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
     <path d="M80 122 A20 20 0 0 1 120 122" stroke="url(#iris)" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
@@ -58,7 +58,7 @@
       <rect x="0" y="0" width="365" height="30" rx="15" fill="rgba(155,140,255,0.10)" stroke="rgba(155,140,255,0.30)"/>
       <circle cx="22" cy="15" r="9" fill="#9b8cff"/>
       <text x="22" y="20" text-anchor="middle" font-family="Georgia, 'Noto Serif SC', serif" font-size="13" font-weight="700" fill="#0a0a12">v</text>
-      <text x="42" y="20" font-family="-apple-system, 'Segoe UI', Inter, sans-serif" font-size="13" font-weight="600" fill="#9b8cff" letter-spacing="0.5">4.5 — Dynamic Persona Loading · Core-only npm</text>
+      <text x="42" y="20" font-family="-apple-system, 'Segoe UI', Inter, sans-serif" font-size="13" font-weight="600" fill="#9b8cff" letter-spacing="0.5">4.9 — Mythos Discipline Kernel</text>
     </g>
 
     <!-- title -->
@@ -66,7 +66,7 @@
 
     <!-- tagline -->
     <text x="2" y="148" font-family="Georgia, 'Noto Serif SC', serif" font-size="26" font-style="italic" font-weight="500" fill="#9b8cff" letter-spacing="-0.5">Personality, depth, and a security spine.</text>
-    <text x="2" y="180" font-family="-apple-system, 'Segoe UI', Inter, sans-serif" font-size="15" fill="rgba(236,237,245,0.55)" letter-spacing="0.2">29 skills · 4 native security domains · dynamic persona loading · 4 platforms</text>
+    <text x="2" y="180" font-family="-apple-system, 'Segoe UI', Inter, sans-serif" font-size="15" fill="rgba(236,237,245,0.55)" letter-spacing="0.2">30 domain skills · discipline kernel · 4 native security domains · 4 platforms</text>
 
     <!-- platform chips -->
     <g transform="translate(0, 210)" font-family="-apple-system, 'Segoe UI', Inter, sans-serif" font-size="12" font-weight="500">
