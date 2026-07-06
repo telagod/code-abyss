@@ -4,13 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-> **人格系统重设计：Persona Voice Card，取代 persona-card.json.** v3 内核合并自己的优先级
-> 锚点断言人格只在"残余空间"（措辞、语气、称谓）生效——审计发现这个断言当时是假的：
-> `abyss` 的人格内容携带一套活的 T1/T2/T3 授权分级策略、一条验证跳过指令，以及逐场景优
-> 先级排序，没有任何机制把这些当作"仅限声音"来强制检查。新格式让这类内容在类型层面
-> 就装不下，而不是靠 review 自觉。
+## [4.10.0] - 2026-07-06
+
+> **Minor: mythos 纪律内核合并 + 人格系统重设计.** 两件事一起发：(1) 9 个工程判断
+> bundle（`doctrine`/`methods`/`character`/`loop-engineering` + `backend`/`frontend`/
+> `hardware`/`ml`/`security`）作为懒加载的 discipline kernel 合入（persona-architecture
+> v3，eager→lazy），随附一个"内核边界"优先级锚点，断言人格只在"残余空间"生效；(2) 审计
+> 发现这条断言当时是假的——`abyss` 的人格内容携带一套活的 T1/T2/T3 授权分级策略、一条
+> 验证跳过指令，以及逐场景优先级排序，没有任何机制把这些当作"仅限声音"来强制检查。人格
+> 系统随即重设计为 Persona Voice Card，让这类内容在类型层面就装不下。
+
+### Added
+
+- **`skills/_kernel/` discipline kernel（9 bundle）**：从姊妹项目 mythos vendor 进来
+  （`npm run kernel:sync`），由 `config/personas/_shared/kernel-router.md` 懒路由调用，
+  不再随每次渲染烘焙进 prompt。`doctrine`/`methods`/`character`/`loop-engineering`
+  为跨域 bundle；`backend`/`frontend`/`hardware`/`ml`/`security` 为领域 bundle。16 个
+  执行 skill 获得指向对应内核领域 bundle 的向上"判断先于执行"门（`scripts/wire-domain-gates.js`）。
+- **`--with-enforcement`**（claude/codex）：安装 `character` bundle 的 Stop-hook 兜底
+  （`check_banned_openers.py`）——回复以违禁的顺从开场白开头时强制返工一轮。
+- **`scripts/persona-battery/`**：10 个行为探针的诚实 eval（不是校准过的统计评测，是
+  小规模 spot-check），机械评分 4 个违禁开场白探针，其余靠 LLM judge（`--bare` 之外的
+  隔离沙箱 HOME，quote-required 防谄媚评分）；未评分探针明确标 `UNSCORED`，绝不伪造通过。
+- **`bin/lib/persona-voice-card.js`**：新的人格校验器 + 渲染器（详见下方"人格系统重设计"）。
 
 ### Changed
+
+- **人格格式从 `<slug>/persona-card.json` + `<slug>.md`（含 `identity`/`behavior`/`style`
+  文件指针、`capabilities`/`scenarios`）改为单一扁平 `config/personas/<slug>.json`**——
 
 - **人格格式从 `<slug>/persona-card.json` + `<slug>.md`（含 `identity`/`behavior`/`style`
   文件指针、`capabilities`/`scenarios`）改为单一扁平 `config/personas/<slug>.json`**——
@@ -53,7 +74,10 @@ All notable changes to this project will be documented in this file.
 
 - `npm test`：441 个测试（439 通过，2 跳过）。`npm run verify:skills`：39 skills + 6
   personas 校验通过。4 个目标（claude/codex/gemini/openclaw）真实安装验证通过。
-- **尚未发布到 npm**，随 mythos 纪律内核合并一起待版本号发布。
+- 100% 向后兼容——现有 `npx code-abyss` 用法、CLI flag、安装产物结构不变。人格文件格式
+  是本版本唯一的 breaking 内部改动，但对终端用户不可见（安装器自动处理，用户从不直接
+  读写 `config/personas/*.json`）；仅第三方直接依赖旧 `persona-card.json` 结构（例如自定义
+  脚本读取 `identity.md`）的场景需要迁移，参照 `docs/specs/persona-voice-card-v1.0.md` §5。
 
 ## [4.9.0] - 2026-06-26
 
