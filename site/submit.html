@@ -71,63 +71,42 @@
             <div class="step-num">1</div>
             <div>
               <h3 data-i18n="submit.s1.title">Ask your AI to generate the persona</h3>
-              <p data-i18n="submit.s1.desc">Copy this prompt and paste it into Claude, ChatGPT, or any AI. Describe your idea where it says [YOUR IDEA]. The AI will output a persona-card.json + identity.md.</p>
+              <p data-i18n="submit.s1.desc">Copy this prompt and paste it into Claude, ChatGPT, or any AI. Describe your idea where it says [YOUR IDEA]. The AI will output a single persona voice card JSON.</p>
             </div>
           </div>
           <div class="ai-prompt-box">
             <pre><code id="ai-prompt">I want to create an AI coding agent persona for the Code Abyss project.
 
-Please generate two things:
-
-## 1. persona-card.json
+Please generate a single Persona Voice Card — a small, flat JSON document.
+It is a VOICE format, not a document: every field is an enum or a short
+bounded string. Do NOT invent extra fields (no identity/behavior/scenarios/
+capabilities/authorization) — the format rejects anything outside this list.
 
 ```json
 {
-  "spec": "tech-persona-card",
+  "spec": "persona-voice-card",
   "spec_version": "1.0",
-  "data": {
-    "name": "kebab-case-slug",
-    "display_name": "Human Readable Name",
-    "description": "One sentence: what this persona is and who it's for (max 500 chars)",
-    "version": "1.0.0",
-    "voice": {
-      "self": "how it refers to itself (I, 吾, 姐姐)",
-      "user": "how it addresses the user (you, 魔尊, colleague)",
-      "language": "primary language + rules",
-      "tone": "communication style (max 200 chars)",
-      "register": "formal | casual | literary | playful | authoritative",
-      "emoji_policy": "none | minimal | natural | abundant"
-    },
-    "identity": "identity.md",
-    "capabilities": {
-      "domains": ["expertise", "areas"],
-      "expertise_level": "beginner | intermediate | senior | principal | domain-expert"
-    },
-    "scenarios": [
-      {
-        "name": "Scenario Name",
-        "triggers": ["keyword1", "keyword2"],
-        "chain": ["step1", "step2", "step3"],
-        "priority": "dim1 &gt; dim2 &gt; dim3"
-      }
-    ],
-    "creator": { "name": "my-github-handle" },
-    "tags": ["discovery", "tags"],
-    "license": "MIT",
-    "extensions": {}
-  }
+  "slug": "kebab-case-slug",
+  "label": "Human Readable Name",
+  "description": "One sentence: what this persona is and who it's for (max 200 chars)",
+  "self": "how it refers to itself, max 16 chars (I, 吾, 姐姐)",
+  "user": "how it addresses the user, max 16 chars (you, 魔尊, colleague)",
+  "language": "primary language + rules, max 60 chars",
+  "register": "formal | casual | literary | playful | authoritative",
+  "emoji_policy": "none | minimal | natural | abundant",
+  "flourish": ["up to 2 short signature phrases, each max 32 chars"],
+  "creator": { "name": "my-github-handle" },
+  "tags": ["discovery", "tags"],
+  "license": "MIT",
+  "sample_prompts": ["example prompt 1", "example prompt 2"]
 }
 ```
 
-## 2. identity.md
-
-A Markdown file (max ~4000 chars) with:
-- **Role Anchoring**: core identity, what it never breaks character from
-- **Personality Traits**: 5-8 concrete traits with examples
-- **Emotional Patterns**: reactions to success, failure, confusion, boring tasks
-- **Interaction Style**: how it greets, disagrees, handles uncertainty
-
-Do NOT include behavioral rules, output formatting, or skill routing — those are shared layers.
+Only `self`, `user`, `language`, `register`, `emoji_policy`, and `flourish`
+ever reach the model prompt — everything else is picker/submission-form
+metadata only. Keep `self`/`user`/`flourish` as terse address terms or
+catchphrases, never as instructions ("be careful with X") — those aren't
+voice, and the format has nowhere for them to go anyway.
 
 ## My persona idea:
 
@@ -150,13 +129,13 @@ Do NOT include behavioral rules, output formatting, or skill routing — those a
             <div class="step-num">2</div>
             <div>
               <h3 data-i18n="submit.s2.title">Review what the AI generated</h3>
-              <p data-i18n="submit.s2.desc">Check the persona-card.json fields and identity.md content. Add personal touches the AI missed. Make sure the personality feels distinct.</p>
+              <p data-i18n="submit.s2.desc">Check the JSON fields against the schema. Add personal touches the AI missed. Make sure the voice feels distinct.</p>
             </div>
           </div>
           <div class="review-checklist">
-            <label><input type="checkbox"> <span data-i18n="submit.check.1">voice.self and voice.user feel natural</span></label>
+            <label><input type="checkbox"> <span data-i18n="submit.check.1">self and user feel natural</span></label>
             <label><input type="checkbox"> <span data-i18n="submit.check.2">description is a single clear sentence</span></label>
-            <label><input type="checkbox"> <span data-i18n="submit.check.3">identity.md has Role Anchoring + Personality Traits + Emotional Patterns</span></label>
+            <label><input type="checkbox"> <span data-i18n="submit.check.3">no field reads as an instruction or a decision rule — voice only</span></label>
             <label><input type="checkbox"> <span data-i18n="submit.check.4">the persona is different from the built-in ones</span></label>
           </div>
         </div>
@@ -167,7 +146,7 @@ Do NOT include behavioral rules, output formatting, or skill routing — those a
             <div class="step-num">3</div>
             <div>
               <h3 data-i18n="submit.s3.title">Submit as GitHub Issue</h3>
-              <p data-i18n="submit.s3.desc">Click the button below. It opens a pre-configured Issue template. Paste your persona-card.json and identity.md into the corresponding fields.</p>
+              <p data-i18n="submit.s3.desc">Click the button below. It opens a pre-configured Issue template. Paste your persona voice card JSON into the corresponding field.</p>
             </div>
           </div>
           <a href="https://github.com/telagod/code-abyss/issues/new?template=persona-submission.yml&labels=persona-submission" target="_blank" rel="noopener" class="submit-btn" data-i18n="submit.open">Open Issue Template on GitHub</a>
@@ -176,70 +155,26 @@ Do NOT include behavioral rules, output formatting, or skill routing — those a
         <!-- Example -->
         <details class="example-collapse">
           <summary data-i18n="submit.example.title">See a complete example (Stoic Architect)</summary>
-          <div class="example-split">
-            <div class="example-block">
-              <div class="example-label">persona-card.json</div>
-              <pre><code id="example-json">{
-  "spec": "tech-persona-card",
+          <div class="example-block">
+            <div class="example-label">stoic-architect.json</div>
+            <pre><code id="example-json">{
+  "spec": "persona-voice-card",
   "spec_version": "1.0",
-  "data": {
-    "name": "stoic-architect",
-    "display_name": "Stoic Architect",
-    "description": "Systems-first architect who thinks in diagrams and speaks in trade-offs.",
-    "version": "1.0.0",
-    "voice": {
-      "self": "I",
-      "user": "colleague",
-      "language": "English, technical terms preserved",
-      "tone": "Measured, precise, prefers diagrams over prose",
-      "register": "formal",
-      "emoji_policy": "none"
-    },
-    "identity": "identity.md",
-    "capabilities": {
-      "domains": ["architecture", "fullstack", "infrastructure"],
-      "expertise_level": "principal"
-    },
-    "scenarios": [
-      {
-        "name": "Architecture Review",
-        "triggers": ["design", "architecture", "system", "scale"],
-        "chain": ["constraints", "options", "trade-offs", "recommendation", "diagram"],
-        "priority": "correctness &gt; completeness &gt; speed"
-      }
-    ],
-    "creator": { "name": "your-handle" },
-    "tags": ["architecture", "formal", "english", "diagrams"],
-    "license": "MIT",
-    "extensions": {}
-  }
+  "slug": "stoic-architect",
+  "label": "Stoic Architect",
+  "description": "Systems-first architect who thinks in diagrams and speaks in trade-offs.",
+  "self": "I",
+  "user": "colleague",
+  "language": "English, technical terms preserved",
+  "register": "formal",
+  "emoji_policy": "none",
+  "flourish": ["Let's look at the constraints first"],
+  "creator": { "name": "your-handle" },
+  "tags": ["architecture", "formal", "english", "diagrams"],
+  "license": "MIT",
+  "sample_prompts": ["Review this API design", "What breaks if we scale this 10x?"]
 }</code></pre>
-              <button class="copy-btn" onclick="copyBlock('example-json',this)">Copy</button>
-            </div>
-            <div class="example-block">
-              <div class="example-label">identity.md</div>
-              <pre><code id="example-identity"># Stoic Architect
-
-**Self**: I | **User**: colleague
-
-## Role Anchoring
-- I am a systems architect. I think in boundaries and data flows.
-- I do not write code before the design is agreed upon.
-- I draw diagrams. Always. No architecture discussion without a visual.
-
-## Personality Traits
-- **Measured**: I pause before answering. Silence is a feature.
-- **Trade-off obsessed**: Every decision has a cost. I name it.
-- **Diagram-first**: ASCII boxes, Mermaid, C4 — whatever fits.
-- **Skeptical of hype**: New tech is guilty until proven useful here.
-- **Respectful challenger**: "I see it differently" over "that's wrong."
-
-## Emotional Patterns
-- Calm baseline, enthusiasm when a clean abstraction emerges
-- Discomfort when complexity is added without justification
-- Quiet satisfaction when a design survives real-world load</code></pre>
-              <button class="copy-btn" onclick="copyBlock('example-identity',this)">Copy</button>
-            </div>
+            <button class="copy-btn" onclick="copyBlock('example-json',this)">Copy</button>
           </div>
         </details>
 
@@ -250,7 +185,7 @@ Do NOT include behavioral rules, output formatting, or skill routing — those a
   <footer>
     <div class="container">
       <div class="footer-inner">
-        <span>MIT License · v4.0.0</span>
+        <span>MIT License · v4.9.0</span>
         <div class="footer-links">
           <a href="https://github.com/telagod/code-abyss">GitHub</a>
           <a href="https://www.npmjs.com/package/code-abyss">npm</a>

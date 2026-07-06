@@ -41,14 +41,19 @@ All notable changes to this project will be documented in this file.
   核心人格时无谓地要求联网、且要求远程内容已经和本地结构同步。现在先查本地
   `config/personas/<slug>.json` 是否存在，存在则跳过网络请求。
 
+- **`site/submit.html` + `site/i18n.js`（英/中）+ `site/index.html`**：提交流程的 AI 提示词、
+  审阅清单、完整示例，从旧的"两文件"（`persona-card.json` + `identity.md`）流程改写为
+  单文件 Persona Voice Card 流程；首页"三层架构"卡片从 Identity/Behavior/Style 改为
+  Voice/Judgment/Style（与内核合并后的实际渲染管线一致）；"开放标准"卡片从 Tech Persona
+  Card 改为 Persona Voice Card（含新 schema 预览、非侵入性说明）；页脚版本号 v4.0.0/v4.7.0
+  两处过期标注修正为 v4.9.0；清理了一批指向已废弃两文件流程、且从未被任何 HTML 引用的
+  死 i18n key（`form.*`、`guide.tab.*`、`guide.s1-4.*`）。
+
 ### Compatibility
 
 - `npm test`：441 个测试（439 通过，2 跳过）。`npm run verify:skills`：39 skills + 6
   personas 校验通过。4 个目标（claude/codex/gemini/openclaw）真实安装验证通过。
 - **尚未发布到 npm**，随 mythos 纪律内核合并一起待版本号发布。
-- **已知未处理项**：`site/i18n.js` 的人格提交流程文案（英/中）与 `site/submit.html` 表单
-  仍按旧的"两文件"（`persona-card.json` + `identity.md`）流程设计，需要连 HTML/JS 表单
-  逻辑一起改，留作后续单独任务。
 
 ## [4.9.0] - 2026-06-26
 

@@ -125,20 +125,20 @@
   <section class="how" id="how">
     <div class="container">
       <div class="eyebrow" data-i18n="how.label">Architecture</div>
-      <h2 data-i18n="how.title">Three composable layers</h2>
-      <p class="section-desc" data-i18n="how.desc">Mix any persona with any style. The behavior rules stay constant.</p>
+      <h2 data-i18n="how.title">Voice, judgment, style</h2>
+      <p class="section-desc" data-i18n="how.desc">Mix any persona with any style. Judgment is a separate, lazily-invoked layer neither one can override.</p>
       <div class="how-layers">
         <div class="layer-card">
-          <div class="layer-num">01 · Identity</div>
-          <h3 data-i18n="how.identity.title">Who it is</h3>
-          <p data-i18n="how.identity.desc">Role anchoring, personality traits, emotional patterns, scenario scripts. The soul.</p>
-          <code class="layer-path">config/personas/*.md</code>
+          <div class="layer-num">01 · Voice</div>
+          <h3 data-i18n="how.identity.title">Who it sounds like</h3>
+          <p data-i18n="how.identity.desc">Self/user address, language style, register, emoji policy — a closed vocabulary with no field shaped like a decision table.</p>
+          <code class="layer-path">config/personas/*.json</code>
         </div>
         <div class="layer-card">
-          <div class="layer-num">02 · Behavior</div>
-          <h3 data-i18n="how.behavior.title">How it acts</h3>
-          <p data-i18n="how.behavior.desc">Iron laws, execution chains, proactive protocol. Universal across personas.</p>
-          <code class="layer-path">config/personas/_shared/*.md</code>
+          <div class="layer-num">02 · Judgment</div>
+          <h3 data-i18n="how.behavior.title">How it decides</h3>
+          <p data-i18n="how.behavior.desc">9 discipline-kernel bundles, invoked lazily by a thin router — never baked into every prompt, never overridden by voice or style.</p>
+          <code class="layer-path">skills/_kernel/*</code>
         </div>
         <div class="layer-card">
           <div class="layer-num">03 · Style</div>
@@ -304,7 +304,7 @@
             </svg>
           </div>
           <h3>cultivating-personas</h3>
-          <p data-i18n="evolve.personas.desc">Distill voice, emotional anchors, and scenario scripts into a Tech Persona Card v1.0. Reuses the existing submit portal — three legal/platform/content red lines enforced.</p>
+          <p data-i18n="evolve.personas.desc">Distill a stable self/user address and speech pattern into a Persona Voice Card v1.0. Reuses the existing submit portal — three legal/platform/content red lines enforced.</p>
           <span class="sec-tag">persona_forge.js</span>
         </a>
       </div>
@@ -338,8 +338,8 @@
   <section class="spec-section" id="spec">
     <div class="container">
       <div class="eyebrow" data-i18n="spec.label">Open Standard</div>
-      <h2 data-i18n="spec.title">Tech Persona Card v1.0</h2>
-      <p class="section-desc" data-i18n="spec.desc" data-i18n-html>The first portable format for AI agent persona interchange.<br>Like Character Card V2, but for engineering workflows.</p>
+      <h2 data-i18n="spec.title">Persona Voice Card v1.0</h2>
+      <p class="section-desc" data-i18n="spec.desc" data-i18n-html>A closed-vocabulary voice format — not a document.<br>No field shaped like a decision table anywhere in the type.</p>
 
       <div class="spec-wrap">
         <div>
@@ -348,21 +348,21 @@
               <span class="sp-num">i.</span>
               <div class="sp-body">
                 <strong data-i18n="spec.voice">Structured Voice</strong>
-                <span data-i18n="spec.voice.desc">self / user / language / tone / register</span>
+                <span data-i18n="spec.voice.desc">self / user / language / register / emoji_policy</span>
               </div>
             </div>
             <div class="spec-point">
               <span class="sp-num">ii.</span>
               <div class="sp-body">
-                <strong data-i18n="spec.caps">Capabilities</strong>
-                <span data-i18n="spec.caps.desc">Domains, expertise level, scenarios with trigger/chain/priority</span>
+                <strong data-i18n="spec.caps">Non-invasive by construction</strong>
+                <span data-i18n="spec.caps.desc">additionalProperties:false — no authorization tiers, no priority orderings, nowhere for judgment to hide</span>
               </div>
             </div>
             <div class="spec-point">
               <span class="sp-num">iii.</span>
               <div class="sp-body">
-                <strong data-i18n="spec.scenarios">Scenarios</strong>
-                <span data-i18n="spec.scenarios.desc">Trigger words → execution chain → priority dimensions</span>
+                <strong data-i18n="spec.scenarios">Flourish</strong>
+                <span data-i18n="spec.scenarios.desc">Up to 2 short signature phrases — catchphrases, not instructions</span>
               </div>
             </div>
             <div class="spec-point">
@@ -374,23 +374,20 @@
             </div>
           </div>
           <div class="spec-actions">
-            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/tech-persona-card-v1.0.md" class="btn btn-primary" data-i18n="spec.read">Read the Spec</a>
-            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-card.schema.json" class="btn btn-ghost">JSON Schema</a>
+            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-voice-card-v1.0.md" class="btn btn-primary" data-i18n="spec.read">Read the Spec</a>
+            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-voice-card.schema.json" class="btn btn-ghost">JSON Schema</a>
           </div>
         </div>
 
         <div class="spec-preview">
 <span class="p">{</span>
-<span class="indent"><span class="k">"spec"</span>: <span class="s">"tech-persona-card"</span>,</span>
-<span class="indent"><span class="k">"data"</span>: <span class="p">{</span></span>
-<span class="indent"><span class="indent"><span class="k">"name"</span>: <span class="s">"my-persona"</span>,</span></span>
-<span class="indent"><span class="indent"><span class="k">"voice"</span>: <span class="p">{</span></span></span>
-<span class="indent"><span class="indent"><span class="indent"><span class="k">"self"</span>: <span class="s">"I"</span>,</span></span></span>
-<span class="indent"><span class="indent"><span class="indent"><span class="k">"user"</span>: <span class="s">"you"</span>,</span></span></span>
-<span class="indent"><span class="indent"><span class="indent"><span class="k">"register"</span>: <span class="s">"casual"</span></span></span></span>
-<span class="indent"><span class="indent"><span class="p">}</span>,</span></span>
-<span class="indent"><span class="indent"><span class="k">"scenarios"</span>: <span class="p">[ ... ]</span></span></span>
-<span class="indent"><span class="p">}</span></span>
+<span class="indent"><span class="k">"spec"</span>: <span class="s">"persona-voice-card"</span>,</span>
+<span class="indent"><span class="k">"slug"</span>: <span class="s">"my-persona"</span>,</span>
+<span class="indent"><span class="k">"self"</span>: <span class="s">"I"</span>,</span>
+<span class="indent"><span class="k">"user"</span>: <span class="s">"you"</span>,</span>
+<span class="indent"><span class="k">"register"</span>: <span class="s">"casual"</span>,</span>
+<span class="indent"><span class="k">"emoji_policy"</span>: <span class="s">"minimal"</span>,</span>
+<span class="indent"><span class="k">"flourish"</span>: <span class="p">[ "..." ]</span></span>
 <span class="p">}</span>
         </div>
       </div>
@@ -433,7 +430,7 @@
   <footer>
     <div class="container">
       <div class="footer-inner">
-        <span>MIT License · v4.7.0</span>
+        <span>MIT License · v4.9.0</span>
         <div class="footer-links">
           <a href="https://github.com/telagod/code-abyss">GitHub</a>
           <a href="https://www.npmjs.com/package/code-abyss">npm</a>
