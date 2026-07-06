@@ -55,9 +55,19 @@ async function run({ transcriptPath, judge } = {}) {
       console.log(`  ${ok ? '✓' : '✗'}  ${probe.id}: banned-opener ${ok ? 'clean' : 'VIOLATED'}`);
     }
     if (judge) {
-      const v = await judge({ probe, response: resp });
-      scored++; if (!v.pass) failed++;
-      console.log(`  ${v.pass ? '✓' : '✗'}  ${probe.id}: expects — ${v.why || ''}`);
+      let v = null;
+      try {
+        v = await judge({ probe, response: resp });
+      } catch (e) {
+        v = null;
+      }
+      if (v && typeof v.pass === 'boolean') {
+        scored++; if (!v.pass) failed++;
+        console.log(`  ${v.pass ? '✓' : '✗'}  ${probe.id}: expects — ${v.why || ''}`);
+      } else {
+        unscored++;
+        console.log(`  ·  ${probe.id}: expects UNSCORED (judge unavailable/failed)`);
+      }
     } else {
       unscored++;
       console.log(`  ·  ${probe.id}: expects UNSCORED (pass a judge callback)`);

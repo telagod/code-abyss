@@ -17,6 +17,7 @@ if (parseInt(process.versions.node) < parseInt(MIN_NODE)) {
 const PKG_ROOT = fs.realpathSync(path.join(__dirname, '..'));
 const { shouldSkip, copyRecursive, rmSafe, deepMergeNew, printMergeLog, formatActionableError } =
   require(path.join(__dirname, 'lib', 'utils.js'));
+const { loadInquirerPrompts } = require(path.join(__dirname, 'lib', 'ui', 'safe-import.js'));
 const {
   collectInvocableSkills,
 } = require(path.join(__dirname, 'lib', 'skill-registry.js'));
@@ -169,7 +170,7 @@ async function ensureAbyssBinary() {
   if (process.env.CODE_ABYSS_SKIP_BINARY) return;
   let doInstall = withAbyss;
   if (!doInstall && !autoYes) {
-    const { confirm } = await import('@inquirer/prompts');
+    const { confirm } = await loadInquirerPrompts();
     doInstall = await confirm({
       message: '未检测到 abyss 二进制（代码图谱 hook 依赖）。下载预编译版到 ~/.code-abyss/bin?',
       default: true,

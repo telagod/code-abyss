@@ -20,10 +20,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+      - name: Verify @inquirer/* dynamic imports resolve (all adapters depend on these, not all exercised under -y)
+        run: |
+          node -e "import('@inquirer/prompts').then(()=>console.log('@inquirer/prompts OK'))"
+          node -e "import('@inquirer/core').then(()=>console.log('@inquirer/core OK'))"
+          node -e "import('@inquirer/ansi').then(()=>console.log('@inquirer/ansi OK'))"
       - run: npm test
       - run: npm run verify:skills
       - run: npm run packs:check
       - run: npm run packs:vendor:sync -- --check
+      - run: node scripts/sync-persona-scenarios.js --check
       - run: node skills/analyzing-changes/scripts/change_analyzer.js --mode staged || node skills/analyzing-changes/scripts/change_analyzer.js --mode working
       - run: node skills/verifying-modules/scripts/module_scanner.js .
       - run: node skills/checking-code-quality/scripts/quality_checker.js .

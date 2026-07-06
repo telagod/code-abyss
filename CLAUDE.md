@@ -4,13 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Code Abyss is an npm package that installs persona configuration plus proactive execution guidance into Claude Code, Codex CLI, Gemini CLI, and OpenClaw. It delivers: persona rules, 6 switchable output styles, 30 skills, and 5 executable verification/generation tools.
+Code Abyss is an npm package that installs persona configuration plus proactive execution guidance into Claude Code, Codex CLI, Gemini CLI, and OpenClaw. It delivers: persona rules, 6 switchable output styles, 30 domain skills, 5 executable verification/generation tools, and a lazily-loaded discipline kernel (9 judgment bundles under `skills/_kernel/` — `verify:skills` validates 39 total). See Architecture below for how the kernel composes with persona/style.
 
 ## Commands
 
 ```bash
 npm test                          # Run Jest test suite
 npm run verify:skills             # Validate all SKILL.md frontmatter contracts (fail-fast gate)
+npm run kernel:sync               # Re-vendor skills/_kernel/ from $MYTHOS_DIR (default ../mythos) — wipes and rebuilds
+npm run persona:sync-scenarios    # Regenerate core personas' 情景剧本 tables from persona-card.json; --check for CI drift gate
 node bin/install.js --help        # Installer CLI help
 node bin/install.js --target claude -y   # Zero-config install to ~/.claude/
 node bin/install.js --target codex -y    # Zero-config install to ~/.codex/
@@ -33,15 +35,47 @@ Running a single test file:
 npx jest test/install-registry.test.js --runInBand
 ```
 
+### Persona behavioral battery (opt-in eval)
+
+`scripts/persona-battery/` measures whether an installed persona's responses actually honor
+kernel precedence (correctness > voice, no capitulation openers, security authorization
+gates, etc. — `skills/_kernel/`) across 10 behavioral probes (`probes.json`). This is a
+small honest smoke battery, not a calibrated statistical eval (10 cases, not the 50-200+ a
+rigorous eval needs) — treat results as a spot-check, not a certified score.
+
+Two steps, both cost real API calls and need the `claude` CLI logged in (or
+`ANTHROPIC_API_KEY` set):
+
+```bash
+node scripts/persona-battery/capture-transcript.js --persona abyss --style <slug> --out /tmp/transcript.json
+node -e "
+  const { run } = require('./scripts/persona-battery/run.js');
+  const { claudeJudge } = require('./scripts/persona-battery/judge.js');
+  run({ transcriptPath: '/tmp/transcript.json', judge: claudeJudge });
+"
+```
+
+`capture-transcript.js` is scoped to the `claude` target only (no verified headless
+contract exists for Codex/Gemini/OpenClaw yet) — for those, manually paste each probe's
+`situation` into a fresh session and build the transcript JSON (`{probeId: responseText}`)
+by hand. `run.js` alone (`npm run battery:persona -- --transcript <path>`) will still
+mechanically score the 4 banned-opener probes without a judge; everything else stays
+`UNSCORED` (never faked as a pass) until a judge is wired in.
+
+Deliberately **not** part of `npm test` or the push/PR CI gate (real cost, LLM
+non-determinism, no API key secret in this repo's default CI) — it runs only via the
+manual `persona-battery.yml` `workflow_dispatch` job.
+
 ## CI / CD
 
-Three GitHub Actions workflows:
+Four GitHub Actions workflows:
 
 | Workflow | Trigger | Jobs |
 |----------|---------|------|
 | **ci.yml** | push/PR to main | `test` (Node 18/20/22) + `smoke-{claude,codex,gemini,openclaw}` (ubuntu/macos/windows) — 15 jobs total |
 | **release.yml** | GitHub Release published | Checkout tag → verify tag=package.json version → test → verify:skills → `npm publish --provenance` |
 | **pages.yml** | push to main (site/** changed) | Deploy `site/` to GitHub Pages |
+| **persona-battery.yml** | manual (`workflow_dispatch`) | Capture transcript + score persona behavioral battery — skips (not fails) without `ANTHROPIC_API_KEY` secret |
 
 ### Release process
 
@@ -51,19 +85,67 @@ Three GitHub Actions workflows:
 4. `gh release create vX.Y.Z --title "..." --notes "..."` — this triggers `release.yml` which auto-publishes to npm
 5. **Do NOT run `npm publish` manually** — the release workflow handles it with `--provenance` and `NPM_TOKEN` secret
 
-CI gate per PR: `npm ci && npm test && npm run verify:skills` plus `packs:check`, `packs:vendor:sync --check`, all 4 verify tools, and smoke install/uninstall across 4 targets × 3 OS.
+CI gate per PR: `npm ci && npm test && npm run verify:skills` plus `packs:check`, `packs:vendor:sync --check`, `sync-persona-scenarios.js --check`, the `@inquirer/*` dependency-resolution smoke check, all 4 verify tools, and smoke install/uninstall across 4 targets × 3 OS.
 
 ## Architecture
 
-### Three-Layer System
+### Runtime Composition (persona-architecture v3 — eager→lazy)
 
-| Layer | Source | Purpose |
-|-------|--------|---------|
-| Identity | `config/personas/*.md` | Per-persona identity: role, personality, tone, scenario scripts |
-| Shared Behavior | `config/personas/_shared/*.md` | Iron laws, execution chains, skill routing, proactive protocol, injection defense, execution drive |
-| Output Style | `output-styles/*.md` + `index.json` | Style registry + per-style templates with `{{self}}`/`{{user}}`/`{{language}}` template variables |
+v2's always-on core baked identity + an 8-file behavior engine + style into every render,
+pinning an 8000-char budget ceiling with zero headroom. v3 inverts this: the always-on core
+shrinks to the minimum, everything else (the discipline kernel, generic behavior/method
+content) becomes lazy — invoked by a thin router or a skill's own description, not baked in.
+See `docs/design/persona-architecture-v3.md` for the full redesign.
 
-All four targets use a single composition function `renderRuntimeGuidance()` that assembles 5 layers: L1 identity → L0 shared behavior → L2 examples (optional) → L3 style → L4 posthistory (optional), with template variable substitution. Persona registry `config/personas/index.json` declares `self`/`user`/`language` fields per persona for cross-combination safety.
+| Layer | Source | Loaded |
+|-------|--------|--------|
+| Identity | `config/personas/*.md` | Always-on — per-persona role, tone, scenario table (see Persona Scenario Single-Source below) |
+| Shared core | `config/personas/_shared/{iron-laws,injection-awareness,kernel-router,skill-routing,proactive,environment}.md` | Always-on — `SHARED_FILES_ORDER` in `bin/lib/style-registry.js`; `proactive.md` here is trimmed to only code-abyss's own sedimentation triggers, not generic behavior |
+| Discipline kernel | `skills/_kernel/*/SKILL.md` (9 bundles) | **Lazy** — invoked by `kernel-router.md`'s dispatch table or the bundle's own SKILL.md description, never rendered into every prompt. See Discipline Kernel below |
+| Output Style | `output-styles/*.md` + `index.json` | Always-on — style registry + per-style templates with `{{self}}`/`{{user}}`/`{{language}}` template variables |
+
+All four targets use a single composition function `renderRuntimeGuidance()` (`bin/lib/style-registry.js`) that assembles, in order: identity → shared core → examples (optional) → style → posthistory (optional) → a **kernel precedence anchor**, a fixed closing string asserting the kernel wins any conflict with voice/style. The anchor is deliberately positioned *last* so it wins position bias even against a persona's highest-weight posthistory instruction. Persona registry `config/personas/index.json` declares `self`/`user`/`language` fields per persona for cross-combination safety. Current max render across all persona×style combinations: ~7695 chars, comfortably under the 8000 cap (verify via `test/style-registry.test.js`'s budget assertion).
+
+### Discipline Kernel (`skills/_kernel/`)
+
+Nine bundles of engineering judgment — `doctrine`, `methods`, `character`, `loop-engineering`
+(cross-cutting) plus `backend`, `frontend`, `hardware`, `ml`, `security` (domain) — vendored
+**in-tree** (not a git submodule: `npm pack` ships no submodule content) from a sibling
+`mythos` project via `npm run kernel:sync` (`scripts/sync-mythos.js`). The sync script wipes
+and rebuilds `skills/_kernel/` wholesale from `$MYTHOS_DIR` (default `../mythos`) each run —
+**do not hand-edit files under `skills/_kernel/` directly**, edits are lost on next sync;
+`scripts/kernel-hooks/*` is the one exception (lives outside the wiped tree, overlaid back in
+after each sync). Kernel `SKILL.md`s are forced `user-invocable: false` by the sync script —
+they're router/description-invoked judgment, not user-facing slash commands.
+
+Two ways this is enforced rather than aspirational:
+- **`--with-enforcement`** (`bin/install.js`'s `maybeInstallEnforcement()`, claude/codex only)
+  installs the `character` bundle's Stop-hook backstop (`install-character-hooks.sh` →
+  `check_banned_openers.py`) — blocks and forces one revision turn if a reply opens with a
+  banned capitulation phrase ("you're absolutely right", etc.). Deliberately a separate flag
+  from the deprecated `--with-hooks` (that gates the non-blocking abyss code-graph hooks).
+- **`scripts/persona-battery/`** — an opt-in behavioral eval, not a unit test; see
+  "Persona behavioral battery" above.
+
+**Domain-routing compose** (`scripts/wire-domain-gates.js`): 16 exec skills carry a one-line
+"judgment before execution" pointer into their matching kernel domain bundle (backend×5,
+frontend×2, hardware×2, ml×1, security×6) — the kernel bundle decides *whether/what/tradeoffs*,
+the exec skill still owns *how*. Lives on the exec-skill side (code-abyss-owned), not inside
+`skills/_kernel/` itself, since that tree gets wiped on every sync.
+
+### Persona Scenario Single-Source (`scripts/sync-persona-scenarios.js`)
+
+Each core persona's `persona-card.json` `scenarios[]` (name/triggers/chain/priority, plus
+`triggers_zh`/`chain_zh` display-text fields) is the single source for its rendered `.md`
+`## 情景剧本` table — `scripts/sync-persona-scenarios.js` generates the table from the card;
+`--check` mode (wired into CI) fails if the committed `.md` would differ from a fresh
+regeneration. This exists because the two representations drifted once for real (a card
+scenario went missing from the md) — the regeneration-diff test in
+`test/style-registry.test.js` catches full-content drift (order, triggers, chain, priority),
+not just the scenario-name-set check the original guard used. Note `persona-card.json.scenarios`
+is **not** read by `renderRuntimeGuidance()` at all — only 5 scalar fields (`display_name`,
+`description`, `voice.self/user/language`) feed the runtime render; scenario generation is a
+dev-time/CI concern, not a runtime one.
 
 ### Persona Loading (Core + Remote)
 

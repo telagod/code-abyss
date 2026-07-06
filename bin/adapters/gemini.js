@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { getPackHostFiles } = require(path.join(__dirname, '..', 'lib', 'pack-registry.js'));
+const { loadInquirerPrompts } = require(path.join(__dirname, '..', 'lib', 'ui', 'safe-import.js'));
 
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
 
@@ -73,7 +74,7 @@ async function postGemini({
     return;
   }
 
-  const { confirm } = await import('@inquirer/prompts');
+  const { confirm } = await loadInquirerPrompts();
   const shouldWrite = await confirm({ message: '合并推荐 Gemini settings.json?', default: true });
   if (shouldWrite) {
     fs.writeFileSync(settingsPath, JSON.stringify(merged, null, 2) + '\n');

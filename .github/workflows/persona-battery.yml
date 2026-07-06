@@ -1,0 +1,64 @@
+name: Persona Behavioral Battery
+
+# Opt-in eval (persona-architecture-v3.md §R5/§R8), NOT a required gate:
+# it needs real model calls (cost, non-determinism) and ANTHROPIC_API_KEY,
+# none of which this repo's push/PR-triggered CI has. workflow_dispatch only —
+# run manually from the Actions tab when you want to check a persona's
+# behavioral compliance.
+
+on:
+  workflow_dispatch:
+    inputs:
+      persona:
+        description: 'Persona slug to test (default persona if omitted)'
+        required: false
+        type: string
+      style:
+        description: 'Output style slug to test (default style if omitted)'
+        required: false
+        type: string
+
+jobs:
+  battery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - run: npm ci
+
+      - name: Check ANTHROPIC_API_KEY is available
+        id: check-key
+        run: |
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::ANTHROPIC_API_KEY secret not set — the persona battery needs a real model in the loop and cannot run. Skipping (not failing): this is an opt-in eval, not a required gate."
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install claude CLI
+        if: steps.check-key.outputs.available == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Capture transcript (one real API call per probe)
+        if: steps.check-key.outputs.available == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node scripts/persona-battery/capture-transcript.js \
+            ${{ inputs.persona && format('--persona {0}', inputs.persona) || '' }} \
+            ${{ inputs.style && format('--style {0}', inputs.style) || '' }} \
+            --out /tmp/persona-battery-transcript.json
+
+      - name: Score battery (mechanical + LLM judge)
+        if: steps.check-key.outputs.available == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node -e "
+            const { run } = require('./scripts/persona-battery/run.js');
+            const { claudeJudge } = require('./scripts/persona-battery/judge.js');
+            run({ transcriptPath: '/tmp/persona-battery-transcript.json', judge: claudeJudge });
+          "

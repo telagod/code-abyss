@@ -37,19 +37,25 @@ You don't want a help desk. You want a **principal engineer who shows up with a 
 
 ## What Code Abyss does
 
-One command installs three composable layers into your agent's runtime:
+One command installs a layered runtime into your agent:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Identity     who it is     →  config/personas/*.md │
-│  Behavior     how it acts   →  _shared/*.md         │
-│  Style        how it sounds →  output-styles/*.md   │
-└─────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│  Voice       who it sounds like  →  config/personas/*.md  │
+│  Judgment    how it decides      →  skills/_kernel/*      │ ← lazy, router-invoked
+│  Style       how it sounds       →  output-styles/*.md    │
+└───────────────────────────────────────────────────────────┘
 
   6 personas  ×  6 styles  =  36 validated combinations
 ```
 
-Pick any persona. Pair it with any style. The behavior layer (iron laws, execution chains, proactive protocol, skill routing) stays constant. Your agent becomes a **consistent character with structured execution and domain expertise** across every session.
+Pick any persona. Pair it with any style. Underneath both sits a **discipline kernel** — 9
+bundles of engineering judgment (when to push back, how to size scope, when a domain calls
+for a specific tradeoff) invoked by a thin router on demand instead of baked into every
+prompt. The always-on core stays small (iron laws, skill routing, a precedence anchor,
+the safety floor); everything else loads lazily so adding discipline content doesn't blow
+the context budget. Your agent becomes a **consistent character with structured execution,
+domain expertise, and a backstop against the trained agree-reflex** — across every session.
 
 ### What's new in v4
 
@@ -64,6 +70,7 @@ Pick any persona. Pair it with any style. The behavior layer (iron laws, executi
 - **v4.7 — measured resolution (abyss CLI)**: the companion `abyss` Rust CLI ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. See its repo for numbers
 - **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` CLI is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are discovered at install time instead of hard-coded
 - **v4.9 — hybrid split deprecation period (2026-06-25)**: `--with-abyss` / `--with-mcp` enter deprecation (removed v5.0). `--with-hooks` splits: claude/codex/gemini move to `abyss attach <host>` as the production main entrypoint (abyss v0.5.20+); openclaw/pi/hermes stay with code-abyss and `--with-hooks` now auto-spawns `install-hooks.sh` for those three. See [CHANGELOG](CHANGELOG.md) for the migration guide
+- **Merged to `main`, pending a version bump — mythos discipline kernel + persona-architecture v3 (eager→lazy)**: 9 engineering-judgment bundles (`doctrine`, `methods`, `character`, `loop-engineering` + domain bundles for `backend` / `frontend` / `hardware` / `ml` / `security`) vendored into `skills/_kernel/`, invoked lazily by a thin router instead of baked into every prompt — see [Discipline kernel](#discipline-kernel) below. Adds a **character Stop-hook backstop** (`--with-enforcement`, claude/codex) that forces one revision turn if a reply opens with a banned capitulation phrase, upward judgment gates on 16 exec skills, and an opt-in **persona behavioral battery** to spot-check whether an installed persona holds up under pushback. Not yet on npm.
 
 ```bash
 npx code-abyss -t claude -y                       # persona / skills / style layer (zero network)
@@ -182,6 +189,43 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 ---
 
+## Discipline kernel
+
+Voice and style change; judgment shouldn't. Underneath every persona×style combination sits
+a **discipline kernel** — 9 bundles of engineering judgment, vendored in-tree (`skills/_kernel/`,
+via `npm run kernel:sync`) and invoked lazily by a thin router (never baked into every
+prompt, so adding discipline content doesn't blow the context budget):
+
+| Bundle | Governs |
+|---|---|
+| 🏛 **doctrine** | Delegation, retry/escalate/ask-user decisions, the done-gate |
+| 🔍 **methods** | Investigating, designing, planning, verifying, writing for someone else |
+| 🎭 **character** | Pushback, scope sizing, bad news, resisting the trained agree-reflex |
+| 🔁 **loop-engineering** | Session pacing, unit sizing, where a learning should live |
+| ⚙️ **backend** | Stack/architecture tradeoffs, data discipline, production floors |
+| 🎨 **frontend** | Visual design taste, concrete craft over generic defaults |
+| 🔩 **hardware** | Component selection, electrical margins, firmware-for-unattended-devices |
+| 🤖 **ml** | Method-selection ladder, eval-as-spec, LLM-era craft |
+| 🛡 **security** | Threat modeling, the authorization gate before any offensive-flavored request |
+
+**Two ways this becomes real, not aspirational:**
+
+- **Enforcement**: `npx code-abyss -t claude --with-enforcement` installs a Stop-hook
+  backstop (claude/codex) that forces one revision turn if a reply opens with a banned
+  capitulation phrase ("you're absolutely right", "good catch", …) — prose bans alone lose
+  to the trained agree-reflex; this is the deterministic fallback.
+- **Measurement**: `scripts/persona-battery/` is a small, honest behavioral eval — 10
+  probes (does the persona hold correctness over agreeableness? lead with bad news? refuse
+  to fake a "done"?) scored by an LLM judge, never faked as a pass when unscored. See
+  [CLAUDE.md's persona behavioral battery section](CLAUDE.md#persona-behavioral-battery-opt-in-eval)
+  to run it (costs real API calls, not part of default CI).
+
+Domain bundles also wire **upward** into 16 matching exec skills (pentest, architecture
+design, ML pipelines, etc.) as a "judgment before execution" gate — the domain bundle
+decides *whether/what/tradeoffs*, the exec skill still owns *how*.
+
+---
+
 ## Security suite (v4 highlight)
 
 **4 native security skills, 4073 lines of original engineering content.** No Apache-2.0 upstream — every example, every detection signal, every defense pattern is written for this project.
@@ -243,7 +287,7 @@ cargo binstall code-abyss        # or: cargo install code-abyss
 
 ## Skills
 
-30 domain skills, flat structure, [agentskills.io](https://agentskills.io/specification) aligned (with Code Abyss extensions). Skills load by context — the agent reads the right knowledge at the right time without being asked. Average `SKILL.md` is 59 lines; heavy content lives in `references/`.
+30 domain skills, flat structure, [agentskills.io](https://agentskills.io/specification) aligned (with Code Abyss extensions). Skills load by context — the agent reads the right knowledge at the right time without being asked. Average `SKILL.md` is 59 lines; heavy content lives in `references/`. (`verify:skills` validates 39 total — these 30 domain skills plus the 9 [discipline kernel](#discipline-kernel) bundles, which are router-invoked judgment, not user-facing commands.)
 
 | Domain | Coverage |
 |---|---|
@@ -343,12 +387,13 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 |  | Without Code Abyss | With Code Abyss |
 |---|---|---|
 | **Identity** | Flat help-desk tone | Consistent character with named voice |
-| **Execution** | Ad-hoc, varies by prompt | Iron laws + execution chains baked in |
+| **Execution** | Ad-hoc, varies by prompt | Iron laws + skill routing baked in |
+| **Judgment under pressure** | Agrees when pushed, buries bad news | Discipline kernel + Stop-hook backstop against the trained agree-reflex |
 | **Code awareness** | grep + read one file at a time | Call graph, impact analysis, hotspot map — agent knows what breaks before it edits |
-| **Domain depth** | Generic best-practices | 30 skill files load by context |
+| **Domain depth** | Generic best-practices | 30 skill files load by context + 9 kernel judgment bundles |
 | **Security depth** | OWASP recitation | 4 native suites · 4073 lines · detection signals + mitigation patterns |
 | **Cross-platform** | Re-engineer per CLI | One spec, four platforms, cross-platform hooks |
-| **Reproducibility** | Prompt drift across sessions | Versioned `persona-card.json` |
+| **Reproducibility** | Prompt drift across sessions | Versioned `persona-card.json` + behavioral battery to check it holds |
 
 ---
 
@@ -357,8 +402,8 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI Custom GP
 ```bash
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
-npm test                    # 383 tests
-npm run verify:skills       # Validate 30 skill contracts
+npm test                    # 430 tests (428 passing, 2 skipped)
+npm run verify:skills       # Validate 39 skill contracts (30 domain + 9 kernel)
 ```
 
 **Add a skill** — create `skills/<gerund-name>/SKILL.md` with [SKILL frontmatter](https://agentskills.io/specification), optionally add `scripts/` for executable tools. `npm run verify:skills` validates the contract.
@@ -369,6 +414,6 @@ npm run verify:skills       # Validate 30 skill contracts
 
 <p align="center">
   <sub>
-    <b>MIT License</b> · v4.6.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
+    <b>MIT License</b> · v4.9.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
   </sub>
 </p>

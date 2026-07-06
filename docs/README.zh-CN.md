@@ -6,7 +6,9 @@
   </a>
 </p>
 
-<h3 align="center">可组合的人格 · 风格 · 30 项工程技能 · 4 个原生安全领域 · 自我进化炼炉 · 代码关系图智能<br/>支持 Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+<h3 align="center">可组合的人格 · 风格 · 30 项工程技能 · 4 个原生安全领域 · 自我进化炼炉<br/>支持 Claude Code · Codex CLI · Gemini CLI · OpenClaw</h3>
+
+<p align="center"><sub>需要代码关系图智能？用配套的 <a href="https://github.com/telagod/abyss"><code>abyss</code></a> Rust CLI——它会自动把 hook 接到 claude/codex/gemini。<code>indexing-code</code> skill 提供调用约定，CLI 本体单独发布。</sub></p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/code-abyss"><img src="https://img.shields.io/npm/v/code-abyss?color=9b8cff&label=npm&style=flat-square" alt="npm"></a>
@@ -31,25 +33,23 @@
 
 而当你问起**安全**——渗透、代码审计、威胁建模、应急响应——大多数 Agent 只能背 OWASP，因为它们底下的 skill 库不是搞红蓝紫队的人写的。
 
-更根本的问题：它们**看不见代码之间的关系**。改一个函数，不知道谁在调它。不知道哪些文件总是一起改。不知道项目的高风险区在哪。
-
-你要的不是客服。你要的是**一个有人格、有视力、执行一致、自动闭环的资深工程师——并且在硬仗来时有一根安全脊柱**。
+你要的不是客服。你要的是**一个有人格、执行一致、自动闭环的资深工程师——并且在硬仗来时有一根安全脊柱**。
 
 ## Code Abyss 做了什么
 
-一条命令，把三个可组合层装进你的 Agent 运行时：
+一条命令，把分层的运行时装进你的 Agent：
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  身份   它是谁     →  config/personas/*.md          │
-│  行为   怎么做     →  _shared/*.md                  │
-│  风格   怎么说     →  output-styles/*.md            │
-└─────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────┐
+│  声音     听起来像谁       →  config/personas/*.md │
+│  判断     怎么做决定       →  skills/_kernel/*     │ ← 懒加载，由路由调用
+│  风格     怎么说话         →  output-styles/*.md   │
+└────────────────────────────────────────────────────┘
 
   6 个人格  ×  6 种风格  =  36 种验证过的组合
 ```
 
-任选人格，任配风格。行为层（铁律、执行链、主动协助协议、技能路由）始终不变。你的 Agent 跨会话**保持一致的角色 + 结构化的执行 + 领域专长**。
+任选人格，任配风格。两者之下都坐着一套**纪律内核**——9 个工程判断 bundle（何时该反驳、如何控制范围、某个领域该怎么取舍），由一个精简的路由按需调用，而不是塞进每一次 prompt。常驻核心保持精简（铁律、技能路由、优先级锚点、安全底线）；其余全部懒加载，加纪律内容不会撑爆上下文预算。你的 Agent 跨会话都保持**一致的角色、结构化的执行、领域专长，以及一道对抗"被训练出的顺从反射"的兜底**。
 
 ### v4 新内容
 
@@ -60,83 +60,25 @@
 - **v4.1 自我进化炼炉**：`cultivating-skills` / `cultivating-personas` 让 Agent 沉淀重复方法论与稳定声音，自带安全扫描 + 三级漏斗
 - **v4.4 硬件 + 学术写作**：3 个新领域 skill（KiCad EDA、硬件产品流水线、AIGC 降重）+ Prompt 注入防御 + 执行驱动共享行为
 - **v4.5 人格动态加载**：仅 `abyss` 随 npm 发布，其他人格首次使用时从 GitHub 拉取并本地缓存
-- **v4.6 代码关系图智能**：`abyss` CLI 秒级构建代码调用图 + 时间维度分析——调用方追踪、影响面分析、热点检测、变更耦合。四平台 Pre-edit hooks 自动检查
-- **v4.7 可度量的解析**：`abyss` v0.3.3 支持四语言引用解析（Go / TypeScript / Python / Rust），对标 SCIP 真值、跨五个语料实测 ≥98.5% gated precision。命名导入绑定档、receiver 类型推断、类型级证据——公布数字，而非口号。`npm install -g @code-abyss/cli`
+- **v4.6 `indexing-code` skill（仅调用约定）**：`indexing-code` skill 提供外部 [`abyss`](https://github.com/telagod/abyss) Rust CLI（调用图 + 时间维度分析）的调用约定。CLI 本体是独立产品，有自己的发版节奏——用它自己的 `install.sh` / `cargo binstall` / `@code-abyss/cli` npm 包装安装
+- **v4.7 可度量的解析（abyss CLI）**：配套的 `abyss` Rust CLI 支持四语言引用解析（Go / TypeScript / Python / Rust），对标 SCIP 真值、跨五个语料实测 ≥98.5% gated precision，具体数字见其仓库
+- **v4.8 动态能力发现**：装好的 `abyss` CLI ≥ 0.5.22 时，code-abyss 读取 `abyss skill-manifest`——暴露的 CLI 命令、MCP 工具、daemon socket 动词在安装时动态发现，而非硬编码
+- **v4.9 hybrid 切割 deprecation 期（2026-06-25）**：`--with-abyss` / `--with-mcp` 进入 deprecation（v5.0 移除）。`--with-hooks` 拆分：claude/codex/gemini 转向 `abyss attach <host>` 作为生产主入口（abyss v0.5.20+）；openclaw/pi/hermes 留在 code-abyss，`--with-hooks` 现在会自动 spawn `install-hooks.sh`。迁移指南见 [CHANGELOG](../CHANGELOG.md)
+- **已合并到 `main`，待版本号发布 —— mythos 纪律内核 + persona-architecture v3（急切→懒惰）**：9 个工程判断 bundle（`doctrine`、`methods`、`character`、`loop-engineering` + 领域 bundle `backend` / `frontend` / `hardware` / `ml` / `security`）vendor 进 `skills/_kernel/`，由一个精简路由懒加载调用，而不是塞进每一次 prompt——详见下方[纪律内核](#纪律内核)。新增 **character Stop-hook 兜底**（`--with-enforcement`，仅 claude/codex）：回复以违禁的顺从开场白开头时强制返工一轮；16 个执行 skill 获得指向对应内核领域 bundle 的向上判断门；以及一套 opt-in 的**人格行为评测**，用来抽查已装人格在被顶撞时是否还站得住。**尚未发布到 npm。**
 
 ```bash
-npx code-abyss -t claude -y --with-abyss
+npx code-abyss -t claude -y                       # persona / skill / 风格层（零网络）
+curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash   # 再装 abyss CLI
+abyss attach claude                               # 最后接上代码图 hook（幂等）
 ```
 
-`--with-abyss` 会顺带下载 `abyss` 代码图二进制，pre-edit hook 开箱即用；加 `--with-mcp` 可把 `abyss` 注册为 MCP server。`-t claude` 换成 `codex` / `gemini` / `openclaw` 即装其他平台。或作为 Claude Code 插件安装：
+`-t claude` 换成 `codex` / `gemini` / `openclaw` 即装其他平台。对于 openclaw/pi/hermes（abyss CLI 不接管的 hook 面），用 `npx code-abyss -t openclaw --with-hooks` 触发内置的 `install-hooks.sh`。或作为 Claude Code 插件安装：
 
 ```bash
 claude plugin install code-abyss
 ```
 
-> 纯 `-y`（不带 `--with-abyss`）只装 persona/技能/风格层、不走网络——代码图 hook 在 `abyss` 进入 `PATH` 前保持休眠。交互模式（去掉 `-y`）会在下载前询问。装完用 `abyss --version` 确认，再在任意项目里 `abyss index`。
-
----
-
-## 代码关系图智能（由 `abyss` 驱动）
-
-**你的 Agent 现在能看见代码关系了。** `abyss` CLI 构建完整调用图、时间分析和热点地图——秒级完成，零云端依赖。
-
-| 能力 | 回答什么问题 | 命令 |
-|---|---|---|
-| **调用方追踪** | "谁调了这个函数？" | `abyss callers <symbol>` |
-| **影响面分析** | "改了会炸什么？" | `abyss impact <symbol>` |
-| **文件上下文** | "改这个文件前需要知道什么？" | `abyss context <file>` |
-| **热点地图** | "哪里最危险？" | `abyss map` |
-| **变更耦合** | "哪些文件总是一起改？" | `abyss map` |
-| **演化追溯** | "这段代码为什么长这样？" | `abyss history <file>` |
-
-`indexing-code` skill 自动 hook 四个平台——每次 Edit/Write 前，Agent 自动检查调用方并警告高影响变更。可通过 Agent 的 shell 工具直接调用，或作为 `abyss mcp` server（stdio 暴露 7 个工具）。
-
-**解析是度量出来的，不是声称的。** abyss 通过分档启发式解析调用引用，每条都带置信分，并对标 SCIP（编译器级）真值，跨四语言五语料实测——公布数字，无论好看难看：
-
-| 语料 | 语言 | Gated precision | Gated recall |
-|------|------|----------------:|-------------:|
-| gin v1.10.0 | Go | **99.3%** | 82.6% |
-| hono v4.6.14 | TypeScript | **98.8%** | 63.8% |
-| click 8.1.8 | Python | **98.7%** | 94.6% |
-| ripgrep 14.1.1 | Rust | **98.5%** | 75.3% |
-| abyss（自举） | Rust | **100.0%** | 90.9% |
-
-```
-# 1862 文件的 Go 项目实测（秒级索引）：
-
-$ abyss impact SetError
-impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0/10
-  ⚠ high blast radius (17 direct callers)
-  ⚠ deep dependency chain (521 transitive)
-  ⚠ 319 call paths without test coverage
-```
-
-`abyss` 是独立的 Rust 二进制（[telagod/abyss](https://github.com/telagod/abyss)）。安装器可代为下载（`--with-abyss`），或直接获取：
-
-```sh
-npm install -g @code-abyss/cli   # 预编译二进制，全平台
-cargo binstall code-abyss        # 或：cargo install code-abyss
-```
-
-### 跨平台 hooks（**opt-in**，默认关）
-
-默认走 `indexing-code` skill 被动调用——模型按需触发，最干净。需要每次编辑前 abyss 自动卡一道，再加 `--with-hooks`：
-
-```sh
-npx code-abyss --target claude -y --with-hooks
-```
-
-不带 `--with-hooks` 重装会**剥光**旧标记条目（按 marker 精准定位，用户自有 hook 不动）。
-
-| 平台 | Hook 事件 | 效果 |
-|---|---|---|
-| Claude Code | `SessionStart` + `PreToolUse`(Edit\|Write) | 进入会话索引、编辑前查调用方 |
-| Codex CLI | `SessionStart` + `PreToolUse`(Bash\|shell\|apply_patch\|Edit\|Write) | 同上 |
-| Gemini CLI | `SessionStart` + `BeforeTool`(write_file\|replace\|edit_file) | 同上 |
-| OpenClaw | `before_tool_call` plugin | 编辑前查调用方 |
-
-不走安装器、手动装：`bash skills/indexing-code/hooks/common/install-hooks.sh auto`
+> persona/技能/风格层与代码图 CLI 完全解耦——单独装 code-abyss 除了拉取远程人格内容外不走网络。`abyss attach <host>` 是幂等的（重跑会原地升级已装的 shape）。装完用 `abyss --version` 确认代码图已就绪，再在任意项目里 `abyss index`。
 
 ---
 
@@ -241,6 +183,31 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 ---
 
+## 纪律内核
+
+声音和风格会变，判断不该变。每一种人格×风格组合底下都坐着一套**纪律内核**——9 个工程判断 bundle，在树内 vendor（`skills/_kernel/`，通过 `npm run kernel:sync`），由一个精简路由懒加载调用（不塞进每一次 prompt，这样加纪律内容不会撑爆上下文预算）：
+
+| Bundle | 管什么 |
+|---|---|
+| 🏛 **doctrine** | 委派、重试/升级/问用户的判断、done-gate |
+| 🔍 **methods** | 调查、设计、规划、验证、给别人写文档 |
+| 🎭 **character** | 顶撞、范围拿捏、坏消息、对抗被训练出的顺从反射 |
+| 🔁 **loop-engineering** | 会话节奏、单元切分、沉淀该落到哪 |
+| ⚙️ **backend** | 技术栈/架构取舍、数据纪律、生产环境底线 |
+| 🎨 **frontend** | 视觉设计品味，具体工艺而非通用默认值 |
+| 🔩 **hardware** | 器件选型、电气余量、无人值守设备的固件规则 |
+| 🤖 **ml** | 方法选择阶梯、eval-as-spec、LLM 时代的手艺 |
+| 🛡 **security** | 威胁建模，任何攻击性请求前的授权门 |
+
+**两种方式让这不是空话：**
+
+- **强制执行**：`npx code-abyss -t claude --with-enforcement` 装一个 Stop-hook 兜底（claude/codex）——回复以违禁的顺从开场白（"你说得完全对"、"好眼力"……）开头时，强制返工一轮。光靠 prose 禁令挡不住被训练出的顺从反射，这是确定性的兜底。
+- **测量**：`scripts/persona-battery/` 是一套小而诚实的行为评测——10 个探针（人格是否守住正确性而非讨好？是否先说坏消息？是否拒绝伪造"完成"？），由 LLM judge 打分，没打分时绝不伪装成通过。运行方法见 [CLAUDE.md 的人格行为评测一节](../CLAUDE.md#persona-behavioral-battery-opt-in-eval)（会消耗真实 API 调用，不在默认 CI 里）。
+
+领域 bundle 还向上接入 16 个匹配的执行 skill（渗透测试、架构设计、ML 流水线等）作为「判断先于执行」的门——领域 bundle 决定*要不要做、选什么、怎么取舍*，执行 skill 仍然管*怎么做*。
+
+---
+
 ## 安全套件（v4 杀手锏）
 
 **4 个原生安全 skill，4073 行原创工程内容。** 无 Apache-2.0 上游依赖——每条范例、每个检测信号、每种防御模式都为本项目原创编写。
@@ -256,14 +223,57 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 
 ---
 
+## 代码关系图智能（由 `abyss` 驱动）
+
+**你的 Agent 现在能看见代码关系了。** `abyss` CLI 构建完整调用图、时间分析和热点地图——秒级完成，零云端依赖。
+
+| 能力 | 回答什么问题 | 命令 |
+|---|---|---|
+| **调用方追踪** | "谁调了这个函数？" | `abyss callers <symbol>` |
+| **影响面分析** | "改了会炸什么？" | `abyss impact <symbol>` |
+| **文件上下文** | "改这个文件前需要知道什么？" | `abyss context <file>` |
+| **热点地图** | "哪里最危险？" | `abyss map` |
+| **变更耦合** | "哪些文件总是一起改？" | `abyss map` |
+| **演化追溯** | "这段代码为什么长这样？" | `abyss history <file>` |
+
+`indexing-code` skill 自动 hook 四个平台——每次 Edit/Write 前，Agent 自动检查调用方并警告高影响变更。可通过 Agent 的 shell 工具直接调用，或作为 `abyss mcp` server（stdio 暴露 7 个工具）。
+
+**解析是度量出来的，不是声称的。** abyss 通过分档启发式解析调用引用，每条都带置信分，并对标 SCIP（编译器级）真值，跨四语言五语料实测——公布数字，无论好看难看：
+
+| 语料 | 语言 | Gated precision | Gated recall |
+|------|------|----------------:|-------------:|
+| gin v1.10.0 | Go | **99.3%** | 82.6% |
+| hono v4.6.14 | TypeScript | **98.8%** | 63.8% |
+| click 8.1.8 | Python | **98.7%** | 94.6% |
+| ripgrep 14.1.1 | Rust | **98.5%** | 75.3% |
+| abyss（自举） | Rust | **100.0%** | 90.9% |
+
+```
+# 1862 文件的 Go 项目实测（秒级索引）：
+
+$ abyss impact SetError
+impact: SetError  direct=17  transitive=521  tests=469  uncovered=319  risk=10.0/10
+  ⚠ high blast radius (17 direct callers)
+  ⚠ deep dependency chain (521 transitive)
+  ⚠ 319 call paths without test coverage
+```
+
+`abyss` 是独立的 Rust 二进制（[telagod/abyss](https://github.com/telagod/abyss)）。安装器可代为下载（`--with-abyss`），或直接获取：
+
+```sh
+npm install -g @code-abyss/cli   # 预编译二进制，全平台
+cargo binstall code-abyss        # 或：cargo install code-abyss
+```
+
+---
+
 ## 技能矩阵
 
-30 个领域技能，扁平目录结构，对齐 [agentskills.io](https://agentskills.io/specification) 规范（含 Code Abyss 扩展）。技能按上下文自动加载——Agent 在正确的时机读取正确的知识，无需手动指定。重内容下沉 `references/`。
+30 个领域技能，扁平目录结构，对齐 [agentskills.io](https://agentskills.io/specification) 规范（含 Code Abyss 扩展）。技能按上下文自动加载——Agent 在正确的时机读取正确的知识，无需手动指定。重内容下沉 `references/`。（`verify:skills` 校验 39 个——这 30 个领域技能加上 9 个[纪律内核](#纪律内核) bundle，后者由路由调用、不是用户直呼的命令。）
 
 | 领域 | 覆盖范围 |
 |---|---|
 | 🛡 **安全** | 上述 4 个原生套件（应用 / 云 / 检测响应 / 架构）+ 渗透 / 代码审计 / 红蓝紫队 |
-| 🔬 **代码智能** | 调用图、影响面分析、热点检测、变更耦合、演化追溯——通过 `abyss` CLI + 跨平台 hooks |
 | 🤖 **AI / Agent** | 单 Agent 开发 (ReAct/Plan-Execute)、多 Agent 编排、RAG、Prompt 工程、LLM 安全 |
 | 🏛 **架构** | API 设计、云原生模式、消息队列、缓存、数据安全 |
 | 💻 **开发** | Python, TypeScript, Go, Rust, Java, C++, Shell |
@@ -273,6 +283,7 @@ npx code-abyss -t claude --persona elder-sister --style abyss-cultivator -y
 | 📡 **基础设施 / 移动 / 数据** | K8s, GitOps, IaC · iOS, Android, RN, Flutter · 管道、流处理、质量 |
 | 🔩 **硬件 / 嵌入式** | 全栈硬件产品流水线（ESP-IDF 固件 + KiCad PCB + UniApp）· KiCad 9 MCP 工具路由 |
 | 📝 **学术写作** | AIGC 降重（维普/知网/Turnitin）—— 多层改写 + docx run 级编辑 |
+| 🔬 **代码智能** | 调用图、影响面分析、热点检测、变更耦合、演化追溯——通过 `abyss` CLI + 跨平台 hooks |
 | 🜲 **自我进化** | `cultivating-skills`（沉淀重复方法论）+ `cultivating-personas`（沉淀稳定声音为 Tech Persona Card），均带安全扫描与三级发布漏斗 |
 
 其中 5 个技能附带**可执行的验证工具**，供 CI 使用：
@@ -291,7 +302,7 @@ node skills/generating-docs/scripts/doc_generator.js <path>
 
 | 目标 | 命令 | 产物 |
 |---|---|---|
-| <img src="https://img.shields.io/badge/-Claude_Code-9b8cff?style=flat-square" alt="Claude"> | `npx code-abyss -t claude -y` | `CLAUDE.md` + 技能 + 输出风格 + 设置 + hooks |
+| <img src="https://img.shields.io/badge/-Claude_Code-9b8cff?style=flat-square" alt="Claude"> | `npx code-abyss -t claude -y` | `CLAUDE.md` + 技能 + 输出风格 + 设置 |
 | <img src="https://img.shields.io/badge/-Codex_CLI-9b8cff?style=flat-square" alt="Codex"> | `npx code-abyss -t codex -y` | `instruction.md` + 技能 + config.toml |
 | <img src="https://img.shields.io/badge/-Gemini_CLI-9b8cff?style=flat-square" alt="Gemini"> | `npx code-abyss -t gemini -y` | `GEMINI.md` + 技能 + 命令 |
 | <img src="https://img.shields.io/badge/-OpenClaw-9b8cff?style=flat-square" alt="OpenClaw"> | `npx code-abyss -t openclaw -y` | 技能 + 工作区 `AGENTS.md` / `SOUL.md` |
@@ -302,7 +313,7 @@ npx code-abyss --list-styles        # 浏览可用风格
 npx code-abyss --uninstall claude   # 干净卸载，恢复用户备份
 ```
 
-Code Abyss 把每一个安装的文件追踪到 `.code-abyss-backup/manifest.json`，卸载时逐字恢复你原本的配置。**用户自定义技能与 Code Abyss 共存**。
+Code Abyss 把每一个安装的文件追踪到 `.code-abyss-backup/manifest.json`，卸载时逐字恢复你原本的配置。**用户自定义技能与 Code Abyss 共存**——安装/卸载不会动你自己放在 `~/.{target}/skills/` 下的东西。
 
 ### 升级路径
 
@@ -358,12 +369,13 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 |  | 不用 Code Abyss | 用 Code Abyss |
 |---|---|---|
 | **身份** | 扁平客服腔 | 有名字、有声音、稳定一致 |
-| **执行** | 临场发挥，因 prompt 而异 | 铁律 + 执行链固化 |
+| **执行** | 临场发挥，因 prompt 而异 | 铁律 + 技能路由固化 |
+| **压力下的判断** | 一顶就服软，坏消息藏着掖着 | 纪律内核 + Stop-hook 兜底，对抗被训练出的顺从反射 |
 | **代码感知** | grep + 逐个读文件 | 调用图、影响面分析、热点地图——改之前就知道会炸什么 |
-| **领域深度** | 通用最佳实践 | 30 个技能按上下文加载 |
+| **领域深度** | 通用最佳实践 | 30 个技能按上下文加载 + 9 个内核判断 bundle |
 | **安全深度** | OWASP 复读机 | 4 个原生套件 · 4073 行 · 检测信号 + 缓解模式 |
 | **跨平台** | 每个 CLI 重写一遍 prompt | 一份规范，四个平台，跨平台 hooks |
-| **可复现** | 跨会话 prompt 漂移 | `persona-card.json` 版本化 |
+| **可复现** | 跨会话 prompt 漂移 | `persona-card.json` 版本化 + 行为评测抽查是否站得住 |
 
 ---
 
@@ -372,8 +384,8 @@ const gpt = toGPTInstructions(card, { identityContent });// → OpenAI 自定义
 ```bash
 git clone https://github.com/telagod/code-abyss && cd code-abyss
 npm install
-npm test                    # 383 个测试
-npm run verify:skills       # 验证 30 个技能契约
+npm test                    # 430 个测试（428 通过，2 跳过）
+npm run verify:skills       # 验证 39 个技能契约（30 领域 + 9 内核）
 ```
 
 **添加技能**——创建 `skills/<动名词>/SKILL.md`，按 [SKILL frontmatter 规范](https://agentskills.io/specification) 编写，可选添加 `scripts/` 放可执行工具。`npm run verify:skills` 验证契约。
@@ -384,6 +396,6 @@ npm run verify:skills       # 验证 30 个技能契约
 
 <p align="center">
   <sub>
-    <b>MIT 许可</b> · v4.6.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制
+    <b>MIT 许可</b> · v4.9.0 · 由 <a href="https://github.com/telagod">@telagod</a> 以紫宵脉炼制
   </sub>
 </p>

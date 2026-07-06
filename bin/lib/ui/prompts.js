@@ -3,6 +3,7 @@
 // 依赖 ansi.js 的 c (color) 工具
 
 const { c } = require('./ansi.js');
+const { loadInquirerPrompts, loadInquirerCore, loadInquirerAnsi } = require('./safe-import.js');
 
 const modernPromptTheme = {
   prefix: { idle: c.mag('◆'), done: c.grn('◆') },
@@ -30,7 +31,7 @@ const modernCheckboxTheme = {
 };
 
 async function promptSelect(config) {
-  const { select } = await import('@inquirer/prompts');
+  const { select } = await loadInquirerPrompts();
   return select({
     loop: false,
     pageSize: 10,
@@ -44,7 +45,7 @@ async function promptSelect(config) {
 }
 
 async function promptCheckbox(config) {
-  const { checkbox } = await import('@inquirer/prompts');
+  const { checkbox } = await loadInquirerPrompts();
   return checkbox({
     loop: false,
     pageSize: 8,
@@ -58,8 +59,8 @@ let horizontalSelectPrompt = null;
 
 async function promptHorizontalSelect(config) {
   if (!horizontalSelectPrompt) {
-    const core = await import('@inquirer/core');
-    const ansi = await import('@inquirer/ansi');
+    const core = await loadInquirerCore();
+    const ansi = await loadInquirerAnsi();
     const {
       createPrompt,
       isDownKey,

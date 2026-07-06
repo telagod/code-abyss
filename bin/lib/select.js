@@ -2,6 +2,8 @@
 // 交互选择层：persona / style / pack plan 的格式化与解析
 // 全部通过工厂模式注入依赖（避免硬绑 PKG_ROOT / autoYes / requested* 等可变 closure）
 
+const { loadInquirerPrompts } = require('./ui/safe-import.js');
+
 function createSelectFlows(deps) {
   const {
     PKG_ROOT,
@@ -79,7 +81,7 @@ function createSelectFlows(deps) {
 
     let confirmOptional = null;
     if (projectPacks.optionalPolicy === 'prompt' && projectPacks.optional.length > 0 && !getAutoYes()) {
-      const { confirm } = await import('@inquirer/prompts');
+      const { confirm } = await loadInquirerPrompts();
       confirmOptional = async (optionalPacks) => confirm({
         message: `当前仓库声明了 optional packs: ${optionalPacks.join(', ')}，是否一并安装?`,
         default: true,

@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { getPackHostFiles } = require(path.join(__dirname, '..', 'lib', 'pack-registry.js'));
+const { loadInquirerPrompts } = require(path.join(__dirname, '..', 'lib', 'ui', 'safe-import.js'));
 const {
   CCSTATUSLINE_CMD,
   CCSTATUSLINE_CONFIG,
@@ -71,7 +72,7 @@ function detectClaudeAuth({
 }
 
 async function configureCustomProvider(ctx, { ok }) {
-  const { confirm, input } = await import('@inquirer/prompts');
+  const { confirm, input } = await loadInquirerPrompts();
   const doCfg = await confirm({ message: '配置自定义 provider?', default: false });
   if (!doCfg) return;
 
@@ -141,7 +142,7 @@ async function postClaude({
   }
 
   const checkboxPrompt = promptCheckbox || (async (config) => {
-    const { checkbox } = await import('@inquirer/prompts');
+    const { checkbox } = await loadInquirerPrompts();
     return checkbox(config);
   });
   const choices = await checkboxPrompt({

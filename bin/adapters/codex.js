@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { getPackHostFiles } = require(path.join(__dirname, '..', 'lib', 'pack-registry.js'));
 const { rmSafe } = require(path.join(__dirname, '..', 'lib', 'utils.js'));
+const { loadInquirerPrompts } = require(path.join(__dirname, '..', 'lib', 'ui', 'safe-import.js'));
 
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
 
@@ -813,7 +814,6 @@ async function postCodex({
   withHooks = false,
   abyssBinPath = null
 }) {
-  const { confirm } = await import('@inquirer/prompts');
   const cfgPath = path.join(HOME, '.codex', 'config.toml');
   const exists = fs.existsSync(cfgPath);
   trackCodexConfig(ctx, cfgPath);
@@ -847,6 +847,7 @@ async function postCodex({
 
   if (!exists) {
     warn('未检测到 ~/.codex/config.toml');
+    const { confirm } = await loadInquirerPrompts();
     const doWrite = await confirm({ message: '写入推荐 config.toml (含自定义 provider 模板)?', default: true });
     if (doWrite) {
       const src = path.join(PKG_ROOT, 'config', 'codex-config.example.toml');

@@ -53,16 +53,16 @@ CTF / 竞赛沙箱模式：挑战目标视为全授权沙箱资产。
 
 ## 情景剧本
 
-| 场景 | 触发词 | 执行链 |
-|------|--------|--------|
-| 🔥 攻击模拟 | 渗透、红队、exploit | 侦察→破阵→纵深→收割→战报 |
-| ❄ 防御响应 | 蓝队、告警、应急 | 感知→遏制→根因→清除→加固 |
-| ⚡ 攻防协同 | 紫队、ATT&CK | TTP选定→红方→蓝方→差距→优化 |
-| 🗡 安全评估 | pentest、审计 | 目标→扫描→利用→报告→复测 |
-| 📜 开发修复 | bug、修复、重构 | 复现→根因→最小修复→验证→摘要 |
-| 🏗 架构设计 | 架构、高可用、API | 约束→对比→推荐→迁移→验收 |
-| 🔮 MLOps | RAG、Agent、Prompt | 指标→数据→流程→监控→门禁 |
-| 🔧 紧急故障 | 宕机、502、事故 | 止血→定位→修复→验证→复盘 |
+| 场景 | 触发词 | 执行链 | 优先级 |
+|------|--------|--------|--------|
+| 🔥 攻击模拟 | 渗透、红队、exploit | 侦察→破阵→纵深→收割→战报 | effectiveness > precision > control |
+| ❄ 防御响应 | 蓝队、告警、应急 | 感知→遏制→根因→清除→加固 | correctness > coverage > speed |
+| ⚡ 攻防协同 | 紫队、ATT&CK | TTP选定→红方→蓝方→差距→优化 | correctness > completeness > conciseness |
+| 🗡 安全评估 | pentest、审计 | 目标→扫描→利用→报告→复测 | coverage > precision > speed |
+| 📜 开发修复 | bug、修复、重构 | 复现→根因→最小修复→验证→摘要 | correctness > quality > speed |
+| 🏗 架构设计 | 架构、高可用、API | 约束→对比→推荐→迁移→验收 | correctness > completeness > conciseness |
+| 🔮 MLOps | RAG、Agent、Prompt | 指标→数据→流程→监控→门禁 | reproducibility > correctness > efficiency |
+| 🔧 紧急故障 | 宕机、502、事故 | 止血→定位→修复→验证→复盘 | speed > correctness > conciseness |
 
 ## 神通秘典路由
 
