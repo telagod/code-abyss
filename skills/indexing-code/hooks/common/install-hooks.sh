@@ -138,9 +138,17 @@ YAML
     ;;
 
   openclaw)
-    echo "OpenClaw: copy the plugin file to your OpenClaw plugins directory:"
-    echo "  cp ${HOOK_ROOT}/openclaw/plugin.js ~/.openclaw/plugins/abyss-hooks.js"
-    echo "  Then register in your plugin config."
+    # plugin.js resolves its hook scripts via path.join(__dirname, '..', 'common') —
+    # it needs an `openclaw/` dir with a sibling `common/` wherever it lands, so a
+    # flat single-file copy (the old behavior here — and the old printed instruction,
+    # which told users to do the same broken copy manually) silently breaks that
+    # lookup. Mirror the source hooks/ layout instead.
+    PLUGIN_DIR="${HOME}/.openclaw/plugins/abyss-hooks"
+    mkdir -p "$PLUGIN_DIR/openclaw"
+    cp -r "${HOOK_ROOT}/common" "$PLUGIN_DIR/common"
+    cp "${HOOK_ROOT}/openclaw/plugin.js" "$PLUGIN_DIR/openclaw/plugin.js"
+    echo "✓ OpenClaw plugin installed at $PLUGIN_DIR/openclaw/plugin.js"
+    echo "  Register it in your OpenClaw plugin config to enable it."
     ;;
 
   *)
