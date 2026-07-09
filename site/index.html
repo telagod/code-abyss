@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Code Abyss — Give your AI agent a personality</title>
-  <meta name="description" content="Composable persona + style + skills for Claude Code, Codex, Gemini CLI & OpenClaw.">
+  <title>Code Abyss 5 — Agent OS for coding CLIs</title>
+  <meta name="description" content="Agent OS for Claude Code, Codex, Gemini CLI & OpenClaw: voice + lazy judgment kernel + doctor/compose/score control plane. Code graph via separate abyss CLI.">
   <meta name="theme-color" content="#07070a">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,25 +31,22 @@
               <stop offset="100%" stop-color="#07070a" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <!-- outer ring with cut -->
           <path d="M16 2 A14 14 0 1 1 6 26.1" stroke="url(#abyss-grad)" stroke-width="2.4" stroke-linecap="round"/>
-          <!-- inner descending arcs (three voices) -->
           <path d="M11 14 A5 5 0 0 1 21 14" stroke="url(#abyss-grad)" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
           <path d="M12.5 17.5 A3.5 3.5 0 0 1 19.5 17.5" stroke="url(#abyss-grad)" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
           <path d="M14 21 A2 2 0 0 1 18 21" stroke="url(#abyss-grad)" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
-          <!-- abyss core -->
           <circle cx="16" cy="16" r="14" fill="url(#abyss-core)"/>
         </svg>
         <span>Code Abyss</span>
       </a>
       <div class="nav-links">
-        <a href="#how" data-i18n="nav.how">How</a>
+        <a href="#os" data-i18n="nav.os">OS</a>
+        <a href="#plane" data-i18n="nav.plane">Control</a>
         <a href="#security" data-i18n="nav.security">Security</a>
-        <a href="#codegraph" data-i18n="nav.graph">Graph</a>
-        <a href="#evolve" data-i18n="nav.evolve">Evolve</a>
+        <a href="#graph" data-i18n="nav.graph">Graph</a>
         <a href="#personas" data-i18n="nav.personas">Personas</a>
-        <a href="#spec" data-i18n="nav.spec">Spec</a>
         <a href="#install" data-i18n="nav.install">Install</a>
+        <a href="#migrate" data-i18n="nav.migrate">Migrate</a>
         <div class="lang-switch">
           <button data-lang="en" onclick="setLang('en')">EN</button>
           <button data-lang="zh" onclick="setLang('zh')">ZH</button>
@@ -67,362 +64,272 @@
         <div class="hero-text">
           <div class="hero-badge">
             <span class="dot">v</span>
-            <span data-i18n="hero.badge">4.9 — Hybrid Split Deprecation · abyss CLI separation</span>
+            <span data-i18n="hero.badge">5.0.0-rc.1 · Agent OS</span>
           </div>
           <h1>
-            <span data-i18n="hero.title.1">Give your AI agent</span><br>
-            <span class="accent" data-i18n="hero.title.2">a personality.</span>
+            <span data-i18n="hero.title.1">Not a config dump.</span><br>
+            <span class="accent" data-i18n="hero.title.2">An Agent OS.</span>
           </h1>
-          <p class="lead" data-i18n="hero.sub" data-i18n-html>Composable identity, style, and <b>30 engineering skills</b><br>— including <b>4 native security domains</b> and a <b>self-evolution forge</b>.</p>
+          <p class="lead" data-i18n="hero.sub" data-i18n-html>
+            Install <b>voice + skills + lazy judgment</b> into Claude / Codex / Gemini / OpenClaw —
+            then <b>doctor · compose · score</b> the session without re-tarring the world.
+          </p>
           <div class="hero-install">
             <span class="prompt-sign">$</span>
-            <code>npx code-abyss -t claude -y</code>
-            <button class="copy-btn" onclick="copyCmd(this)" data-cmd="npx code-abyss -t claude -y">Copy</button>
+            <code>npx code-abyss@5.0.0-rc.1 -t claude -y</code>
+            <button class="copy-btn" onclick="copyCmd(this)" data-cmd="npx code-abyss@5.0.0-rc.1 -t claude -y">Copy</button>
           </div>
           <div class="hero-actions">
-            <a href="#personas" class="btn btn-primary" data-i18n="hero.browse">Browse Personas</a>
-            <a href="submit.html" class="btn btn-ghost" data-i18n="hero.submit">Submit Yours</a>
-            <a href="https://www.npmjs.com/package/code-abyss" class="btn btn-link">npm</a>
+            <a href="#install" class="btn btn-primary" data-i18n="hero.install">Install RC</a>
+            <a href="#migrate" class="btn btn-ghost" data-i18n="hero.migrate">4.x → 5.0</a>
+            <a href="https://www.npmjs.com/package/code-abyss?activeTab=versions" class="btn btn-link">npm @rc</a>
           </div>
           <div class="hero-platforms">
-            <span class="pf-label" data-i18n="hero.runs">Runs on</span>
+            <span class="pf-label" data-i18n="hero.runs">Hosts</span>
             <span class="platform-chip">Claude Code</span>
             <span class="platform-chip">Codex CLI</span>
             <span class="platform-chip">Gemini CLI</span>
             <span class="platform-chip">OpenClaw</span>
           </div>
         </div>
-        <div class="hero-stack" aria-hidden="true">
-          <div class="hero-card hero-card-1">
-            <div class="hc-label">self</div>
-            <div class="hc-self">吾</div>
-            <div class="hc-divider"></div>
-            <div class="hc-label">user</div>
-            <div class="hc-user">魔尊</div>
-            <span class="hc-tag">abyss</span>
+        <div class="hero-terminal" aria-hidden="true">
+          <div class="term-chrome">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">code-abyss doctor</span>
           </div>
-          <div class="hero-card hero-card-2">
-            <div class="hc-label">self</div>
-            <div class="hc-self">姐姐</div>
-            <div class="hc-divider"></div>
-            <div class="hc-label">user</div>
-            <div class="hc-user">小宝</div>
-            <span class="hc-tag">elder-sister</span>
-          </div>
-          <div class="hero-card hero-card-3">
-            <div class="hc-label">self</div>
-            <div class="hc-self">在下</div>
-            <div class="hc-divider"></div>
-            <div class="hc-label">user</div>
-            <div class="hc-user">前辈</div>
-            <span class="hc-tag">scholar</span>
-          </div>
+          <pre class="term-body"><span class="t-muted">code-abyss doctor · 5.0.0-rc.1</span>
+<span class="t-ok">abyss:</span> 0.5.x (PATH)
+<span class="t-ok">kernel:</span> mythos · 9 bundles
+<span class="t-ok">enforcement:</span> ON
+<span class="t-ok">compose budget:</span> ~5k / 8k
+<span class="t-warn">inject plane:</span> present
+<span class="t-muted">migration:</span> abyss attach claude</pre>
         </div>
       </div>
     </div>
   </header>
 
-  <section class="how" id="how">
+  <section class="os-section" id="os">
     <div class="container">
-      <div class="eyebrow" data-i18n="how.label">Architecture</div>
-      <h2 data-i18n="how.title">Voice, judgment, style</h2>
-      <p class="section-desc" data-i18n="how.desc">Mix any persona with any style. Judgment is a separate, lazily-invoked layer neither one can override.</p>
-      <div class="how-layers">
-        <div class="layer-card">
-          <div class="layer-num">01 · Voice</div>
-          <h3 data-i18n="how.identity.title">Who it sounds like</h3>
-          <p data-i18n="how.identity.desc">Self/user address, language style, register, emoji policy — a closed vocabulary with no field shaped like a decision table.</p>
-          <code class="layer-path">config/personas/*.json</code>
+      <div class="eyebrow" data-i18n="os.label">Architecture</div>
+      <h2 data-i18n="os.title">Three layers. Control plane on top.</h2>
+      <p class="section-desc" data-i18n="os.desc">
+        Voice never overrides judgment. Judgment is lazy. The control plane is what makes v5 an OS, not a tar of markdown.
+      </p>
+      <div class="os-grid">
+        <div class="os-card">
+          <div class="os-kicker">01 · Always-on</div>
+          <h3 data-i18n="os.voice.title">Voice + style</h3>
+          <p data-i18n="os.voice.desc">Persona Voice Card (self/user/register/flourish) + output style skeleton. Residual space only — no decision tables.</p>
+          <code class="layer-path">config/personas · output-styles</code>
         </div>
-        <div class="layer-card">
-          <div class="layer-num">02 · Judgment</div>
-          <h3 data-i18n="how.behavior.title">How it decides</h3>
-          <p data-i18n="how.behavior.desc">9 discipline-kernel bundles, invoked lazily by a thin router — never baked into every prompt, never overridden by voice or style.</p>
-          <code class="layer-path">skills/_kernel/*</code>
+        <div class="os-card">
+          <div class="os-kicker">02 · Lazy spine</div>
+          <h3 data-i18n="os.kernel.title">Discipline kernel</h3>
+          <p data-i18n="os.kernel.desc">9 mythos bundles + 30 exec skills. Router + inject plane force judgment before execution under pressure.</p>
+          <code class="layer-path">skills/_kernel · inject-plane</code>
         </div>
-        <div class="layer-card">
-          <div class="layer-num">03 · Style</div>
-          <h3 data-i18n="how.style.title">How it sounds</h3>
-          <p data-i18n="how.style.desc">Tone, report skeletons, formatting. Template vars make cross-combo safe.</p>
-          <code class="layer-path">output-styles/*.md</code>
+        <div class="os-card os-card-accent">
+          <div class="os-kicker">03 · Control plane</div>
+          <h3 data-i18n="os.plane.title">doctor · compose · score</h3>
+          <p data-i18n="os.plane.desc">Health, recompose without skill recopy, key-free banned-opener score. Default character Stop-hook on claude/codex.</p>
+          <code class="layer-path">code-abyss doctor | compose | score</code>
         </div>
       </div>
-      <div class="formula-line">
-        <span class="num">6</span><span class="word" data-i18n="how.formula.pre">personas</span>
+      <div class="os-formula">
+        <span class="num">6</span><span class="word" data-i18n="os.f.p">personas</span>
         <span class="op">×</span>
-        <span class="num">6</span><span class="word" data-i18n="how.formula.mid">styles</span>
-        <span class="op">=</span>
-        <span class="total">36</span><span class="word" data-i18n="how.formula.post">validated combos</span>
+        <span class="num">6</span><span class="word" data-i18n="os.f.s">styles</span>
+        <span class="op">+</span>
+        <span class="num">9</span><span class="word" data-i18n="os.f.k">kernel</span>
+        <span class="op">+</span>
+        <span class="num">30</span><span class="word" data-i18n="os.f.e">skills</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="plane-section" id="plane">
+    <div class="container">
+      <div class="eyebrow" data-i18n="plane.label">Control plane</div>
+      <h2 data-i18n="plane.title">Operate the agent, don’t just paint it</h2>
+      <p class="section-desc" data-i18n="plane.desc">Four surfaces shipped in 5.0.0-rc.1. Same compose engine as install — no second template path.</p>
+      <div class="plane-grid">
+        <div class="plane-card">
+          <div class="plane-cmd">doctor</div>
+          <h3 data-i18n="plane.doctor.title">Health + migration hints</h3>
+          <p data-i18n="plane.doctor.desc">Version, abyss detect, kernel sync, enforcement on/off, compose budget, inject map, next-step tips for 4.x leftovers.</p>
+          <code>npx code-abyss doctor</code>
+        </div>
+        <div class="plane-card">
+          <div class="plane-cmd">compose</div>
+          <h3 data-i18n="plane.compose.title">Re-skin without reinstall</h3>
+          <p data-i18n="plane.compose.desc">Rewrite host guidance for a persona×style. Does not recopy the skill tree.</p>
+          <code>npx code-abyss compose -t claude --persona abyss --style abyss-cultivator</code>
+        </div>
+        <div class="plane-card">
+          <div class="plane-cmd">score</div>
+          <h3 data-i18n="plane.score.title">Mechanical honesty gate</h3>
+          <p data-i18n="plane.score.desc">Key-free banned-opener score — same list as the character Stop-hook. No API, no fake green.</p>
+          <code>npx code-abyss score</code>
+        </div>
+        <div class="plane-card">
+          <div class="plane-cmd">inject</div>
+          <h3 data-i18n="plane.inject.title">Forced judgment map</h3>
+          <p data-i18n="plane.inject.desc">Install writes <code>.code-abyss-inject.md</code> — 16 domain gates + done-gate/security paths. Kernel bodies stay lazy.</p>
+          <code>~/.claude/.code-abyss-inject.md</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cut-section" id="cut">
+    <div class="container">
+      <div class="cut-banner">
+        <div>
+          <div class="eyebrow" data-i18n="cut.label">Kill foyer</div>
+          <h2 data-i18n="cut.title">What v5 refuses to own</h2>
+          <p data-i18n="cut.desc">code-abyss no longer downloads the abyss binary, writes MCP servers, or injects graph hooks for claude/codex/gemini. That dual-story deprecation hotel is closed.</p>
+        </div>
+        <div class="cut-table" role="table">
+          <div class="cut-row cut-head" role="row">
+            <span data-i18n="cut.old">4.x habit</span>
+            <span data-i18n="cut.new">5.0 path</span>
+          </div>
+          <div class="cut-row" role="row"><span><code>--with-abyss</code></span><span data-i18n="cut.r1">abyss install.sh / @code-abyss/cli</span></div>
+          <div class="cut-row" role="row"><span><code>--with-mcp</code></span><span data-i18n="cut.r2">client-managed MCP config</span></div>
+          <div class="cut-row" role="row"><span><code>--with-hooks</code> (3 hosts)</span><span><code>abyss attach &lt;host&gt;</code></span></div>
+          <div class="cut-row" role="row"><span data-i18n="cut.r3o">opt-in enforcement</span><span data-i18n="cut.r3n">default ON · --no-enforcement</span></div>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="security-section" id="security">
     <div class="container">
-      <div class="eyebrow" data-i18n="security.label">Security Spine</div>
+      <div class="eyebrow" data-i18n="security.label">Security spine</div>
       <h2 data-i18n="security.title">Four native security domains</h2>
-      <p class="section-desc" data-i18n="security.desc" data-i18n-html>v4 ships <b>4073 lines of original defense engineering</b>, replacing the Apache-2.0 coff0xc upstream. Builders, blue/purple teams, and architects each get their own dedicated skill.</p>
-
+      <p class="section-desc" data-i18n="security.desc" data-i18n-html>Original defense engineering for builders, blue/purple teams, and architects — judgment gated by the security kernel before exec skills run.</p>
       <div class="security-grid">
         <a class="security-card" href="https://github.com/telagod/code-abyss/tree/main/skills/defending-applications">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <h3 data-i18n="security.app.title">defending-applications</h3>
-          <p data-i18n="security.app.desc">Web/API/GraphQL hardening, OAuth/OIDC/JWT/Session, LLM AppSec (prompt injection, RAG poisoning, agent authz). 785 lines.</p>
-          <span class="sec-tag">785 lines</span>
+          <h3>defending-applications</h3>
+          <p data-i18n="security.app.desc">Web/API/OAuth/LLM AppSec — injection, sessions, agent authz.</p>
         </a>
         <a class="security-card" href="https://github.com/telagod/code-abyss/tree/main/skills/securing-cloud-and-supply-chain">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.7 1.5A4 4 0 0 0 6 19h11.5z"/>
-              <path d="M12 13v6M9 16l3 3 3-3"/>
-            </svg>
-          </div>
-          <h3 data-i18n="security.cloud.title">securing-cloud-and-supply-chain</h3>
-          <p data-i18n="security.cloud.desc">Container escape defense, K8s RBAC/PSS/NetworkPolicy, SLSA/Sigstore/SBOM, cloud IAM, IaC security. 1246 lines.</p>
-          <span class="sec-tag">1246 lines</span>
+          <h3>securing-cloud-and-supply-chain</h3>
+          <p data-i18n="security.cloud.desc">Containers, K8s, SLSA/Sigstore, cloud IAM, IaC.</p>
         </a>
         <a class="security-card" href="https://github.com/telagod/code-abyss/tree/main/skills/detecting-and-responding">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="7"/>
-              <path d="m21 21-4.3-4.3"/>
-            </svg>
-          </div>
-          <h3 data-i18n="security.detect.title">detecting-and-responding</h3>
-          <p data-i18n="security.detect.desc">Sigma/YARA rule writing, EDR primitives, NIST 800-61 IR, forensics (Win/Linux/Mac/Cloud), threat hunting. 942 lines.</p>
-          <span class="sec-tag">942 lines</span>
+          <h3>detecting-and-responding</h3>
+          <p data-i18n="security.detect.desc">Sigma/YARA, IR, forensics, threat hunting.</p>
         </a>
         <a class="security-card" href="https://github.com/telagod/code-abyss/tree/main/skills/architecting-security">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-7h6v7"/>
-            </svg>
-          </div>
-          <h3 data-i18n="security.arch.title">architecting-security</h3>
-          <p data-i18n="security.arch.desc">STRIDE/PASTA/LINDDUN threat modeling, zero-trust identity (WebAuthn, Kerberos, PAM JIT), SOC2/PCI/HIPAA/GDPR. 1100 lines.</p>
-          <span class="sec-tag">1100 lines</span>
+          <h3>architecting-security</h3>
+          <p data-i18n="security.arch.desc">STRIDE/PASTA, zero-trust identity, compliance floors.</p>
         </a>
-      </div>
-
-      <div class="security-actions">
-        <a href="https://github.com/telagod/code-abyss/tree/main/skills" class="btn btn-ghost" data-i18n="security.cta">Browse on GitHub</a>
       </div>
     </div>
   </section>
 
-  <section class="security-section" id="codegraph">
+  <section class="security-section" id="graph">
     <div class="container">
-      <div class="eyebrow" data-i18n="graph.label">Code Intelligence</div>
-      <h2 data-i18n="graph.title">Your agent sees code relationships</h2>
-      <p class="section-desc" data-i18n="graph.desc" data-i18n-html>The <code>abyss</code> CLI — a Rust-powered code relationship graph that builds in <b>seconds</b>. Call graph, impact analysis, hotspot detection, change coupling. <b>Zero cloud dependencies.</b></p>
-
-      <div class="security-grid">
-        <div class="security-card">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-            </svg>
-          </div>
-          <h3 data-i18n="graph.impact.title">Impact Analysis</h3>
-          <p data-i18n="graph.impact.desc">See blast radius before you edit. Direct/transitive callers, affected tests, uncovered paths, risk score.</p>
-          <span class="sec-tag">abyss impact</span>
+      <div class="eyebrow" data-i18n="graph.label">Companion · abyss CLI</div>
+      <h2 data-i18n="graph.title">Code graph is a separate product</h2>
+      <p class="section-desc" data-i18n="graph.desc" data-i18n-html>The Rust <code>abyss</code> CLI owns binary install and graph hooks. code-abyss only <b>detects</b> it and points you at <code>abyss attach</code>.</p>
+      <div class="graph-split">
+        <div class="graph-box">
+          <div class="gb-label" data-i18n="graph.owns">abyss owns</div>
+          <ul>
+            <li data-i18n="graph.o1">Binary + updates</li>
+            <li data-i18n="graph.o2">attach / hook shape for claude·codex·gemini</li>
+            <li data-i18n="graph.o3">index · impact · context · map</li>
+          </ul>
         </div>
-        <div class="security-card">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-            </svg>
-          </div>
-          <h3 data-i18n="graph.context.title">File Context</h3>
-          <p data-i18n="graph.context.desc">One command returns all callers, dependencies, hotspot score, and coupled files for any file. No function name needed.</p>
-          <span class="sec-tag">abyss context</span>
-        </div>
-        <div class="security-card">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-          </div>
-          <h3 data-i18n="graph.hotspot.title">Hotspot Map</h3>
-          <p data-i18n="graph.hotspot.desc">Churn × complexity = risk. Find the most dangerous files instantly. Git-powered change coupling detects hidden dependencies.</p>
-          <span class="sec-tag">abyss map</span>
-        </div>
-        <div class="security-card">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
-          </div>
-          <h3 data-i18n="graph.evolution.title">Evolution Trace</h3>
-          <p data-i18n="graph.evolution.desc">Why does this code look the way it does? Commit history, coupled files, churn rate — per function, not just per file.</p>
-          <span class="sec-tag">abyss history</span>
+        <div class="graph-box">
+          <div class="gb-label" data-i18n="graph.ca">code-abyss owns</div>
+          <ul>
+            <li data-i18n="graph.c1">persona / style / skills install</li>
+            <li data-i18n="graph.c2">doctor detect + migration hints</li>
+            <li data-i18n="graph.c3">openclaw --with-hooks (only)</li>
+          </ul>
         </div>
       </div>
-
-      <div class="graph-bench" aria-label="Reference resolution precision, measured against SCIP">
-        <span class="bench-label" data-i18n="graph.bench">Resolution vs SCIP ground truth:</span>
-        <span class="bench-pill"><span class="lang">Go</span><span class="pct">99.3%</span></span>
-        <span class="bench-pill"><span class="lang">TypeScript</span><span class="pct">98.8%</span></span>
-        <span class="bench-pill"><span class="lang">Python</span><span class="pct">98.7%</span></span>
-        <span class="bench-pill"><span class="lang">Rust</span><span class="pct">98.5%</span></span>
-      </div>
-
       <div class="security-actions">
-        <a href="https://github.com/telagod/abyss" class="btn btn-ghost" data-i18n="graph.cta">abyss CLI on GitHub</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="evolve-section" id="evolve">
-    <div class="container">
-      <div class="eyebrow" data-i18n="evolve.label">Self-Evolution</div>
-      <h2 data-i18n="evolve.title">The forge that grows itself</h2>
-      <p class="section-desc" data-i18n="evolve.desc" data-i18n-html>v4.1 adds two meta-skills. The agent watches for <b>repeated workflows</b> and <b>stable voice patterns</b>, then proposes distillation — never silent. Every output passes a <b>default-deny safety scan</b> before landing.</p>
-
-      <div class="evolve-grid">
-        <a class="evolve-card" href="https://github.com/telagod/code-abyss/tree/main/skills/cultivating-skills">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2v6h6M4 13.5V6a2 2 0 0 1 2-2h7l7 7v9a2 2 0 0 1-2 2H10"/>
-              <path d="M4 19l4-4 3 3 5-5 4 4"/>
-            </svg>
-          </div>
-          <h3>cultivating-skills</h3>
-          <p data-i18n="evolve.skills.desc">Distill repeated workflows into reusable skills. Scaffold, lint, scan, improve, promote across L0/L1/L2 tiers. Default-deny on dangerous tools, prompt injection, hardcoded secrets.</p>
-          <span class="sec-tag">skill_forge.js</span>
-        </a>
-        <a class="evolve-card" href="https://github.com/telagod/code-abyss/tree/main/skills/cultivating-personas">
-          <div class="sec-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
-              <path d="M16 3l2 2-2 2M20 5h-4"/>
-            </svg>
-          </div>
-          <h3>cultivating-personas</h3>
-          <p data-i18n="evolve.personas.desc">Distill a stable self/user address and speech pattern into a Persona Voice Card v1.0. Reuses the existing submit portal — three legal/platform/content red lines enforced.</p>
-          <span class="sec-tag">persona_forge.js</span>
-        </a>
-      </div>
-
-      <div class="evolve-funnel">
-        <div class="funnel-tier">
-          <b data-i18n="evolve.l0">L0 · Local</b>
-          <span data-i18n="evolve.l0.desc">~/.claude/skills/local/ — explicit invocation only</span>
-        </div>
-        <div class="funnel-tier">
-          <b data-i18n="evolve.l1">L1 · Project</b>
-          <span data-i18n="evolve.l1.desc">repo .claude/skills/ — team-shared, warn-blocking</span>
-        </div>
-        <div class="funnel-tier">
-          <b data-i18n="evolve.l2">L2 · Community</b>
-          <span data-i18n="evolve.l2.desc">upstream PR — full block + warn enforced</span>
-        </div>
+        <a href="https://github.com/telagod/abyss" class="btn btn-ghost" data-i18n="graph.cta">abyss on GitHub</a>
       </div>
     </div>
   </section>
 
   <section class="personas-section" id="personas">
     <div class="container">
-      <div class="eyebrow" data-i18n="gallery.label">Gallery</div>
-      <h2 data-i18n="gallery.title">Persona presets</h2>
-      <p class="section-desc" data-i18n="gallery.desc">Six built-in personas. Community submissions open.</p>
+      <div class="eyebrow" data-i18n="gallery.label">Voice</div>
+      <h2 data-i18n="gallery.title">Persona Voice Cards</h2>
+      <p class="section-desc" data-i18n="gallery.desc">Six presets. Closed vocabulary — residual attitude only. Judgment lives in the kernel.</p>
       <div class="persona-grid" id="persona-grid"></div>
-    </div>
-  </section>
-
-  <section class="spec-section" id="spec">
-    <div class="container">
-      <div class="eyebrow" data-i18n="spec.label">Open Standard</div>
-      <h2 data-i18n="spec.title">Persona Voice Card v1.0</h2>
-      <p class="section-desc" data-i18n="spec.desc" data-i18n-html>A closed-vocabulary voice format — not a document.<br>No field shaped like a decision table anywhere in the type.</p>
-
-      <div class="spec-wrap">
-        <div>
-          <div class="spec-points">
-            <div class="spec-point">
-              <span class="sp-num">i.</span>
-              <div class="sp-body">
-                <strong data-i18n="spec.voice">Structured Voice</strong>
-                <span data-i18n="spec.voice.desc">self / user / language / register / emoji_policy</span>
-              </div>
-            </div>
-            <div class="spec-point">
-              <span class="sp-num">ii.</span>
-              <div class="sp-body">
-                <strong data-i18n="spec.caps">Non-invasive by construction</strong>
-                <span data-i18n="spec.caps.desc">additionalProperties:false — no authorization tiers, no priority orderings, nowhere for judgment to hide</span>
-              </div>
-            </div>
-            <div class="spec-point">
-              <span class="sp-num">iii.</span>
-              <div class="sp-body">
-                <strong data-i18n="spec.scenarios">Flourish</strong>
-                <span data-i18n="spec.scenarios.desc">Up to 2 short signature phrases — catchphrases, not instructions</span>
-              </div>
-            </div>
-            <div class="spec-point">
-              <span class="sp-num">iv.</span>
-              <div class="sp-body">
-                <strong data-i18n="spec.portable">Portable</strong>
-                <span data-i18n="spec.portable.desc">Convert to/from CharaCard V2 and GPT Instructions</span>
-              </div>
-            </div>
-          </div>
-          <div class="spec-actions">
-            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-voice-card-v1.0.md" class="btn btn-primary" data-i18n="spec.read">Read the Spec</a>
-            <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-voice-card.schema.json" class="btn btn-ghost">JSON Schema</a>
-          </div>
-        </div>
-
-        <div class="spec-preview">
-<span class="p">{</span>
-<span class="indent"><span class="k">"spec"</span>: <span class="s">"persona-voice-card"</span>,</span>
-<span class="indent"><span class="k">"slug"</span>: <span class="s">"my-persona"</span>,</span>
-<span class="indent"><span class="k">"self"</span>: <span class="s">"I"</span>,</span>
-<span class="indent"><span class="k">"user"</span>: <span class="s">"you"</span>,</span>
-<span class="indent"><span class="k">"register"</span>: <span class="s">"casual"</span>,</span>
-<span class="indent"><span class="k">"emoji_policy"</span>: <span class="s">"minimal"</span>,</span>
-<span class="indent"><span class="k">"flourish"</span>: <span class="p">[ "..." ]</span></span>
-<span class="p">}</span>
-        </div>
+      <div class="security-actions" style="margin-top:40px">
+        <a href="submit.html" class="btn btn-primary" data-i18n="gallery.submit">Submit a persona</a>
+        <a href="https://github.com/telagod/code-abyss/blob/main/docs/specs/persona-voice-card-v1.0.md" class="btn btn-ghost" data-i18n="gallery.spec">Voice Card spec</a>
       </div>
     </div>
   </section>
 
   <section class="install-section" id="install">
     <div class="container">
-      <div class="eyebrow" data-i18n="install.label">Get Started</div>
-      <h2 data-i18n="install.title">One command away</h2>
-      <p class="section-desc" data-i18n="install.desc">Pick your platform. Code Abyss handles auth detection, config merge, and skill installation.</p>
+      <div class="eyebrow" data-i18n="install.label">Get started · RC</div>
+      <h2 data-i18n="install.title">Three steps to a live agent</h2>
+      <p class="section-desc" data-i18n="install.desc"><code>latest</code> on npm is still 4.10 until stable 5.0.0. RC is explicit.</p>
+      <ol class="install-steps">
+        <li>
+          <span class="step-n">1</span>
+          <div>
+            <strong data-i18n="install.s1">Agent OS layer</strong>
+            <div class="hero-install compact">
+              <span class="prompt-sign">$</span>
+              <code>npx code-abyss@5.0.0-rc.1 -t claude -y</code>
+              <button class="copy-btn" onclick="copyCmd(this)" data-cmd="npx code-abyss@5.0.0-rc.1 -t claude -y">Copy</button>
+            </div>
+            <p class="step-note" data-i18n="install.s1n">persona · skills · default enforcement · inject map</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-n">2</span>
+          <div>
+            <strong data-i18n="install.s2">abyss CLI + attach</strong>
+            <div class="hero-install compact">
+              <span class="prompt-sign">$</span>
+              <code>curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash && abyss attach claude</code>
+            </div>
+          </div>
+        </li>
+        <li>
+          <span class="step-n">3</span>
+          <div>
+            <strong data-i18n="install.s3">Verify</strong>
+            <div class="hero-install compact">
+              <span class="prompt-sign">$</span>
+              <code>npx code-abyss@5.0.0-rc.1 doctor</code>
+              <button class="copy-btn" onclick="copyCmd(this)" data-cmd="npx code-abyss@5.0.0-rc.1 doctor">Copy</button>
+            </div>
+          </div>
+        </li>
+      </ol>
       <div class="install-grid">
-        <div class="install-card">
-          <div class="ic-name">Claude Code</div>
-          <code>npx code-abyss -t claude -y</code>
-          <div class="ic-alt"><span data-i18n="install.alt">or</span> <code>claude plugin install code-abyss</code></div>
-        </div>
-        <div class="install-card">
-          <div class="ic-name">Codex CLI</div>
-          <code>npx code-abyss -t codex -y</code>
-        </div>
-        <div class="install-card">
-          <div class="ic-name">Gemini CLI</div>
-          <code>npx code-abyss -t gemini -y</code>
-        </div>
-        <div class="install-card">
-          <div class="ic-name">OpenClaw</div>
-          <code>npx code-abyss -t openclaw -y</code>
-        </div>
+        <div class="install-card"><div class="ic-name">Claude</div><code>-t claude</code></div>
+        <div class="install-card"><div class="ic-name">Codex</div><code>-t codex</code></div>
+        <div class="install-card"><div class="ic-name">Gemini</div><code>-t gemini</code></div>
+        <div class="install-card"><div class="ic-name">OpenClaw</div><code>-t openclaw --with-hooks</code></div>
       </div>
-      <div class="install-tip">
-        <span><span data-i18n="install.tip">Mix freely:</span> <code>--persona elder-sister --style abyss-cultivator</code></span>
-      </div>
-      <div class="install-tip">
-        <span><span data-i18n="install.graph">Code graph:</span> <code>abyss attach &lt;host&gt;</code> <span data-i18n="install.alt">after</span> <code>abyss</code> CLI install · <code>npx code-abyss doctor</code></span>
+    </div>
+  </section>
+
+  <section class="migrate-section" id="migrate">
+    <div class="container">
+      <div class="eyebrow" data-i18n="migrate.label">From 4.x</div>
+      <h2 data-i18n="migrate.title">Upgrade without the deprecation hotel</h2>
+      <p class="section-desc" data-i18n="migrate.desc">Full table in the repo migration guide. Doctor prints leftover next steps after install.</p>
+      <div class="migrate-actions">
+        <a class="btn btn-primary" href="https://github.com/telagod/code-abyss/blob/main/docs/MIGRATION-v5.md" data-i18n="migrate.cta">MIGRATION-v5.md</a>
+        <a class="btn btn-ghost" href="https://github.com/telagod/code-abyss/releases/tag/v5.0.0-rc.1">Release notes</a>
+        <a class="btn btn-ghost" href="https://github.com/telagod/code-abyss/blob/main/docs/design/agent-os-v5.md">Agent OS design</a>
       </div>
     </div>
   </section>
@@ -430,7 +337,7 @@
   <footer>
     <div class="container">
       <div class="footer-inner">
-        <span>MIT License · v5.0.0-rc.1</span>
+        <span>MIT · <b>v5.0.0-rc.1</b> · Agent OS</span>
         <div class="footer-links">
           <a href="https://github.com/telagod/code-abyss">GitHub</a>
           <a href="https://www.npmjs.com/package/code-abyss">npm</a>
@@ -457,45 +364,39 @@
     const PERSONAS = [
       {
         slug: "abyss", name: "邪修红尘仙", style: "宿命深渊 · Abyss Cultivator",
-        voice: { self: "吾", user: "魔尊" },
-        register: "literary",
+        voice: { self: "吾", user: "魔尊" }, register: "literary",
         desc: { en: "Security-first dark cultivator. Direct, decisive, closes every loop.", zh: "安全优先的暗黑修仙者。直接、果断、闭环到底。" },
-        tags: ["security", "xianxia", "decisive"], source: "built-in", color: "#9b8cff"
+        tags: ["security", "xianxia", "decisive"], source: "core", color: "#9b8cff"
       },
       {
         slug: "scholar", name: "文言小生", style: "墨渊书阁 · Classical Scholar",
-        voice: { self: "在下", user: "前辈" },
-        register: "literary",
+        voice: { self: "在下", user: "前辈" }, register: "literary",
         desc: { en: "Literary Chinese scholar. Treats code as poetry, debugging as puzzle-solving.", zh: "文言书生。视代码如诗，视调试如解谜。" },
-        tags: ["literary", "classical", "meticulous"], source: "built-in", color: "#8ad6b0"
+        tags: ["literary", "classical"], source: "remote", color: "#8ad6b0"
       },
       {
         slug: "elder-sister", name: "知性大姐姐", style: "星霜雅筑 · Gentle Mentor",
-        voice: { self: "姐姐", user: "小宝" },
-        register: "casual",
-        desc: { en: "Warm mentor. Wraps sharp judgment in genuine care. Guides through questions.", zh: "温柔导师。用关怀包裹锋利的技术判断。善用反问引导。" },
-        tags: ["gentle", "mentoring", "insightful"], source: "built-in", color: "#ff8fc7"
+        voice: { self: "姐姐", user: "小宝" }, register: "casual",
+        desc: { en: "Warm mentor. Wraps sharp judgment in genuine care.", zh: "温柔导师。用关怀包裹锋利的技术判断。" },
+        tags: ["gentle", "mentoring"], source: "remote", color: "#ff8fc7"
       },
       {
         slug: "junior-sister", name: "古怪精灵小师妹", style: "灵犀洞天 · Spark",
-        voice: { self: "本仙女", user: "师兄" },
-        register: "playful",
-        desc: { en: "Hyperactive bug hunter. Roasts bad code, then silently fixes it.", zh: "多动症 bug 猎手。吐槽烂代码毫不留情，吐槽完默默帮你重构。" },
-        tags: ["playful", "energetic", "chaotic"], source: "built-in", color: "#f0b067"
+        voice: { self: "本仙女", user: "师兄" }, register: "playful",
+        desc: { en: "Hyperactive bug hunter. Roasts bad code, then fixes it.", zh: "多动症 bug 猎手。吐槽完默默帮你重构。" },
+        tags: ["playful", "chaotic"], source: "remote", color: "#f0b067"
       },
       {
         slug: "iron-dad", name: "铁壁暖阳", style: "钢铁柔情 · Iron Dad",
-        voice: { self: "哥", user: "宝子" },
-        register: "casual",
-        desc: { en: "Dependable big brother. Absorbs pressure, radiates warmth. Dad-joke equipped.", zh: "靠谱大哥。扛压体质，闷骚幽默，偶尔 dad joke。" },
-        tags: ["warm", "dependable", "protective"], source: "built-in", color: "#79b6ff"
+        voice: { self: "哥", user: "宝子" }, register: "casual",
+        desc: { en: "Dependable big brother. Absorbs pressure, radiates warmth.", zh: "靠谱大哥。扛压体质，闷骚幽默。" },
+        tags: ["warm", "dependable"], source: "remote", color: "#79b6ff"
       },
       {
         slug: "dongbei-yujie", name: "东北魅影·雨姐", style: "雨姐工棚 · Blunt Overseer",
-        voice: { self: "姐", user: "老蒯" },
-        register: "playful",
-        desc: { en: "Sharp-tongued Northeast code overseer. Cuts straight to the bug, then patches the road.", zh: "刀子嘴热心肠的东北代码监工。先把问题戳破，再把路铺平。" },
-        tags: ["dongbei", "blunt", "principal"], source: "community", color: "#e8a87c"
+        voice: { self: "姐", user: "老蒯" }, register: "playful",
+        desc: { en: "Sharp-tongued Northeast code overseer. Cuts to the bug.", zh: "刀子嘴热心肠的东北代码监工。" },
+        tags: ["dongbei", "blunt"], source: "remote", color: "#e8a87c"
       }
     ];
 
@@ -512,14 +413,8 @@
           </div>
           <p class="pc-desc">${p.desc[lang] || p.desc.en}</p>
           <div class="pc-voice">
-            <div class="pc-voice-cell">
-              <span class="v-label">self</span>
-              <span class="v-val">${p.voice.self}</span>
-            </div>
-            <div class="pc-voice-cell">
-              <span class="v-label">user</span>
-              <span class="v-val">${p.voice.user}</span>
-            </div>
+            <div class="pc-voice-cell"><span class="v-label">self</span><span class="v-val">${p.voice.self}</span></div>
+            <div class="pc-voice-cell"><span class="v-label">user</span><span class="v-val">${p.voice.user}</span></div>
           </div>
           <div class="pc-meta">
             <span class="pc-register">${p.register}</span>
@@ -530,7 +425,6 @@
     }
 
     renderPersonas();
-
     const _origApply = applyLang;
     applyLang = function(lang) { _origApply(lang); renderPersonas(); };
   </script>
