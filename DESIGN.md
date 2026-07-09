@@ -1,12 +1,16 @@
 # DESIGN.md - 设计决策文档
 
+> **Current product architecture (post–v4.10):** [`docs/design/agent-os-v5.md`](docs/design/agent-os-v5.md) — Agent OS thesis (compose · inject · score · kill foyer).  
+> **Always-on compose layer:** [`docs/design/persona-architecture-v3.md`](docs/design/persona-architecture-v3.md) (eager→lazy; still valid as layer design).  
+> **Below this line:** historical decisions and older layer narratives. The “五层 / freeform identity.md” assembly is **not** current runtime truth — runtime is voice-card + `renderRuntimeGuidance` (identity → shared → style → kernel anchor). See agent-os-v5 §1 and §8.
+
 ## 项目概述
 
-Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code、Codex CLI、Gemini CLI 与 OpenClaw），采用三层架构 + 模板变量系统提供可组合的人格体验。v3.0.0 引入 **Tech Persona Card** 标准，实现跨平台人格互换。
+Code Abyss 是 CLI 助手的个性化配置方案（支持 Claude Code、Codex CLI、Gemini CLI 与 OpenClaw），采用可组合的人格声音 + 输出风格 + 技能/内核分发。v4.x 起人格为 **Persona Voice Card**（非自由文本 identity 小说）；v4.10 落地 mythos 纪律内核懒加载。下一主线见 Agent OS v5。
 
-## 五层架构分工
+## 五层架构分工（历史 · v2 叙事）
 
-> v2 起人格按「注入位置 / 作用」分层（对标 Character Card / SillyTavern）。详见 [persona-architecture-v2.md](persona-architecture-v2.md)。
+> **Historical.** v2 起人格按「注入位置 / 作用」分层（对标 Character Card / SillyTavern）。详见 [persona-architecture-v2.md](docs/persona-architecture-v2.md)。**当前实现已不按 freeform L1/L2/L4 装配** — 见上方 Agent OS / v3 指针。
 
 | 层 | 文件 | 职责 | 必需 |
 |---|------|------|------|

@@ -1,7 +1,10 @@
 # DESIGN — Persona Architecture v3：eager→lazy 反转
 
-> Status: **Draft v1（待评审）**
-> Supersedes: `docs/persona-architecture-v2.md`（v2 五层贪婪装配）并吸收 `docs/design/mythos-kernel-merge.md`（mythos 内核合并——在 v3 中它只是懒加载层的一部分）。
+> **⚠ Product thesis SUPERSEDED by [`agent-os-v5.md`](./agent-os-v5.md).**  
+> v3 remains the **layer design** for always-on compose (eager→lazy, voice-card residual space, kernel not baked into every prompt). Post–v4.10 product direction — runtime attach, forced inject, kill half-dead paths — lives in Agent OS v5. Do not treat this file as the primary next-era roadmap.
+>
+> Status: **Landed as compose layer (v4.10); no longer primary product thesis**  
+> Supersedes: `docs/persona-architecture-v2.md`（v2 五层贪婪装配）并吸收 `docs/design/mythos-kernel-merge.md`（mythos 内核合并——在 v3 中它只是懒加载层的一部分）。  
 > 背景：mythos 内核合并（方向 C）落地 P0/P1/P2 后，暴露出 v2 架构的根本缺陷（常驻预算爆炸、双格式漂移、无强制/测量）。v3 是对这些缺陷的统一重设计，非增量补丁。
 
 ---

@@ -1,8 +1,8 @@
 # DESIGN — mythos 内核合并到 code-abyss 多 host 分发
 
-> **⚠ SUPERSEDED by [`persona-architecture-v3.md`](./persona-architecture-v3.md)。**
-> 本文的合并思路（方向 C）仍成立，但落地过程暴露了 v2 架构的根本缺陷（常驻预算爆炸）。
-> v3 把内核合并吸收为「懒加载层」的一部分并统一重设计。以 v3 为准。
+> **⚠ SUPERSEDED chain:** 内核合并思路 → [`persona-architecture-v3.md`](./persona-architecture-v3.md)（eager→lazy 层）→ **产品主论旨** [`agent-os-v5.md`](./agent-os-v5.md)（Agent OS / inject / kill list）。  
+> 本文的合并思路（方向 C）仍成立，但落地过程暴露了 v2 架构的根本缺陷（常驻预算爆炸）。  
+> v3 把内核合并吸收为「懒加载层」；v5 在之上补强制调用与运行时控制面。以 **agent-os-v5** 为下一时代主文档。
 
 > Status: **Draft v1（待评审）** · Direction: **C（合并，mythos 当内核 + 全 9 bundle）**
 > 作者：设计探查基于对 `mythos` 与 `code-abyss` 两仓的深度审查（含 `file:line` 落点）。
