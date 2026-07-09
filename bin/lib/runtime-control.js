@@ -103,6 +103,43 @@ function buildDoctorReport({
   };
 }
 
+/**
+ * Actionable migration / health hints for 4.x → 5.0 cutover.
+ * @returns {string[]}
+ */
+function collectMigrationHints(report) {
+  const hints = [];
+  const t = report.enforcement && report.enforcement.target;
+
+  if (!report.abyss.present) {
+    hints.push(
+      'abyss CLI missing → curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash',
+      '  (or: npm i -g @code-abyss/cli  |  cargo binstall code-abyss)'
+    );
+  }
+  if (t && ['claude', 'codex', 'gemini'].includes(t)) {
+    // Graph hooks are not owned by code-abyss install; always remind attach for these hosts
+    hints.push(`code-graph hooks → abyss attach ${t}  (idempotent; not --with-hooks)`);
+  }
+  if (report.enforcement && !report.enforcement.on && t && ['claude', 'codex'].includes(t)) {
+    hints.push(
+      'character Stop-hook OFF → reinstall without --no-enforcement  (default on in 5.0)'
+    );
+  }
+  if (report.injectPlane && !report.injectPlane.present && t && ['claude', 'codex'].includes(t)) {
+    hints.push(
+      `inject plane missing → npx code-abyss -t ${t} -y  (writes ${report.injectPlane.path || '.code-abyss-inject.md'})`
+    );
+  }
+  if (!report.kernel.present) {
+    hints.push('kernel meta missing in this package tree — reinstall from npm/tag that ships skills/_kernel');
+  }
+  if (report.composeBudget && !report.composeBudget.underBudget) {
+    hints.push(`compose budget exceeded (${report.composeBudget.length}/${report.composeBudget.cap}) — trim always-on layers`);
+  }
+  return hints;
+}
+
 function formatDoctorReport(report) {
   const lines = [];
   lines.push(`code-abyss doctor · ${report.package.name}@${report.package.version}`);
@@ -123,6 +160,14 @@ function formatDoctorReport(report) {
   const b = report.composeBudget;
   lines.push(`compose budget: ${b.length}/${b.cap} (headroom ${b.headroom}) persona=${b.persona} style=${b.style}`);
   lines.push(`inject plane: ${report.injectPlane.present ? 'present' : 'absent'} (${report.injectPlane.path})`);
+
+  const hints = collectMigrationHints(report);
+  if (hints.length) {
+    lines.push('');
+    lines.push('migration / next steps (v5):');
+    for (const h of hints) lines.push(`  • ${h}`);
+    lines.push('  see docs/MIGRATION-v5.md');
+  }
   return lines.join('\n') + '\n';
 }
 
@@ -178,5 +223,6 @@ module.exports = {
   measureComposeBudget,
   buildDoctorReport,
   formatDoctorReport,
+  collectMigrationHints,
   composeHostGuidance,
 };

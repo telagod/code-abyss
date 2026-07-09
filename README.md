@@ -69,14 +69,15 @@ domain expertise, and a backstop against the trained agree-reflex** — across e
 - **v4.6 — `indexing-code` skill (calling convention only)**: the `indexing-code` skill ships the calling convention for the external [`abyss`](https://github.com/telagod/abyss) Rust CLI (call graph + temporal analysis). The CLI itself is a separate product with its own release cadence — install it with its own `install.sh` / `cargo binstall` / `@code-abyss/cli` npm wrapper
 - **v4.7 — measured resolution (abyss CLI)**: the companion `abyss` Rust CLI ships four-language reference resolution (Go / TypeScript / Python / Rust), benchmarked against SCIP ground truth across five corpora at ≥98.5% gated precision. See its repo for numbers
 - **v4.8 — dynamic capability discovery**: code-abyss reads `abyss skill-manifest` when the installed `abyss` CLI is ≥ 0.5.22 — exposed CLI commands, MCP tools, and daemon socket verbs are discovered at install time instead of hard-coded
-- **v4.9 — hybrid split deprecation period (2026-06-25)**: `--with-abyss` / `--with-mcp` enter deprecation (removed v5.0). `--with-hooks` splits: claude/codex/gemini move to `abyss attach <host>` as the production main entrypoint (abyss v0.5.20+); openclaw/pi/hermes stay with code-abyss and `--with-hooks` now auto-spawns `install-hooks.sh` for those three. See [CHANGELOG](CHANGELOG.md) for the migration guide
-- **v4.10 — mythos discipline kernel (eager→lazy persona architecture v3)**: 9 engineering-judgment bundles (`doctrine`, `methods`, `character`, `loop-engineering` + domain bundles for `backend` / `frontend` / `hardware` / `ml` / `security`) vendored into `skills/_kernel/`, invoked lazily by a thin router instead of baked into every prompt — see [Discipline kernel](#discipline-kernel) below. Adds a **character Stop-hook backstop** (`--with-enforcement`, claude/codex) that forces one revision turn if a reply opens with a banned capitulation phrase, upward judgment gates on 16 exec skills, and an opt-in **persona behavioral battery** to spot-check whether an installed persona holds up under pushback.
-- **v4.10 — persona redesign (Persona Voice Card, supersedes Tech Persona Card v1.0)**: the v3 kernel merge's own precedence anchor claimed persona is confined to "residual space" (wording, tone, address) — an audit found that claim was false: `abyss`'s persona content carried a live authorization-tier policy and per-scenario priority orderings, none of it enforced as voice-only. Every persona is now a single flat `config/personas/<slug>.json` (self/user/language/register/emoji_policy/flourish only, `additionalProperties:false`) rendered through a fixed, code-owned template with mandatory re-validation on every render (falls back to a neutral voice on any failure, never renders unvalidated content) — see [Persona Voice Card](#persona-voice-card-open-standard) below. The judgment content that used to live in a persona moved to `skills/securing-systems/references/authorization-tiers.md`, where it's an ordinary security-domain skill concern instead of a side-channel through voice.
+- **v4.9 — hybrid split deprecation period**: `--with-abyss` / `--with-mcp` deprecated; graph hooks for claude/codex/gemini move toward `abyss attach` (completed in v5.0)
+- **v4.10 — mythos discipline kernel + Persona Voice Card**: lazy kernel, voice-only personas — see [Discipline kernel](#discipline-kernel) and [Persona Voice Card](#persona-voice-card-open-standard)
+- **v5.0 — Agent OS**: kill foyer (no binary/MCP/graph inject in code-abyss), default character enforcement, inject plane, `doctor` / `compose` / `score`. **Upgrade guide:** [docs/MIGRATION-v5.md](docs/MIGRATION-v5.md)
 
 ```bash
-npx code-abyss -t claude -y                       # persona / skills / style layer (zero network)
-curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash   # then install abyss CLI
-abyss attach claude                               # finally, attach the code-graph hook (idempotent)
+npx code-abyss@5 -t claude -y                     # persona / skills / style + default enforcement + inject map
+curl -fsSL https://raw.githubusercontent.com/telagod/abyss/main/install.sh | bash   # abyss CLI (separate product)
+abyss attach claude                               # code-graph hooks (idempotent)
+npx code-abyss doctor                             # health + migration hints
 ```
 
 Swap `-t claude` for `codex` / `gemini` / `openclaw`. For openclaw/pi/hermes (whose hook surface abyss CLI does not own), use `npx code-abyss -t openclaw --with-hooks` to spawn the bundled `install-hooks.sh`. Or as a Claude Code plugin:
@@ -85,7 +86,7 @@ Swap `-t claude` for `codex` / `gemini` / `openclaw`. For openclaw/pi/hermes (wh
 claude plugin install code-abyss
 ```
 
-> The persona/skills/style layer is fully decoupled from the code-graph CLI — installing code-abyss alone never touches the network beyond fetching remote persona content. `abyss attach <host>` is idempotent (re-running upgrades shape in place). Verify code-graph is live with `abyss --version`, then `abyss index` in any project.
+> **v5 cutover:** code-abyss does **not** download the abyss binary or inject graph hooks for claude/codex/gemini (`--with-abyss` / `--with-mcp` removed). Character Stop-hook is **default on** (opt out: `--no-enforcement`). Recompose without reinstall: `npx code-abyss compose -t claude --persona <slug> --style <slug>`.
 
 ---
 
@@ -419,6 +420,6 @@ npm run verify:skills       # Validate 39 skill contracts (30 domain + 9 kernel)
 
 <p align="center">
   <sub>
-    <b>MIT License</b> · v4.10.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
+    <b>MIT License</b> · v5.0.0 · made with 紫宵脉 by <a href="https://github.com/telagod">@telagod</a>
   </sub>
 </p>

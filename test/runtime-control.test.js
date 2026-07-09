@@ -43,6 +43,22 @@ describe('runtime-control doctor', () => {
     expect(r.stdout).toContain('code-abyss doctor');
     expect(r.stdout).toMatch(/compose budget:/);
   });
+
+  test('collectMigrationHints surfaces missing inject / attach path', () => {
+    const { collectMigrationHints } = require('../bin/lib/runtime-control');
+    const hints = collectMigrationHints({
+      abyss: { present: false, minRequired: '0.5.20' },
+      kernel: { present: true },
+      enforcement: { target: 'claude', on: false },
+      injectPlane: { present: false, path: '/tmp/.claude/.code-abyss-inject.md' },
+      composeBudget: { underBudget: true, length: 100, cap: 8000 },
+    });
+    const blob = hints.join('\n');
+    expect(blob).toMatch(/abyss CLI missing|install\.sh/);
+    expect(blob).toMatch(/Stop-hook OFF|no-enforcement/);
+    expect(blob).toMatch(/inject plane missing/);
+    expect(blob).toMatch(/abyss attach claude/);
+  });
 });
 
 describe('runtime-control compose', () => {

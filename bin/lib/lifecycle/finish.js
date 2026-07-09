@@ -118,6 +118,10 @@ function createFinish(deps) {
     }
     console.log(`  ${c.b('文件:')}     ${ctx.manifest.installed.length} 个安装, ${ctx.manifest.backups.length} 个备份`);
     console.log(`  ${c.b('卸载:')}     ${c.d(`npx code-abyss --uninstall ${tgt}`)}`);
+    console.log(`  ${c.b('体检:')}     ${c.d('npx code-abyss doctor')}  ${c.d('# v5 健康 + 迁移提示')}`);
+    if (['claude', 'codex', 'gemini'].includes(tgt)) {
+      console.log(`  ${c.b('图谱:')}     ${c.d(`abyss attach ${tgt}`)}  ${c.d('# 代码图 hooks（非 --with-hooks）')}`);
+    }
     reportAbyssStatus(projectLock, tgt);
     console.log('');
     console.log(c.grn(`  ✓ 安装完成\n`));
