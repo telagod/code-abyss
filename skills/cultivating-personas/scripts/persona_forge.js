@@ -21,6 +21,7 @@
 const fs = require('fs');
 const path = require('path');
 const { validatePersonaVoiceCard } = require('../../../bin/lib/persona-voice-card');
+const { resolveSafePath } = require('../../_lib/shared.js');
 
 const FORBIDDEN_TERMS = [
   /\b(linus torvalds|elon musk|donald trump|joe biden)\b/i,
@@ -183,9 +184,10 @@ function cmdPublish(args) {
     return 1;
   }
 
-  const outDir = path.join(path.dirname(cardPath), 'submission');
+  const safeCardPath = resolveSafePath(cardPath);
+  const outDir = path.join(path.dirname(safeCardPath), 'submission');
   fs.mkdirSync(outDir, { recursive: true });
-  fs.copyFileSync(cardPath, path.join(outDir, `${card.slug}.json`));
+  fs.copyFileSync(safeCardPath, path.join(outDir, `${card.slug}.json`));
 
   const checklist = `# 提交前自检 · ${card.slug}
 

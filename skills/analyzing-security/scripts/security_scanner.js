@@ -219,7 +219,7 @@ function walkDir(dir, excludeDirs) {
 }
 
 function scanDirectory(scanPath, excludeDirs) {
-  const resolved = path.resolve(scanPath);
+  const resolved = resolveSafePath(scanPath);
   const findings = [];
   const files = walkDir(resolved, excludeDirs);
   for (const f of files) findings.push(...scanFile(f, SECURITY_RULES));
@@ -231,7 +231,7 @@ function scanDirectory(scanPath, excludeDirs) {
   return { scan_path: resolved, files_scanned: files.length, passed, findings };
 }
 
-const { buildReport, countBySeverity, parseCliArgs } = require(
+const { buildReport, countBySeverity, parseCliArgs, resolveSafePath } = require(
   path.join(__dirname, '..', '..', '_lib', 'shared.js')
 );
 

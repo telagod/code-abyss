@@ -15,16 +15,21 @@
  */
 
 const { spawn } = require('child_process');
-const { unlinkSync, closeSync, openSync, statSync } = require('fs');
+const { statSync, mkdirSync, rmdirSync, writeFileSync } = require('fs');
 const { join, resolve } = require('path');
 const { createHash } = require('crypto');
-const { tmpdir } = require('os');
+const { homedir } = require('os');
 const { resolveExecutableSkillScript } = require('../bin/lib/skill-registry');
 
 function getSkillsDir() {
   const override = process.env.SAGE_SKILLS_DIR;
-  if (override) return resolve(override);
-  return __dirname;
+  if (!override) return __dirname;
+  const resolved = resolve(override);
+  const stat = statSync(resolved, { throwIfNoEntry: false });
+  if (!stat || !stat.isDirectory()) {
+    throw new Error(`SAGE_SKILLS_DIR 不是有效目录: ${resolved}`);
+  }
+  return resolved;
 }
 
 function sleep(ms) {
@@ -51,6 +56,12 @@ function getScriptEntry(skillName) {
 
 const STALE_LOCK_MAX_AGE_MS = 60000;
 
+function getLockBaseDir() {
+  const dir = join(homedir(), '.code-abyss', 'locks');
+  mkdirSync(dir, { recursive: true });
+  return dir;
+}
+
 function isStaleLock(lockPath) {
   try {
     const stat = statSync(lockPath);
@@ -58,31 +69,36 @@ function isStaleLock(lockPath) {
   } catch { return false; }
 }
 
-async function acquireTargetLock(args) {
+async function acquireTargetLock(skillName, args) {
   const target = args.find(a => !a.startsWith('-')) || process.cwd();
-  const hash = createHash('md5').update(resolve(target)).digest('hex').slice(0, 12);
-  const lockPath = join(tmpdir(), `sage_skill_${hash}.lock`);
+  const hash = createHash('md5').update(`${skillName}:${resolve(target)}`).digest('hex').slice(0, 12);
+  const lockDir = join(getLockBaseDir(), `sage_skill_${hash}.lock`);
 
   const deadline = Date.now() + 30000;
   let first = true;
   while (true) {
     try {
-      const fd = openSync(lockPath, 'wx');
-      return { fd, lockPath, target };
+      mkdirSync(lockDir);
+      const pidPath = join(lockDir, 'pid');
+      try {
+        writeFileSync(pidPath, String(process.pid), { flag: 'wx' });
+      } catch {
+        // pid file may already exist from a race; keep the lock directory
+      }
+      return { lockDir, target };
     } catch (e) {
-      if (e.code !== 'EEXIST') return { fd: null, lockPath: null, target };
+      if (e.code !== 'EEXIST') return { lockDir: null, target };
       if (first) {
-        console.log(`⏳ 等待锁释放: ${target}`);
+        console.log(`⏳ 等待锁释放: ${skillName} @ ${target}`);
         first = false;
       }
-      // Stale lock cleanup: if lock file is older than threshold, remove it
-      if (isStaleLock(lockPath)) {
-        console.log(`⏳ 检测到过期锁，尝试清理: ${lockPath}`);
-        try { unlinkSync(lockPath); } catch { /* best-effort */ }
+      if (isStaleLock(lockDir)) {
+        console.log(`⏳ 检测到过期锁，尝试清理: ${lockDir}`);
+        try { rmdirSync(lockDir, { recursive: true }); } catch { /* best-effort */ }
         continue;
       }
       if (Date.now() >= deadline) {
-        console.error(`⏳ 等待锁超时: ${target}. Try: rm ${lockPath}`);
+        console.error(`⏳ 等待锁超时: ${skillName} @ ${target}. Try: rm -rf ${lockDir}`);
         process.exit(1);
       }
       await sleep(200);
@@ -90,13 +106,9 @@ async function acquireTargetLock(args) {
   }
 }
 
-function releaseLock({ fd, lockPath }) {
-  if (fd !== null) {
-    try { closeSync(fd); } catch {}
-  }
-  if (lockPath) {
-    try { unlinkSync(lockPath); } catch {}
-  }
+function releaseLock(lock) {
+  if (!lock || !lock.lockDir) return;
+  try { rmdirSync(lock.lockDir, { recursive: true }); } catch {}
 }
 
 async function main() {
@@ -110,34 +122,40 @@ async function main() {
   const skillName = args[0];
   const { scriptPath } = getScriptEntry(skillName);
   const scriptArgs = args.slice(1);
-  const lock = await acquireTargetLock(scriptArgs);
+  const lock = await acquireTargetLock(skillName, scriptArgs);
+  let lockReleased = false;
+  const releaseOnce = () => {
+    if (lockReleased) return;
+    lockReleased = true;
+    releaseLock(lock);
+  };
 
   const child = spawn(process.execPath, [scriptPath, ...scriptArgs], {
     stdio: 'inherit',
   });
 
   child.on('close', (code) => {
-    releaseLock(lock);
+    releaseOnce();
     process.exit(code || 0);
   });
 
   child.on('error', (err) => {
     console.error(`执行错误: ${err.message}`);
-    releaseLock(lock);
+    releaseOnce();
     process.exit(1);
   });
 
   process.on('SIGINT', () => {
     console.log('\n已取消');
     child.kill('SIGINT');
-    releaseLock(lock);
+    releaseOnce();
     process.exit(130);
   });
 
   process.on('SIGTERM', () => {
     console.log('\n已终止');
     child.kill('SIGTERM');
-    releaseLock(lock);
+    releaseOnce();
     process.exit(143);
   });
 }

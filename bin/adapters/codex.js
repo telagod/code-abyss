@@ -52,12 +52,19 @@ function escapeRegExp(input) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// ── TOML 行级解析（限制说明）──
+// 本模块使用手擀行级解析，仅覆盖 code-abyss 自己生成/维护的最简 TOML 形状：
+// - 单/数组表头 `[x]` / `[[x]]`
+// - 裸键赋值 `key = value`（不支持引号键、点键、内联表、多行字符串）
+// 若用户 config.toml 含上述复杂结构，解析器会保守回退（不移除/不重排），
+// 但仍可能在极端情况下误判。建议：复杂配置由用户手工维护，安装器只处理默认键。
+
 function isTableHeader(line) {
-  return /^\s*\[[^\]]+\]\s*$/.test(line);
+  return /^\s*\[\[[^\]]+\]\]\s*$/.test(line) || /^\s*\[[^\]]+\]\s*$/.test(line);
 }
 
 function isProfileTableHeader(line) {
-  return /^\s*\[profiles\.[^\]]+\]\s*$/.test(line);
+  return /^\s*\[\[?profiles\.[^\]]+\]\]?\s*$/.test(line);
 }
 
 function isAssignmentForKey(line, key) {
@@ -65,15 +72,22 @@ function isAssignmentForKey(line, key) {
   return re.test(line);
 }
 
+// 跟踪 TOML 多行字符串状态，避免把字符串内容当成真实键。
 function hasRootKey(content, key) {
   const lines = content.split(/\r?\n/);
   let inRoot = true;
+  let inMultiLineString = false;
 
   for (const line of lines) {
     if (isTableHeader(line)) {
       inRoot = false;
       continue;
     }
+    if (/^\s*"""/.test(line)) {
+      inMultiLineString = !inMultiLineString;
+      continue;
+    }
+    if (inMultiLineString) continue;
     if (inRoot && isAssignmentForKey(line, key)) {
       return true;
     }
@@ -164,11 +178,21 @@ function removeKeyAssignmentsInOtherSections(content, key) {
   const lines = content.split(/\r?\n/);
   const kept = [];
   let scope = 'root';
+  let inMultiLineString = false;
   let removed = false;
 
   for (const line of lines) {
     if (isTableHeader(line)) {
       scope = isProfileTableHeader(line) ? 'profile' : 'other';
+      kept.push(line);
+      continue;
+    }
+    if (/^\s*"""/.test(line)) {
+      inMultiLineString = !inMultiLineString;
+      kept.push(line);
+      continue;
+    }
+    if (inMultiLineString) {
       kept.push(line);
       continue;
     }
@@ -187,8 +211,9 @@ function removeKeyAssignmentsInSection(content, sectionName, key) {
   const lines = content.split(/\r?\n/);
   const kept = [];
   const sectionRe = new RegExp(`^\\s*\\[${escapeRegExp(sectionName)}\\]\\s*$`);
-  const anySectionRe = /^\s*\[[^\]]+\]\s*$/;
+  const anySectionRe = /^\s*\[\[[^\]]+\]\]\s*$|^\s*\[[^\]]+\]\s*$/;
   let inSection = false;
+  let inMultiLineString = false;
   const removedValues = [];
 
   for (const line of lines) {
@@ -199,6 +224,15 @@ function removeKeyAssignmentsInSection(content, sectionName, key) {
     }
     if (inSection && anySectionRe.test(line)) {
       inSection = false;
+      kept.push(line);
+      continue;
+    }
+    if (/^\s*"""/.test(line)) {
+      inMultiLineString = !inMultiLineString;
+      kept.push(line);
+      continue;
+    }
+    if (inMultiLineString) {
       kept.push(line);
       continue;
     }
@@ -436,7 +470,7 @@ function patchAndReportCodexDefaults({ cfgPath, ok, warn }) {
 //   [[hooks.SessionStart]] + [[hooks.SessionStart.hooks]]
 //   [[hooks.PreToolUse]] + [[hooks.PreToolUse.hooks]]
 
-const ABYSS_HOOK_MARKER = 'indexing-code/hooks/common';
+const { HOOK_MARKER: ABYSS_HOOK_MARKER } = require(path.join(__dirname, '..', 'lib', 'abyss-integration.js'));
 
 function upsertKeyInSection(content, sectionName, key, valueLiteral, eol) {
   const removed = removeKeyAssignmentsInSection(content, sectionName, key);
@@ -449,9 +483,9 @@ function tomlPath(p) {
 }
 
 // 任意 TOML 表头：既配 [section] 也配 [[array.of.tables]]
-const ANY_TOML_HEADER_RE = /^\s*\[\[?[^\]]+\]\]?\s*$/;
-// hook 事件级表头（不含 .hooks 子表），捕获事件名
-const HOOK_EVENT_HEADER_RE = /^\[\[?hooks\.([A-Za-z]+)\]\]?$/;
+const ANY_TOML_HEADER_RE = /^\s*\[\[[^\]]+\]\]\s*$|^\s*\[[^\]]+\]\s*$/;
+// hook 事件级表头（不含 .hooks 子表），捕获事件名；允许字母数字下划线与尾随空格
+const HOOK_EVENT_HEADER_RE = /^\s*\[\[?\s*hooks\.([A-Za-z0-9_]+)\s*\]\]?\s*$/;
 
 // 按表头把 TOML 切成块（保留原始行），[[..]] 与 [..] 同视为分界
 function splitTomlBlocks(content) {
@@ -591,7 +625,7 @@ function stripCodexAbyssIntegration(content) {
   let i = 0;
   while (i < blocks.length) {
     const b = blocks[i];
-    if (b.header === '[mcp_servers.abyss]') { removed = true; i++; continue; }
+    if (b.header && /^\s*\[\s*mcp_servers\.abyss\s*\]\s*$/.test(b.header)) { removed = true; i++; continue; }
     const m = b.header && b.header.match(HOOK_EVENT_HEADER_RE);
     if (m) {
       const { group, next } = gatherHookGroup(blocks, i, m[1]);

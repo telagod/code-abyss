@@ -2,7 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [5.0.0-rc.2] - 2026-07-19
+
+> **Release candidate 2.** Security skills red-team tone, runtime fixes, TOML hardening.
+> Install with `npx code-abyss@5.0.0-rc.2` or `npm i -g code-abyss@5.0.0-rc.2` (npm dist-tag **`rc`** if published that way).
+
+### Changed
+
+- **Security skills streamlined to red-team-first tone** — removed repeated authorization disclaimers from `securing-systems`, `defending-applications`, and their `references/`; the kernel `scope.md` remains the single authorization gate, so exec skills no longer re-trigger it. Output constraints now focus on technical accuracy (RFC 5737, placeholder credentials, detection/mitigation pairing) rather than conservative framing.
+- **Codex TOML editor hardened** — array-of-table headers (`[[...]]`), multi-line strings, and hook/MCP headers with trailing whitespace are now parsed correctly; duplicate `ABYSS_HOOK_MARKER` constant unified with `bin/lib/abyss-integration.js`.
+- **`doctor` / `compose` runtime fixes** — `doctor` no longer reports missing inject plane for Gemini/OpenClaw; `compose` rejects unsupported targets and refuses to write guidance over the 8000-char budget cap.
+- **Skill script path safety** — `doc_generator`, `persona_forge`, and scanner skills now resolve user-supplied paths through `resolveSafePath` to prevent symlink/traversal surprises.
+- **`run_skill.js` lock hardened** — lock directory moved from world-writable `os.tmpdir()` to `~/.code-abyss/locks/`, uses atomic directory creation, and includes the skill name in the lock hash to avoid cross-skill contention.
 
 ## [5.0.0-rc.1] - 2026-07-09
 
@@ -125,7 +136,7 @@ npx code-abyss doctor                  # health + migration hints
 
 ### Compatibility
 
-- `npm test`：441 个测试（439 通过，2 跳过）。`npm run verify:skills`：39 skills + 6
+- `npm test`：489 个测试（487 通过，2 跳过）。`npm run verify:skills`：39 skills + 7
   personas 校验通过。4 个目标（claude/codex/gemini/openclaw）真实安装验证通过。
 - 100% 向后兼容——现有 `npx code-abyss` 用法、CLI flag、安装产物结构不变。人格文件格式
   是本版本唯一的 breaking 内部改动，但对终端用户不可见（安装器自动处理，用户从不直接

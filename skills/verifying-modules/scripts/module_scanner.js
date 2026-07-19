@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseCliArgs, buildReport, hasFatal } = require(path.join(__dirname, '..', '..', '_lib', 'shared.js'));
+const { parseCliArgs, buildReport, hasFatal, resolveSafePath } = require(path.join(__dirname, '..', '..', '_lib', 'shared.js'));
 
 const REQUIRED_FILES = { 'README.md': '模块说明文档', 'DESIGN.md': '设计决策文档' };
 const ALT_SRC_DIRS = ['src', 'lib', 'pkg', 'internal', 'cmd', 'app'];
@@ -45,7 +45,7 @@ function rglob(dir, test) {
 }
 
 function scanModule(target) {
-  const modulePath = path.resolve(target);
+  const modulePath = resolveSafePath(target);
   const issues = [];
   const add = (severity, message, p) => issues.push({ severity, message, path: p || null });
 

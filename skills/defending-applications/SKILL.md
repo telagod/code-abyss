@@ -1,6 +1,6 @@
 ---
 name: defending-applications
-description: Application security defense knowledge for builders, not pentesters. Covers Web/API/GraphQL hardening (XSS/SQLi/SSRF/IDOR/BOLA/Mass Assignment/deserialization/upload/path traversal), authentication/authorization (OAuth 2.0/OIDC/JWT/Session/Cookie/SAML/SSO), and LLM application security (prompt injection, jailbreak, RAG poisoning, agent privilege escalation, output filtering). Use when designing or reviewing application-layer defenses, fixing CVE-class bugs in your own code, hardening auth flows, or threat-modeling LLM-powered features. Do NOT use for offensive testing (see securing-systems/pentest), incident response (see securing-systems/blue-team), or infra-layer hardening (see provisioning-infrastructure).
+description: Application security defense knowledge for builders. Covers Web/API/GraphQL hardening (XSS/SQLi/SSRF/IDOR/BOLA/Mass Assignment/deserialization/upload/path traversal), authentication/authorization (OAuth 2.0/OIDC/JWT/Session/Cookie/SAML/SSO), and LLM application security (prompt injection, jailbreak, RAG poisoning, agent privilege escalation, output filtering). Use when designing or reviewing application-layer defenses, fixing CVE-class bugs in your own code, hardening auth flows, or threat-modeling LLM-powered features. For offensive testing see securing-systems/pentest, for incident response see securing-systems/blue-team, for infra-layer hardening see provisioning-infrastructure.
 user-invocable: false
 ---
 
@@ -27,7 +27,7 @@ user-invocable: false
 | review 自家代码、修 CVE、设计鉴权 | ✅ 本 skill | — |
 | 写 SAST 规则、Semgrep 模式 | ✅ 本 skill + securing-systems/code-audit | — |
 | 设计 LLM 应用的 guardrail | ✅ llm-appsec | + building-agent-systems/llm-security |
-| 红队渗透、写 PoC 攻击别人 | ❌ | securing-systems/pentest |
+| 红队渗透、写 PoC 攻击目标 | ❌ | securing-systems/pentest |
 | 处理已发生的入侵、日志取证 | ❌ | securing-systems/blue-team |
 | 容器/K8s/CI 加固 | ❌ | provisioning-infrastructure |
 | 设计零信任、身份架构 | 部分（OAuth/SSO 内） | architecting-security |
@@ -63,5 +63,4 @@ user-invocable: false
 
 - 漏洞示例代码统一 `❌ 错代码` / `✅ 正代码` 对比，错代码必须能跑通漏洞场景。
 - 攻击演示用 `example.com` / RFC 5737 网段（`192.0.2.0/24`）；token/密钥用 `<REDACTED>`。
-- 不输出针对未授权目标的 ready-to-fire payload；防御示例可含等价 payload 用于回归测试。
 - 给修复方案时同时给：检测信号（log key / metric name）、回归测试骨架、性能/兼容回归点。

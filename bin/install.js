@@ -214,10 +214,7 @@ function detectOpenClawEnvironment() {
 const args = process.argv.slice(2);
 
 // Agent OS v5.5+ multi-command surface (doctor / compose / score)
-const runtimeCmd = args[0];
-if (runtimeCmd === 'doctor' || runtimeCmd === 'compose' || runtimeCmd === 'score') {
-  // handled in main() after helpers load — mark and shift
-}
+// args[0] is checked directly in main() after helpers load.
 
 let target = null;
 let uninstallTarget = null;

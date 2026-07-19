@@ -6,6 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { resolveSafePath } = require('../../_lib/shared.js');
 
 // --- Utilities ---
 
@@ -346,7 +347,13 @@ function generateDesign(info) {
 // --- Core: generate_docs ---
 
 function generateDocs(targetPath, force) {
-  const modPath = path.resolve(targetPath);
+  let modPath;
+  try {
+    modPath = resolveSafePath(targetPath);
+  } catch (e) {
+    const result = { readme: null, design: null, status: 'error', messages: [e.message] };
+    return result;
+  }
   const result = { readme: null, design: null, status: 'success', messages: [] };
 
   if (!fs.existsSync(modPath)) {

@@ -81,11 +81,15 @@ describe('run_skill', () => {
 
     const targetArg = path.join(tmpDir, 'project');
     fs.mkdirSync(targetArg, { recursive: true });
-    const hash = require('crypto').createHash('md5').update(path.resolve(targetArg)).digest('hex').slice(0, 12);
-    const lockPath = path.join(os.tmpdir(), `sage_skill_${hash}.lock`);
-    const fd = fs.openSync(lockPath, 'wx');
+    const hash = require('crypto')
+      .createHash('md5')
+      .update(`checking-code-quality:${path.resolve(targetArg)}`)
+      .digest('hex')
+      .slice(0, 12);
+    const lockDir = path.join(os.homedir(), '.code-abyss', 'locks', `sage_skill_${hash}.lock`);
+    fs.mkdirSync(lockDir, { recursive: true });
 
-    const releaser = spawn(process.execPath, [helperScript, lockPath, String(fd), '300'], {
+    const releaser = spawn(process.execPath, [helperScript, lockDir, 'dir', '300'], {
       env: process.env,
       stdio: 'ignore',
       detached: false,

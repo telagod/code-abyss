@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseCliArgs, buildReport, hasFatal } = require(path.join(__dirname, '..', '..', '_lib', 'shared.js'));
+const { parseCliArgs, buildReport, hasFatal, resolveSafePath } = require(path.join(__dirname, '..', '..', '_lib', 'shared.js'));
 
 // 质量规则配置
 const MAX_LINE_LENGTH = 120;
@@ -253,7 +253,7 @@ function analyzePythonFile(filePath) {
 // --- Directory scan ---
 
 function scanDirectory(scanPath, excludeDirs) {
-  const resolved = path.resolve(scanPath);
+  const resolved = resolveSafePath(scanPath);
   const exclude = excludeDirs || EXCLUDE_DIRS;
   const result = {
     scan_path: resolved, files_scanned: 0,

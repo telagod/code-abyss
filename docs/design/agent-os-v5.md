@@ -4,7 +4,7 @@
 > **Locks thesis:** one system, not a menu of options.  
 > **Supersedes as primary direction:** [`persona-architecture-v3.md`](./persona-architecture-v3.md) (eager→lazy composition remains a *layer*, not the product).  
 > **Also absorbs residual truth from:** [`mythos-kernel-merge.md`](./mythos-kernel-merge.md) (kernel as spine), and retires root [`DESIGN.md`](../../DESIGN.md) freeform L1–L4 assembly as *historical*, not current runtime.  
-> **Product code today:** v4.10.0 (`package.json`). This document is design-only; **today** vs **target** are labeled everywhere they diverge.
+> **Product code today:** v5.0.0-rc.1 (`package.json`). This document is design-only; **today** vs **target** are labeled everywhere they diverge. The v4.10-era "today" narrative below is preserved as historical context; v5.0.0-rc.1 has landed the kill-foyer, runtime control plane (`doctor`/`compose`/`score`), default enforcement, and inject plane.
 
 ---
 
@@ -51,7 +51,7 @@ v3 solved **budget explosion** by lazy-loading judgment. v5 keeps that win and f
 
 ---
 
-## 1. Diagnosis — today (v4.10 tree facts)
+## 1. Diagnosis — today (v5.0.0-rc.1 tree facts; v4.10 narrative preserved below)
 
 ### 1.1 What ships and works
 
@@ -63,16 +63,16 @@ v3 solved **budget explosion** by lazy-loading judgment. v5 keeps that win and f
 | Kernel vendored in-tree (9 bundles), not submodule | `scripts/sync-mythos.js`, `skills/_kernel/`, `.sync-meta.json` | npm-safe |
 | 16 exec skills carry domain-gate pointers | `scripts/wire-domain-gates.js` MAP → `skills/*/SKILL.md` | Compose *prose* exists |
 | 4-host install + backup/uninstall + CI smoke from real tarball | `bin/install.js`, adapters, `.github/workflows/ci.yml` | Distribution mature |
-| Health gates green at review time | `npm test` 442 pass; `verify:skills` 39 skills | Baseline trustworthy |
+| Health gates green at review time | `npm test` 489 pass; `verify:skills` 39 skills | Baseline trustworthy |
 
 ### 1.2 Where the architecture is timid (product failure, not test failure)
 
 | Failure mode | Mechanism that breaks | Evidence |
 |--------------|----------------------|----------|
 | **Lazy = optional** | Kernel invoked only if the model obeys `kernel-router.md` prose | Router is advisory text (`config/personas/_shared/kernel-router.md`); no host-level inject on triggers |
-| **Enforcement is opt-in** | Stop-hook / banned openers only when `--with-enforcement` | `bin/install.js` flag surface; default `-y` path does not install character hooks |
-| **Installer is the product** | Success = files on disk, not “session behaves” | No runtime `doctor`/`score` path in shipped bin surface (`package.json` `bin` → `install.js` only) |
-| **Abyss boundary is a deprecation hotel** | Dual stories: code-abyss hooks vs `abyss attach` | `abyss-integration.js` deprecated injectors; `abyss-binary.js` download without integrity; flags marked remove-in-v5 still ship |
+| **Enforcement is default-on** | Stop-hook / banned openers installed by default for claude/codex; opt out with `--no-enforcement` | `bin/install.js` flag surface; default `-y` path installs character hooks |
+| **Runtime control plane landed** | `doctor`, `compose`, `score` are shipped bin commands | `bin/install.js` multi-command surface; `bin/lib/runtime-control.js` |
+| **Abyss boundary is a deprecation hotel** | Dual stories: code-abyss hooks vs `abyss attach` | `abyss-binary.js` removed in v5.0; `abyss-integration.js` retains strip-only + MCP shape helpers; `abyss attach` is the only production inject path |
 | **Docs lie in parallel** | Root `DESIGN.md` still describes freeform L1–L4 persona assembly | `DESIGN.md` lines 7–22 vs actual voice-card + `renderRuntimeGuidance` |
 | **Measurement is a side quest** | persona-battery manual / API-cost | `scripts/persona-battery/`, `.github/workflows/persona-battery.yml` workflow_dispatch only |
 | **Voice card over-surgery** | Solved judgment accretion by lobotomizing persona residual space | 16-char self/user, banned punctuation, aggregate budget — correct for safety, **insufficient as brand/attitude surface** without a separate stance track |

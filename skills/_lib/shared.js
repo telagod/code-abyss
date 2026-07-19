@@ -5,6 +5,34 @@
  * 消灭 verify-* 脚本间的重复代码
  */
 
+const fs = require('fs');
+const path = require('path');
+
+// --- 路径安全 ---
+
+/**
+ * 将用户传入路径解析为项目根内的安全绝对路径。
+ * - 解析 `..`、符号链接
+ * - 默认要求路径落在 `root`（默认 process.cwd()）之内
+ * - 用于写入类工具时必须开启 `mustContain: true`
+ */
+function resolveSafePath(targetPath, { root = process.cwd(), mustContain = false } = {}) {
+  const resolvedRoot = fs.realpathSync(root);
+  let resolved;
+  try {
+    resolved = fs.realpathSync(path.resolve(resolvedRoot, targetPath));
+  } catch (e) {
+    if (mustContain) throw new Error(`路径解析失败: ${targetPath} (${e.message})`);
+    return path.resolve(resolvedRoot, targetPath);
+  }
+  if (mustContain && !resolved.startsWith(resolvedRoot + path.sep) && resolved !== resolvedRoot) {
+    throw new Error(`路径越出项目根: ${resolved} (root: ${resolvedRoot})`);
+  }
+  return resolved;
+}
+
+
+
 // --- CLI 参数解析 ---
 
 function parseCliArgs(argv, extraFlags) {
@@ -94,5 +122,6 @@ function hasFatal(issues, fatalLevels) {
 
 module.exports = {
   parseCliArgs, buildReport, reportHeader, reportIssues,
-  reportFooter, countBySeverity, hasFatal, SEP, DASH, ICONS
+  reportFooter, countBySeverity, hasFatal, SEP, DASH, ICONS,
+  resolveSafePath,
 };

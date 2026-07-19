@@ -403,4 +403,78 @@ describe('codex adapter', () => {
       .toBe('sandbox_mode = "read-only"\n');
     expect(fs.existsSync(path.join(codexDir, 'full_auto.config.toml'))).toBe(true);
   });
+
+  test('patchCodexConfig: 多行字符串内的 sandbox_mode 不被误判为 root 键', () => {
+    const cfgPath = path.join(tmpHome, '.codex', 'config.toml');
+    fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
+    fs.writeFileSync(cfgPath, [
+      'model = "gpt-4"',
+      '',
+      '[notice]',
+      'message = """',
+      'sandbox_mode = "workspace-write"',
+      '"""',
+      '',
+    ].join('\n'));
+
+    patchCodexConfig(cfgPath);
+    const raw = fs.readFileSync(cfgPath, 'utf8');
+    expect(raw).toContain('sandbox_mode = "workspace-write"');
+    expect(raw).toContain('message = """');
+    // root 默认键应被注入，但不会把字符串内容误删
+    expect(raw).toMatch(/sandbox_mode = "workspace-write"/);
+  });
+
+  test('patchCodexConfig: 数组表头 [[hooks.SessionStart]] 被正确识别为 section', () => {
+    const cfgPath = path.join(tmpHome, '.codex', 'config.toml');
+    fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
+    fs.writeFileSync(cfgPath, [
+      '[[hooks.SessionStart]]',
+      'command = "echo start"',
+      '',
+    ].join('\n'));
+
+    patchCodexConfig(cfgPath);
+    const raw = fs.readFileSync(cfgPath, 'utf8');
+    // 默认 root 键应插入到数组表头之前，而非文件末尾
+    const approvalIdx = raw.indexOf('approval_policy');
+    const hookIdx = raw.indexOf('[[hooks.SessionStart]]');
+    expect(approvalIdx).toBeGreaterThan(-1);
+    expect(hookIdx).toBeGreaterThan(-1);
+    expect(approvalIdx).toBeLessThan(hookIdx);
+  });
+
+  test('stripCodexAbyssIntegration: [mcp_servers.abyss] 带空格或注释也能被剥除', () => {
+    const { stripCodexAbyssIntegration } = require('../bin/adapters/codex');
+    const raw = [
+      'model = "gpt-4"',
+      '',
+      '[mcp_servers.abyss ]',
+      'command = "abyss"',
+      '',
+      '[mcp_servers.other]',
+      'command = "x"',
+      '',
+    ].join('\n');
+    const { merged, removed } = stripCodexAbyssIntegration(raw);
+    expect(removed).toBe(true);
+    expect(merged).not.toContain('mcp_servers.abyss');
+    expect(merged).toContain('mcp_servers.other');
+  });
+
+  test('stripCodexAbyssIntegration: hook 事件表头带尾随空格也能被识别', () => {
+    const { stripCodexAbyssIntegration } = require('../bin/adapters/codex');
+    const raw = [
+      '[[hooks.SessionStart ]]',
+      'command = "bash skills/indexing-code/hooks/common/pre-edit.sh"',
+      '',
+      '[[hooks.SessionStart.hooks]]',
+      'type = "command"',
+      'command = "bash skills/indexing-code/hooks/common/pre-edit.sh"',
+      '',
+    ].join('\n');
+    const { merged, removed } = stripCodexAbyssIntegration(raw);
+    expect(removed).toBe(true);
+    expect(merged).not.toContain('indexing-code/hooks/common');
+  });
 });
